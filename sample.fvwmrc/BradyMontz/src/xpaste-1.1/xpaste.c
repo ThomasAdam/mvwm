@@ -6,7 +6,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: xpaste.c,v 1.1 1998/10/14 00:03:25 tibbs Exp $";
+static char rcsid[] = "$Id: xpaste.c,v 1.2 1998/10/30 21:19:48 domivogt Exp $";
 #endif
 
 #include <stdio.h>

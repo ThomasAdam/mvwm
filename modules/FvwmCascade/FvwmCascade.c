@@ -6,7 +6,7 @@
  * Written by Andrew Veliath
  * Copyright 1996
  * 
- * $Id: FvwmCascade.c,v 1.1 1998/10/14 00:03:23 tibbs Exp $
+ * $Id: FvwmCascade.c,v 1.2 1998/10/30 21:19:42 domivogt Exp $
  ************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>

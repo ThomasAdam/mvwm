@@ -11,7 +11,7 @@
 #endif
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.1 1998/10/14 00:03:23 tibbs Exp $";
+  "$Id: fvwm.c,v 1.2 1998/10/30 21:19:44 domivogt Exp $";
 
 typedef struct {
   Ulong paging_enabled;

@@ -1,7 +1,7 @@
 /*
  * Miscellaneous X utility routines
  *
- * $Id: Xju.c,v 1.1 1998/10/14 00:03:25 tibbs Exp $
+ * $Id: Xju.c,v 1.2 1998/10/30 21:19:48 domivogt Exp $
  */
 #include <varargs.h>
 #include <X11/Intrinsic.h>
