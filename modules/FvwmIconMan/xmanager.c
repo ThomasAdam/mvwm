@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.45 2000/12/06 14:50:44 domivogt Exp $";
+  "$Id: xmanager.c,v 1.46 2001/03/30 09:29:21 domivogt Exp $";
 
 extern char *MyName;
 
@@ -560,6 +560,7 @@ static void set_num_buttons (ButtonArray *buttons, int n)
     for (i = buttons->num_buttons; i < n; i++) {
       buttons->buttons[i] = (Button *)safemalloc (sizeof (Button));
       memset(buttons->buttons[i], 0, sizeof(Button));
+buttons->buttons[i]->drawn_state.display_string = NULL;
       buttons->buttons[i]->index = i;
     }
 

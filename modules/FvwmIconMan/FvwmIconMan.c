@@ -30,7 +30,7 @@
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.32 2000/06/12 12:35:50 bgiaccio Exp $";
+  "$Id: FvwmIconMan.c,v 1.33 2001/03/30 09:29:21 domivogt Exp $";
 
 const char *MyName;
 
@@ -71,7 +71,7 @@ void Free (void *p)
       return;
     }
     MemUsed -= head->len;
-    free(head);
+    Free(head);
   }
 }
 
