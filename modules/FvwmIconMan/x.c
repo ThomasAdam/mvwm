@@ -20,7 +20,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.15 1999/06/27 17:58:22 domivogt Exp $";
+  "$Id: x.c,v 1.16 1999/06/28 13:07:16 hippo Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -833,6 +833,7 @@ void init_display (void)
   }
   XSetErrorHandler (handle_error);
   G = CreateGraphics(theDisplay);
+  SavePictureCMap (theDisplay, G->viz, G->cmap, G->depth);
   x_fd = XConnectionNumber (theDisplay);
   theScreen = DefaultScreen (theDisplay);
   theRoot = RootWindow (theDisplay, theScreen);
