@@ -30,7 +30,7 @@
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.31 2000/04/18 17:55:21 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.32 2000/06/12 12:35:50 bgiaccio Exp $";
 
 const char *MyName;
 
@@ -302,13 +302,6 @@ main(int argc, char **argv)
   SetSyncMask(Fvwm_fd, M_DEICONIFY | M_ICONIFY);
 
   main_loop();
-
-#ifdef FVWM_DEBUG_MSGS
-  if ( debug_term_signal )
-  {
-    fvwm_msg(DBG, "main", "Terminated by signal %d", debug_term_signal);
-  }
-#endif
 
   return 0;
 }
