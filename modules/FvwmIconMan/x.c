@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.37 2000/01/12 21:38:42 domivogt Exp $";
+  "$Id: x.c,v 1.38 2000/02/28 10:51:13 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -918,7 +918,7 @@ void create_manager_window (int man_id)
     }
     if (man->pixmap[i] && man->pixmap[i] != ParentRelative)
       XFreePixmap(theDisplay, man->pixmap[i]);
-    if (Colorset[man->colorsets[i]].pixmap) {
+    if (man->colorsets[i] >= 0 && Colorset[man->colorsets[i]].pixmap) {
       man->pixmap[i] = CreateBackgroundPixmap(theDisplay, man->theWindow,
                        man->geometry.width, man->geometry.height,
                        &Colorset[man->colorsets[i]],
