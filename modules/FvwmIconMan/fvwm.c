@@ -20,11 +20,11 @@
 #include "xmanager.h"
 
 #include <libs/fvwmlib.h>
-#include <libs/XineramaSupport.h>
+#include <libs/FScreen.h>
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.33 2001/08/11 21:28:18 domivogt Exp $";
+  "$Id: fvwm.c,v 1.34 2001/08/26 12:43:26 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -237,7 +237,7 @@ static void handle_config_info (unsigned long *body)
   }
   else if (StrEquals(token, XINERAMA_CONFIG_STRING))
   {
-    XineramaSupportConfigureModule(tline);
+    FScreenConfigureModule(tline);
   }
 }
 
