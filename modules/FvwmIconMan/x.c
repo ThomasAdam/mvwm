@@ -23,7 +23,7 @@
 #include "libs/FShape.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.58 2002/02/09 16:32:50 olicha Exp $";
+  "$Id: x.c,v 1.59 2002/04/22 08:06:15 olicha Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -920,7 +920,7 @@ void init_display (void)
   }
   XSetErrorHandler (handle_error);
   _XA_WM_DEL_WIN = XInternAtom(theDisplay, "WM_DELETE_WINDOW", 0);
-  InitPictureCMap (theDisplay);
+  PictureInitCMap (theDisplay);
   FScreenInit(theDisplay);
   AllocColorset(0);
   FShapeInit(theDisplay);
