@@ -24,7 +24,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.54 2002/02/09 16:32:50 olicha Exp $";
+  "$Id: xmanager.c,v 1.55 2002/02/26 16:53:26 olicha Exp $";
 
 extern char *MyName;
 extern FlocaleWinString *FwinString; 
@@ -1441,7 +1441,19 @@ static void draw_button (WinManager *man, int button, int force)
       FwinString->gc = man->hiContext[button_state];
       FwinString->x = g.text_x;
       FwinString->y = g.text_base;
-      FlocaleDrawString(theDisplay, man->FButtonFont, FwinString, 0);
+      FwinString->len = strlen(b->drawn_state.display_string);
+#ifdef HAVE_XFT
+      if (man->FButtonFont->xftfont != NULL)
+      {
+	while(
+         FwinString->len >= 0 &&
+	 FlocaleTextWidth(man->FButtonFont, FwinString->str, FwinString->len)
+	 > g.text_w)
+	  FwinString->len--;
+      }
+#endif
+      FlocaleDrawString(
+	theDisplay, man->FButtonFont, FwinString, FWS_HAVE_LENGTH);
       XSetClipMask (theDisplay, man->hiContext[button_state], None);
     }
   }
