@@ -32,7 +32,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.27 1999/11/12 06:53:21 olicha Exp $";
+  "$Id: FvwmIconMan.c,v 1.28 1999/11/18 21:08:52 olicha Exp $";
 
 const char *MyName;
 
@@ -116,42 +116,6 @@ DeadPipe(int nothing)
 {
   (void)nothing;
   ShutMeDown(0);
-}
-
-void
-SendFvwmPipe(const char *message, unsigned long window)
-{
-  const char *hold = message;
-  const char *temp;
-
-  /*
-   * The message is a comma-delimited string :
-   * separate it into its component sections and
-   * send them one by one ...
-   */
-  while ( (temp = strchr(hold, ',')) != NULL )
-  {
-    char *temp_msg = (char*)safemalloc(temp - hold + 1);
-
-    strncpy(temp_msg, hold, (temp - hold));
-    temp_msg[(temp - hold)] = '\0';
-    hold = temp + 1;
-
-    SendText(Fvwm_fd, temp_msg, window);
-    Free(temp_msg);
-  } /* while */
-
-  /*
-   * Send the last part of the string :
-   * we don't need to copy this into separate
-   * storage because we don't need to modify it ...
-   *
-   * NOTE: this makes this second call to SendText()
-   *       distinct from the first call. Two calls is
-   *       cleaner than hacking the loop to make only
-   *       one call. 
-   */
-  SendText(Fvwm_fd, hold, window);
 }
 
 static void

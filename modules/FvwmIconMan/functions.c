@@ -18,7 +18,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: functions.c,v 1.6 1999/06/27 14:47:13 domivogt Exp $";
+  "$Id: functions.c,v 1.7 1999/11/18 21:08:52 olicha Exp $";
 
 static Button *get_select_button (void);
 
@@ -282,7 +282,7 @@ int builtin_sendcommand (int numargs, BuiltinArg *args)
     return 0;
   }
 
-  SendFvwmPipe (args[0].value.string_value, win->app_id);
+  SendFvwmPipe (Fvwm_fd, args[0].value.string_value, win->app_id);
 
   return 0;
 }
