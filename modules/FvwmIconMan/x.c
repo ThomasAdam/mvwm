@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.43 2000/11/21 20:32:00 domivogt Exp $";
+  "$Id: x.c,v 1.44 2000/12/03 15:56:03 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -819,33 +819,33 @@ void create_manager_window (int man_id)
 
   for (i = 0; i < NUM_CONTEXTS; i++) {
     man->backContext[i] =
-      XCreateGC (theDisplay, man->theWindow, gcmask, &gcval);
+      fvwmlib_XCreateGC (theDisplay, man->theWindow, gcmask, &gcval);
     XSetForeground (theDisplay, man->backContext[i], man->backcolor[i]);
     XSetLineAttributes (theDisplay, man->backContext[i], line_width,
 			line_style, cap_style,
 			join_style);
 
     man->hiContext[i] =
-      XCreateGC (theDisplay, man->theWindow, gcmask, &gcval);
+      fvwmlib_XCreateGC (theDisplay, man->theWindow, gcmask, &gcval);
     XSetFont (theDisplay, man->hiContext[i], man->ButtonFont->fid);
     XSetForeground (theDisplay, man->hiContext[i], man->forecolor[i]);
 
     gcmask = GCForeground | GCBackground;
     gcval.foreground = man->backcolor[i];
     gcval.background = man->forecolor[i];
-    man->flatContext[i] = XCreateGC (theDisplay, man->theWindow,
+    man->flatContext[i] = fvwmlib_XCreateGC (theDisplay, man->theWindow,
 						 gcmask, &gcval);
     if (Pdepth > 2) {
       gcmask = GCForeground | GCBackground;
       gcval.foreground = man->hicolor[i];
       gcval.background = man->backcolor[i];
-      man->reliefContext[i] = XCreateGC (theDisplay, man->theWindow,
+      man->reliefContext[i] = fvwmlib_XCreateGC (theDisplay, man->theWindow,
 						     gcmask, &gcval);
 
       gcmask = GCForeground | GCBackground;
       gcval.foreground = man->shadowcolor[i];
       gcval.background = man->backcolor[i];
-      man->shadowContext[i] = XCreateGC (theDisplay, man->theWindow,
+      man->shadowContext[i] = fvwmlib_XCreateGC (theDisplay, man->theWindow,
 						     gcmask, &gcval);
     }
     if (man->pixmap[i] && man->pixmap[i] != ParentRelative)
