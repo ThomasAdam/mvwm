@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.14 1999/08/05 16:41:30 hippo Exp $";
+  "$Id: fvwm.c,v 1.15 1999/08/17 00:32:41 domivogt Exp $";
 
 typedef struct {
   Ulong paging_enabled;
@@ -222,9 +222,9 @@ static void configure_colorsets (unsigned long *body)
   char *tline, *token;
   int color;
 
-	tline = (char*)&(body[3]);
-	tline = GetNextToken(tline, &token);
-	if (StrEquals(token, "Colorset")) {
+  tline = (char*)&(body[3]);
+  tline = GetNextToken(tline, &token);
+  if (StrEquals(token, "Colorset")) {
     color = LoadColorset(tline);
     change_colorset(color);
   }
@@ -561,6 +561,9 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
     globals.x = body->new_page_data.x;
     globals.y = body->new_page_data.y;
     globals.desknum = body->new_page_data.desknum;
+    if (globals.focus_win)
+      /* need to set the focus on a page change */
+      add_win_state (globals.focus_win, FOCUS_CONTEXT);
     for (i = 0; i < globals.num_managers; i++) {
       set_draw_mode (&globals.managers[i], 0);
     }
