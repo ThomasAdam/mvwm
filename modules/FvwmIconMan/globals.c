@@ -21,7 +21,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand \"Silent Iconify\""
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.17 2001/08/28 10:53:23 domivogt Exp $";
+  "$Id: globals.c,v 1.18 2001/09/16 15:51:18 domivogt Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -148,6 +148,5 @@ void init_globals (void)
   globals.focus_win = NULL;
   globals.select_win = NULL;
   globals.transient = 0;
-  globals.shapes_supported = 0;
   globals.got_window_list = 0;
 }

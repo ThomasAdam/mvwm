@@ -21,10 +21,11 @@
 #include <libs/defaults.h>
 #include <libs/fvwmlib.h>
 #include <libs/FScreen.h>
+#include <libs/FShape.h>
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.37 2001/08/26 12:43:26 domivogt Exp $";
+  "$Id: readconfig.c,v 1.38 2001/09/16 15:51:18 domivogt Exp $";
 
 /************************************************************************
  *
@@ -1560,7 +1561,7 @@ void read_in_resources (char *file)
 	  ConsoleMessage ("What is this: %s?\n", p);
 	  continue;
 	}
-	if (i && globals.shapes_supported == 0) {
+	if (!FHaveShapeExtension && i) {
 	  ConsoleMessage ("Shape support not compiled in\n");
 	  continue;
 	}
