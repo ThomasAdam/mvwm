@@ -4,7 +4,7 @@
 #include "readconfig.h"
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.7 1998/11/10 09:21:25 domivogt Exp $";
+  "$Id: readconfig.c,v 1.8 1998/11/12 10:01:44 domivogt Exp $";
 
 /************************************************************************
  *
@@ -451,7 +451,7 @@ static int JmpArgs=0;
 static Function *parse_function (char **line, char *pstop_char)
 {
   Function *ftype = (Function *)safemalloc (sizeof (Function));
-  char *ptr, *name, *tok;
+  char *ptr, *name, *tok, tmp;
   int j, flag;
   FunctionType *builtin_functions_i;
 
@@ -534,22 +534,15 @@ static Function *parse_function (char **line, char *pstop_char)
 	 */
       case JmpArg:
 	ptr = DoGetNextToken (ptr, &tok, NULL, ",", pstop_char);
-	if (!tok || *pstop_char == ',') {
+	if (!tok) {
 	  ConsoleMessage ("%s: too few arguments\n",
 			  builtin_functions_i->name);
+	  Free(tok);
 	  Free(ftype);
 	  *line=NULL;
 	  return NULL;
 	}
 	if (extract_int(tok, &ftype->args[j].value.int_value) == 0) {
-	  if (!tok) {
-	    ConsoleMessage ("%s: too few arguments\n",
-			    builtin_functions_i->name);
-	    Free(tok);
-	    Free(ftype);
-	    *line=NULL;
-	    return NULL;
-	  }
 	  ftype->args[j].value.string_value=tok;
 	  ftype->args[j].type = JmpArg;
 	  ++JmpArgs;

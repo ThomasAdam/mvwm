@@ -6,7 +6,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand Iconify"
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.4 1998/11/06 17:53:52 domivogt Exp $";
+  "$Id: globals.c,v 1.5 1998/11/12 10:01:44 domivogt Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -100,10 +100,12 @@ void print_managers (void)
     ConsoleDebug (CORE, "Show:\n");
     print_stringlist (&globals.managers[i].show);
     
-    ConsoleDebug (CORE, "Font: %s\n", globals.managers[i].fontname);
+    ConsoleDebug (CORE, "Font: %s\n", (globals.managers[i].fontname)?
+      globals.managers[i].fontname : "(NULL)");
     ConsoleDebug (CORE, "Geometry: %s\n", globals.managers[i].geometry_str);
     ConsoleDebug (CORE, "Button geometry: %s\n", 
-		  globals.managers[i].button_geometry_str);
+		  (globals.managers[i].button_geometry_str)?
+      globals.managers[i].button_geometry_str : "(NULL)");
     ConsoleDebug (CORE, "\n");
   }
 
