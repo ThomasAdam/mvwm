@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.2 1999/04/21 21:39:56 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.3 1999/04/21 23:05:18 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -33,7 +33,8 @@ void server( char * );
 void sig_handler( int );
 int  write_f (int fd, char *p, int len);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   char *fifoname;
 
   if(argc < FARGS)    {
@@ -108,7 +109,7 @@ void server ( char *name ) {
   if (open_fifos (f_stem) < 0) {
     exit (-1);
   }
-  SendText(Fd,"",0); /* tell fvwm that we are here */
+  SendText(Fd," ",0); /* tell fvwm that we are here */
 
   cix = 0;
 
