@@ -17,7 +17,7 @@
 #include "FvwmIconMan.h"
 
 static char const rcsid[] =
-  "$Id: winlist.c,v 1.10 2000/11/21 14:33:20 domivogt Exp $";
+  "$Id: winlist.c,v 1.11 2000/11/22 18:38:58 domivogt Exp $";
 
 #define HASHTAB_SIZE 257
 
@@ -207,6 +207,8 @@ void free_windata (WinData *p)
   Free (p->resname);
   Free (p->classname);
   Free (p->iconname);
+  Free (p->titlename);
+  Free (p->display_string);
   Free (p);
 }
 
