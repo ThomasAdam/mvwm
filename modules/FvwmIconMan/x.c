@@ -19,9 +19,10 @@
 #include "x.h"
 #include "xmanager.h"
 #include "libs/fvwmlib.h"
+#include "libs/XineramaSupport.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.45 2001/02/17 20:29:42 domivogt Exp $";
+  "$Id: x.c,v 1.46 2001/08/02 23:06:19 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -642,9 +643,10 @@ void X_init_manager (int man_id)
     }
   }
   if (man->geometry_str) {
-    geometry_mask = XParseGeometry (man->geometry_str, &man->geometry.x,
-				    &man->geometry.y, &man->geometry.cols,
-				    &man->geometry.rows);
+    geometry_mask = XineramaSupportParseGeometry(
+      man->geometry_str, &man->geometry.x,
+      &man->geometry.y, &man->geometry.cols,
+      &man->geometry.rows);
 
     if ((geometry_mask & XValue) || (geometry_mask & YValue)) {
       man->sizehints_flags |= USPosition;
@@ -904,6 +906,7 @@ void init_display (void)
   }
   XSetErrorHandler (handle_error);
   InitPictureCMap (theDisplay);
+  XineramaSupportInit(theDisplay);
   AllocColorset(0);
   x_fd = XConnectionNumber (theDisplay);
   theScreen = DefaultScreen (theDisplay);
