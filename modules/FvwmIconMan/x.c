@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.44 2000/12/03 15:56:03 domivogt Exp $";
+  "$Id: x.c,v 1.45 2001/02/17 20:29:42 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -368,7 +368,10 @@ void xevent_loop (void)
       set_manager_width (man, theEvent.xconfigure.width);
       ConsoleDebug (X11, "\tboxwidth = %d\n", man->geometry.boxwidth);
       if (force_redraw)
+      {
 	force_manager_redraw(man);
+	force_redraw = 0;
+      }
       else
 	draw_manager (man);
 
