@@ -21,7 +21,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand Iconify"
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.9 1999/09/28 16:42:04 domivogt Exp $";
+  "$Id: globals.c,v 1.10 1999/10/26 10:30:41 hippo Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -35,8 +35,10 @@ ContextDefaults contextDefaults[] = {
 
 int Fvwm_fd[2];
 int x_fd;
-char *Module = "*FvwmIconMan";
-int ModuleLen = 12;
+/* char *Module = "*FvwmIconMan"; */
+char *Module;
+/* int ModuleLen = 12; */
+int ModuleLen;
 
 /* This is solely so that we can turn a string constant into something
    which can be freed */

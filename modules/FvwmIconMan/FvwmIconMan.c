@@ -32,7 +32,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.24 1999/10/24 09:08:07 chrisr Exp $";
+  "$Id: FvwmIconMan.c,v 1.25 1999/10/26 10:30:41 hippo Exp $";
 
 const char *MyName;
 
@@ -234,14 +234,25 @@ main(int argc, char **argv)
   if (s != NULL)
     MyName = s + 1;
 
+  if (argc == 7)
+  {
+    if (strcasecmp (argv[6], "Transient")==0)
+      globals.transient = 1;
+    else
+    {
+      MyName = argv[6];
+    } 
+  }
+  ModuleLen = strlen(MyName) + 1;
+  Module = safemalloc(ModuleLen+1);
+  *Module = '*';
+  strcpy (Module+1, MyName);
+
   if((argc != 6) && (argc != 7)) {
     fprintf(stderr,"%s Version %s should only be executed by fvwm!\n",Module,
       IM_VERSION);
     ShutMeDown(1);
   }
-  if (argc == 7 && !strcasecmp(argv[6], "Transient"))
-    globals.transient = 1;
-
   Fvwm_fd[0] = atoi(argv[1]);
   Fvwm_fd[1] = atoi(argv[2]);
   init_display();

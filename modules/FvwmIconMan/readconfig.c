@@ -20,7 +20,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.20 1999/10/24 09:08:07 chrisr Exp $";
+  "$Id: readconfig.c,v 1.21 1999/10/26 10:30:41 hippo Exp $";
 
 /************************************************************************
  *
@@ -1456,6 +1456,10 @@ void read_in_resources (char *file)
 	  r = SHOW_DESKTOP;
 	else if (!strcasecmp (p, "page"))
 	  r = SHOW_PAGE;
+	else if (!strcasecmp (p, "!desk"))
+	  r = NO_SHOW_DESKTOP;
+	else if (!strcasecmp (p, "!page"))
+	  r = NO_SHOW_PAGE;
 	else {
 	  ConsoleMessage ("Bad line: %s\n", current_line);
 	  ConsoleMessage ("What kind of resolution is this?\n");
