@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.24 1999/11/21 18:34:28 domivogt Exp $";
+  "$Id: fvwm.c,v 1.25 2000/01/20 20:49:54 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -629,7 +629,9 @@ void ReadFvwmPipe (void)
     ConsoleDebug(FVWM, "DEBUG: entering ReadFvwmPipe\n");
 
     if ( (packet = ReadFvwmPacket(Fvwm_fd[1])) == NULL )
+    {
 	exit(0);
+    }
     else
 	ProcessMessage( packet->type, (FvwmPacketBody*) packet->body );
 

@@ -32,7 +32,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.28 1999/11/18 21:08:52 olicha Exp $";
+  "$Id: FvwmIconMan.c,v 1.29 2000/01/20 20:49:54 domivogt Exp $";
 
 const char *MyName;
 
@@ -205,7 +205,7 @@ main(int argc, char **argv)
     else
     {
       MyName = argv[6];
-    } 
+    }
   }
   ModuleLen = strlen(MyName) + 1;
   Module = safemalloc(ModuleLen+1);
