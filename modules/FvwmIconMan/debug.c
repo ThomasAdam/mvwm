@@ -6,7 +6,7 @@
 #include "debuglevels.h"
 
 static char const rcsid[] =
-  "$Id: debug.c,v 1.5 1998/12/16 18:04:45 psmith Exp $";
+  "$Id: debug.c,v 1.6 1999/01/11 05:00:33 steve Exp $";
 
 static FILE *console = NULL;
 
@@ -14,7 +14,6 @@ void
 ConsoleMessage(const char *fmt, ...)
 {
   va_list args;
-  FILE *filep;
 
   assert(console != NULL);
 
