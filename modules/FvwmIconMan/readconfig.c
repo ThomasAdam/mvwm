@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.29 2000/10/05 00:49:07 domivogt Exp $";
+  "$Id: readconfig.c,v 1.30 2000/11/21 14:33:20 domivogt Exp $";
 
 /************************************************************************
  *
@@ -726,14 +726,13 @@ Binding *ParseMouseEntry (char *tline)
     ConsoleMessage ("Binding specified AnyModifier and other modifers too. Excess modifiers will be ignored.");
   }
 
-  new  = (Binding *)safemalloc(sizeof(Binding));
+  new = (Binding *)safemalloc(sizeof(Binding));
+  memset(new, 0, sizeof(Binding));
   new->type = MOUSE_BINDING;
   new->Button_Key = button;
-  new->key_name = NULL;
   new->Modifier = mods;
   new->Action = stripcpy(action);
   new->Action2 = parse_function_list (action);
-  new->NextBinding = NULL;
 
   if (!new->Action2) {
     ConsoleMessage ("Bad action: %s\n", action);
@@ -808,6 +807,7 @@ static Binding *ParseKeyEntry (char *tline)
       }
       temp = new;
       new  = (Binding *)safemalloc(sizeof(Binding));
+      memset(new, 0, sizeof(Binding));
       new->type = KEY_BINDING;
       new->Button_Key = i;
       new->key_name = keystring;
@@ -836,13 +836,11 @@ static Binding *ParseSimpleEntry (char *tline)
     return NULL;
 
   new = (Binding *)safemalloc (sizeof (Binding));
+  memset(new, 0, sizeof(Binding));
   new->type = KEY_BINDING;
-  new->Button_Key = 0;
   new->key_name = "select";
-  new->Modifier = 0;
   new->Action = stripcpy (tline);
   new->Action2 = func;
-  new->NextBinding = NULL;
 
   return new;
 }

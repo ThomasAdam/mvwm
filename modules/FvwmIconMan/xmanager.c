@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.42 2000/10/08 00:12:45 domivogt Exp $";
+  "$Id: xmanager.c,v 1.43 2000/11/21 14:33:20 domivogt Exp $";
 
 extern char *MyName;
 
@@ -558,11 +558,8 @@ static void set_num_buttons (ButtonArray *buttons, int n)
 
     for (i = buttons->num_buttons; i < n; i++) {
       buttons->buttons[i] = (Button *)safemalloc (sizeof (Button));
+      memset(buttons->buttons[i], 0, sizeof(Button));
       buttons->buttons[i]->index = i;
-      buttons->buttons[i]->drawn_state.dirty_flags = 0;
-      buttons->buttons[i]->drawn_state.w = 0;
-      buttons->buttons[i]->drawn_state.h = 0;
-      buttons->buttons[i]->drawn_state.win = NULL;
     }
 
     buttons->dirty_flags |= NUM_BUTTONS_CHANGED;
@@ -931,9 +928,7 @@ void init_boxes (void)
 
 void init_button_array (ButtonArray *array)
 {
-  array->num_buttons = 0;
-  array->num_windows = 0;
-  array->buttons = NULL;
+  memset(array, 0, sizeof(ButtonArray));
 }
 
 /* Pretty much like resize_manager, but used only to figure the

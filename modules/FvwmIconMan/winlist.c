@@ -17,7 +17,7 @@
 #include "FvwmIconMan.h"
 
 static char const rcsid[] =
-  "$Id: winlist.c,v 1.9 1999/06/27 14:47:14 domivogt Exp $";
+  "$Id: winlist.c,v 1.10 2000/11/21 14:33:20 domivogt Exp $";
 
 #define HASHTAB_SIZE 257
 
@@ -186,27 +186,13 @@ static int iconmanager_show (WinManager *man, char *tname, char *iname,
 WinData *new_windata (void)
 {
   WinData *new = (WinData *)safemalloc (sizeof (WinData));
+
+  memset(new, 0, sizeof(WinData));
   new->desknum = ULONG_MAX;
   new->x = ULONG_MAX;
   new->y = ULONG_MAX;
-  new->geometry_set = 0;
   new->app_id = ULONG_MAX;
-  new->app_id_set = 0;
-  new->resname = NULL;
-  new->classname = NULL;
-  new->iconname = NULL;
-  new->titlename = NULL;
-  new->display_string = NULL;
-  new->manager = NULL;
-  new->win_prev = new->win_next = NULL;
-  new->iconified = 0;
-  new->button = NULL;
-  new->state = 0;
-  new->complete = 0;
-  memset(&(new->flags), '\0', sizeof(new->flags));
-#ifdef MINI_ICONS
-  new->pic.picture = 0;
-#endif
+
   return new;
 }
 
