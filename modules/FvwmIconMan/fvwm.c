@@ -7,7 +7,7 @@
 #include <fvwm/module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.8 1999/04/19 15:23:37 drbob Exp $";
+  "$Id: fvwm.c,v 1.9 1999/04/20 04:44:17 drbob Exp $";
 
 typedef struct {
   Ulong paging_enabled;
@@ -26,7 +26,7 @@ typedef struct {
   Ulong width;
   Ulong height;
   Ulong desknum;
-  window_flags flags;
+  Ulong dummy;
   Ulong window_title_height;
   Ulong window_border_width;
   Ulong window_base_width;
@@ -40,6 +40,9 @@ typedef struct {
   Ulong icon_label_id;
   Ulong icon_pixmap_id;
   Ulong window_gravity;
+  Ulong text_pixel;
+  Ulong back_pixel;
+  window_flags flags;
 } m_add_config_data;
 
 typedef struct {
