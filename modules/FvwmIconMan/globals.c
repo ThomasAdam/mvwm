@@ -18,10 +18,10 @@
 #include "xmanager.h"
 #include "readconfig.h"
 
-#define DEFAULT_MOUSE "0 N sendcommand Iconify"
+#define DEFAULT_MOUSE "0 N sendcommand \"Silent Iconify\""
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.16 2001/08/25 16:07:23 domivogt Exp $";
+  "$Id: globals.c,v 1.17 2001/08/28 10:53:23 domivogt Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
