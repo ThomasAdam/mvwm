@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.3 1998/10/31 11:52:51 steve Exp $
+ * $Id: Picture.c,v 1.4 1998/11/01 18:08:38 steve Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -123,9 +123,8 @@ Picture *LoadPicture(Display *dpy,Window Root,char *path, int color_limit)
   return NULL;
 }
 
-#ifdef NotUsed
 Picture *GetPicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
-		    char *name)
+		    char *name, int color_limit)
 {
   char *path;
   if(!(path=findIconFile(name,PixmapPath,R_OK)))
@@ -133,7 +132,6 @@ Picture *GetPicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
       return NULL;
   return LoadPicture(dpy,Root,path, color_limit);
 }
-#endif
 
 Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
 		    char *name, int color_limit)
