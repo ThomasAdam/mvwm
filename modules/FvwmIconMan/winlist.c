@@ -2,7 +2,7 @@
 #include "FvwmIconMan.h"
 
 static char const rcsid[] =
-  "$Id: winlist.c,v 1.7 1999/04/03 20:01:08 steve Exp $";
+  "$Id: winlist.c,v 1.8 1999/04/19 15:23:37 drbob Exp $";
 
 #define HASHTAB_SIZE 257
 
@@ -188,7 +188,7 @@ WinData *new_windata (void)
   new->button = NULL;
   new->state = 0;
   new->complete = 0;
-  new->fvwm_flags = 0;
+  memset(&(new->flags), '\0', sizeof(new->flags));
 #ifdef MINI_ICONS
   new->pic.picture = 0;
 #endif

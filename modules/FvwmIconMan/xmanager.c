@@ -6,13 +6,12 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.10 1999/04/03 20:01:08 steve Exp $";
+  "$Id: xmanager.c,v 1.11 1999/04/19 15:23:37 drbob Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
 #endif
 
-#include "fvwm/fvwm.h"
 
 
 /* button dirty bits: */
@@ -1111,7 +1110,7 @@ void check_in_window (WinData *win)
   int in_viewport;
 
   if (win->manager && win->complete &&
-      !(win->manager->usewinlist && (win->fvwm_flags & WINDOWLISTSKIP))) {
+      !(win->manager->usewinlist && (DO_SKIP_WINDOW_LIST(win)))) {
     in_viewport = win_in_viewport (win);
     if (win->button == NULL && in_viewport) {
       insert_windows_button (win);
