@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.17 1999/08/29 23:37:13 domivogt Exp $";
+  "$Id: fvwm.c,v 1.18 1999/09/19 20:58:38 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -255,13 +255,13 @@ static void focus_change (FvwmPacketBody *body)
   ConsoleDebug (FVWM, "Focus Change\n");
   ConsoleDebug (FVWM, "\tID: %ld\n", app_id);
 
-  if (globals.focus_win) {
-    del_win_state (globals.focus_win, FOCUS_CONTEXT);
-    if (globals.focus_win->manager && globals.focus_win->manager->focus_button)
-      globals.focus_win->manager->focus_button = NULL;
-    globals.focus_win = NULL;
+  if (fvwm_focus_win)
+  {
+    del_win_state (fvwm_focus_win, FOCUS_CONTEXT);
+    if (fvwm_focus_win->manager && fvwm_focus_win->manager->focus_button)
+      fvwm_focus_win->manager->focus_button = NULL;
+    fvwm_focus_win = NULL;
   }
-
 
   if (win->complete  &&
       win->button  &&

@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.29 1999/09/03 00:24:34 domivogt Exp $";
+  "$Id: x.c,v 1.30 1999/09/19 20:58:39 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -293,14 +293,10 @@ void xevent_loop (void)
 		    theEvent.xconfigure.border_width);
       ConsoleDebug (X11, "\tsendevent = %d\n", theEvent.xconfigure.send_event);
 
-fprintf(stderr,"ConfigureNotify: x = %d, y = %d, w = %d, h = %d\n", theEvent.xconfigure.x, theEvent.xconfigure.y, theEvent.xconfigure.width, theEvent.xconfigure.height);
       /* eat up all but last ConfigureNotify events */
       while (XPending(theDisplay) &&
 	     XCheckMaskEvent(theDisplay, ConfigureNotify, &theEvent))
-{
-fprintf(stderr,"removed last ConfigureNotify; new CN: x = %d, y = %d, w = %d, h = %d\n", theEvent.xconfigure.x, theEvent.xconfigure.y, theEvent.xconfigure.width, theEvent.xconfigure.height);
 	;
-}
 
       if (man->geometry.dir & GROW_FIXED)
       {
