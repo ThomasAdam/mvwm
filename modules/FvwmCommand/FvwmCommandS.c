@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.6 1999/06/26 13:12:36 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.7 1999/06/27 14:47:05 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -8,6 +8,21 @@
  * this program for any purpose is given,
  * as long as the copyright is kept intact.
  *
+ */
+
+/* This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include "FvwmCommand.h"
@@ -141,7 +156,7 @@ void server ( char *name ) {
       if ( packet == NULL ) {
 	  close_pipes();
 	  exit( 0 );
-      } else 
+      } else
 	  process_message( packet->type, packet->body );
     }
 

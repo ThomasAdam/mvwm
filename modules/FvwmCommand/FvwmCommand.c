@@ -1,4 +1,4 @@
-/* $Id: FvwmCommand.c,v 1.4 1999/06/26 13:12:35 domivogt Exp $
+/* $Id: FvwmCommand.c,v 1.5 1999/06/27 14:47:05 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommand.c,v $
  *
  * Fvwm2 command input interface.
@@ -8,6 +8,21 @@
  * Permission to use this program for any purpose is given,
  * as long as the copyright is kept intact.
  *
+ */
+
+/* This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include "FvwmCommand.h"
