@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.38 2000/02/28 15:48:50 hippo Exp $";
+  "$Id: xmanager.c,v 1.39 2000/04/19 13:35:47 hippo Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -1475,7 +1475,8 @@ void draw_manager (WinManager *man)
     update_geometry = 1;
     force_draw = 1;
   }
-  clear_empty_region (man);
+  if (force_draw || man->buttons.num_windows != 0)
+    clear_empty_region (man);
 
   if (redraw_all || (man->dirty_flags & MAPPING_CHANGED)) {
     force_draw = 1;
