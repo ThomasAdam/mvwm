@@ -2,15 +2,6 @@
  * Permission is granted to distribute this software freely
  * for any purpose.
  */
-#ifdef USE_BSD
-#  define _BSD_SOURCE
-#else
-#  define USE_POSIX
-#endif
-
-#if defined(USE_POSIX) && defined(USE_BSD)
-#  error EITHER POSIX.1 or BSD signal semantics - not both!
-#endif
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -33,10 +24,10 @@ static volatile sig_atomic_t isTerminated = False;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.10 1999/01/06 10:18:25 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.11 1999/01/08 21:23:18 psmith Exp $";
 
 
-static void TerminateHandler(int);
+static RETSIGTYPE TerminateHandler(int);
 
 char *copy_string (char **target, char *src)
 {
@@ -97,11 +88,12 @@ void PrintMemuse (void)
 #endif
 
 
-static void TerminateHandler(int sig)
+static RETSIGTYPE
+TerminateHandler(int sig)
 {
   isTerminated = True;
 }
- 
+
 
 void ShutMeDown (int flag)
 {
@@ -168,9 +160,6 @@ int main (int argc, char **argv)
 {
   char *temp, *s;
   int i;
-#ifdef USE_POSIX
-  struct sigaction  sigact;
-#endif
 
 #ifdef ELECTRIC_FENCE
   extern int EF_PROTECT_BELOW, EF_PROTECT_FREE;
@@ -224,21 +213,26 @@ int main (int argc, char **argv)
   init_display();
   init_boxes();
 
-#if defined USE_POSIX
-  sigemptyset(&sigact.sa_mask);
-#ifdef SA_INTERRUPT
-  sigact.sa_flags = SA_INTERRUPT;
-#else
-  sigact.sa_flags = 0;
-#endif
-  sigact.sa_handler = TerminateHandler;
+#ifdef HAVE_SIGACTION
+  {
+    struct sigaction  sigact;
 
-  sigaction(SIGPIPE, &sigact, NULL);
-  sigaction(SIGINT,  &sigact, NULL);
-  sigaction(SIGHUP,  &sigact, NULL);
-  sigaction(SIGTERM, &sigact, NULL);
-  sigaction(SIGQUIT, &sigact, NULL);
-#elif defined USE_BSD
+    sigemptyset(&sigact.sa_mask);
+# ifdef SA_INTERRUPT
+    sigact.sa_flags = SA_INTERRUPT;
+# else
+    sigact.sa_flags = 0;
+# endif
+    sigact.sa_handler = TerminateHandler;
+
+    sigaction(SIGPIPE, &sigact, NULL);
+    sigaction(SIGINT,  &sigact, NULL);
+    sigaction(SIGHUP,  &sigact, NULL);
+    sigaction(SIGTERM, &sigact, NULL);
+    sigaction(SIGQUIT, &sigact, NULL);
+  }
+#else
+  /* We don't have sigaction(), so fall back to less robust methods.  */
   signal(SIGPIPE, TerminateHandler);
   signal(SIGINT,  TerminateHandler);
   signal(SIGHUP,  TerminateHandler);
