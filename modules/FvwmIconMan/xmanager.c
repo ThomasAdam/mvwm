@@ -24,7 +24,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.55 2002/02/26 16:53:26 olicha Exp $";
+  "$Id: xmanager.c,v 1.56 2002/03/10 22:30:52 olicha Exp $";
 
 extern char *MyName;
 extern FlocaleWinString *FwinString; 
@@ -1443,7 +1443,7 @@ static void draw_button (WinManager *man, int button, int force)
       FwinString->y = g.text_base;
       FwinString->len = strlen(b->drawn_state.display_string);
 #ifdef HAVE_XFT
-      if (man->FButtonFont->xftfont != NULL)
+      if (man->FButtonFont->fftf.fftfont != NULL)
       {
 	while(
          FwinString->len >= 0 &&
