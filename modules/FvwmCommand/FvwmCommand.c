@@ -1,4 +1,4 @@
-/* $Id: FvwmCommand.c,v 1.9 1999/10/03 04:16:17 chrisr Exp $
+/* $Id: FvwmCommand.c,v 1.10 1999/11/20 09:48:54 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommand.c,v $
  *
  * Fvwm command input interface.
@@ -215,7 +215,10 @@ int main ( int argc, char *argv[]) {
     strcat (f_stem, "-");
     gethostname(hostname,32);
     dpy_name = getenv("DISPLAY");
-    if (!dpy_name)  dpy_name = ":0";
+    if (!dpy_name)
+      dpy_name = ":0";
+    if (strncmp(dpy_name, "unix:", 5) == 0)
+      dpy_name += 4;
     if (!dpy_name[0]  ||  ':' == dpy_name[0])
       strcat( f_stem, hostname );  /* Put hostname before dpy if not there */
     strcat (f_stem, client);
