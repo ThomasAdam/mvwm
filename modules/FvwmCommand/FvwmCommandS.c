@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.26 2000/06/15 16:56:49 hippo Exp $
+/* $Id: FvwmCommandS.c,v 1.27 2001/05/08 00:18:20 migo Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
 
   if (argc < FARGS)
   {
-    fprintf(stderr,"%s Version %s should only be executed by fvwm!\n",
-	    MYNAME, MYVERSION);
+    fprintf(stderr, "%s version %s should only be executed by fvwm!\n",
+	    MYNAME, VERSION);
     exit(1);
   }
 
