@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.17 1999/03/27 23:14:42 domivogt Exp $
+ * $Id: Picture.c,v 1.18 1999/03/28 22:34:33 steve Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -48,11 +48,10 @@
 
 
 #ifdef XPM
-/* static function prototypes */
-static void c100_init_base_table ();    /* prototype */
-static void c200_substitute_color(char **,int); /* prototype */
-static void c300_color_to_rgb(char *, XColor *); /* prototype */
-static double c400_distance(XColor *, XColor *); /* prototype */
+static void c100_init_base_table (void);
+static void c200_substitute_color(char **,int);
+static void c300_color_to_rgb(char *, XColor *);
+static double c400_distance(XColor *, XColor *);
 #endif
 
 
@@ -65,7 +64,7 @@ Display *PictureSaveDisplay;            /* Save area for display pointer */
 void InitPictureCMap(Display *dpy,Window Root)
 {
   XWindowAttributes root_attr;
-  PictureSaveDisplay = dpy;                       /* save for latter */
+  PictureSaveDisplay = dpy;                       /* save for later */
   XGetWindowAttributes(dpy,Root,&root_attr);
   PictureCMap=root_attr.colormap;
 }
@@ -73,23 +72,11 @@ void InitPictureCMap(Display *dpy,Window Root)
 
 static char* imagePath = FVWM_IMAGEPATH;
 
-void SetImagePath( char* newpath )
+void SetImagePath( const char* newpath )
 {
-  char *newImagePath;
-
-  newImagePath = (char *)safemalloc(strlen(imagePath)+strlen(newpath) + 3);
-  strcpy(newImagePath,newpath);         /* put new stuff at front */
-  strcat(newImagePath,":");             /* throw in a separator */
-  strcat(newImagePath,imagePath);       /* old stuff at end */
-
-  if ( strcmp( imagePath, FVWM_IMAGEPATH ) != 0 ) { /* if not initial */
-    free( imagePath );                  /* free old image path */
-  } /* end initial path */
-  free(newpath);                        /* done with stuff to add */
-  imagePath = newImagePath;             /* save new path */
-  /* It might be nice to parse thru the image path at this point,
-     and remove directories that don't exist, and any duplicate
-     directories.  dje 03/21/99. */
+    static int need_to_free = 0;
+    setPath( &imagePath, newpath, need_to_free );
+    need_to_free = 1;
 }
 
 char* GetImagePath()
@@ -106,7 +93,7 @@ char* GetImagePath()
  * Oh well.
  *
  ****************************************************************************/
-char* findImageFile( char* icon, char* pathlist, int type )
+char* findImageFile( const char* icon, const char* pathlist, int type )
 {
     if ( pathlist == NULL )
 	pathlist = imagePath;
