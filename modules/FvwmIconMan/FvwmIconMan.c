@@ -32,7 +32,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.26 1999/10/26 15:19:54 hippo Exp $";
+  "$Id: FvwmIconMan.c,v 1.27 1999/11/12 06:53:21 olicha Exp $";
 
 const char *MyName;
 
@@ -190,7 +190,6 @@ main(int argc, char **argv)
 {
   const char *s;
   int i;
-  unsigned long mask;
 
 #ifdef ELECTRIC_FENCE
   extern int EF_PROTECT_BELOW, EF_PROTECT_FREE;
@@ -314,7 +313,7 @@ main(int argc, char **argv)
   assert(globals.managers);
   fd_width = GetFdWidth();
 
-  mask = M_CONFIGURE_WINDOW | M_RES_CLASS | M_RES_NAME |
+  SetMessageMask(Fvwm_fd, M_CONFIGURE_WINDOW | M_RES_CLASS | M_RES_NAME |
                  M_ADD_WINDOW | M_DESTROY_WINDOW | M_ICON_NAME |
                  M_DEICONIFY | M_ICONIFY | M_END_WINDOWLIST |
                  M_NEW_DESK | M_NEW_PAGE | M_FOCUS_CHANGE | M_WINDOW_NAME |
@@ -322,17 +321,15 @@ main(int argc, char **argv)
 #ifdef MINI_ICONS
 		 M_MINI_ICON |
 #endif
-		 M_STRING;
-
-  SetMessageMask(Fvwm_fd,mask);
+		 M_STRING);
 
   SendInfo(Fvwm_fd, "Send_WindowList", 0);
 
   /* tell fvwm we're running */
   SendFinishedStartupNotification(Fvwm_fd);
 
-   /* Need to lock on send here because of ModuleSynchronous */
-  SetMessageMask(Fvwm_fd, mask | M_LOCKONSEND);
+  /* Lock on send only for iconify and deiconify (for NoIconAction) */
+  SetSyncMask(Fvwm_fd, M_DEICONIFY | M_ICONIFY);
 
   main_loop();
 
