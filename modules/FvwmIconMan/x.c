@@ -4,7 +4,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.7 1998/11/20 10:18:40 domivogt Exp $";
+  "$Id: x.c,v 1.8 1998/12/27 03:51:42 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -171,13 +171,11 @@ static void reparentnotify_event (WinManager *man, XEvent *ev)
 void xevent_loop (void)
 {
   XEvent theEvent;
-  int glob_x, glob_y, x, y, mask;
   unsigned int modifier;
   Binding *key;
   Button *b;
   static int flag = 0;
   WinManager *man;
-  Window root, child;
 
   if (flag == 0) {
     flag = 1;
@@ -319,6 +317,11 @@ void xevent_loop (void)
 
     case UnmapNotify:
       ConsoleDebug (X11, "XEVENT: UnmapNotify\n");
+      break;
+
+    case DestroyNotify:
+      ConsoleDebug(X11, "XEVENT: DestroyNotify\n");
+      DeadPipe(0);
       break;
 
     default:
