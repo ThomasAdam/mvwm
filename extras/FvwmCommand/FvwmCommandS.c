@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.2 1998/10/30 21:19:31 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.3 1998/11/06 02:22:40 steve Exp $
  * $Source: /home/cvs/fvwm/fvwm/extras/FvwmCommand/Attic/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -27,7 +27,7 @@ void relay_packet( unsigned long, unsigned long, unsigned long *);
 void server( char * );
 void sig_handler( int );
 
-void main(int argc, char *argv[]){
+int main(int argc, char *argv[]){
 	char *fifoname;
 
 	if(argc < FARGS)    {

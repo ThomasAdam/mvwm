@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.4 1998/11/01 18:08:38 steve Exp $
+ * $Id: Picture.c,v 1.5 1998/11/06 02:22:53 steve Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -104,8 +104,10 @@ Picture *LoadPicture(Display *dpy,Window Root,char *path, int color_limit)
       p->width = my_image.width;
       p->height = my_image.height;
       p->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
+      XpmFreeXpmImage(&my_image);
       return p;
     }
+    XpmFreeXpmImage(&my_image);
   }
 #endif
 
@@ -138,25 +140,22 @@ Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
 {
   char *path;
   Picture *p=PictureList;
-  int i,l;
 
   /* First find the full pathname */
   if(!(path=findIconFile(name,PixmapPath,R_OK)))
     if(!(path=findIconFile(name,IconPath,R_OK)))
       return NULL;
 
-  l=strlen(path);
-
   /* See if the picture is already cached */
   while(p)
     {
-      i=l; /* Check for matching name; backwards compare will probably find
-	      differences fastest, but is a little 'unclean' (Doesn't check
-	      length of pl->name, compares beyond end, should do no harm... */
+      register char *p1, *p2;
 
-      while(i>=0 && path[i]==p->name[i])
-	i--;
-      if(i<0) /* We have found a picture with the wanted name */
+      for(p1=path, p2=p->name; *p1 && *p2; ++p1, ++p2)
+	if (*p1 != *p2)
+          break;
+
+      if(!*p1 && !*p2) /* We have found a picture with the wanted name */
 	{
 	  p->count++; /* Put another weight on the picture */
 	  return p;

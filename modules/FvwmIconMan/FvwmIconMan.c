@@ -32,7 +32,7 @@ static int fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.4 1998/11/02 23:14:33 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.5 1998/11/06 02:23:03 steve Exp $";
 
 char *copy_string (char **target, char *src)
 {
@@ -130,7 +130,7 @@ void SendFvwmPipe (char *message,unsigned long window)
   }
 }
 
-static void main_loop (void)
+static int main_loop (void)
 {
   fd_set readset, saveset;
   struct timeval tv;

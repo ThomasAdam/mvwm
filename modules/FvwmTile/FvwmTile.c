@@ -6,7 +6,7 @@
  * Written by Andrew Veliath
  * Copyright 1996
  * 
- * $Id: FvwmTile.c,v 1.2 1998/10/30 21:19:48 domivogt Exp $
+ * $Id: FvwmTile.c,v 1.3 1998/11/06 02:23:09 steve Exp $
  ************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -395,7 +395,7 @@ char *GetConfigLine(char *filename, char *match)
 
 void DeadPipe(int sig) { exit(0); }
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 #ifdef USERC
     char match[128];
