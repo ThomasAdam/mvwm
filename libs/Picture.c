@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.7 1998/11/07 15:13:45 domivogt Exp $
+ * $Id: Picture.c,v 1.8 1998/11/09 10:36:30 domivogt Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -23,7 +23,6 @@
  * http://www.iet.unipi.it/~romano
  *
  */
-
 
 /****************************************************************************
  *
@@ -174,7 +173,8 @@ Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
       p->next=PictureList;
       PictureList=p;
     }
-  free(path);
+  else
+    free(path);
   return p;
 }
 
