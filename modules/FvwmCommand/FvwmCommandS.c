@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.27 2001/05/08 00:18:20 migo Exp $
+/* $Id: FvwmCommandS.c,v 1.28 2002/04/11 23:26:23 migo Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -564,7 +564,7 @@ void err_quit(const char *msg)
  * this is now implemented by simply adding the packet to a queue
  * and letting the main select loop handle sending from the queue to
  * the front end. In this way FvwmCommandS is always responsive to commands
- * from the input pipes. (it will also die a lot faster when fvwm2 quits)
+ * from the input pipes. (it will also die a lot faster when fvwm quits)
  */
 void relay_packet(unsigned long type, unsigned long length,
                   unsigned long *body)
