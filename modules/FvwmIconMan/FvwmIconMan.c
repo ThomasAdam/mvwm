@@ -21,7 +21,7 @@ static volatile sig_atomic_t isTerminated = False;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.12 1999/01/10 20:59:58 steve Exp $";
+  "$Id: FvwmIconMan.c,v 1.13 1999/01/10 23:46:51 steve Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
@@ -29,7 +29,7 @@ static RETSIGTYPE TerminateHandler(int);
 char *copy_string (char **target, char *src)
 {
   int len = strlen (src);
-  ConsoleDebug (CORE, "copy_string: 1: 0x%x\n", (unsigned)*target);
+  ConsoleDebug (CORE, "copy_string: 1: 0x%lx\n", (unsigned long)*target);
 
   if (*target)
     Free (*target);
