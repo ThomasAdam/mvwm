@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.7 1999/06/27 14:47:05 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.8 1999/08/19 20:27:10 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
   Fd[1] = atoi(argv[2]);
 
   Nounlink = 0;
+
+  /* tell fvwm we're running */
+  SendFinishedStartupNotification(Fd);
 
   server( fifoname );
   exit(1);

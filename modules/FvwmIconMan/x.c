@@ -18,9 +18,10 @@
 #include "readconfig.h"
 #include "x.h"
 #include "xmanager.h"
+#include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.20 1999/08/17 23:23:34 domivogt Exp $";
+  "$Id: x.c,v 1.21 1999/08/19 20:27:16 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -840,12 +841,9 @@ void create_manager_window (int man_id)
 
 static int handle_error (Display *d, XErrorEvent *ev)
 {
-  ConsoleMessage ("X Error:\n");
-  ConsoleMessage ("         error code: %d\n", ev->error_code);
-  ConsoleMessage ("         request code: %d\n", ev->request_code);
-  ConsoleMessage ("         minor code: %d\n", ev->minor_code);
-  ConsoleMessage ("Leaving a core dump now\n");
-  abort();
+  extern char *MyName;
+  /* does not return */
+  PrintXErrorAndCoredump(d, ev, MyName);
   return 0;
 }
 
