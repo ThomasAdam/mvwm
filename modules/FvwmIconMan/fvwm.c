@@ -24,7 +24,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.37 2002/01/17 09:40:51 olicha Exp $";
+  "$Id: fvwm.c,v 1.38 2002/01/19 21:33:15 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -611,7 +611,7 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
     icon_name (body);
     break;
 
-  case M_VISIBLE_ICON_NAME:
+  case MX_VISIBLE_ICON_NAME:
     ConsoleDebug (FVWM, "DEBUG::M_VISIBLE_ICON_NAME\n");
     visible_icon_name (body);
     break;
