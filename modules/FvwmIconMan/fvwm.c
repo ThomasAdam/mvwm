@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.29 2000/05/12 17:05:31 hippo Exp $";
+  "$Id: fvwm.c,v 1.30 2001/03/14 00:36:38 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -539,7 +539,7 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
   case M_END_WINDOWLIST:
     ConsoleDebug (FVWM, "DEBUG::M_END_WINDOWLIST\n");
     ConsoleDebug (FVWM,
-		  ">>>>>>>>>>>>>>>>>>>>>>>End window list<<<<<<<<<<<<<<<\n");
+		  "+++++ End window list +++++\n");
     if (globals.focus_win && globals.focus_win->button) {
 	globals.focus_win->manager->focus_button = globals.focus_win->button;
     }
