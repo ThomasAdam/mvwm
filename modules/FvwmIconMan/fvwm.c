@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.20 1999/10/26 10:30:41 hippo Exp $";
+  "$Id: fvwm.c,v 1.21 1999/10/26 15:19:54 hippo Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -492,6 +492,20 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
 
   ConsoleDebug (FVWM, "FVWM Message type: %ld\n", type);
 
+  /* only M_ICONIFY, M_DEICONIFY need synchronous behaviour so send unlock
+   * immediately for all other messages */
+  /* would be better to have a SetSyncMask like SetMessageMask that just lists
+   * the messages that fvwm will treat as synchronous */
+  switch(type)
+  {     
+    case M_ICONIFY:
+    case M_DEICONIFY:
+      break;      
+    default:
+      SendText(Fvwm_fd, "Unlock 1", 0);
+      break;
+  }           
+
   switch(type) {
   case M_CONFIG_INFO:
     ConsoleDebug (FVWM, "DEBUG::M_CONFIG_INFO\n");
@@ -552,11 +566,13 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
   case M_DEICONIFY:
     ConsoleDebug (FVWM, "DEBUG::M_DEICONIFY\n");
     iconify (body, 0);
+    SendText(Fvwm_fd, "Unlock 1", 0);
     break;
 
   case M_ICONIFY:
     ConsoleDebug (FVWM, "DEBUG::M_ICONIFY\n");
     iconify (body, 1);
+    SendText(Fvwm_fd, "Unlock 1", 0);
     break;
 
   case M_END_WINDOWLIST:
