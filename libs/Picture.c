@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.13 1999/01/08 22:08:29 domivogt Exp $
+ * $Id: Picture.c,v 1.14 1999/01/12 21:07:44 domivogt Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -145,9 +145,15 @@ Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
   Picture *p=PictureList;
 
   /* First find the full pathname */
+#ifdef XPM
   if(!(path=findIconFile(name,PixmapPath,R_OK)))
     if(!(path=findIconFile(name,IconPath,R_OK)))
       return NULL;
+#else
+  /* Ignore the given pixmap path when compiled without XPM support */
+  if(!(path=findIconFile(name,IconPath,R_OK)))
+    return NULL;
+#endif
 
   /* See if the picture is already cached */
   while(p)
