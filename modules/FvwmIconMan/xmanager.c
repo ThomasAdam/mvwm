@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.24 1999/11/03 13:49:27 hippo Exp $";
+  "$Id: xmanager.c,v 1.25 1999/11/04 05:48:04 domivogt Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -1163,7 +1163,7 @@ static void get_gcs (WinManager *man, int state, int iconified,
 
   default:
     ConsoleMessage ("Internal error in draw_button\n");
-    break;
+    return;
   }
 
   if (((man->rev == REVERSE_ICON) && iconified)
