@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.34 1999/11/20 09:48:57 domivogt Exp $";
+  "$Id: x.c,v 1.35 1999/11/25 16:01:25 hippo Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -933,6 +933,13 @@ void create_manager_window (int man_id)
 static int handle_error (Display *d, XErrorEvent *ev)
 {
   extern char *MyName;
+
+  /* BadDrawable is allowed, it happens when colrosets change too fast */
+  if (ev->error_code == BadDrawable)
+    return 0;
+  if (ev->error_code == BadPixmap)
+    return 0;
+
   /* does not return */
   PrintXErrorAndCoredump(d, ev, MyName);
   return 0;
