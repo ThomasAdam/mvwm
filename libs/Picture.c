@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.6 1998/11/06 23:27:05 psmith Exp $
+ * $Id: Picture.c,v 1.7 1998/11/07 15:13:45 domivogt Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -120,7 +120,6 @@ Picture *LoadPicture(Display *dpy,Window Root,char *path, int color_limit)
       return p;
     }
 
-  free(path);
   free(p);
   return NULL;
 }
@@ -129,14 +128,18 @@ Picture *GetPicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
 		    char *name, int color_limit)
 {
   char *path;
+  Picture *p;
+
   if(!(path=findIconFile(name,PixmapPath,R_OK)))
     if(!(path=findIconFile(name,IconPath,R_OK)))
       return NULL;
-  return LoadPicture(dpy,Root,path, color_limit);
+  p = LoadPicture(dpy,Root,path, color_limit);
+  free(path);
+  return p;
 }
 
 Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
-		    char *name, int color_limit)
+		      char *name, int color_limit)
 {
   char *path;
   Picture *p=PictureList;
@@ -158,8 +161,8 @@ Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
       if(!*p1 && !*p2) /* We have found a picture with the wanted name */
 	{
 	  p->count++; /* Put another weight on the picture */
-          free(path);
-          return p;
+	  free(path);
+	  return p;
 	}
       p=p->next;
     }
@@ -171,6 +174,7 @@ Picture *CachePicture(Display *dpy,Window Root,char *IconPath,char *PixmapPath,
       p->next=PictureList;
       PictureList=p;
     }
+  free(path);
   return p;
 }
 
@@ -218,29 +222,18 @@ char *findIconFile(char *icon, char *pathlist, int type)
 {
   char *path;
   char *dir_end;
-  int l1,l2;
+  int l;
 
-  if(icon != NULL)
-    l1 = strlen(icon);
-  else
-    l1 = 0;
+  if (!icon)
+    return NULL;
 
-  if(pathlist != NULL)
-    l2 = strlen(pathlist);
-  else
-    l2 = 0;
+  l = (pathlist) ? strlen(pathlist) : 0;
 
-  path = safemalloc(l1 + l2 + 10);
+  path = safemalloc(strlen(icon) + l + 10);
   *path = '\0';
-  if (*icon == '/')
+  if (*icon == '/' || pathlist == NULL || *pathlist == '\0') 
     {
       /* No search if icon begins with a slash */
-      strcpy(path, icon);
-      return path;
-    }
-
-  if ((pathlist == NULL) || (*pathlist == '\0'))
-    {
       /* No search if pathlist is empty */
       strcpy(path, icon);
       return path;
