@@ -1,4 +1,4 @@
-/* $Id: FvwmCommand.c,v 1.4 1998/11/13 15:20:05 drbob Exp $
+/* $Id: FvwmCommand.c,v 1.5 1998/11/23 15:03:14 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/extras/FvwmCommand/Attic/FvwmCommand.c,v $
  *
  * Fvwm2 command input interface.
@@ -174,7 +174,7 @@ int main ( int argc, char *argv[]) {
     system (cmd);
   }
 
-  if ((Frun = fopen (Fr_name,"w" )) >= 0) {
+  if ((Frun = fopen (Fr_name,"w" )) != NUll) {
     fprintf (Frun, "%d\n", (int) getpid());
     fclose (Frun);
   }else {
