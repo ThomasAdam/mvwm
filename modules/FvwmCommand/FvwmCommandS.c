@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.24 2000/06/09 23:36:56 chrisr Exp $
+/* $Id: FvwmCommandS.c,v 1.25 2000/06/12 14:27:26 chrisr Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -268,8 +268,7 @@ void server (char *name)
 
       if (packet == NULL)
       {
-        close_pipes();
-        exit(0);
+        break;
       }
       process_message(packet->type, packet->body);
       continue;
@@ -277,14 +276,31 @@ void server (char *name)
 
     if (FD_ISSET(FfdC, &fdrset))
     {
+      /*
+       * This descriptor is non-blocking, hence we should never
+       * block here! Also, the select() call should guarantee that
+       * there is something here to read, and the signal handling
+       * should be restarting interrupted reads. Together, these
+       * should severely restrict the types of errors that we can see.
+       */
       len = read(FfdC, buf, MAX_MODULE_INPUT_TEXT_LEN);
-      if (len == 0)
-        continue;
-      else if (len < 0)
+      if (len <= 0)
       {
-        if (errno != EAGAIN && errno != EINTR)
-          err_quit("reading fifo");
-        continue;
+        if ((len < 0) && (errno == EAGAIN))
+        {
+          /*
+           * This probably won't happen - the select() has told us that
+           * there's something to read. The only possible thing that could
+           * cause this is if somebody else read the data first ... (who?)
+           */
+          continue;
+        }
+
+        /*
+         * Any other error, such as an invalid descriptor (?) or someone
+         * closing the remote end of our pipe, and we give up!
+         */
+        err_quit("reading fifo");
       }
 
       /* in case of multiple long lines */
