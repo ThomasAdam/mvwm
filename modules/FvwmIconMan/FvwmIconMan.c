@@ -30,7 +30,7 @@
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.33 2001/03/30 09:29:21 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.34 2001/04/14 22:52:57 olicha Exp $";
 
 const char *MyName;
 
@@ -300,6 +300,7 @@ main(int argc, char **argv)
 
   /* Lock on send only for iconify and deiconify (for NoIconAction) */
   SetSyncMask(Fvwm_fd, M_DEICONIFY | M_ICONIFY);
+  SetNoGrabMask(Fvwm_fd, M_DEICONIFY | M_ICONIFY);
 
   main_loop();
 
