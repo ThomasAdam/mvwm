@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.25 1999/11/04 05:48:04 domivogt Exp $";
+  "$Id: xmanager.c,v 1.26 1999/11/14 05:12:27 domivogt Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -625,6 +625,7 @@ void set_win_picture (WinData *win, Pixmap picture, Pixmap mask,
 {
   if (win->button)
     win->button->drawn_state.dirty_flags |= PICTURE_CHANGED;
+  win->old_pic = win->pic;
   win->pic.picture = picture;
   win->pic.mask = mask;
   win->pic.width = width;
@@ -1260,8 +1261,13 @@ static void draw_button (WinManager *man, int button, int force)
       }
 #ifdef MINI_ICONS
       if (dirty & PICTURE_CHANGED) {
+	Picture tpic;
+
 	ConsoleDebug (X11, "\tPicture changed\n");
+	tpic = win->pic;
+	win->pic = win->old_pic;
 	get_button_geometry (man, b, &old_g);
+	win->pic = tpic;
 	b->drawn_state.pic = win->pic;
 	draw_icon = 1;
 	draw_string = 1;
