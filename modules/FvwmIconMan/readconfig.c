@@ -20,7 +20,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.16 1999/06/27 17:58:21 domivogt Exp $";
+  "$Id: readconfig.c,v 1.17 1999/06/29 12:48:01 hippo Exp $";
 
 /************************************************************************
  *
@@ -882,11 +882,11 @@ static int GetConfigLineWrapper (int *fd, char **tline)
       *temp = '\0';
     }
     /* grok the global config lines */
-    if (strncasecmp(*tline, DEFGRAPHSTR, DEFGRAPHLEN)==0) {
+/*    if (strncasecmp(*tline, DEFGRAPHSTR, DEFGRAPHLEN)==0) {
       ParseGraphics(theDisplay, *tline, G);
       SavePictureCMap (theDisplay, G->viz, G->cmap, G->depth);
     }
-    /* add colorlimit in here */
+*/    /* add colorlimit in here */
     return 1;
   }
 
