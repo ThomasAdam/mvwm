@@ -18,11 +18,13 @@
 #include <stdlib.h>
 #include "FvwmIconMan.h"
 #include "readconfig.h"
-#include "libs/defaults.h"
+#include <libs/defaults.h>
+#include <libs/fvwmlib.h>
+#include <libs/XineramaSupport.h>
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.32 2001/06/23 10:32:16 domivogt Exp $";
+  "$Id: readconfig.c,v 1.33 2001/08/06 00:20:35 domivogt Exp $";
 
 /************************************************************************
  *
@@ -896,6 +898,11 @@ static int GetConfigLineWrapper (int *fd, char **tline)
   if (*tline) {
     if (strncasecmp(*tline, "Colorset", 8) == 0) {
          LoadColorset(&(*tline)[8]);
+    }
+    else if (strncasecmp(*tline, XINERAMA_CONFIG_STRING,
+			 strlen(XINERAMA_CONFIG_STRING)) == 0)
+    {
+      XineramaSupportConfigureModule((*tline) + strlen(XINERAMA_CONFIG_STRING));
     }
     temp = strchr (*tline, '\n');
     if (temp) {
