@@ -21,7 +21,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.14 1999/06/27 17:58:22 domivogt Exp $";
+  "$Id: xmanager.c,v 1.15 1999/07/02 12:42:55 hippo Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -1080,7 +1080,7 @@ static void iconify_box (WinManager *man, WinData *win, int box,
   }
   else {
 #endif
-    if (G->depth > 2) {
+    if (Pdepth > 2) {
       draw_3d_icon (man, box, g, iconified, 1, contextId);
     }
     else {
@@ -1280,7 +1280,7 @@ static void draw_button (WinManager *man, int button, int force)
 		      g.button_y, g.button_w, g.button_h);
       cleared_button = 1;
 
-      if (G->depth > 2) {
+      if (Pdepth > 2) {
 	get_gcs (man, button_state, &context1, &context2);
 	draw_relief (man, button_state, &g, context1, context2);
       }
@@ -1353,7 +1353,7 @@ static void draw_empty_manager (WinManager *man)
 
   XFillRectangle (theDisplay, man->theWindow, man->backContext[state],
 		  g.button_x, g.button_y, g.button_w, g.button_h);
-  if (G->depth > 2) {
+  if (Pdepth > 2) {
     get_gcs (man, state, &context1, &context2);
     draw_relief (man, state, &g, context1, context2);
   }
