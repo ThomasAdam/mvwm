@@ -21,7 +21,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand Iconify"
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.14 2000/11/21 14:33:20 domivogt Exp $";
+  "$Id: globals.c,v 1.15 2001/08/11 21:28:18 domivogt Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -92,6 +92,8 @@ void print_managers (void)
       ConsoleDebug (CORE, "ShowDesktop\n");
     else if (globals.managers[i].res == SHOW_PAGE)
       ConsoleDebug (CORE, "ShowPage\n");
+    else if (globals.managers[i].res == SHOW_SCREEN)
+      ConsoleDebug (CORE, "ShowScreen\n");
 
     ConsoleDebug (CORE, "DontShow:\n");
     print_stringlist (&globals.managers[i].dontshow);
@@ -140,8 +142,6 @@ void init_globals (void)
   globals.desknum = ULONG_MAX;
   globals.x = ULONG_MAX;
   globals.y = ULONG_MAX;
-  globals.screenx = 0;
-  globals.screeny = 0;
   globals.num_managers = 1;
   globals.managers = NULL;
   globals.focus_win = NULL;
