@@ -7,7 +7,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.10 1999/05/01 17:05:33 steve Exp $";
+  "$Id: fvwm.c,v 1.11 1999/05/29 18:27:17 steve Exp $";
 
 typedef struct {
   Ulong paging_enabled;
@@ -78,10 +78,6 @@ typedef struct {
 } m_mini_icon_data;
 
 #endif
-
-typedef struct {
-  Ulong start, type, len, time /* in fvwm 2 only */;
-} FvwmPacketHeader;
 
 typedef union {
   m_toggle_paging_data toggle_paging_data;
@@ -558,24 +554,15 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
 
 void ReadFvwmPipe (void)
 {
-  int body_length;
-  FvwmPacketHeader header;
-  FvwmPacketBody *body;
+    FvwmPacket* packet;
 
-  PrintMemuse();
+    PrintMemuse();
+    ConsoleDebug(FVWM, "DEBUG: entering ReadFvwmPipe\n");
 
-  ConsoleDebug(FVWM, "DEBUG: entering ReadFvwmPipe\n");
-  body_length = ReadFvwmPacket(Fvwm_fd[1], (unsigned long *) &header,
-                 (unsigned long **)&body);
-  body_length -= HEADER_SIZE;
-  if (header.start == START_FLAG) {
-    ProcessMessage (header.type, body);
-    if (body_length) {
-      Free (body);
-    }
-  }
-  else {
-    DeadPipe (1);
-  }
-  ConsoleDebug(FVWM, "DEBUG: leaving ReadFvwmPipe\n");
+    if ( (packet = ReadFvwmPacket(Fvwm_fd[1])) == NULL )
+	exit(0);
+    else
+	ProcessMessage( packet->type, (FvwmPacketBody*) packet->body );
+  
+    ConsoleDebug(FVWM, "DEBUG: leaving ReadFvwmPipe\n");
 }

@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.4 1999/05/16 15:49:05 steve Exp $
+/* $Id: FvwmCommandS.c,v 1.5 1999/05/29 18:27:13 steve Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -87,8 +87,6 @@ void server ( char *name ) {
   char *f_stem;
   int  len;
   fd_set fdset;
-  unsigned long *body;
-  unsigned long header[HEADER_SIZE];
   char buf[MAX_COMMAND_SIZE];  /* command receiving buffer */
   char cmd[MAX_COMMAND_SIZE];
   int  ix,cix;
@@ -125,12 +123,12 @@ void server ( char *name ) {
     }
 
     if (FD_ISSET(Fd[1], &fdset)){
-      if( ReadFvwmPacket(Fd[1],header,&body) > 0)	 {
-	if (Connect) {
-	  process_message(header[1], body);
-	}
-	free(body);
-      }
+      FvwmPacket* packet = ReadFvwmPacket(Fd[1]);
+      if ( packet == NULL ) {
+	  close_pipes();
+	  exit( 0 );
+      } else 
+	  process_message( packet->type, packet->body );
     }
 
     if (FD_ISSET(Ffdr, &fdset)){
