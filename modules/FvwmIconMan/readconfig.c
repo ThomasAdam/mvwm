@@ -20,7 +20,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.15 1999/06/27 14:47:14 domivogt Exp $";
+  "$Id: readconfig.c,v 1.16 1999/06/27 17:58:21 domivogt Exp $";
 
 /************************************************************************
  *
@@ -256,7 +256,7 @@ static int extract_int (char *p, int *n)
   char *s;
   int sign = 1;
 
-  while (isspace (*p) && *p)
+  while (isspace ((unsigned char)*p) && *p)
     p++;
 
   if (*p == '-') {

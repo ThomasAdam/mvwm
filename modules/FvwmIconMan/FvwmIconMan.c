@@ -31,7 +31,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.20 1999/06/27 14:47:13 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.21 1999/06/27 17:58:21 domivogt Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
@@ -189,6 +189,10 @@ int main (int argc, char **argv)
       for (i = 0; i < (1 << 27) && !done; i++) ;
     }
   }
+#endif
+
+#ifdef I18N_MB
+  setlocale(LC_CTYPE, "");
 #endif
 
   OpenConsole(OUTPUT_FILE);

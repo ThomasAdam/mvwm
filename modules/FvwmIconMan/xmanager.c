@@ -21,7 +21,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.13 1999/06/27 14:47:14 domivogt Exp $";
+  "$Id: xmanager.c,v 1.14 1999/06/27 17:58:22 domivogt Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -1315,7 +1315,11 @@ static void draw_button (WinManager *man, int button, int force)
 			man->backContext[button_state],
 			g.text_x, g.text_y, g.text_w, g.text_h);
       }
+#ifdef I18N_MB
+      XmbDrawString (theDisplay, man->theWindow, man->ButtonFontset,
+#else
       XDrawString (theDisplay, man->theWindow,
+#endif
 		   man->hiContext[button_state],
 		   g.text_x, g.text_base, b->drawn_state.display_string,
 		   strlen (b->drawn_state.display_string));
@@ -1356,7 +1360,11 @@ static void draw_empty_manager (WinManager *man)
   else {
   }
   ClipRectangle (man, state, g.text_x, g.text_y, g.text_w, g.text_h);
+#ifdef I18N_MB
+  XmbDrawString (theDisplay, man->theWindow, man->ButtonFontset, man->hiContext[state],
+#else
   XDrawString (theDisplay, man->theWindow, man->hiContext[state],
+#endif
 	       g.text_x, g.text_base, man->titlename, strlen (man->titlename));
   XSetClipMask (theDisplay, man->hiContext[state], None);
 }
