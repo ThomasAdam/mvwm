@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.31 2001/03/28 22:36:11 domivogt Exp $";
+  "$Id: readconfig.c,v 1.32 2001/06/23 10:32:16 domivogt Exp $";
 
 /************************************************************************
  *
@@ -1047,11 +1047,11 @@ static NameType parse_format_dependencies (char *format)
      int id = manager;                                             \
      if (id == -1) {                                               \
        for (id = 0; id < globals.num_managers; id++) {             \
-	 globals.managers[id].##field = value;                     \
+	 globals.managers[id]. field = value;                      \
        }                                                           \
      }                                                             \
      else if (id < globals.num_managers) {                         \
-       globals.managers[id].##field = value;                       \
+       globals.managers[id]. field = value;                        \
      }                                                             \
      else {                                                        \
        ConsoleMessage ("Internal error in SET_MANAGER: %d\n", id); \
