@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.12 1999/12/01 09:57:25 hippo Exp $
+/* $Id: FvwmCommandS.c,v 1.13 1999/12/29 00:15:07 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -266,10 +266,10 @@ void close_pipes(void)
   /* prevent that this is executed twice */
   if (!is_closed)
   {
+    is_closed = 1;
     close (Fd[0]);
     close (Fd[1]);
     close_fifos();
-    is_closed = 1;
   }
 }
 
