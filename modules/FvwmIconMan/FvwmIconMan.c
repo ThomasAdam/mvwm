@@ -21,7 +21,7 @@ static volatile sig_atomic_t isTerminated = False;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.14 1999/03/03 02:47:52 steve Exp $";
+  "$Id: FvwmIconMan.c,v 1.15 1999/03/05 13:58:47 domivogt Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
@@ -255,7 +255,7 @@ int main (int argc, char **argv)
 #endif
 		 M_STRING);
 
-  SendInfo (Fvwm_fd, "Send_WindowList", 0);
+  SendInfo (Fvwm_fd, "SendWindowList", 0);
 
   main_loop();
 
