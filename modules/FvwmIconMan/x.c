@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.40 2000/02/29 14:00:23 hippo Exp $";
+  "$Id: x.c,v 1.41 2000/10/05 00:49:09 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -99,7 +99,8 @@ static void handle_buttonevent (XEvent *theEvent, WinManager *man)
   Binding *MouseEntry;
 
   b = xy_to_button (man, theEvent->xbutton.x, theEvent->xbutton.y);
-  if (b && theEvent->xbutton.button >= 1 && theEvent->xbutton.button <= 3) {
+  if (b && theEvent->xbutton.button >= 1 &&
+      theEvent->xbutton.button <= NUMBER_OF_MOUSE_BUTTONS) {
     win = b->drawn_state.win;
     if (win != NULL) {
       ConsoleDebug (X11, "Found the window:\n");
