@@ -1,4 +1,4 @@
-/* $Id: FvwmCommand.c,v 1.17 2000/07/04 01:43:12 domivogt Exp $
+/* $Id: FvwmCommand.c,v 1.18 2000/10/12 08:28:19 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommand.c,v $
  *
  * Fvwm command input interface.
@@ -816,7 +816,7 @@ void list_configure(unsigned long *body)
 
   printf( "0x%08lx %-20s %ld\n",
 	  cfgpacket->w, "title height", cfgpacket->title_height);
-  printf( "0x%08lx %-20s %ld\n",
+  printf( "0x%08lx %-20s %hd\n",
 	  cfgpacket->w, "border width", cfgpacket->border_width);
   printf( "0x%08lx %-20s width %ld, height %ld\n", cfgpacket->w, "base size",
 	  cfgpacket->hints_base_width, cfgpacket->hints_base_height);
