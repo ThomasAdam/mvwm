@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.31 1999/12/01 13:29:18 bgiaccio Exp $";
+  "$Id: xmanager.c,v 1.32 1999/12/02 13:50:28 bgiaccio Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -1321,6 +1321,8 @@ static void draw_button (WinManager *man, int button, int force)
 	ConsoleDebug (X11, "\tIcon changed\n");
 	b->drawn_state.iconified = win->iconified;
 	draw_icon = 1;
+	draw_background = 1;
+	draw_string = 1;
       }
       if (dirty & STRING_CHANGED) {
 	ConsoleDebug (X11, "\tString changed: %s\n", win->display_string);
