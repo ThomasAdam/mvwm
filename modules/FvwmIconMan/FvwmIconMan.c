@@ -15,13 +15,13 @@
 #include "libs/Module.h"
 
 
-static int fd_width;
+static fd_set_size_t fd_width;
 static volatile sig_atomic_t isTerminated = False;
 
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.17 1999/05/01 17:05:32 steve Exp $";
+  "$Id: FvwmIconMan.c,v 1.18 1999/05/16 15:49:07 steve Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
@@ -137,7 +137,7 @@ static void main_loop (void)
      * there is nothing there yet ...
      */
     readset = saveset;
-    if (select(fd_width,&readset,NULL,NULL,NULL) < 0) {
+    if (select(fd_width, SELECT_FD_SET_CAST &readset,NULL,NULL,NULL) < 0) {
       ConsoleMessage ("Internal error with select: errno=%d\n",errno);
     }
     else {

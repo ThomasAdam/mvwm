@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.3 1999/04/21 23:05:18 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.4 1999/05/16 15:49:05 steve Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -118,7 +118,7 @@ void server ( char *name ) {
     FD_SET(Ffdr, &fdset);
     FD_SET(Fd[1], &fdset);
 
-    if (select(FD_SETSIZE, SELECT_TYPE_ARG234 &fdset, 0, 0, NULL) < 0) {
+    if (select(FD_SETSIZE, SELECT_FD_SET_CAST &fdset, 0, 0, NULL) < 0) {
       if (errno == EINTR) {
 	continue;
       }
