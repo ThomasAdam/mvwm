@@ -5,7 +5,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.10 1999/03/03 01:25:23 steve Exp $";
+  "$Id: x.c,v 1.11 1999/03/27 23:14:43 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -105,7 +105,7 @@ static void handle_buttonevent (XEvent *theEvent, WinManager *man)
 	   ((MouseEntry->Modifier == AnyModifier)||
 	    (MouseEntry->Modifier == (modifier& (~LockMask)))))
 	{
-	  Function *ftype = MouseEntry->Function;
+	  Function *ftype = (Function *)(MouseEntry->Action2);
 	  ConsoleDebug (X11, "\tgot a mouse binding\n");
 	  if (ftype && ftype->func) {
 	    run_function_list (ftype);
@@ -218,7 +218,7 @@ void xevent_loop (void)
 	    ((key->Modifier == (modifier&(~LockMask)))||
 	     (key->Modifier == AnyModifier)))
 	{
-	  Function *ftype = key->Function;
+	  Function *ftype = (Function *)(key->Action2);
 	  if (ftype && ftype->func) {
 	    run_function_list (ftype);
 	    draw_managers();
