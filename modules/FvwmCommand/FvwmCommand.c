@@ -1,4 +1,4 @@
-/* $Id: FvwmCommand.c,v 1.16 2000/06/15 16:56:49 hippo Exp $
+/* $Id: FvwmCommand.c,v 1.17 2000/07/04 01:43:12 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommand.c,v $
  *
  * Fvwm command input interface.
@@ -36,8 +36,6 @@ static int  Fdr, Fdw;  /* file discriptor for fifo */
 static FILE *Frun;     /* File contains pid */
 static struct stat stat_buf;
 static char *Fr_name;
-static int  Pfd;
-static char *getline();
 static fd_set fdset;
 
 static struct timeval Tv;
@@ -46,7 +44,6 @@ static int  Opt_monitor;
 static int  Opt_info;
 static int  Opt_Serv;
 static int  Opt_flags;
-static FILE *Fp;
 
 volatile sig_atomic_t  Bg;  /* FvwmCommand in background */
 
