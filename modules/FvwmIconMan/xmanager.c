@@ -21,7 +21,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.17 1999/08/24 08:48:36 hippo Exp $";
+  "$Id: xmanager.c,v 1.18 1999/08/26 01:10:09 domivogt Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -257,6 +257,9 @@ static void fix_manager_size (WinManager *man, int w, int h)
 {
   XSizeHints size;
   long mask;
+
+  if (man->geometry.dir & GROW_FIXED)
+    return;
 
   XGetWMNormalHints (theDisplay, man->theWindow, &size, &mask);
   size.min_width = w;
