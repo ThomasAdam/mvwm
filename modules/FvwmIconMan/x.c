@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.23 1999/08/26 01:10:09 domivogt Exp $";
+  "$Id: x.c,v 1.24 1999/08/26 10:22:09 hippo Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -296,6 +296,8 @@ void xevent_loop (void)
       {
 	man->geometry.rows =
 	  theEvent.xconfigure.height / man->geometry.boxheight;
+	if (man->geometry.rows < 1)
+	  man->geometry.rows = 1;
 	man->geometry.cols =
 	  (man->buttons.num_windows - 1) / man->geometry.rows + 1;
       }
@@ -771,13 +773,14 @@ void create_manager_window (int man_id)
   sizehints.flags = man->sizehints_flags;
 
 
-  sizehints.base_width = sizehints.width = man->geometry.width;
-  sizehints.base_height = sizehints.height = man->geometry.height;
-  sizehints.min_width = 0;
+  sizehints.width = man->geometry.width;
+  sizehints.height = man->geometry.height;
+  sizehints.base_width = sizehints.min_width = 0;
+  sizehints.base_height = 0;
   sizehints.max_width = globals.screenx;
   if (man->geometry.dir & GROW_FIXED)
   {
-    sizehints.min_height = 0;
+    sizehints.min_height = man->geometry.boxheight;
     sizehints.max_height = globals.screeny;
   }
   else
@@ -786,7 +789,9 @@ void create_manager_window (int man_id)
     sizehints.max_height = man->geometry.height;
   }
   sizehints.win_gravity = man->gravity;
-  sizehints.flags |= PBaseSize | PMinSize | PMaxSize | PWinGravity;
+  sizehints.width_inc = 1;
+  sizehints.height_inc = man->geometry.boxheight;
+  sizehints.flags |= PBaseSize | PMinSize | PMaxSize | PWinGravity | PResizeInc;
   sizehints.x = man->geometry.x;
   sizehints.y = man->geometry.y;
 

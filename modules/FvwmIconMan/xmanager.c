@@ -21,7 +21,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.18 1999/08/26 01:10:09 domivogt Exp $";
+  "$Id: xmanager.c,v 1.19 1999/08/26 10:22:10 hippo Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -199,6 +199,8 @@ static ManGeometry *figure_geometry (WinManager *man)
   if (man->geometry.dir & GROW_FIXED) {
     ret.cols = num_visible_rows (n, g->rows);
     ret.boxwidth = ret.width / ret.cols;
+    if (ret.boxwidth < 1)
+      ret.boxwidth = 1;
   }
   else {
     if (man->geometry.dir & GROW_VERT) {
@@ -602,6 +604,8 @@ void set_manager_width (WinManager *man, int width)
 		  width / man->geometry.cols);
     man->geometry.width = width;
     man->geometry.boxwidth = width / man->geometry.cols;
+    if (man->geometry.boxwidth < 1)
+      man->geometry.boxwidth = 1;
     man->dirty_flags |= GEOMETRY_CHANGED;
   }
 }
