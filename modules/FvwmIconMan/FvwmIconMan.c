@@ -21,12 +21,12 @@ static int fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.6 1998/11/06 17:53:51 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.7 1998/11/15 18:00:13 dane Exp $";
 
 char *copy_string (char **target, char *src)
 {
   int len = strlen (src);
-  ConsoleDebug (CORE, "copy_string: 1: 0x%x %s\n", *target, *target);
+  ConsoleDebug (CORE, "copy_string: 1: 0x%x\n", *target);
 
   if (*target)
     Free (*target);
