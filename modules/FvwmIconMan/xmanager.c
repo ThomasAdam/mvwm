@@ -21,7 +21,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.16 1999/08/17 00:32:42 domivogt Exp $";
+  "$Id: xmanager.c,v 1.17 1999/08/24 08:48:36 hippo Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -762,7 +762,7 @@ static void clear_empty_region (WinManager *man)
 		rects[1].x, rects[1].y, rects[1].width, rects[1].height);
 
   XFillRectangles (theDisplay, man->theWindow,
-		   man->backContext[PLAIN_CONTEXT], rects, num_rects);
+		   man->backContext[DEFAULT], rects, num_rects);
 }
 
 void set_shape (WinManager *man)
