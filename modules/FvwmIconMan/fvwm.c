@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.18 1999/09/19 20:58:38 domivogt Exp $";
+  "$Id: fvwm.c,v 1.19 1999/09/28 16:42:03 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -400,6 +400,10 @@ static void destroy_window (FvwmPacketBody *body)
   if (win->button) {
     ConsoleDebug (FVWM, "destroy_window: deleting windows_button\n");
     delete_windows_button (win);
+  }
+  if (win == fvwm_focus_win)
+  {
+    fvwm_focus_win = NULL;
   }
   free_windata (win);
 }

@@ -21,7 +21,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand Iconify"
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.8 1999/08/05 16:41:30 hippo Exp $";
+  "$Id: globals.c,v 1.9 1999/09/28 16:42:04 domivogt Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -29,7 +29,8 @@ ContextDefaults contextDefaults[] = {
   { "focus", BUTTON_UP, { "white", "gray" }, { "black", "black" } },
   { "select", BUTTON_FLAT, { "black", "black" }, { "white", "gray" } },
   { "focusandselect", BUTTON_FLAT, { "white", "gray" }, { "black", "black" } },
-  { "title", BUTTON_EDGEUP, { "black", "black"}, {"white", "gray"} }
+  { "title", BUTTON_EDGEUP, { "black", "black"}, {"white", "gray"} },
+  { "default", BUTTON_FLAT, { "black", "black"}, {"white", "gray"} }
 };
 
 int Fvwm_fd[2];
