@@ -22,7 +22,7 @@
 #include "libs/XineramaSupport.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.47 2001/08/11 21:28:18 domivogt Exp $";
+  "$Id: x.c,v 1.48 2001/08/19 14:17:26 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -651,7 +651,7 @@ void X_init_manager (int man_id)
     geometry_mask = XineramaSupportParseGeometryWithScreen(
       man->geometry_str, &man->geometry.x, &man->geometry.y,
       &man->geometry.cols, &man->geometry.rows, &scr);
-    XineramaSupportGetNumberedScreenRect(
+    XineramaSupportGetNumberedScrRect(
       scr, &man->managed_g.x, &man->managed_g.y,
       &man->managed_g.width, &man->managed_g.height);
 
