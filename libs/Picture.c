@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.15 1999/03/05 02:06:06 steve Exp $
+ * $Id: Picture.c,v 1.16 1999/03/21 16:36:28 dane Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -75,10 +75,21 @@ static char* imagePath = FVWM_IMAGEPATH;
 
 void SetImagePath( char* newpath )
 {
-    if ( strcmp( imagePath, FVWM_IMAGEPATH ) != 0 )
-	free( imagePath );
-    
-    imagePath = newpath;
+  char *newImagePath;
+
+  newImagePath = (char *)safemalloc(strlen(imagePath)+strlen(newpath) + 3);
+  strcpy(newImagePath,newpath);         /* put new stuff at front */
+  strcat(newImagePath,":");             /* throw in a separator */
+  strcat(newImagePath,imagePath);       /* old stuff at end */
+
+  if ( strcmp( imagePath, FVWM_IMAGEPATH ) != 0 ) { /* if not initial */
+    free( imagePath );                  /* free old image path */
+  } /* end initial path */
+  free(newpath);                        /* done with stuff to add */
+  imagePath = newImagePath;             /* save new path */
+  /* It might be nice to parse thru the image path at this point,
+     and remove directories that don't exist, and any duplicate
+     directories.  dje 03/21/99. */
 }
 
 char* GetImagePath()
