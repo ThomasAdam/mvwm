@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.24 1999/08/26 10:22:09 hippo Exp $";
+  "$Id: x.c,v 1.25 1999/08/27 09:49:54 hippo Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -878,6 +878,11 @@ void create_manager_window (int man_id)
                        Pdepth, man->backContext[i], False);
       XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
       XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
+      if (i == DEFAULT)
+      {
+	XSetWindowBackgroundPixmap(theDisplay, man->theWindow,
+				   man->pixmap[i]);
+      }
     } else {
       man->pixmap[i] = None;
       XSetFillStyle(theDisplay, man->backContext[i], FillSolid);
@@ -977,6 +982,11 @@ void change_colorset(int color) {
                                    Pdepth, man->backContext[i], False);
           XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
           XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
+	  if (i == DEFAULT)
+	  {
+	    XSetWindowBackgroundPixmap(theDisplay, man->theWindow,
+				       man->pixmap[i]);
+	  }
         } else {
           man->pixmap[i] = None;
           XSetFillStyle(theDisplay, man->backContext[i], FillSolid);
