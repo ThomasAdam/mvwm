@@ -24,7 +24,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.36 2002/01/07 12:30:23 domivogt Exp $";
+  "$Id: fvwm.c,v 1.37 2002/01/17 09:40:51 olicha Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -242,6 +242,18 @@ static void handle_config_info (unsigned long *body)
   else if (StrEquals(token, "IgnoreModifiers"))
   {
     sscanf(tline, "%d", &mods_unused);
+  }
+  else if (StrEquals(token, ROOT_BG_CHANGE_STRING))
+  {
+    int j;
+    WinManager *man;
+
+    for (j = 0; j < globals.num_managers; j++)
+    {
+      man = &globals.managers[j];
+      if (man->pixmap[DEFAULT] == ParentRelative)
+	XClearArea(theDisplay, man->theWindow, 0, 0, 0, 0, True);
+    }
   }
 }
 
