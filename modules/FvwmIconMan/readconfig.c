@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.30 2000/11/21 14:33:20 domivogt Exp $";
+  "$Id: readconfig.c,v 1.31 2001/03/28 22:36:11 domivogt Exp $";
 
 /************************************************************************
  *
@@ -1578,7 +1578,7 @@ void read_in_resources (char *file)
 	  i = SortName;
 	}
 	else if (!strcasecmp (p, "namewithcase")) {
-	 i = SortNameCase;
+	  i = SortNameCase;
 	}
 	else if (!strcasecmp (p, "id")) {
 	  i = SortId;
