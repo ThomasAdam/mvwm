@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.17 2000/02/01 16:13:05 hippo Exp $
+/* $Id: FvwmCommandS.c,v 1.18 2000/05/03 20:16:04 mikehan Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -381,7 +381,7 @@ void process_message(unsigned long type,unsigned long *body)
   {
   case M_ADD_WINDOW:
   case M_CONFIGURE_WINDOW:
-    relay_packet(type, 24 * SOL, body);
+    relay_packet(type, sizeof(struct ConfigWinPacket) * SOL, body);
     break;
 
   case M_ICON_LOCATION:
