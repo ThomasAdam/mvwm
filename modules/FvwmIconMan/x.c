@@ -22,7 +22,7 @@
 #include "libs/FScreen.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.51 2001/09/05 13:10:44 domivogt Exp $";
+  "$Id: x.c,v 1.52 2001/09/05 16:39:57 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -304,24 +304,12 @@ void xevent_loop (void)
       saveEvent = theEvent;
       /* eat up all but last ConfigureNotify events */
       while (XPending(theDisplay) &&
-	     XCheckMaskEvent(theDisplay, ConfigureNotify, &theEvent))
+	     XCheckTypedEvent(theDisplay, ConfigureNotify, &theEvent))
       {
-	if (theEvent.type != ConfigureNotify)
-	{
-	  /* I can't fathom how this could ever happen.  I wouldn't believe it
-	   * if I hadn't seen it with my own eyes: instead of a ConfigureNotify
-	   * I sometimes get an EnterNotify event instead. Sounds like a broken
-	   * X server. */
-	  XPutBackEvent(theDisplay, &theEvent);
-	  break;
-	}
-	else
-	{
-	  saveEvent = theEvent;
-	  /* check for movement on all events */
-	  if (theEvent.xconfigure.send_event)
-	    moved = True;
-	}
+	saveEvent = theEvent;
+	/* check for movement on all events */
+	if (theEvent.xconfigure.send_event)
+	  moved = True;
       }
       theEvent = saveEvent;
 
