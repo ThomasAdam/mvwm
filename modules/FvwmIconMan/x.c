@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.35 1999/11/25 16:01:25 hippo Exp $";
+  "$Id: x.c,v 1.36 2000/01/04 11:59:38 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -689,7 +689,10 @@ void X_init_manager (int man_id)
     if (val & WidthValue)
       man->geometry.boxwidth = width;
     if (val & HeightValue)
-      man->geometry.boxheight = max (man->geometry.boxheight, height);
+    {
+      if (height >= man->geometry.boxheight - 4)
+        man->geometry.boxheight = height;
+    }
   }
   if (man->geometry_str) {
     geometry_mask = XParseGeometry (man->geometry_str, &man->geometry.x,
