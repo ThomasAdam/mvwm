@@ -20,7 +20,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.27 2000/01/18 12:56:48 bgiaccio Exp $";
+  "$Id: readconfig.c,v 1.28 2000/01/18 19:29:29 bgiaccio Exp $";
 
 /************************************************************************
  *
@@ -234,6 +234,18 @@ static int iswhite (char c)
   if (c == ' ' || c == '\t' || c == '\0')
     return 1;
   return 0;
+}
+
+static void trim (char *p)
+{
+  int length = strlen (p) -1;
+  int index;
+  for(index = length; index > 0; index --)
+  {
+    if (p[index] == ' ' || p[index] == '\t')
+      p[index] = '\0';
+    else return;
+  }
 }
 
 static void skip_space (char **p)
@@ -1369,12 +1381,12 @@ void read_in_resources (char *file)
       }
       else if (!strcasecmp (option1, "font")) {
 	p = read_next_cmd (READ_REST_OF_LINE);
+    trim(p);
 	if (!p) {
 	  ConsoleMessage ("Bad line: %s\n", current_line);
 	  continue;
 	}
 	ConsoleDebug (CONFIG, "font: %s\n", p);
-	fprintf (stderr, "font: %s\n", p);
 
 	SET_MANAGER (manager, fontname,
 		     copy_string (&globals.managers[id].fontname, p));
