@@ -30,7 +30,7 @@
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.30 2000/01/21 09:59:36 chrisr Exp $";
+  "$Id: FvwmIconMan.c,v 1.31 2000/04/18 17:55:21 domivogt Exp $";
 
 const char *MyName;
 
@@ -218,7 +218,8 @@ main(int argc, char **argv)
   *Module = '*';
   strcpy (Module+1, MyName);
 
-  if((argc != 6) && (argc != 7)) {
+  if(argc < 6)
+  {
     fprintf(stderr,"%s Version %s should only be executed by fvwm!\n",Module,
       IM_VERSION);
     ShutMeDown(1);
