@@ -24,7 +24,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.35 2001/12/06 12:06:26 olicha Exp $";
+  "$Id: fvwm.c,v 1.36 2002/01/07 12:30:23 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -238,6 +238,10 @@ static void handle_config_info (unsigned long *body)
   else if (StrEquals(token, XINERAMA_CONFIG_STRING))
   {
     FScreenConfigureModule(tline);
+  }
+  else if (StrEquals(token, "IgnoreModifiers"))
+  {
+    sscanf(tline, "%d", &mods_unused);
   }
 }
 

@@ -23,7 +23,7 @@
 #include "libs/FShape.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.55 2001/12/31 16:34:14 domivogt Exp $";
+  "$Id: x.c,v 1.56 2002/01/07 12:30:24 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -119,7 +119,7 @@ static void handle_buttonevent (XEvent *theEvent, WinManager *man)
 	if(((MouseEntry->Button_Key == theEvent->xbutton.button)||
 	    (MouseEntry->Button_Key == 0))&&
 	   ((MouseEntry->Modifier == AnyModifier)||
-	    (MouseEntry->Modifier == (modifier& (~LockMask)))))
+	    (MouseEntry->Modifier == (modifier& (~mods_unused)))))
 	{
 	  Function *ftype = (Function *)(MouseEntry->Action2);
 	  ConsoleDebug (X11, "\tgot a mouse binding\n");
@@ -232,7 +232,7 @@ void xevent_loop (void)
       for (key = man->bindings[KEYPRESS]; key != NULL; key = key->NextBinding)
       {
 	if ((key->Button_Key == theEvent.xkey.keycode) &&
-	    ((key->Modifier == (modifier&(~LockMask)))||
+	    ((key->Modifier == (modifier&(~mods_unused)))||
 	     (key->Modifier == AnyModifier)))
 	{
 	  Function *ftype = (Function *)(key->Action2);
