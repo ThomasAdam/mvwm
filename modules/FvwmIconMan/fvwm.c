@@ -23,9 +23,6 @@
 #include <libs/FScreen.h>
 #include <libs/Module.h>
 
-static char const rcsid[] =
-  "$Id: fvwm.c,v 1.41 2002/04/22 08:06:15 olicha Exp $";
-
 static WinData *fvwm_focus_win = NULL;
 
 typedef struct {

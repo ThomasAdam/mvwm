@@ -20,9 +20,6 @@
 
 #include "debuglevels.h"
 
-static char const rcsid[] =
-  "$Id: debug.c,v 1.7 1999/06/27 14:47:13 domivogt Exp $";
-
 static FILE *console = NULL;
 
 void

@@ -18,9 +18,6 @@
 #include "xmanager.h"
 #include "libs/Module.h"
 
-static char const rcsid[] =
-  "$Id: functions.c,v 1.8 1999/11/20 09:48:56 domivogt Exp $";
-
 static Button *get_select_button (void);
 
 static struct {

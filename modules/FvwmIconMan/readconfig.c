@@ -24,9 +24,6 @@
 #include <libs/FShape.h>
 #include <libs/Module.h>
 
-static char const rcsid[] =
-  "$Id: readconfig.c,v 1.42 2002/04/07 00:35:34 migo Exp $";
-
 /************************************************************************
  *
  * Builtin functions:

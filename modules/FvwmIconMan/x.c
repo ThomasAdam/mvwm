@@ -22,9 +22,6 @@
 #include "libs/FScreen.h"
 #include "libs/FShape.h"
 
-static char const rcsid[] =
-  "$Id: x.c,v 1.59 2002/04/22 08:06:15 olicha Exp $";
-
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
 Display *theDisplay;

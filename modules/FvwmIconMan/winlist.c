@@ -16,9 +16,6 @@
 #include <limits.h>
 #include "FvwmIconMan.h"
 
-static char const rcsid[] =
-  "$Id: winlist.c,v 1.11 2000/11/22 18:38:58 domivogt Exp $";
-
 #define HASHTAB_SIZE 257
 
 typedef WinList HashTab[HASHTAB_SIZE];

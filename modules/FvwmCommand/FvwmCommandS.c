@@ -1,6 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.28 2002/04/11 23:26:23 migo Exp $
- * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
- *
+/*
  * Fvwm command input interface.
  *
  * Copyright 1997, Toshi Isogai. No guarantees or warantees or anything

@@ -24,9 +24,6 @@
 #include "xmanager.h"
 #include "libs/PictureGraphics.h"
 
-static char const rcsid[] =
-  "$Id: xmanager.c,v 1.61 2002/04/22 08:06:15 olicha Exp $";
-
 extern char *MyName;
 extern FlocaleWinString *FwinString;
 
