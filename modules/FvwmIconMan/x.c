@@ -23,7 +23,7 @@
 #include "libs/FShape.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.54 2001/09/23 07:03:58 olicha Exp $";
+  "$Id: x.c,v 1.55 2001/12/31 16:34:14 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -699,8 +699,14 @@ void X_init_manager (int man_id)
     unsigned int ujunk;
     fscreen_scr_arg fscr;
 
-    XQueryPointer(theDisplay, theRoot, &dummyroot, &dummychild,
-		  &man->geometry.x, &man->geometry.y, &junk, &junk, &ujunk);
+    if (XQueryPointer(
+	  theDisplay, theRoot, &dummyroot, &dummychild, &man->geometry.x,
+	  &man->geometry.y, &junk, &junk, &ujunk) == False)
+    {
+      /* pointer is on a different screen - that's okay here */
+      man->geometry.y = 0;
+      man->geometry.x = 0;
+    }
     fscr.xypos.x = man->geometry.x;
     fscr.xypos.y = man->geometry.y;
     FScreenGetScrRect(
