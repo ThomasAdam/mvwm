@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.25 2000/01/20 20:49:54 domivogt Exp $";
+  "$Id: fvwm.c,v 1.26 2000/01/27 17:55:56 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -592,7 +592,8 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
     globals.x = body->new_page_data.x;
     globals.y = body->new_page_data.y;
     globals.desknum = body->new_page_data.desknum;
-    if (fvwm_focus_win)
+    if (fvwm_focus_win && fvwm_focus_win->manager &&
+        fvwm_focus_win->manager->followFocus)
     {
       /* need to set the focus on a page change */
       add_win_state (fvwm_focus_win, FOCUS_CONTEXT);
