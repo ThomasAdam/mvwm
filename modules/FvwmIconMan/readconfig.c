@@ -24,7 +24,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.34 2001/08/11 21:28:18 domivogt Exp $";
+  "$Id: readconfig.c,v 1.35 2001/08/25 13:40:52 domivogt Exp $";
 
 /************************************************************************
  *
@@ -900,9 +900,10 @@ static int GetConfigLineWrapper (int *fd, char **tline)
          LoadColorset(&(*tline)[8]);
     }
     else if (strncasecmp(*tline, XINERAMA_CONFIG_STRING,
-			 strlen(XINERAMA_CONFIG_STRING)) == 0)
+			 sizeof(XINERAMA_CONFIG_STRING) - 1) == 0)
     {
-      XineramaSupportConfigureModule((*tline) + strlen(XINERAMA_CONFIG_STRING));
+      XineramaSupportConfigureModule(
+	(*tline) + sizeof(XINERAMA_CONFIG_STRING) - 1);
     }
     temp = strchr (*tline, '\n');
     if (temp) {
