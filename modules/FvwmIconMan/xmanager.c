@@ -6,17 +6,14 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.9 1999/03/03 02:47:52 steve Exp $";
+  "$Id: xmanager.c,v 1.10 1999/04/03 20:01:08 steve Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
 #endif
 
-#ifdef COMPILE_STANDALONE
-#include "fvwm.h"
-#else
 #include "fvwm/fvwm.h"
-#endif
+
 
 /* button dirty bits: */
 #define ICON_STATE_CHANGED  1
@@ -405,7 +402,7 @@ Button *button_right (WinManager *man, Button *b)
 
 Button *button_left (WinManager *man, Button *b)
 {
-  int i;
+  int i = -1;
   if (index_to_col (man, b->index) > 0) {
     i = box_to_index (man, index_to_box (man, b->index) - 1);
   }
