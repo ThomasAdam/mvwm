@@ -1,10 +1,12 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include "FvwmIconMan.h"
 #include "x.h"
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.7 1999/01/08 22:08:33 domivogt Exp $";
+  "$Id: xmanager.c,v 1.8 1999/01/10 20:59:59 steve Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -938,8 +940,8 @@ static void get_button_geometry (WinManager *man, Button *button,
   if (man->draw_icons && win && win->pic.picture) {
     /* If no window, then icon_* aren't used, so doesn't matter what
        they are */
-    g->icon_w = MIN (win->pic.width, g->button_h);
-    g->icon_h = MIN (g->button_h - 4, win->pic.height);
+    g->icon_w = min (win->pic.width, g->button_h);
+    g->icon_h = min (g->button_h - 4, win->pic.height);
     icon_pad  = center_padding (g->icon_h, g->button_h);
     g->icon_x = g->button_x + 4;
     g->icon_y = g->button_y + icon_pad;

@@ -1,10 +1,11 @@
+#include "config.h"
 #include "FvwmIconMan.h"
 #include "readconfig.h"
 #include "x.h"
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.8 1998/12/27 03:51:42 domivogt Exp $";
+  "$Id: x.c,v 1.9 1999/01/10 20:59:59 steve Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -566,7 +567,7 @@ void X_init_manager (int man_id)
     if (val & WidthValue)
       man->geometry.boxwidth = width;
     if (val & HeightValue)
-      man->geometry.boxheight = MAX (man->geometry.boxheight, height);
+      man->geometry.boxheight = max (man->geometry.boxheight, height);
   }
   if (man->geometry_str) {
     geometry_mask = XParseGeometry (man->geometry_str, &man->geometry.x,
