@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.30 1999/11/30 16:43:01 bgiaccio Exp $";
+  "$Id: xmanager.c,v 1.31 1999/12/01 13:29:18 bgiaccio Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -975,27 +975,28 @@ static void resize_manager (WinManager *man, int force)
     }
   }
 
-  for (i = 0; i < NUM_CONTEXTS; i++) {
-    if (man->pixmap[i])
-      XFreePixmap(theDisplay, man->pixmap[i]);
-    if (Colorset[man->colorsets[i]].pixmap) {
-      man->pixmap[i] = CreateBackgroundPixmap(theDisplay, man->theWindow,
+  if (oldwidth != new->width || oldheight != new->height) {
+    for (i = 0; i < NUM_CONTEXTS; i++) {
+      if (man->pixmap[i])
+        XFreePixmap(theDisplay, man->pixmap[i]);
+      if (Colorset[man->colorsets[i]].pixmap) {
+        man->pixmap[i] = CreateBackgroundPixmap(theDisplay, man->theWindow,
                        man->geometry.width, man->geometry.height,
                        &Colorset[man->colorsets[i]],
                        Pdepth, man->backContext[i], False);
-      XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
-      XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
-      if (i == DEFAULT)
-      {
-    XSetWindowBackgroundPixmap(theDisplay, man->theWindow,
-                   man->pixmap[i]);
+        XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
+        XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
+        if (i == DEFAULT)
+        {
+          XSetWindowBackgroundPixmap(theDisplay, man->theWindow,
+                                     man->pixmap[i]);
+        }
+      } else {
+        man->pixmap[i] = None;
+        XSetFillStyle(theDisplay, man->backContext[i], FillSolid);
       }
-    } else {
-      man->pixmap[i] = None;
-      XSetFillStyle(theDisplay, man->backContext[i], FillSolid);
     }
   }
-
 }
 
 static int center_padding (int h1, int h2)
