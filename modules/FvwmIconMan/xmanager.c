@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.46 2001/03/30 09:29:21 domivogt Exp $";
+  "$Id: xmanager.c,v 1.47 2001/03/30 18:27:32 domivogt Exp $";
 
 extern char *MyName;
 
@@ -1206,6 +1206,8 @@ void check_in_window (WinData *win)
 	create_manager_window (win->manager->index);
     }
     else if (win->button && !in_viewport) {
+      if (win->button->drawn_state.display_string)
+	Free(win->button->drawn_state.display_string);
       delete_windows_button (win);
     }
   }
