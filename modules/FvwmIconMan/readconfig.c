@@ -5,7 +5,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.12 1999/05/01 17:05:33 steve Exp $";
+  "$Id: readconfig.c,v 1.13 1999/05/26 00:58:07 dane Exp $";
 
 /************************************************************************
  *
@@ -325,6 +325,8 @@ static int init_config_file (char *file)
     ConsoleMessage ("Couldn't open file: %s\n", file);
     return 0;
   }
+#else
+  InitGetConfigLine(Fvwm_fd,Module);         /* speed up */
 #endif
   return 1;
 }
