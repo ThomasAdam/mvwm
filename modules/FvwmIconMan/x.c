@@ -23,7 +23,7 @@
 #include "libs/FShape.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.53 2001/09/16 15:51:18 domivogt Exp $";
+  "$Id: x.c,v 1.54 2001/09/23 07:03:58 olicha Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -650,6 +650,10 @@ void X_init_manager (int man_id)
       NULL, scr, &man->managed_g.x, &man->managed_g.y,
       &man->managed_g.width, &man->managed_g.height);
 
+    if (geometry_mask & XValue)
+      man->geometry.x += man->managed_g.x;
+    if (geometry_mask & YValue)
+	man->geometry.y += man->managed_g.y;
     if ((geometry_mask & XValue) || (geometry_mask & YValue)) {
       man->sizehints_flags |= USPosition;
       if (geometry_mask & XNegative)
@@ -685,14 +689,10 @@ void X_init_manager (int man_id)
 
   man->geometry.width  = man->geometry.cols * man->geometry.boxwidth;
   man->geometry.height = man->geometry.rows * man->geometry.boxheight;
-
   if ((geometry_mask & XValue) && (geometry_mask & XNegative))
-    man->geometry.x +=
-      globals.screen_g.x + globals.screen_g.width - man->geometry.width;
+    man->geometry.x += man->managed_g.width - man->geometry.width;
   if ((geometry_mask & YValue) && (geometry_mask & YNegative))
-    man->geometry.y +=
-      globals.screen_g.y + globals.screen_g.height - man->geometry.height;
-
+    man->geometry.y += man->managed_g.height - man->geometry.height;
   if (globals.transient) {
     Window dummyroot, dummychild;
     int junk;
@@ -789,7 +789,6 @@ void create_manager_window (int man_id)
   sizehints.flags |= PBaseSize | PMinSize | PMaxSize | PWinGravity | PResizeInc;
   sizehints.x = man->geometry.x;
   sizehints.y = man->geometry.y;
-
 
   ConsoleDebug (X11, "hints: x, y, w, h = %d %d %d %d)\n",
 		sizehints.x, sizehints.y,
