@@ -11,7 +11,7 @@
   Some of the logic comes from pixy2, so the copyright is below.
   */
 /*
- * $Id: Picture.c,v 1.9 1998/11/09 20:33:49 dane Exp $
+ * $Id: Picture.c,v 1.10 1998/11/09 20:37:26 dane Exp $
  * Copyright 1996, Romano Giannetti. No guarantees or warantees or anything
  * are provided or implied in any way whatsoever. Use this program at your
  * own risk. Permission to use this program for any purpose is given,
@@ -102,11 +102,11 @@ Picture *LoadPicture(Display *dpy,Window Root,char *path, int color_limit)
     if (rc == XpmSuccess) {
       p->width = my_image.width;
       p->height = my_image.height;
-/*       XpmFreeXpmImage(&my_image); */
+      XpmFreeXpmImage(&my_image);
       p->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
       return p;
     }
-/*     XpmFreeXpmImage(&my_image); */
+    XpmFreeXpmImage(&my_image);
   }
 #endif
 
@@ -419,7 +419,7 @@ void c200_substitute_color(char **my_color, int color_limit) {
   *my_color = safemalloc(strlen(base_array[minind].c_color) + 1); /* area for new color */
   strcpy(*my_color,base_array[minind].c_color); /* put it there */
   return;                             /* all done */
-}
+ }
 
 static void c300_color_to_rgb(char *c_color, XColor *rgb_space) {
   int rc;
