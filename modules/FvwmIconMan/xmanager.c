@@ -4,7 +4,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.6 1999/01/08 16:41:11 hippo Exp $";
+  "$Id: xmanager.c,v 1.7 1999/01/08 22:08:33 domivogt Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -389,7 +389,7 @@ Button *button_below (WinManager *man, Button *b)
 
 Button *button_right (WinManager *man, Button *b)
 {
-  int i;
+  int i = 0;
 
   if (index_to_col (man, b->index) < man->geometry.cols - 1) {
     i = box_to_index (man, index_to_box (man, b->index) + 1);
