@@ -1,4 +1,4 @@
-/* $Id: FvwmCommandS.c,v 1.14 2000/01/27 00:22:13 domivogt Exp $
+/* $Id: FvwmCommandS.c,v 1.15 2000/01/27 10:37:33 domivogt Exp $
  * $Source: /home/cvs/fvwm/fvwm/modules/FvwmCommand/FvwmCommandS.c,v $
  *
  * Fvwm command input interface.
@@ -238,6 +238,9 @@ void server ( char *name )
           err_quit("reading fifo");
         }
       }
+buf[len]=0;
+fprintf(stderr,"fcs: read '%s'\n", buf);
+if (buf[0]=='o')fprintf(stderr,"*******************\n");
 
       /* in case of multiple long lines */
       for (ix=0; ix<len; ix++)
