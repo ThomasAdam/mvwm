@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.16 1999/08/21 11:48:12 domivogt Exp $";
+  "$Id: fvwm.c,v 1.17 1999/08/29 23:37:13 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -225,7 +225,7 @@ static void configure_colorsets (unsigned long *body)
   int color;
 
   tline = (char*)&(body[3]);
-  tline = GetNextToken(tline, &token);
+  token = PeekToken(tline, &tline);
   if (StrEquals(token, "Colorset")) {
     color = LoadColorset(tline);
     change_colorset(color);

@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.25 1999/08/27 09:49:54 hippo Exp $";
+  "$Id: x.c,v 1.26 1999/08/29 23:37:13 domivogt Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -790,7 +790,13 @@ void create_manager_window (int man_id)
   }
   sizehints.win_gravity = man->gravity;
   sizehints.width_inc = 1;
+#if 0
   sizehints.height_inc = man->geometry.boxheight;
+#else
+  /* This works much better with colour sets and when swallowed in
+   * FvwmButtons. */
+  sizehints.height_inc = 1;
+#endif
   sizehints.flags |= PBaseSize | PMinSize | PMaxSize | PWinGravity | PResizeInc;
   sizehints.x = man->geometry.x;
   sizehints.y = man->geometry.y;
