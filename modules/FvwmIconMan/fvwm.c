@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.23 1999/11/20 09:48:57 domivogt Exp $";
+  "$Id: fvwm.c,v 1.24 1999/11/21 18:34:28 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -391,7 +391,6 @@ static void new_window (FvwmPacketBody *body)
 {
   WinData *win;
 
-sleep(1);
   win = new_windata();
   memcpy(&(win->flags), &(body->add_config_data.flags), sizeof(win->flags));
   if (!(IS_TRANSIENT(win)))
