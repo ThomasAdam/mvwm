@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.28 2000/05/02 02:33:38 mikehan Exp $";
+  "$Id: fvwm.c,v 1.29 2000/05/12 17:05:31 hippo Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -527,13 +527,13 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
   case M_DEICONIFY:
     ConsoleDebug (FVWM, "DEBUG::M_DEICONIFY\n");
     iconify (body, 0);
-    SendText(Fvwm_fd, "Unlock 1", 0);
+    SendUnlockNotification(Fvwm_fd);
     break;
 
   case M_ICONIFY:
     ConsoleDebug (FVWM, "DEBUG::M_ICONIFY\n");
     iconify (body, 1);
-    SendText(Fvwm_fd, "Unlock 1", 0);
+    SendUnlockNotification(Fvwm_fd);
     break;
 
   case M_END_WINDOWLIST:
