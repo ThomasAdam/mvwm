@@ -22,7 +22,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.48 2001/08/25 13:40:52 domivogt Exp $";
+  "$Id: xmanager.c,v 1.49 2001/08/25 16:07:23 domivogt Exp $";
 
 extern char *MyName;
 
@@ -1197,17 +1197,19 @@ int change_windows_manager (WinData *win)
 void check_in_window (WinData *win)
 {
   int in_viewport;
+  int is_state_selected;
 
   if (win->manager && win->complete) {
+    is_state_selected = (!win->manager->showonlyiconic || win->iconified);
     in_viewport = win_in_viewport (win);
     if (win->manager->usewinlist && DO_SKIP_WINDOW_LIST(win))
       in_viewport = 0;
-    if (win->button == NULL && in_viewport) {
+    if (win->button == NULL && in_viewport && is_state_selected) {
       insert_windows_button (win);
       if (win->manager->window_up == 0 && globals.got_window_list)
 	create_manager_window (win->manager->index);
     }
-    else if (win->button && !in_viewport) {
+    if (win->button && (!in_viewport || !is_state_selected)) {
       if (win->button->drawn_state.display_string)
 	Free(win->button->drawn_state.display_string);
       delete_windows_button (win);
