@@ -6,7 +6,7 @@
 #include "xmanager.h"
 
 static char const rcsid[] =
-  "$Id: xmanager.c,v 1.8 1999/01/10 20:59:59 steve Exp $";
+  "$Id: xmanager.c,v 1.9 1999/03/03 02:47:52 steve Exp $";
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -15,7 +15,7 @@ static char const rcsid[] =
 #ifdef COMPILE_STANDALONE
 #include "fvwm.h"
 #else
-#include "../../fvwm/fvwm.h"
+#include "fvwm/fvwm.h"
 #endif
 
 /* button dirty bits: */
