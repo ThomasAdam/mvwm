@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include "FvwmIconMan.h"
 #include "readconfig.h"
+#include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: readconfig.c,v 1.11 1999/04/03 20:01:08 steve Exp $";
+  "$Id: readconfig.c,v 1.12 1999/05/01 17:05:33 steve Exp $";
 
 /************************************************************************
  *

@@ -4,10 +4,10 @@
 #include "x.h"
 #include "xmanager.h"
 
-#include <fvwm/module.h>
+#include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.9 1999/04/20 04:44:17 drbob Exp $";
+  "$Id: fvwm.c,v 1.10 1999/05/01 17:05:33 steve Exp $";
 
 typedef struct {
   Ulong paging_enabled;

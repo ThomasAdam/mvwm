@@ -12,7 +12,7 @@
 #include "x.h"
 #include "xmanager.h"
 
-#include "fvwm/module.h"
+#include "libs/Module.h"
 
 
 static int fd_width;
@@ -21,7 +21,7 @@ static volatile sig_atomic_t isTerminated = False;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.16 1999/03/07 02:40:48 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.17 1999/05/01 17:05:32 steve Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
