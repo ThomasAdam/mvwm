@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.13 1999/07/09 17:44:31 domivogt Exp $";
+  "$Id: fvwm.c,v 1.14 1999/08/05 16:41:30 hippo Exp $";
 
 typedef struct {
   Ulong paging_enabled;
@@ -215,6 +215,19 @@ static void set_win_configuration (WinData *win, FvwmPacketBody *body)
   win->height = body->add_config_data.height;
   win->geometry_set = 1;
   memcpy(&(win->flags), &(body->add_config_data.flags), sizeof(win->flags));
+}
+
+static void configure_colorsets (unsigned long *body)
+{
+  char *tline, *token;
+  int color;
+
+	tline = (char*)&(body[3]);
+	tline = GetNextToken(tline, &token);
+	if (StrEquals(token, "Colorset")) {
+    color = LoadColorset(tline);
+    change_colorset(color);
+  }
 }
 
 static void configure_window (FvwmPacketBody *body)
@@ -453,6 +466,11 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
   ConsoleDebug (FVWM, "FVWM Message type: %ld\n", type);
 
   switch(type) {
+  case M_CONFIG_INFO:
+    ConsoleDebug (FVWM, "DEBUG::M_CONFIG_INFO\n");
+    configure_colorsets ((unsigned long*)body);
+    break;
+
   case M_CONFIGURE_WINDOW:
     ConsoleDebug (FVWM, "DEBUG::M_CONFIGURE_WINDOW\n");
     configure_window (body);

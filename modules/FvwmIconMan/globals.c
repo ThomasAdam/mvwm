@@ -21,7 +21,7 @@
 #define DEFAULT_MOUSE "0 N sendcommand Iconify"
 
 static char const rcsid[] =
-  "$Id: globals.c,v 1.7 1999/06/27 14:47:14 domivogt Exp $";
+  "$Id: globals.c,v 1.8 1999/08/05 16:41:30 hippo Exp $";
 
 GlobalData globals;
 ContextDefaults contextDefaults[] = {
@@ -78,6 +78,7 @@ static void init_win_manager (int id)
     globals.managers[id].backColorName[i] = NULL;
     globals.managers[id].foreColorName[i] = NULL;
     globals.managers[id].buttonState[i] = contextDefaults[i].state;
+    globals.managers[id].colorsets[i] = -1;
   }
   globals.managers[id].geometry_str = NULL;
   globals.managers[id].button_geometry_str = NULL;

@@ -31,7 +31,7 @@ static fd_set_size_t fd_width;
 static char *IM_VERSION = "1.3";
 
 static char const rcsid[] =
-  "$Id: FvwmIconMan.c,v 1.21 1999/06/27 17:58:21 domivogt Exp $";
+  "$Id: FvwmIconMan.c,v 1.22 1999/08/05 16:41:29 hippo Exp $";
 
 
 static RETSIGTYPE TerminateHandler(int);
@@ -283,6 +283,7 @@ int main (int argc, char **argv)
                  M_ADD_WINDOW | M_DESTROY_WINDOW | M_ICON_NAME |
                  M_DEICONIFY | M_ICONIFY | M_END_WINDOWLIST |
                  M_NEW_DESK | M_NEW_PAGE | M_FOCUS_CHANGE | M_WINDOW_NAME |
+                 M_CONFIG_INFO |
 #ifdef MINI_ICONS
 		 M_MINI_ICON |
 #endif
