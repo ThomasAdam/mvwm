@@ -22,7 +22,7 @@
 #include <libs/Module.h>
 
 static char const rcsid[] =
-  "$Id: fvwm.c,v 1.26 2000/01/27 17:55:56 domivogt Exp $";
+  "$Id: fvwm.c,v 1.27 2000/03/24 10:31:56 domivogt Exp $";
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -494,7 +494,8 @@ static void ProcessMessage (Ulong type, FvwmPacketBody *body)
 
   ConsoleDebug (FVWM, "FVWM Message type: %ld\n", type);
 
-  switch(type) {
+  switch(type)
+  {
   case M_CONFIG_INFO:
     ConsoleDebug (FVWM, "DEBUG::M_CONFIG_INFO\n");
     configure_colorsets ((unsigned long*)body);
