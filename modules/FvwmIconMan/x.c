@@ -21,7 +21,7 @@
 #include "libs/fvwmlib.h"
 
 static char const rcsid[] =
-  "$Id: x.c,v 1.31 1999/09/28 16:42:04 domivogt Exp $";
+  "$Id: x.c,v 1.32 1999/10/24 09:08:07 chrisr Exp $";
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|EnterWindowMask|LeaveWindowMask)
 
@@ -415,7 +415,7 @@ static void set_window_properties (Window win, char *name, char *icon,
   XTextProperty win_name;
   XTextProperty win_icon;
   XClassHint class;
-  XWMHints wmhints = {0};
+  XWMHints wmhints = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   wmhints.initial_state = NormalState;
   wmhints.flags = StateHint;
