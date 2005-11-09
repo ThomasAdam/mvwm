@@ -1,6 +1,6 @@
 #!@PERL@ -w
 
-# $Id: FvwmTabs.in,v 3.5 2005/11/07 13:15:34 scott Exp $
+# $Id: FvwmTabs.in,v 3.6 2005/11/09 13:00:00 scott Exp $
 
 # 	FvwmTabs
 #	Copyright (C) 2002, 2003, 2004, 2005 Scott Smedley ss@aao.gov.au
@@ -821,6 +821,8 @@ sub swallowCheck ($$)
 		my $name = getProperty($winId, 'WM_NAME');
 		return if (!defined $name);
 		my ($resource, $class) = split(/$s/, getProperty($winId, 'WM_CLASS'));
+		$resource = '' if (!defined $resource);
+		$class = '' if (!defined $class);
 
 		my $bFound = 0;
 		foreach (@{$pArray})
@@ -1493,7 +1495,7 @@ sub setFont ($$$)
 
 sub version ()
 {
-	my $rcsId = '$Id: FvwmTabs.in,v 3.5 2005/11/07 13:15:34 scott Exp $';
+	my $rcsId = '$Id: FvwmTabs.in,v 3.6 2005/11/09 13:00:00 scott Exp $';
 	$rcsId =~ /,v (.*) (\d+\/\d+\/\d+) \d+:\d+:\d+/;
 	return ($1, $2);
 }
