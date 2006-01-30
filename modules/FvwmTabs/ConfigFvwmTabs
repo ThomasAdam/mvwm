@@ -1,5 +1,5 @@
 
-# $Id: ConfigFvwmTabs,v 1.2 2005/11/09 13:00:33 scott Exp $
+# $Id: ConfigFvwmTabs,v 1.3 2006/01/30 08:11:17 scott Exp $
 
 # Author: Scott Smedley ss@aao.gov.au
 
@@ -9,8 +9,10 @@
 # Default USER CONFIGURATION settings are in FvwmTabs-DefaultSetup.
 
 # Create a new Tabber.
+# Can specify optional --geometry 1st argument.
+# ie. NewTabber --geometry=+220+550 scottie
 DestroyFunc NewTabber
-AddToFunc NewTabber I SendToModule FvwmTabs createNewTabber $0
+AddToFunc NewTabber I SendToModule FvwmTabs createNewTabber $0 $1
 
 # Add a window (as a tab) to a Tabber.
 DestroyFunc Tabize
