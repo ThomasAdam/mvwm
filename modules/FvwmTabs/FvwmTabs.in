@@ -1,6 +1,6 @@
 #!@PERL@ -w
 
-# $Id: FvwmTabs.in,v 3.11 2006/07/16 11:11:40 scott Exp $
+# $Id: FvwmTabs.in,v 3.12 2007/01/15 09:05:35 griph Exp $
 
 # 	FvwmTabs
 #	Copyright (C) 2002-2006 Scott Smedley ss@aao.gov.au
@@ -23,8 +23,9 @@
 # see the FvwmTabs(1) man page for how to use this module.
 
 BEGIN {
-    use vars qw($prefix $datadir);
+    use vars qw($prefix $datarootdir $datadir);
     $prefix = "@prefix@";
+    $datarootdir = "@datarootdir@";
     $datadir = "@datadir@";
 }
 
