@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "../docbook-xml/docbookx.dtd"
+[
+<!ENTITY % myents SYSTEM "../fvwm.ent" >
+%myents;
+]>
+
+<!-- $Id: PixmapPath.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+
+<section id='PixmapPath'>
+<title>PixmapPath</title>
+
+<command>
+<cmdsynopsis>
+	<arg choice='plain'>PixmapPath path</arg>
+</cmdsynopsis>
+</command>
+
+<para>This command is obsolete. Please use
+<fvwmref cmd="ImagePath"/>
+instead.</para>
+
+</section>
