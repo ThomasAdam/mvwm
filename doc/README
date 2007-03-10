@@ -1,5 +1,5 @@
 
-# $Id: README,v 1.1 2007/03/10 05:14:45 scott Exp $
+# $Id: README,v 1.2 2007/03/10 05:55:11 scott Exp $
 
 This directory contains FVWM XML documentation. It is configured to output
 an fvwm.1 man page & a plethora of HTML files - all from the same (XML)
@@ -8,6 +8,12 @@ source.
 If you do not want to produce this documentation please use:
 
 ./configure --disable-htmldoc
+
+Once it is built, you should be able to point your browser to:
+
+file:///usr/local/share/doc/fvwm/index.html
+
+(Change "/usr/local" if you use ./configure --prefix="...".)
 
 For developers, the XML source files supersede the old fvwm man page.
 Please make any documentation changes here & NOT in the fvwm/fvwm.1.in
