@@ -1,10 +1,11 @@
 
-# $Id: Makefile.am,v 1.1 2007/03/10 05:16:02 scott Exp $
+# $Id: Makefile.am,v 1.2 2007/03/11 11:58:20 scott Exp $
 
 docdir=@FVWM_DOCDIR@/images
+EXTRA_DIST=fvwm.logo.png fvwm.logo2.png m.logo.png
+
 if FVWM_BUILD_HTMLDOC
-doc_DATA=fvwm.logo.png fvwm.logo2.png m.logo.png
-EXTRA_DIST=$(doc_DATA)
+doc_DATA=$(EXTRA_DIST)
 endif
 
 all:

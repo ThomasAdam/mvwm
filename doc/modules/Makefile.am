@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.2 2007/03/11 03:21:51 scott Exp $
+# $Id: Makefile.am,v 1.3 2007/03/11 11:58:20 scott Exp $
 
 docdir=@FVWM_DOCDIR@/modules
 XSLTPROC=@XSLTPROC@
@@ -8,12 +8,14 @@ XSL_FILE=$(srcdir)/../fvwm.xsl
 
 MODULES=FvwmAnimate FvwmAuto FvwmBacker FvwmBanner FvwmButtons FvwmCommand FvwmConsole FvwmCpp FvwmDebug FvwmDragWell FvwmEvent FvwmForm FvwmGtk FvwmIconBox FvwmIconMan FvwmIdent FvwmM4 FvwmPager FvwmPerl FvwmProxy FvwmRearrange FvwmSave FvwmSaveDesk FvwmScript FvwmScroll FvwmTabs FvwmTaskBar FvwmTheme FvwmWharf FvwmWindowMenu FvwmWinList
 HTML_FILES=$(patsubst %,%.html,$(MODULES))
+XML_FILES=todo.xml
+EXTRA_DIST=modules.html $(XML_FILES)
 
 if FVWM_BUILD_HTMLDOC
 doc_DATA=$(HTML_FILES) modules.html
-EXTRA_DIST=modules.html todo.xml
 all: $(HTML_FILES)
 endif
+
 
 QUIET=@
 clean:
