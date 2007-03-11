@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.1 2007/03/10 05:16:02 scott Exp $
+# $Id: Makefile.am,v 1.2 2007/03/11 03:21:51 scott Exp $
 
 docdir=@FVWM_DOCDIR@/modules
 XSLTPROC=@XSLTPROC@
@@ -23,4 +23,4 @@ clean:
 # %.html : $(srcdir)/%.xml
 %.html: $(srcdir)/todo.xml
 	$(QUIET) echo "Generating $@"
-	$(QUIET) $(XSLTPROC) --xinclude --stringparam html.stylesheet "../style.css" -o $@ $(XSL_FILE) $<
+	$(QUIET) $(XSLTPROC) --path .. --xinclude --stringparam html.stylesheet "../style.css" -o $@ $(XSL_FILE) $<

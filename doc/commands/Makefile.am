@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2007/03/10 05:14:45 scott Exp $
+# $Id: Makefile.am,v 1.2 2007/03/11 03:21:51 scott Exp $
 
 docdir=@FVWM_DOCDIR@/commands
 XSLTPROC=@XSLTPROC@
@@ -21,4 +21,4 @@ clean:
 # All HTML output is generated from XML files.
 %.html : $(srcdir)/%.xml
 	$(QUIET) echo "Generating $@"
-	$(QUIET) $(XSLTPROC) --xinclude --stringparam html.stylesheet "../style.css" -o $@ $(XSL_FILE) $<
+	$(QUIET) $(XSLTPROC) --path .. --xinclude --stringparam html.stylesheet "../style.css" -o $@ $(XSL_FILE) $<
