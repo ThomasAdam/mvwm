@@ -14,7 +14,7 @@
               encoding="UTF-8"
               indent="no"/>
   <!-- ********************************************************************
-       $Id: fvwm-man.xsl,v 1.2 2007/03/11 11:58:20 scott Exp $
+       $Id: fvwm-man.xsl,v 1.3 2007/03/14 11:56:34 scott Exp $
        ********************************************************************
 
        This file is part of the XSL DocBook Stylesheet distribution.
@@ -147,6 +147,15 @@
 <manual>
 	<xsl:value-of select="artheader/title"/>
 </manual>
+</xsl:template>
+
+<!-- escape special characters (as for <refentry>) -->
+<xsl:template match="//article//text()">
+  <xsl:call-template name="escape.roff.specials">
+    <xsl:with-param name="content">
+      <xsl:value-of select="."/>
+    </xsl:with-param>
+  </xsl:call-template>
 </xsl:template>
 
 
