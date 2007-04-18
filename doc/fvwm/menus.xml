@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: menus.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: menus.xml,v 1.2 2007/04/18 23:56:09 renato Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -81,8 +81,10 @@ optional.</para>
 
 <para>Additionally, if the menu is too long to fit on the screen, the
 excess menu items are put in a continuation menu and a sub menu
-with the string "More..." is placed at the bottom of the menu.
-Finally, there may be a picture running up either side of the menu
+with the string "More..." is placed at the bottom of the menu. The
+"More..." string honors the locale settings.</para>
+
+<para>Finally, there may be a picture running up either side of the menu
 (a "side bar").</para>
 
 </section>
