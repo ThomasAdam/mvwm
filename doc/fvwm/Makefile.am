@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.4 2007/05/10 14:05:03 scott Exp $
+# $Id: Makefile.am,v 1.5 2007/05/10 15:23:03 scott Exp $
 
 docdir=@FVWM_DOCDIR@/fvwm
 XSLTPROC=@XSLTPROC@
@@ -11,7 +11,8 @@ SECTIONS=authors bidirText bindings bugs builtinBindings colorGradients colorset
 COMMAND_FILES=$(shell ls $(srcdir)/../commands/*.xml)
 
 # SS: Hmmm, I'm not sure if all versions of make support patsubst.	
-HTML_FILES=$(patsubst %,%.html,$(SECTIONS))
+# HTML_FILES=$(patsubst %,%.html,$(SECTIONS))
+HTML_FILES=fvwm.man.html
 XML_FILES=$(patsubst %,$(srcdir)/%.xml,$(SECTIONS))
 EXTRA_DIST=$(XML_FILES)
 BUILD_FILES=
@@ -43,3 +44,4 @@ fvwm.man.html: $(XML_FILES) $(XSL_FILE) ../fvwm.ent $(COMMAND_FILES)
 fvwm.1: $(XML_FILES) $(srcdir)/fvwm.man.xml $(XSL_MAN_FILE)
 	$(QUIET) echo "Generating $@ man page"
 	$(QUIET) $(XSLTPROC) --path .. --xinclude $(XSL_MAN_FILE) $(srcdir)/fvwm.man.xml
+
