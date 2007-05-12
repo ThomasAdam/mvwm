@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.4 2007/05/10 15:23:03 scott Exp $
+# $Id: Makefile.am,v 1.5 2007/05/12 14:48:08 scott Exp $
 
 docdir=@FVWM_DOCDIR@/modules
 XSLTPROC=@XSLTPROC@
@@ -25,7 +25,7 @@ clean:
 
 FvwmTabs.html: $(srcdir)/FvwmTabs.xml ../fvwm.ent
 	$(QUIET) echo "Generating $@"
-	$(QUIET) $(XSLTPROC) --path .. --xinclude --stringparam html.stylesheet "../style.css" -o $@ $(XSL_FILE) $<
+	$(QUIET) $(XSLTPROC) --path .. --xinclude --stringparam html.stylesheet "../style.css" --stringparam section.autolabel 1 -o $@ $(XSL_FILE) $<
 
 FvwmTabs.1: $(srcdir)/FvwmTabs.xml $(XSL_MAN_FILE)
 	$(QUIET) echo "Generating $@ man page"
