@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: fvwm.man.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: fvwm.man.xml,v 1.2 2007/06/07 20:09:52 griph Exp $ -->
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -38,7 +38,7 @@
 Check <ulink url='http://www.gnome.org'>http://www.gnome.org</ulink>
 for what that may mean. To disable <acronym>GNOME</acronym> hints for some
 or all windows, the
-<fvwmref cmd="GNOMEIgnoreHints"/>
+<fvwmref cmd="Style" opt="GNOMEIgnoreHints"/>
 style can be used.</para>
 </section>
 

@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: bidirText.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: bidirText.xml,v 1.2 2007/06/07 20:09:52 griph Exp $ -->
 
 
 <section id='bidirectional_text'>
@@ -25,6 +25,6 @@ iso8859-8 and iso10646-1 (unicode), but not other iso8859-* fonts.</para>
 <para>This bi-directional text support is done using the
 <emphasis remap='I'>fribidi</emphasis>
 library compile time option, see
-<emphasis remap='I'>INSTALL.fvwm</emphasis>.</para>
+<filename>INSTALL.fvwm</filename>.</para>
 
 </section>

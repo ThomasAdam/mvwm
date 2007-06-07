@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: execution.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: execution.xml,v 1.2 2007/06/07 20:09:52 griph Exp $ -->
 
 <section id='command_execution'>
 <title>Command Execution</title>
@@ -32,7 +32,7 @@ specified command should have been</para>
 which is fairly transparent to the configuration file.</para>
 
 <para>Example: the
-<emphasis remap='I'>config</emphasis>
+<filename>config</filename>
 file contains the line</para>
 
 <programlisting>
