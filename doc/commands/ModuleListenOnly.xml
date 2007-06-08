@@ -6,16 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: ModuleListenOnly.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: ModuleListenOnly.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='ModuleListenOnly'>
 <title>ModuleListenOnly</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>ModuleListenOnly modulename [moduleparams]</arg>
+	<command>ModuleListenOnly</command>
+	<arg choice='plain'><replaceable>modulename</replaceable></arg>
+	<arg choice='opt'><replaceable>moduleparams</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command works like the
 <fvwmref cmd="Module"/>
@@ -24,7 +26,7 @@ be handy to write a module as a shell script that is triggered by
 external events without the burden to answer packets sent by
 fvwm. For example, a module written as a shell script may change
 labels of the
-<emphasis remap='B'>FvwmButtons</emphasis>
+<fvwmref mod="FvwmButtons"/>
 module to implement a simple clock.</para>
 
 </section>

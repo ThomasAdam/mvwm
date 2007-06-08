@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: RestackTransients.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: RestackTransients.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='RestackTransients'>
 <title>RestackTransients</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>RestackTransients</arg>
+    <command>RestackTransients</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command regroups the transients of a window close to it in
 the stacking order as if the window had just been lowered and then

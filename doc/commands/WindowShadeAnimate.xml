@@ -6,16 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: WindowShadeAnimate.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: WindowShadeAnimate.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='WindowShadeAnimate'>
 <title>WindowShadeAnimate</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>WindowShadeAnimate [steps[p]]</arg>
+	<command>WindowShadeAnimate</command>
+	<arg choice='opt'><replaceable>steps</replaceable><arg choice='opt'>p</arg></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command is obsolete.  Please use the
 <fvwmref cmd="Style" opt="WindowShadeSteps"/>

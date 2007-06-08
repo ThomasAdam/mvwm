@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: RecaptureWindow.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: RecaptureWindow.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='RecaptureWindow'>
 <title>RecaptureWindow</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>RecaptureWindow</arg>
+	<command>RecaptureWindow</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command is obsolete and should not be used anymore.  See
 <fvwmref cmd="Recapture"/>

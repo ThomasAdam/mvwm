@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: Title.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Title.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Title'>
 <title>Title</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>Title</arg>
+    <command>Title</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Does nothing This is used to insert a title line in a popup or menu.</para>
 

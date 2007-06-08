@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Prev.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Prev.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -11,18 +11,20 @@
 <section id='Prev'>
 <title>Prev</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>Prev [(conditions)] command</arg>
+	<command>Prev</command>
+	<arg choice='opt'>(<replaceable>conditions</replaceable>)</arg>
+	<arg choice='plain'><replaceable>command</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Performs
-<emphasis remap='I'>command</emphasis>
+<replaceable>command</replaceable>
 (typically
 <fvwmref cmd="Focus"/>)
 on the previous window which satisfies all
-<emphasis remap='I'>conditions</emphasis>.
+<replaceable>conditions</replaceable>.
 If the command is running in a window context, it starts looking
 for a matching window from there.  Otherwise it starts at the
 focused window.

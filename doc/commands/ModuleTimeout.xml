@@ -6,21 +6,22 @@
 %myents;
 ]>
 
-<!-- $Id: ModuleTimeout.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: ModuleTimeout.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='ModuleTimeout'>
 <title>ModuleTimeout</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>ModuleTimeout timeout</arg>
+	<command>ModuleTimeout</command>
+	<arg choice='plain'><replaceable>timeout</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Specifies how many seconds fvwm waits for a module to respond. If
 the module does not respond within the time limit then fvwm kills
 it.
-<emphasis remap='I'>timeout</emphasis>
+<replaceable>timeout</replaceable>
 must be greater than zero, or it is reset to the default value of
 30 seconds.</para>
 

@@ -6,16 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: IconPath.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: IconPath.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='IconPath'>
 <title>IconPath</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>IconPath path</arg>
+	<command>IconPath</command>
+	<arg choice='plain'><replaceable>path</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command is obsolete.  Please use
 <fvwmref cmd="ImagePath"/>

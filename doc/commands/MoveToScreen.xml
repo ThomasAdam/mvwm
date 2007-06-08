@@ -6,20 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: MoveToScreen.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: MoveToScreen.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='MoveToScreen'>
 <title>MoveToScreen</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>MoveToScreen</arg>
-    <arg choice='opt'>screen</arg>
+    <command>MoveToScreen</command>
+    <arg choice='opt'><replaceable>screen</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Moves the selected window to another Xinerama screen.  The
-<emphasis remap='I'>screen</emphasis>
+<replaceable>screen</replaceable>
 argument can be '<fvwmopt cmd="MoveToScreen" opt="p"/>' for the primary screen,
 '<fvwmopt cmd="MoveToScreen" opt="c"/>' for the current
 screen (containing the mouse pointer),

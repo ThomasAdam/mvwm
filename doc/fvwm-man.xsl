@@ -14,7 +14,7 @@
               encoding="UTF-8"
               indent="no"/>
   <!-- ********************************************************************
-       $Id: fvwm-man.xsl,v 1.5 2007/06/08 10:28:09 griph Exp $
+       $Id: fvwm-man.xsl,v 1.6 2007/06/08 22:06:10 griph Exp $
        ********************************************************************
 
        This file is part of the XSL DocBook Stylesheet distribution.
@@ -110,17 +110,19 @@
 </xsl:template>
 
 <xsl:template match="section/section/section/title">
-	<xsl:text>.TP&#10;</xsl:text>
+
 	<xsl:choose>
 		<xsl:when test="parent::section//cmdsynopsis/command/text() = text()">
-			<xsl:apply-templates select="parent::section//cmdsynopsis/*"/>
+			<!-- this is no good when there are multiple cmdsynopsis children -->
+			<!--xsl:apply-templates select="parent::section//cmdsynopsis/*"/-->
 		</xsl:when>
 		<xsl:otherwise>
+		  <xsl:text>.TP&#10;</xsl:text>
 			<xsl:text>.B </xsl:text>
 			<xsl:apply-templates/>
+			<xsl:text>&#10;.RS&#10;</xsl:text>
 		</xsl:otherwise>
 	</xsl:choose>
-	<xsl:text>&#10;.RS&#10;</xsl:text>
 </xsl:template>
 
 <xsl:template match="section/section/section">
@@ -131,9 +133,16 @@
 <xsl:template match="section/section/section//cmdsynopsis">
 	<xsl:choose>
 		<xsl:when test="parent::section/title/text() = command/text()">
+			<xsl:if test="preceding-sibling::cmdsynopsis/command/text() = command/text()">
+				<xsl:text>.RE&#10;</xsl:text>
+			</xsl:if>
+		  <xsl:text>.TP&#10;</xsl:text>
+		  <xsl:apply-templates select="*"/>
+		  <xsl:text>&#10;.RS&#10;</xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:apply-templates/>
+			<xsl:text>&#10;</xsl:text>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>

@@ -6,16 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: HilightColorset.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: HilightColorset.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='HilightColorset'>
 <title>HilightColorset</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>HilightColorset [num]</arg>
+	<command>HilightColorset</command>
+	<arg choice='opt'><replaceable>num</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command is obsoleted by the
 <fvwmref cmd="Style"/>

@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: Lower.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Lower.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Lower'>
 <title>Lower</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>Lower</arg>
+    <command>Lower</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Allows the user to lower a window.  Note that this lowers a window
 only in its layer.  To bring a window to the absolute bottom, use</para>

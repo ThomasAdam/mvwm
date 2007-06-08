@@ -6,16 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: StickAcrossPages.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: StickAcrossPages.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='StickAcrossPages'>
 <title>StickAcrossPages</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>StickAcrossPages [bool]</arg>
+	<command>StickAcrossPages</command>
+	<arg choice='opt'><replaceable>bool</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Works like
 <fvwmref cmd="Stick"/>

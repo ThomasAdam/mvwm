@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: RaiseLower.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: RaiseLower.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='RaiseLower'>
 <title>RaiseLower</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>RaiseLower</arg>
+    <command>RaiseLower</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Alternately raises and lowers a window.  The window is raised if
 it is obscured by any window (except for its own transients when

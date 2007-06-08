@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: Nop.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Nop.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Nop'>
 <title>Nop</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>Nop</arg>
+	<command>Nop</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Does nothing.  This is used to insert a blank line or separator in
 a menu.  If the menu item specification is</para>

@@ -6,16 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: Plus.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Plus.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Plus'>
-<title>Plus</title>
+<title><manonly>+</manonly><htmlonly>Plus</htmlonly></title>
 
-<command>
+<htmlonly>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>+</arg>
+	<command>+</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
+</htmlonly>
 
 <para>Used to continue adding to the last specified decor, function or
 menu. See the discussion for

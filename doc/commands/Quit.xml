@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: Quit.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Quit.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Quit'>
 <title>Quit</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>Quit</arg>
+	<command>Quit</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Exits fvwm, generally causing X to exit too.</para>
 

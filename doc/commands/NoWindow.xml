@@ -6,19 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: NoWindow.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: NoWindow.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='NoWindow'>
 <title>NoWindow</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>NoWindow command</arg>
+	<command>NoWindow</command>
+	<arg choice='plain'><replaceable>command</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Performs
-<emphasis remap='I'>command</emphasis>,
+<replaceable>command</replaceable>,
 but removes the window context if any.  This is not really a
 conditional command, but a prefix that may be useful in menu items
 that should operate without a window even if such menu is bound to

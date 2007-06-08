@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: SaveQuitSession.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: SaveQuitSession.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='SaveQuitSession'>
 <title>SaveQuitSession</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>SaveQuitSession</arg>
+	<command>SaveQuitSession</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Causes a session manager (if any) to save and then shutdown the
 session. This command does not work for xsm, it seems that xsm

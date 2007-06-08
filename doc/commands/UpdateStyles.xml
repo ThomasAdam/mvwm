@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: UpdateStyles.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: UpdateStyles.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='UpdateStyles'>
 <title>UpdateStyles</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>UpdateStyles</arg>
+	<command>UpdateStyles</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>All pending updates of all windows' styles and looks are applied
 immediately.  E.g. if

@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: SaveSession.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: SaveSession.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='SaveSession'>
 <title>SaveSession</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>SaveSession</arg>
+	<command>SaveSession</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Causes a session manager (if any) to save the session.  This
 command does not work for xsm, it seems that xsm does not

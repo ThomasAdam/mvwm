@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: GnomeButton.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: GnomeButton.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='GnomeButton'>
 <title>GnomeButton</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>GnomeButton</arg>
+	<command>GnomeButton</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Used in conjunction with
 <fvwmref cmd="Mouse"/>

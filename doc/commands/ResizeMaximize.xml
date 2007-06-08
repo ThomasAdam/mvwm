@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: ResizeMaximize.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: ResizeMaximize.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='ResizeMaximize'>
 <title>ResizeMaximize</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-    <arg choice='plain'>ResizeMaximize</arg>
-    <arg choice='opt'>resize-arguments</arg>
+    <command>ResizeMaximize</command>
+    <arg choice='opt'><replaceable>resize-arguments</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Combines the effects of
 <fvwmref cmd="Resize"/>
@@ -28,7 +28,7 @@ used on an unmaximized window, the window is resized and put into
 the maximized state afterwards.  This is useful if the user wants
 to resize the window temporarily and then return to the original
 geometry.  The
-<emphasis remap='I'>resize-arguments</emphasis>
+<replaceable>resize-arguments</replaceable>
 are the same as for the
 <fvwmref cmd="Resize"/>
 command.</para>

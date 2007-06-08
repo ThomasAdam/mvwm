@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: QuitSession.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: QuitSession.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='QuitSession'>
 <title>QuitSession</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>QuitSession</arg>
+	<command>QuitSession</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Causes a session manager (if any) to shutdown the session.  This
 command does not work for xsm, it seems that xsm does not

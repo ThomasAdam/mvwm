@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: Repeat.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Repeat.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='Repeat'>
 <title>Repeat</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>Repeat</arg>
+	<command>Repeat</command>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>When the
 <emphasis remap='B'>Repeat</emphasis>

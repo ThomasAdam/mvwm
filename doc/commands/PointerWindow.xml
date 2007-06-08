@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: PointerWindow.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: PointerWindow.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -11,16 +11,18 @@
 <section id='PointerWindow'>
 <title>PointerWindow</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>PointerWindow [(conditions)] command</arg>
+	<command>PointerWindow</command>
+	<arg choice='opt'>(<replaceable>conditions</replaceable>)</arg>
+	<arg choice='plain'><replaceable>command</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Performs
-<emphasis remap='I'>command</emphasis>
+<replaceable>command</replaceable>
 if the window under the pointer satisfies all
-<emphasis remap='I'>conditions</emphasis>.
+<replaceable>conditions</replaceable>.
 Returns -1 if there is no window under the pointer.
 See <fvwmref sect="conditionals" opt="conditions" name="Conditions"/> section for a list of conditions.</para>
 

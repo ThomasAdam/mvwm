@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: None.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: None.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -11,16 +11,18 @@
 <section id='None'>
 <title>None</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>None [(conditions)] command</arg>
+	<command>None</command>
+	<arg choice="opt">(<replaceable>conditions</replaceable>)</arg>
+	<arg choice='plain'><replaceable>command</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Performs
-<emphasis remap='I'>command</emphasis>
+<replaceable>command</replaceable>
 if no window which satisfies all
-<emphasis remap='I'>conditions</emphasis>
+<replaceable>conditions</replaceable>
 exists.  The command is run in the context of the root window.
 Returns 1 if no window matches the conditions and 0 otherwise.
 See <fvwmref sect="conditionals" opt="conditions" name="Conditions"/> section for a list of conditions.</para>

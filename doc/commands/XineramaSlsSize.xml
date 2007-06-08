@@ -6,20 +6,21 @@
 %myents;
 ]>
 
-<!-- $Id: XineramaSlsSize.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: XineramaSlsSize.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='XineramaSlsSize'>
 <title>XineramaSlsSize</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>XineramaSlsSize HorizontalxVertical</arg>
+	<command>XineramaSlsSize</command>
+	<arg choice='plain'><replaceable>Horizontal</replaceable></arg>x<arg choice='plain'><replaceable>Vertical</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command configures the layout of the Single Logical screen
 feature.  It takes two arguments,
-<emphasis remap='I'>Horizontal</emphasis> and <emphasis remap='I'>Vertical</emphasis>
+<replaceable>Horizontal</replaceable> and <replaceable>Vertical</replaceable>
 which must be an integer value dividing evenly into the total
 desktop width, and height.  For an example with two
 monitors side by side which appear as one screen through the

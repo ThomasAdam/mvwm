@@ -6,19 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: WindowStyle.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: WindowStyle.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
 
 <section id='WindowStyle'>
 <title>WindowStyle</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>WindowStyle options</arg>
+	<command>WindowStyle</command>
+	<arg choice='plain'><replaceable>options</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>sets attributes (styles) on the selected window. The
-<emphasis remap='I'>options</emphasis>
+<replaceable>options</replaceable>
 are exactly the same as for the
 <fvwmref cmd="Style"/>
 command.</para>
