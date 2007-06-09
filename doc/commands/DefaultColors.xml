@@ -6,17 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: DefaultColors.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DefaultColors.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DefaultColors'>
 <title>DefaultColors</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>DefaultColors</arg>
-    <arg choice='opt'>foreground background</arg>
+    <command>DefaultColors</command>
+    <arg choice='opt'><replaceable>foreground</replaceable></arg>
+    <arg choice='opt'><replaceable>background</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para><emphasis remap='B'>DefaultColors</emphasis>
 sets the default foreground and background colors used in

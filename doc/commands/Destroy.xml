@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: Destroy.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Destroy.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='Destroy'>
 <title>Destroy</title>
 
-<command>
 <cmdsynopsis>
-	<arg choice='plain'>Destroy</arg>
+	<command>Destroy</command>
 </cmdsynopsis>
-</command>
 
 <para>Destroys an application window, which usually causes the
 application to crash and burn.</para>

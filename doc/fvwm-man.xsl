@@ -14,7 +14,7 @@
               encoding="UTF-8"
               indent="no"/>
   <!-- ********************************************************************
-       $Id: fvwm-man.xsl,v 1.6 2007/06/08 22:06:10 griph Exp $
+       $Id: fvwm-man.xsl,v 1.7 2007/06/09 09:46:41 griph Exp $
        ********************************************************************
 
        This file is part of the XSL DocBook Stylesheet distribution.
@@ -112,6 +112,8 @@
 <xsl:template match="section/section/section/title">
 
 	<xsl:choose>
+		<xsl:when test="parent::section//cmdsynopsis/@command = text()">
+		</xsl:when>
 		<xsl:when test="parent::section//cmdsynopsis/command/text() = text()">
 			<!-- this is no good when there are multiple cmdsynopsis children -->
 			<!--xsl:apply-templates select="parent::section//cmdsynopsis/*"/-->
@@ -132,7 +134,7 @@
 
 <xsl:template match="section/section/section//cmdsynopsis">
 	<xsl:choose>
-		<xsl:when test="parent::section/title/text() = command/text()">
+		<xsl:when test="parent::section/title/text() = command/text() or @command = parent::section/title/text()">
 			<xsl:if test="preceding-sibling::cmdsynopsis/command/text() = command/text()">
 				<xsl:text>.RE&#10;</xsl:text>
 			</xsl:if>

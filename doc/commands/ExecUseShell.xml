@@ -6,21 +6,22 @@
 %myents;
 ]>
 
-<!-- $Id: ExecUseShell.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: ExecUseShell.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='ExecUseShell'>
 <title>ExecUseShell</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>ExecUseShell [shell]</arg>
+	<command>ExecUseShell</command>
+	<arg choice='opt'><replaceable>shell</replaceable></arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>Makes the
 <fvwmref cmd="Exec"/>
 command use the specified shell, or the value of the
-<emphasis remap='I'>$SHELL</emphasis>
+<envar>$SHELL</envar>
 environment variable if no shell is specified, instead of the
 default Bourne shell
 (<filename>/bin/sh</filename>).</para>

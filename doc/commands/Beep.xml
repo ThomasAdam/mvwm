@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: Beep.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Beep.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='Beep'>
 <title>Beep</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>Beep</arg>
+    <command>Beep</command>
 </cmdsynopsis>
-</command>
 
 <para>As might be expected, this makes the terminal beep.</para>
 

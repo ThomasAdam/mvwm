@@ -6,17 +6,15 @@
 %myents;
 ]>
 
-<!-- $Id: DefaultIcon.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DefaultIcon.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DefaultIcon'>
 <title>DefaultIcon</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>DefaultIcon</arg>
-    <arg choice='plain'>filename</arg>
+    <command>DefaultIcon</command>
+    <arg choice='plain'><replaceable>filename</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>sets the default icon which is used if a window has neither an
 client-supplied icon nor an icon supplied via the

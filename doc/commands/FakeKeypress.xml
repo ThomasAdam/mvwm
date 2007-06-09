@@ -6,16 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: FakeKeypress.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: FakeKeypress.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='FakeKeypress'>
 <title>FakeKeypress</title>
 
-<command>
+<!--command-->
 <cmdsynopsis>
-	<arg choice='plain'>FakeKeypress [command value] ...</arg>
+	<command>FakeKeypress</command>
+	<arg choice='plain' rep='repeat'>
+		<optional><arg choice='plain'><replaceable>command</replaceable></arg>
+		<arg choice='plain'><replaceable>value</replaceable></arg></optional>
+	</arg>
 </cmdsynopsis>
-</command>
+<!--/command-->
 
 <para>This command is mainly intended for debugging fvwm and no
 guarantees are made that it works for you.

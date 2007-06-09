@@ -6,19 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: Desk.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Desk.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='Desk'>
 <title>Desk</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>Desk</arg>
-    <arg choice='plain'>arg1</arg>
-    <arg choice='opt'>arg2</arg>
-    <arg choice='opt'>min max</arg>
+    <command>Desk</command>
+    <arg choice='plain'><replaceable>arg1</replaceable></arg>
+    <arg choice='opt'><replaceable>arg2</replaceable></arg>
+    <arg choice='opt'><replaceable>min</replaceable>
+        <replaceable>max</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>This command has been renamed.  Please see
 <fvwmref cmd="GotoDesk"/>

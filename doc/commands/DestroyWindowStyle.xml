@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: DestroyWindowStyle.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DestroyWindowStyle.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DestroyWindowStyle'>
 <title>DestroyWindowStyle</title>
 
-<command>
 <cmdsynopsis>
-	<arg choice='plain'>DestroyWindowStyle</arg>
+	<command>DestroyWindowStyle</command>
 </cmdsynopsis>
-</command>
 
 <para>deletes the styles set by the
 <fvwmref cmd="WindowStyle"/>

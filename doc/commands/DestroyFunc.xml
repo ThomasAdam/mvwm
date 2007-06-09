@@ -6,16 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: DestroyFunc.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DestroyFunc.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DestroyFunc'>
 <title>DestroyFunc</title>
 
-<command>
 <cmdsynopsis>
-	<arg choice='plain'>DestroyFunc function</arg>
+	<command>DestroyFunc</command>
+	<arg choice='plain'><replaceable>function</replaceable></arg>
 </cmdsynopsis>
-</command>
+
 
 <para>Deletes a function, so that subsequent references to it are no
 longer valid.  You can use this to change the contents of a

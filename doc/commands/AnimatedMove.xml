@@ -6,19 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: AnimatedMove.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: AnimatedMove.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='AnimatedMove'>
 <title>AnimatedMove</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>AnimatedMove</arg>
-    <arg choice='plain'>x</arg>
-    <arg choice='plain'>y</arg>
+    <command>AnimatedMove</command>
+    <arg choice='plain'><replaceable>x</replaceable></arg>
+    <arg choice='plain'><replaceable>y</replaceable></arg>
     <arg choice='opt'>Warp</arg>
 </cmdsynopsis>
-</command>
 
 
 

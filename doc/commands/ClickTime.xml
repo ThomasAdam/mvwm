@@ -6,17 +6,15 @@
 %myents;
 ]>
 
-<!-- $Id: ClickTime.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: ClickTime.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='ClickTime'>
 <title>ClickTime</title>
 
-<command>
 <cmdsynopsis>
-	<arg choice='plain'>ClickTime</arg>
-	<arg choice='opt'>delay</arg>
+	<command>ClickTime</command>
+	<arg choice='opt'><replaceable>delay</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>Specifies the maximum delay in milliseconds between a button press
 and a button release for the

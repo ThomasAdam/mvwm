@@ -6,21 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: Echo.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Echo.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='Echo'>
 <title>Echo</title>
 
-<command>
 <cmdsynopsis>
-	<arg choice='plain'>Echo string</arg>
+	<command>Echo</command>
+	<arg choice='plain'><replaceable>string</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>Prints a message to
-<emphasis remap='I'>stderr</emphasis>.
+<filename>stderr</filename>.
 Potentially useful for debugging things in your
-<emphasis remap='I'>config</emphasis>.</para>
+<filename>config</filename>.</para>
 
 <programlisting>
 Echo Beginning style definitions...

@@ -6,20 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: DestroyMenuStyle.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DestroyMenuStyle.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DestroyMenuStyle'>
 <title>DestroyMenuStyle</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>DestroyMenuStyle</arg>
-    <arg choice='plain'>menustyle</arg>
+    <command>DestroyMenuStyle</command>
+    <arg choice='plain'><replaceable>menustyle</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>Deletes the menu style named
-<emphasis remap='I'>menustyle</emphasis>
+<replaceable>menustyle</replaceable>
 and changes all menus using this style to the default style, you
 cannot destroy the default menu style.</para>
 

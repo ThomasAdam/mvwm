@@ -6,19 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: DefaultLayers.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: DefaultLayers.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='DefaultLayers'>
 <title>DefaultLayers</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>DefaultLayers</arg>
-    <arg choice='plain'>bottom</arg>
-    <arg choice='plain'>put</arg>
-    <arg choice='plain'>top</arg>
+    <command>DefaultLayers</command>
+    <arg choice='plain'><replaceable>bottom</replaceable></arg>
+    <arg choice='plain'><replaceable>put</replaceable></arg>
+    <arg choice='plain'><replaceable>top</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 <para>changes the layers that are used for the
 <fvwmref cmd="Style" opt="StaysOnBottom"/>,

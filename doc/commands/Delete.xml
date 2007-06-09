@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: Delete.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: Delete.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='Delete'>
 <title>Delete</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>Delete</arg>
+    <command>Delete</command>
 </cmdsynopsis>
-</command>
 
 <para>Sends a message to a window asking that it remove itself,
 frequently causing the application to exit.</para>

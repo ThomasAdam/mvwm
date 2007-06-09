@@ -6,27 +6,26 @@
 %myents;
 ]>
 
-<!-- $Id: CopyMenuStyle.xml,v 1.1 2007/03/10 05:14:45 scott Exp $ -->
+<!-- $Id: CopyMenuStyle.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
 
 <section id='CopyMenuStyle'>
 <title>CopyMenuStyle</title>
 
-<command>
 <cmdsynopsis>
-    <arg choice='plain'>CopyMenuStyle</arg>
-    <arg choice='plain'>orig-menustyle</arg>
-    <arg choice='plain'>dest-menustyle</arg>
+    <command>CopyMenuStyle</command>
+    <arg choice='plain'><replaceable>orig-menustyle</replaceable></arg>
+    <arg choice='plain'><replaceable>dest-menustyle</replaceable></arg>
 </cmdsynopsis>
-</command>
 
 
 
 <para>Copy
-<emphasis remap='I'>orig-menustyle</emphasis> to <emphasis remap='I'>dest-menustyle</emphasis>,
+<replaceable>orig-menustyle</replaceable> to
+<replaceable>dest-menustyle</replaceable>,
 where
-<emphasis remap='I'>orig-menustyle</emphasis>
+<replaceable>orig-menustyle</replaceable>
 is an existing menu style.  If the menu style
-<emphasis remap='I'>dest_menustyle</emphasis>
+<replaceable>dest_menustyle</replaceable>
 does not exist, then it is created.</para>
 
 </section>
