@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: Menu.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Menu.xml,v 1.3 2007/06/09 14:59:21 griph Exp $ -->
 
 <section id='Menu'>
 <title>Menu</title>
@@ -158,7 +158,7 @@ simpler than this description).  The default is "o0".  The prefix
 "o&lt;number&gt;" is an abbreviation for "+&lt;number&gt;-&lt;number&gt;m".</para>
 
 <para>A prefix of
-''<fvwmopt cmd="Menu" opt="c"/>'
+'<fvwmopt cmd="Menu" opt="c"/>'
 is equivalent to "o50".  Examples:</para>
 
 <programlisting>
