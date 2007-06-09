@@ -1,33 +1,17 @@
 <?xml version='1.0'?>
 <!--
-	$Id: fvwm.xsl,v 1.1 2007/03/10 05:14:45 scott Exp $
+	$Id: fvwm.xsl,v 1.2 2007/06/09 13:32:10 scott Exp $
 
 	Author: Scott Smedley
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version='1.0'>
 
-<!--
-<xsl:output method="html"/>
-<xsl:include href="/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl"/>
-<xsl:import href="/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl"/>
--->
 <xsl:import href="docbook-xsl/html/docbook.xsl"/>
 
 <!-- twdt = The Whole Damn Thing ... ie. everything on a single page -->
 <xsl:param name="twdt" select="''"/>
 <xsl:param name="header.file" select="'../header.html'"/>
 <xsl:param name="footer.file" select="'../footer.html'"/>
-
-<!-- manonly -->
-<xsl:template match="manonly">
-</xsl:template>
-
-<!-- htmlonly -->
-<xsl:template match="htmlonly">
-	<xsl:apply-templates/>
-</xsl:template>
-
-
 
 <!-- fvwmref -->
 <xsl:template match="fvwmref">

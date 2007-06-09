@@ -1,9 +1,9 @@
 
-# $Id: Makefile.am,v 1.3 2007/04/08 01:53:42 scott Exp $
+# $Id: Makefile.am,v 1.4 2007/06/09 13:32:10 scott Exp $
 
 docdir=@FVWM_DOCDIR@
 
-HTML_FILES=index.html allCommands.html groupedCommands.html style.css
+HTML_FILES=index.html allCommands.html groupedCommands.html modules.html style.css
 EXTRA_DIST=fvwm.xsl fvwm-man.xsl header.html $(HTML_FILES)
 EXTRA_DIST+=$(shell find $(srcdir)/docbook-x?l -type f)
 

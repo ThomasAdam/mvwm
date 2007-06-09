@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: images.xml,v 1.2 2007/06/07 20:09:52 griph Exp $ -->
+<!-- $Id: images.xml,v 1.3 2007/06/09 13:32:10 scott Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -43,9 +43,9 @@ styles.</para>
 <para>The rendering options are specified as a string appended to the SVG
 filename as follows:</para>
 
-<htmlonly>
+<para output="html">
 &fixme; <!-- This looks crappy as HTML output. -->
-</htmlonly>
+</para>
 
 <para><replaceable><filename>image.svg</filename></replaceable><emphasis remap='B'>:</emphasis><optional><optional><emphasis remap='B'>-</emphasis></optional><replaceable>width</replaceable><emphasis remap='B'>x</emphasis><optional><emphasis remap='B'>-</emphasis></optional><replaceable>height</replaceable></optional><optional><optional><emphasis remap='B'>+</emphasis>|<emphasis remap='B'>-</emphasis></optional><replaceable>xpos</replaceable><optional><emphasis remap='B'>+</emphasis>|<emphasis remap='B'>-</emphasis></optional><replaceable>ypos</replaceable></optional><optional><emphasis remap='B'>@</emphasis><replaceable>angle</replaceable></optional><optional><optional><emphasis remap='B'>*</emphasis>|<emphasis remap='B'>/</emphasis></optional><replaceable>scale</replaceable></optional></para>
 
