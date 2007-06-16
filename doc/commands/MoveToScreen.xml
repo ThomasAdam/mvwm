@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: MoveToScreen.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: MoveToScreen.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='MoveToScreen'>
 <title>MoveToScreen</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>MoveToScreen</command>
-    <arg choice='opt'><replaceable>screen</replaceable></arg>
+	<command>MoveToScreen</command
+	><arg choice='opt'
+		><replaceable>screen</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Moves the selected window to another Xinerama screen.  The
 <replaceable>screen</replaceable>

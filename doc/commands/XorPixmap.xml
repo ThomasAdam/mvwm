@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: XorPixmap.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: XorPixmap.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='XorPixmap'>
 <title>XorPixmap</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>XorPixmap</command>
-    <arg choice='opt'><replaceable>pixmap</replaceable></arg>
+	<command>XorPixmap</command
+	><arg choice='opt'
+		><replaceable>pixmap</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Selects the pixmap with which bits are xor'ed when doing
 rubber-band window moving or resizing.  This has a better chance

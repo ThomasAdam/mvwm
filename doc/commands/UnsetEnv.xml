@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: UnsetEnv.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: UnsetEnv.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='UnsetEnv'>
 <title>UnsetEnv</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>UnsetEnv</command>
-	<arg coice='plain'><replaceable>variable</replaceable></arg>
+	<command>UnsetEnv</command
+	><arg coice='plain'
+		><replaceable>variable</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Unset an environment variable, similar to shell's export or
 unsetenv command. The

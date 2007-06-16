@@ -6,18 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: XineramaSlsScreens.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: XineramaSlsScreens.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='XineramaSlsScreens'>
 <title>XineramaSlsScreens</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>XineramaSlsScreens</command>
-	<arg choice='plain'>number-of-screens</arg>
-	<arg rep='repeat' choics='plain'><replaceable>screen-spec</replaceable></arg>
+	<command>XineramaSlsScreens</command
+	><arg choice='plain'>number-of-screens</arg
+	><arg rep='repeat' choics='plain'
+		><replaceable>screen-spec</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command configures the layout of the Single Logical screen
 feature.  Its first argument is the number of screens to use.  It

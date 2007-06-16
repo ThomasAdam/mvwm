@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: SendToModule.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: SendToModule.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='SendToModule'>
 <title>SendToModule</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>SendToModule</command>
-	<arg choice='plain'><replaceable>modulename</replaceable></arg>
-	<arg choice='plain'><replaceable>string</replaceable></arg>
+	<command>SendToModule</command
+	><arg choice='plain'
+		><replaceable>modulename</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>string</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Sends an arbitrary string (no quotes required) to all modules,
 whose alias or name matching

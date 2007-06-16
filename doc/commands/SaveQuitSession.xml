@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: SaveQuitSession.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: SaveQuitSession.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='SaveQuitSession'>
 <title>SaveQuitSession</title>
 
-<!--command-->
 <cmdsynopsis>
 	<command>SaveQuitSession</command>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Causes a session manager (if any) to save and then shutdown the
 session. This command does not work for xsm, it seems that xsm

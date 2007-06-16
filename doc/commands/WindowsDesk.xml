@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: WindowsDesk.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: WindowsDesk.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='WindowsDesk'>
 <title>WindowsDesk</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>WindowsDesk</command>
-    <arg choice='plain'><replaceable>arg1</replaceable></arg>
-    <arg choice='opt'><replaceable>arg2</replaceable></arg>
+	<command>WindowsDesk</command
+	><arg choice='plain'
+		><replaceable>arg1</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>arg2</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Moves the selected window to another desktop.</para>
 

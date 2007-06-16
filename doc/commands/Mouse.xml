@@ -6,21 +6,29 @@
 %myents;
 ]>
 
-<!-- $Id: Mouse.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Mouse.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Mouse'>
 <title>Mouse</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Mouse</command>
-	<arg choice='opt'>(<replaceable>window</replaceable>)</arg>
-	<arg choice='plain'><replaceable>Button</replaceable></arg>
-	<arg choice='plain'><replaceable>Context</replaceable></arg>
-	<arg choice='plain'><replaceable>Modifiers</replaceable></arg>
-	<arg choice='plain'><replaceable>Function</replaceable></arg>
+	<command>Mouse</command
+	><arg choice='opt'
+		>(<replaceable>window</replaceable
+	>)</arg
+	><arg choice='plain'
+		><replaceable>Button</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>Context</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>Modifiers</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>Function</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Defines a mouse binding, or removes the binding if
 <replaceable>Function</replaceable>

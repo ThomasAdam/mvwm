@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: Raise.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Raise.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Raise'>
 <title>Raise</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>Raise</command>
+	<command>Raise</command>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Allows the user to raise a window. Note that this raises a window
 only in its layer. To bring a window to the absolute top, use</para>

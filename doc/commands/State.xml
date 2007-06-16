@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: State.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: State.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='State'>
 <title>State</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>State</command>
-	<arg choice='plain'><replaceable>state</replaceable></arg>
-	<arg choice='opt'><replaceable>bool</replaceable></arg>
+	<command>State</command
+	><arg choice='plain'
+		><replaceable>state</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>bool</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Sets, clears or toggles one of the 32 user defined states which
 are associated with each window.  The

@@ -6,17 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: SnapAttraction.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: SnapAttraction.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='SnapAttraction'>
 <title>SnapAttraction</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>SnapAttraction</command>
-    <arg choice='opt'><replaceable>proximity</replaceable>
-      <arg choice='opt'><replaceable>behaviour</replaceable></arg>
-      <arg choice='opt'>Screen</arg></arg>
+	<command>SnapAttraction</command
+	><arg choice='opt'
+		><replaceable>proximity</replaceable
+		><arg choice='opt'
+			><replaceable>behaviour</replaceable
+		></arg
+		><arg choice='opt'>Screen</arg
+	></arg>
 </cmdsynopsis>
 <!--/command-->
 

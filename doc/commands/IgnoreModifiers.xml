@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: IgnoreModifiers.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: IgnoreModifiers.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='IgnoreModifiers'>
 <title>IgnoreModifiers</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>IgnoreModifiers</command>
-	<arg choice='opt'><replaceable>Modifiers</replaceable></arg>
+	<command>IgnoreModifiers</command
+	><arg choice='opt'
+		><replaceable>Modifiers</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Tells fvwm which modifiers to ignore when matching Mouse or Key
 bindings.

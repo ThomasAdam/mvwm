@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: RestackTransients.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: RestackTransients.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='RestackTransients'>
 <title>RestackTransients</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>RestackTransients</command>
+	<command>RestackTransients</command>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command regroups the transients of a window close to it in
 the stacking order as if the window had just been lowered and then

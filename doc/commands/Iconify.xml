@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: Iconify.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Iconify.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Iconify'>
 <title>Iconify</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Iconify</command>
-	<arg choice='opt'><replaceable>bool</replaceable></arg>
+	<command>Iconify</command
+	><arg choice='opt'
+		><replaceable>bool</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Iconifies a window if it is not already iconified or de-iconifies
 it if it is already iconified.  The optional argument

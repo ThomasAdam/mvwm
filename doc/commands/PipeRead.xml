@@ -6,18 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: PipeRead.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: PipeRead.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='PipeRead'>
 <title>PipeRead</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>PipeRead</command>
-	<arg choice='plain'><replaceable>command</replaceable></arg>
-	<arg choice='opt'>quiet</arg>
+	<command>PipeRead</command
+	><arg choice='plain'
+		><replaceable>command</replaceable
+	></arg
+	><arg choice='opt'>quiet</arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Causes fvwm to read commands from the output of the
 <replaceable>command</replaceable>.

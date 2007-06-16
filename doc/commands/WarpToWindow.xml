@@ -6,18 +6,22 @@
 %myents;
 ]>
 
-<!-- $Id: WarpToWindow.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: WarpToWindow.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='WarpToWindow'>
 <title>WarpToWindow</title>
 
-<!--command-->
 <cmdsynopsis>
-  <command>WarpToWindow</command>
-  <arg choice='plain'><replaceable>x</replaceable><optional>p</optional></arg>
-  <arg choice='plain'><replaceable>y</replaceable><optional>p</optional></arg>
+	<command>WarpToWindow</command
+	><arg choice='plain'
+		><replaceable>x</replaceable
+		><optional>p</optional
+	></arg
+	><arg choice='plain'
+		><replaceable>y</replaceable
+		><optional>p</optional
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Warps the cursor to the associated window.  The parameters
 <replaceable>x</replaceable> and <replaceable>y</replaceable>

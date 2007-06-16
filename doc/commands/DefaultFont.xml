@@ -6,14 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: DefaultFont.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
+<!-- $Id: DefaultFont.xml,v 1.3 2007/06/16 12:38:45 griph Exp $ -->
 
 <section id='DefaultFont'>
 <title>DefaultFont</title>
 
 <cmdsynopsis>
-    <command>DefaultFont</command>
-    <arg choice='opt'><replaceable>fontname</replaceable></arg>
+	<command>DefaultFont</command
+	><arg choice='opt'
+		><replaceable>fontname</replaceable
+	></arg>
 </cmdsynopsis>
 
 <para><emphasis remap='B'>DefaultFont</emphasis>

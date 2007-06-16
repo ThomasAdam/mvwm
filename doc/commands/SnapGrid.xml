@@ -6,19 +6,19 @@
 %myents;
 ]>
 
-<!-- $Id: SnapGrid.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: SnapGrid.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 
 <section id='SnapGrid'>
 <title>SnapGrid</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>SnapGrid</command>
-    <arg choice='opt'><replaceable>x-grid-size</replaceable>
-      <replaceable>y-grid-size</replaceable></arg>
+	<command>SnapGrid</command
+	><arg choice='opt'
+		><replaceable>x-grid-size</replaceable
+		> <replaceable>y-grid-size</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>During an interactive move a window or icon is positioned such
 that its location (top left corner) is coincident with the nearest

@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: Silent.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Silent.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Silent'>
 <title>Silent</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Silent</command>
-	<arg choice='plain'><replaceable>command</replaceable></arg>
+	<command>Silent</command
+	><arg choice='plain'
+		><replaceable>command</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>A number of commands require a window to operate on.  If
 no window was selected when such a function is invoked the user is

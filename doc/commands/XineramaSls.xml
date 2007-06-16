@@ -6,17 +6,15 @@
 %myents;
 ]>
 
-<!-- $Id: XineramaSls.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: XineramaSls.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='XineramaSls'>
 <title>XineramaSls</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>XineramaSls</command>
-	<arg choice='opt'>bool</arg>
+	<command>XineramaSls</command
+	><arg choice='opt'>bool</arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>For multi-screen implementations other than Xinerama, such as
 Single Logical Screen, it is possible to simulate a Xinerama

@@ -6,21 +6,29 @@
 %myents;
 ]>
 
-<!-- $Id: Key.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Key.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Key'>
 <title>Key</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Key</command>
-	<arg choice='opt'>(<replaceable>window</replaceable>)</arg>
-	<arg choice='plain'><replaceable>Keyname</replaceable></arg>
-	<arg choice='plain'><replaceable>Context</replaceable></arg>
-	<arg choice='plain'><replaceable>Modifiers</replaceable></arg>
-	<arg choice='plain'><replaceable>Function</replaceable></arg>
+	<command>Key</command
+	><arg choice='opt'
+		>(<replaceable>window</replaceable
+	>)</arg>
+	<arg choice='plain'
+		><replaceable>Keyname</replaceable
+	></arg>
+	<arg choice='plain'
+		><replaceable>Context</replaceable
+	></arg>
+	<arg choice='plain'
+		><replaceable>Modifiers</replaceable
+	></arg>
+	<arg choice='plain'
+		><replaceable>Function</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Binds a keyboard key to a specified fvwm command, or
 removes the binding if

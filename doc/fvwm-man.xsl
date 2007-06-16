@@ -16,7 +16,7 @@
               encoding="UTF-8"
               indent="no"/>
   <!-- ********************************************************************
-       $Id: fvwm-man.xsl,v 1.10 2007/06/15 21:07:40 griph Exp $
+       $Id: fvwm-man.xsl,v 1.11 2007/06/16 12:38:45 griph Exp $
        ********************************************************************
 
        This file is part of the XSL DocBook Stylesheet distribution.
@@ -45,6 +45,10 @@
   <xsl:param name="tbl.font.title" select="$man.font.table.title"/>
 
   <!-- ==================================================================== -->
+
+<!--xsl:variable name="arg.or.sep">|</xsl:variable-->
+<xsl:variable name="arg.choice.plain.close.str"></xsl:variable>
+<xsl:variable name="arg.rep.repeat.str"> ...</xsl:variable>
 
 <xsl:template match="section">
 	<xsl:apply-templates/>

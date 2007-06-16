@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: XorValue.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: XorValue.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='XorValue'>
 <title>XorValue</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>XorValue</command>
-    <arg choice='opt'><replaceable>number</replaceable></arg>
+	<command>XorValue</command
+	><arg choice='opt'
+		><replaceable>number</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Changes the value with which bits are xor'ed when doing
 rubber-band window moving or resizing.

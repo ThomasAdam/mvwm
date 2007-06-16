@@ -6,14 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: DestroyFunc.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
+<!-- $Id: DestroyFunc.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='DestroyFunc'>
 <title>DestroyFunc</title>
 
 <cmdsynopsis>
-	<command>DestroyFunc</command>
-	<arg choice='plain'><replaceable>function</replaceable></arg>
+	<command>DestroyFunc</command
+	><arg choice='plain'
+		><replaceable>function</replaceable
+	></arg>
 </cmdsynopsis>
 
 

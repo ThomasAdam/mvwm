@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: PrintInfo.xml,v 1.3 2007/06/10 19:07:26 griph Exp $ -->
+<!-- $Id: PrintInfo.xml,v 1.4 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='PrintInfo'>
 <title>PrintInfo</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>PrintInfo</command>
-	<arg choice='plain'><replaceable>subject</replaceable></arg>
-	<arg choice='opt'><replaceable>verbose</replaceable></arg>
+	<command>PrintInfo</command
+	><arg choice='plain'
+		><replaceable>subject</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>verbose</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Print information on
 <replaceable>subject</replaceable>

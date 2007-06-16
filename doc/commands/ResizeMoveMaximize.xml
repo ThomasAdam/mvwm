@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: ResizeMoveMaximize.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: ResizeMoveMaximize.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='ResizeMoveMaximize'>
 <title>ResizeMoveMaximize</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>ResizeMoveMaximize</command>
-    <arg choice='plain'><replaceable>resize-arguments</replaceable></arg>
-    <arg choice='plain'><replaceable>move-arguments</replaceable></arg>
+	<command>ResizeMoveMaximize</command
+	><arg choice='plain'
+		><replaceable>resize-arguments</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>move-arguments</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Combines the effects of
 <fvwmref cmd="ResizeMove"/>

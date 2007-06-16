@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: Wait.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Wait.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Wait'>
 <title>Wait</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Wait</command>
-	<arg choice='plain'><replaceable>window</replaceable></arg>
+	<command>Wait</command
+	><arg choice='plain'
+		><replaceable>window</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command is intended to be used in fvwm functions only.  It
 causes execution of a function to pause until a new window matching

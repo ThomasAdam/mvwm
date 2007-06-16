@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: KeepRc.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: KeepRc.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='KeepRc'>
 <title>KeepRc</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>KeepRc</command>
-	<arg choice='plain'><replaceable>command</replaceable></arg>
+	<command>KeepRc</command
+	><arg choice='plain'
+		><replaceable>command</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Runs the
 <replaceable>command</replaceable>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.3 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Style.xml,v 1.4 2007/06/16 12:38:46 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -11,13 +11,15 @@
 <section id='Style'>
 <title>Style</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Style</command>
-	<arg choice='plain'><replaceable>stylename</replaceable></arg>
-	<arg choice='plain' rep='repeat'><replaceable>options</replaceable></arg>
+	<command>Style</command
+	><arg choice='plain'
+		><replaceable>stylename</replaceable
+	></arg
+	><arg choice='plain' rep='repeat'
+		><replaceable>options</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>The
 <emphasis remap='B'>Style</emphasis>

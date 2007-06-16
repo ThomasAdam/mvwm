@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: SetEnv.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: SetEnv.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='SetEnv'>
 <title>SetEnv</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>SetEnv</command>
-	<arg choice='plain'><replaceable>variable</replaceable></arg>
-	<arg choice='plain'><replaceable>value</replaceable></arg>
+	<command>SetEnv</command
+	><arg choice='plain'
+		><replaceable>variable</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>value</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Set an environment variable to a new value, similar to the shell's
 export or setenv command.  The

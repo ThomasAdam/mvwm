@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: GlobalOpts.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: GlobalOpts.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -11,12 +11,12 @@
 <section id='GlobalOpts'>
 <title>GlobalOpts</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>GlobalOpts</command>
-	<arg choice='opt'><replaceable>options</replaceable></arg>
+	<command>GlobalOpts</command
+	><arg choice='opt'
+		><replaceable>options</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command is obsolete.  Please
 replace the global options in your configuration file according to

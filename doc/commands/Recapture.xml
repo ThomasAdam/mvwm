@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: Recapture.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Recapture.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Recapture'>
 <title>Recapture</title>
 
-<!--command-->
 <cmdsynopsis>
 	<command>Recapture</command>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command is obsolete and should not be used anymore.  Should
 you want to do something specific that you cannot do without it,

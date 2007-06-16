@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: conditionals.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: conditionals.xml,v 1.2 2007/06/16 12:38:46 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -306,7 +306,8 @@ Example:</para>
 <programlisting>
 <fvwmref cmd="DestroyFunc"/> ToggleFixedGeometry
 <fvwmref cmd="AddToFunc"/>   ToggleFixedGeometry
-+ I <fvwmref cmd="Pick"/> (FixedPosition) <fvwmref cmd="WindowStyle"/> VariablePosition, VariableSize
++ I <fvwmref cmd="Pick"/> (FixedPosition) \
+	<fvwmref cmd="WindowStyle"/> VariablePosition, VariableSize
 + I <fvwmref cmd="TestRc"/> (NoMatch) <fvwmref cmd="WindowStyle"/> FixedPosition, FixedSize
 </programlisting>
 

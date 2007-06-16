@@ -6,18 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: EdgeThickness.xml,v 1.2 2007/06/09 09:46:41 griph Exp $ -->
+<!-- $Id: EdgeThickness.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='EdgeThickness'>
 <title>EdgeThickness</title>
 
 <cmdsynopsis>
-	<command>EdgeThickness</command>
-	<group choice='plain'>
-		<arg choice='plain'>0</arg>
-		<arg choice='plain'>1</arg>
-		<arg choice='plain'>2</arg>
-	</group>
+	<command>EdgeThickness</command
+	><group choice='plain'
+		><arg choice='plain'>0</arg
+		><arg choice='plain'>1</arg
+		><arg choice='plain'>2</arg
+	></group>
 </cmdsynopsis>
 
 <para>This is the width or height of the invisible window that fvwm

@@ -6,18 +6,16 @@
 %myents;
 ]>
 
-<!-- $Id: PlaceAgain.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: PlaceAgain.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='PlaceAgain'>
 <title>PlaceAgain</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>PlaceAgain</command>
-    <arg choice='opt'>Anim</arg>
-    <arg choice='opt'>Icon</arg>
+	<command>PlaceAgain</command
+	><arg choice='opt'>Anim</arg
+	><arg choice='opt'>Icon</arg>
 </cmdsynopsis>
-<!--/command-->
 
 
 <para>Causes the current window's position to be re-computed using the

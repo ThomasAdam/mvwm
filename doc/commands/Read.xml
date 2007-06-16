@@ -6,18 +6,18 @@
 %myents;
 ]>
 
-<!-- $Id: Read.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Read.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Read'>
 <title>Read</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Read</command>
-	<arg choice='plain'><replaceable>filename</replaceable></arg>
-	<arg choice='opt'>quiet</arg>
+	<command>Read</command
+	><arg choice='plain'
+		><replaceable>filename</replaceable
+	></arg
+	><arg choice='opt'>quiet</arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Causes fvwm to read commands from the file named
 <replaceable>filename</replaceable>.

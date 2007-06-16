@@ -6,20 +6,26 @@
 %myents;
 ]>
 
-<!-- $Id: WindowList.xml,v 1.3 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: WindowList.xml,v 1.4 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='WindowList'>
 <title>WindowList</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>WindowList</command>
-	<arg choice='opt'>(<replaceable>conditions</replaceable>)</arg>
-	<arg choice='opt'><replaceable>position</replaceable></arg>
-	<arg choice='opt'><replaceable>options</replaceable></arg>
-	<arg choice='opt'><replaceable>double-click-action</replaceable></arg>
+	<command>WindowList</command
+	><arg choice='opt'
+		>(<replaceable>conditions</replaceable
+	>)</arg
+	><arg choice='opt'
+		><replaceable>position</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>options</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>double-click-action</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 
 <para>Generates a pop-up menu (and pops it up) in which the title and

@@ -6,19 +6,23 @@
 %myents;
 ]>
 
-<!-- $Id: ModuleSynchronous.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: ModuleSynchronous.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='ModuleSynchronous'>
 <title>ModuleSynchronous</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>ModuleSynchronous</command>
-	<arg choice='opt'>Expect <replaceable>string</replaceable></arg>
-	<arg choice='opt'>Timeout <replaceable>secs</replaceable></arg>
-	<arg choice='plain'><replaceable>modulename</replaceable></arg>
+	<command>ModuleSynchronous</command
+	><arg choice='opt'
+		>Expect <replaceable>string</replaceable
+	></arg
+	><arg choice='opt'
+		>Timeout <replaceable>secs</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>modulename</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>The
 <emphasis remap='B'>ModuleSynchronous</emphasis>

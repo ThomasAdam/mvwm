@@ -6,18 +6,20 @@
 %myents;
 ]>
 
-<!-- $Id: HilightColor.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: HilightColor.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='HilightColor'>
 <title>HilightColor</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>HilightColor</command>
-	<arg choice='plain'><replaceable>textcolor</replaceable></arg>
-	<arg choice='plain'><replaceable>backgroundcolor</replaceable></arg>
+	<command>HilightColor</command
+	><arg choice='plain'
+		><replaceable>textcolor</replaceable
+	></arg
+	><arg choice='plain'
+		><replaceable>backgroundcolor</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command is obsoleted by the
 <fvwmref cmd="Style"/>

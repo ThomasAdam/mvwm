@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: IconFont.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: IconFont.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='IconFont'>
 <title>IconFont</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>IconFont</command>
-	<arg choice='opt'><replaceable>fontname</replaceable></arg>
+	<command>IconFont</command
+	><arg choice='opt'
+		><replaceable>fontname</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>This command is obsoleted by the
 <fvwmref cmd="Style"/>

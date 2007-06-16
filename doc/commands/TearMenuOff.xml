@@ -6,16 +6,14 @@
 %myents;
 ]>
 
-<!-- $Id: TearMenuOff.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: TearMenuOff.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='TearMenuOff'>
 <title>TearMenuOff</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>TearMenuOff</command>
+	<command>TearMenuOff</command>
 </cmdsynopsis>
-<!--/command-->
 
 <para>When assigned to a menu item, it inserts a tear off bar into the
 menu (a horizontal broken line).  Activating that item tears off

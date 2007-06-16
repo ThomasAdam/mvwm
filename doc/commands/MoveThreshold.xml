@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: MoveThreshold.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: MoveThreshold.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='MoveThreshold'>
 <title>MoveThreshold</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>MoveThreshold</command>
-    <arg choice='opt'><replaceable>pixels</replaceable></arg>
+	<command>MoveThreshold</command
+	><arg choice='opt'
+		><replaceable>pixels</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>When the user presses a mouse button upon an object fvwm waits to
 see if the action is a click or a drag.  If the mouse moves by

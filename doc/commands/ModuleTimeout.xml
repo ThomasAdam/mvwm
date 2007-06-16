@@ -6,17 +6,17 @@
 %myents;
 ]>
 
-<!-- $Id: ModuleTimeout.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: ModuleTimeout.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='ModuleTimeout'>
 <title>ModuleTimeout</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>ModuleTimeout</command>
-	<arg choice='plain'><replaceable>timeout</replaceable></arg>
+	<command>ModuleTimeout</command
+	><arg choice='plain'
+		><replaceable>timeout</replaceable
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Specifies how many seconds fvwm waits for a module to respond. If
 the module does not respond within the time limit then fvwm kills

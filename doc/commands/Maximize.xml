@@ -6,20 +6,28 @@
 %myents;
 ]>
 
-<!-- $Id: Maximize.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Maximize.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Maximize'>
 <title>Maximize</title>
 
-<!--command-->
 <cmdsynopsis>
-	<command>Maximize</command>
-	<arg choice='opt'><replaceable>flags</replaceable></arg>
-	<arg choice='opt'><replaceable>bool</replaceable></arg>
-	<arg choice='opt'><replaceable>horizontal</replaceable><optional>p</optional></arg>
-	<arg choice='opt'><replaceable>vertical</replaceable><optional>p</optional></arg>
+	<command>Maximize</command
+	><arg choice='opt'
+		><replaceable>flags</replaceable
+	></arg>
+	<arg choice='opt'
+		><replaceable>bool</replaceable
+	></arg
+	><arg choice='opt'
+		><replaceable>horizontal</replaceable
+		><optional>p</optional
+	></arg
+	><arg choice='opt'
+		><replaceable>vertical</replaceable
+		><optional>p</optional
+	></arg>
 </cmdsynopsis>
-<!--/command-->
 
 
 <para>Without its optional arguments (or if the

@@ -6,21 +6,21 @@
 %myents;
 ]>
 
-<!-- $Id: Layer.xml,v 1.2 2007/06/08 22:06:10 griph Exp $ -->
+<!-- $Id: Layer.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
 
 <section id='Layer'>
 <title>Layer</title>
 
-<!--command-->
 <cmdsynopsis>
-    <command>Layer</command>
-    <group choice='plain'>
-      <arg choice='opt'><replaceable>arg1</replaceable>
-	<replaceable>arg2</replaceable></arg>
-      <arg choice='opt'>default</arg>
-    </group>
+	<command>Layer</command
+	><group choice='plain'
+		><arg choice='opt'
+			><replaceable>arg1</replaceable
+			> <replaceable>arg2</replaceable
+		></arg
+		><arg choice='opt'>default</arg
+	></group>
 </cmdsynopsis>
-<!--/command-->
 
 <para>Puts the current window in a new layer.  If
 <replaceable>arg1</replaceable>
