@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <!--
-	$Id: fvwm.xsl,v 1.2 2007/06/09 13:32:10 scott Exp $
+	$Id: fvwm.xsl,v 1.3 2007/06/20 08:24:59 scott Exp $
 
 	Author: Scott Smedley
 -->
@@ -53,8 +53,10 @@
 						<xsl:value-of select="@mod"/>
 					</xsl:when>
 					<xsl:when test="@sect">
-						<xsl:text>../fvwm/</xsl:text>
+						<xsl:text>../fvwm/fvwm.man</xsl:text>
+						<!-- not splitting into separate sections for now.
 						<xsl:value-of select="@sect"/>
+						-->
 					</xsl:when>
 					<!-- anything else should be an error -->
 				</xsl:choose>
