@@ -1,6 +1,3 @@
-
-# $Id: Makefile.am,v 1.4 2007/06/09 13:32:10 scott Exp $
-
 docdir=@FVWM_DOCDIR@
 
 HTML_FILES=index.html allCommands.html groupedCommands.html modules.html style.css
