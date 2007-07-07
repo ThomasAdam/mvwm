@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: conditionals.xml,v 1.2 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id: conditionals.xml,v 1.3 2007/07/07 21:54:19 domivogt Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -95,11 +95,12 @@ styles are used) or by the last time they had the focus.</para>
 <para>The
 <emphasis remap='I'>conditions</emphasis>
 that may be given as an argument to any conditional command are a
-list of keywords separated by commas or whitespace, enclosed in
+list of keywords separated by commas, enclosed in
 parentheses.  Unless stated otherwise, conditional commands accept
 all the conditions listed below.  Note that earlier versions of
-fvwm required the conditions to be enclosed in brackets instead of
-parentheses (this is still supported for backward compatibility).</para>
+fvwm required the conditions to be separated by whitespace instead
+of commas and enclosed in brackets instead of parentheses
+(this is still supported for backward compatibility).</para>
 
 <para>In addition, the
 <emphasis remap='I'>conditions</emphasis>
