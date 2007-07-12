@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: userFunctions.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: userFunctions.xml,v 1.2 2007/07/12 11:03:23 renato Exp $ -->
 
 <section id='user_functions_and_shell_commands'>
 <title>User Functions and Shell Commands</title>
@@ -15,6 +15,7 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/Beep.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/DestroyFunc.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/Echo.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/EchoFuncDefinition.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/Exec.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/ExecUseShell.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/Function.xml" />
