@@ -1,3 +1,8 @@
+
+# $Id: Makefile.am,v 1.8 2007/07/16 15:07:14 scott Exp $
+
+# Author: Scott Smedley
+
 docdir=@FVWM_DOCDIR@
 
 HTML_FILES=index.html allCommands.html groupedCommands.html modules.html style.css
@@ -11,14 +16,7 @@ endif
 
 SUBDIRS=fvwm commands images modules
 
-# [ `pwd` != `cd $(srcdir) && pwd` ] && ...
-all:
-	@for f in $(doc_DATA) ; do \
-		[ ! -f $$f ] && cp -p $(srcdir)/$$f $$f; \
-	done ; true
+all: $(doc_DATA)
 
-# This isn't portable (ie. doesn't work with all versions of make)
-#all: $(doc_DATA)
-#
-#%.html: $(srcdir)/$@
-#	@ cp $(srcdir)/$@ $@
+%.html: $(srcdir)/$@
+	@ cp $(srcdir)/$@ $@
