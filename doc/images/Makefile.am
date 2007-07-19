@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.3 2007/07/16 15:07:14 scott Exp $
+# $Id: Makefile.am,v 1.4 2007/07/19 09:30:20 domivogt Exp $
 
 # Author: Scott Smedley
 
@@ -15,4 +15,5 @@ SUBDIRS=svg_rendering
 all: $(doc_DATA)
 
 %.png: $(srcdir)/$@
-	@ cp $(srcdir)/$@ $@
+	test x"$(top_srcdir)" = x"$(top_builddir)" || \
+	cp $(srcdir)/$@ $(top_builddir)/doc/images/$@
