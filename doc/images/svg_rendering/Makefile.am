@@ -1,5 +1,5 @@
 
-# $Id: Makefile.am,v 1.2 2007/07/19 09:30:21 domivogt Exp $
+# $Id: Makefile.am,v 1.3 2007/07/19 10:42:20 domivogt Exp $
 
 # Author: Scott Smedley
 
@@ -17,3 +17,6 @@ all: $(doc_DATA)
 	test x"$(top_srcdir)" = x"$(top_builddir)" || \
 	cp $(srcdir)/$@ $(top_builddir)/doc/images/svg_rendering/$@
 
+distclean-local:
+	test x"$(top_srcdir)" = x"$(top_builddir)" || \
+	rm -f $(top_builddir)/doc/images/svg_rendering/*.png
