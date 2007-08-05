@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: Move.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id: Move.xml,v 1.4 2007/08/05 08:25:16 domivogt Exp $ -->
 
 <section id='Move'>
 <title>Move</title>
@@ -150,7 +150,7 @@ Move w+5 50
 
 # Move window up 10 pixels, and so left edge
 # is at x=40 pixels
-Move 40p w+-10p
+Move 40p w-10p
 
 # Move window to the mouse pointer location
 Move m+0 m+0
