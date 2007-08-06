@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: colorsets.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: colorsets.xml,v 1.2 2007/08/06 22:24:03 domivogt Exp $ -->
 
 <section id='colorsets'>
 <title>Colorsets</title>
@@ -44,9 +44,9 @@ so this module became obsolete.</para>
 
 
 
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/Colorset.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../commands/CleanupColorsets.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../fvwm/colorGradients.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Colorset.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="CleanupColorsets.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="colorGradients.xml" />
 
 
 </section>

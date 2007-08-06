@@ -6,13 +6,13 @@
 %myents;
 ]>
 
-<!-- $Id: EWMHNumberOfDesktops.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id$ -->
 
-<section id='EWMHNumberOfDesktops'>
-<title>EWMHNumberOfDesktops</title>
+<section id='EwmhNumberOfDesktops'>
+<title>EwmhNumberOfDesktops</title>
 
 <cmdsynopsis>
-	<command>EWMHNumberOfDesktops</command
+	<command>EwmhNumberOfDesktops</command
 	><arg choice='plain'
 		><replaceable>num</replaceable
 	></arg>
