@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: commands.xml,v 1.1 2007/03/10 05:15:34 scott Exp $ -->
+<!-- $Id: commands.xml,v 1.2 2007/08/07 20:17:42 domivogt Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -9,7 +9,7 @@
 
 
 <section id='list_of_fvwm_commands'>
-<title>List of FVWM Commands</title>
+<title>List of Fvwm Commands</title>
 
 <para>The command descriptions below are grouped together in the
 following sections.  The sections are hopefully sorted in order of
