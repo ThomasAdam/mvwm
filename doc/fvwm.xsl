@@ -1,12 +1,14 @@
 <?xml version='1.0'?>
 <!--
-	$Id: fvwm.xsl,v 1.3 2007/06/20 08:24:59 scott Exp $
+	$Id: fvwm.xsl,v 1.4 2007/09/01 19:09:53 griph Exp $
 
 	Author: Scott Smedley
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version='1.0'>
 
 <xsl:import href="docbook-xsl/html/docbook.xsl"/>
+<!-- output in utf8-format -->
+<xsl:output method="html" encoding="UTF-8" indent="no"/>
 
 <!-- twdt = The Whole Damn Thing ... ie. everything on a single page -->
 <xsl:param name="twdt" select="''"/>
