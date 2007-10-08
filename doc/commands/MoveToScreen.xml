@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: MoveToScreen.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id: MoveToScreen.xml,v 1.4 2007/10/08 02:30:00 scott Exp $ -->
 
 <section id='MoveToScreen'>
 <title>MoveToScreen</title>
@@ -23,6 +23,8 @@
 argument can be '<fvwmopt cmd="MoveToScreen" opt="p"/>' for the primary screen,
 '<fvwmopt cmd="MoveToScreen" opt="c"/>' for the current
 screen (containing the mouse pointer),
+'<fvwmopt cmd="MoveToScreen" opt="w"/>' for the screen containing the center of
++the the context window,
 '<fvwmopt cmd="MoveToScreen" opt="g"/>' for the global screen
 or the screen number itself (counting from zero).</para>
 
