@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.6 2007/11/17 11:47:56 domivogt Exp $ -->
+<!-- $Id: Style.xml,v 1.7 2008/01/09 10:21:37 domivogt Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -1290,22 +1290,20 @@ arguments turns off snap attraction and restores the default
 behavior.  Please refer also to the <fvwmref cmd="SnapGrid"/>
 command.</para>
 
-<para>The <replaceable>behavior</replaceable> argument is optional
+<para>The second argument determines is optional
 and may be set to one of the four following values:  With
 <replaceable>All</replaceable> both icons and windows snap to
 other windows and other icons. <replaceable>SameType</replaceable>
 lets snap windows only to other windows and icons only to other
 icons. With <replaceable>Windows</replaceable> windows snap only
-to other windows.  Icons do not snap. Similarly with
+to other windows.  Icons do not snap.  Similarly with
 <replaceable>Icons</replaceable> icons snap to only other icons
-and windows do not snap.</para>
+and windows do not snap.  The default behavior is
+<emphasis remap='I'>All</emphasis>.</para>
 
-<para>If the <replaceable>behavior</replaceable> option is not
-given, the snapping behavior is not changed.  The default behavior
-is <emphasis remap='I'>All</emphasis>.</para>
-
-<para>If the <replaceable>Screen</replaceable> option is present
-windows and or icons are snapped to the screen edges too.</para>
+<para>If the option "Screen" option is added to at the last
+argument, windows and or icons snapp to the screen edges
+too.</para>
 
 <para>The option <fvwmopt cmd="Style" opt="SnapGrid"/> defines an
 invisible grid on the screen.  During an interactive move a window
