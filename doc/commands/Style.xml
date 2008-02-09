@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.7 2008/01/09 10:21:37 domivogt Exp $ -->
+<!-- $Id: Style.xml,v 1.8 2008/02/09 07:51:23 griph Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -95,11 +95,11 @@ slashes ('/').  The last style in these groups is the default.
 <emphasis remap='I'>IconTitle</emphasis> / <emphasis remap='I'>!IconTitle</emphasis>,
 <emphasis remap='I'>MwmButtons</emphasis> / <emphasis remap='I'>FvwmButtons</emphasis>,
 <emphasis remap='I'>MwmBorder</emphasis> / <emphasis remap='I'>FvwmBorder</emphasis>,
-<emphasis remap='I'>MwmDecor</emphasis> / <emphasis remap='I'>!DecorHint</emphasis>,
-<emphasis remap='I'>MwmFunctions</emphasis> / <emphasis remap='I'>!FuncHint</emphasis>,
-<emphasis remap='I'>HintOverride</emphasis> / <emphasis remap='I'>!Override</emphasis>,
+<emphasis remap='I'>MwmDecor</emphasis> / <emphasis remap='I'>!MwmDecor</emphasis>,
+<emphasis remap='I'>MwmFunctions</emphasis> / <emphasis remap='I'>!MwmFunctions</emphasis>,
+<emphasis remap='I'>HintOverride</emphasis> / <emphasis remap='I'>!HintOverride</emphasis>,
 <emphasis remap='I'>!Button</emphasis> / <emphasis remap='I'>Button</emphasis>,
-<emphasis remap='I'>ResizeHintOverride</emphasis> / <emphasis remap='I'>!ResizeOverride</emphasis>,
+<emphasis remap='I'>ResizeHintOverride</emphasis> / <emphasis remap='I'>!ResizeHintOverride</emphasis>,
 <emphasis remap='I'>OLDecor</emphasis> / <emphasis remap='I'>!OLDecor</emphasis>,
 <emphasis remap='I'>GNOMEUseHints</emphasis> / <emphasis remap='I'>GNOMEIgnoreHints</emphasis>,
 <emphasis remap='I'>StickyIcon</emphasis> / <emphasis remap='I'>SlipperyIcon</emphasis>,
