@@ -1,6 +1,6 @@
 #!@PERL@ -w
 
-# $Id: FvwmTabs.in,v 3.13 2007/08/07 20:17:44 domivogt Exp $
+# $Id: FvwmTabs.in,v 3.14 2008/06/22 12:04:30 renato Exp $
 
 # 	FvwmTabs
 #	Copyright (C) 2002-2006 Scott Smedley ss@aao.gov.au
@@ -882,7 +882,7 @@ sub swallowNext
 	$fvwm->debug("fvwmCommand is @fvwmCommand");
 	if (exists $tabWin{$tId})
 	{
-		$tabWin{$tId}{addButton}->configure(-text => "Â",
+		$tabWin{$tId}{addButton}->configure(-text => "Ã‚",
 			-image => createImage($pConfig->{swallowIcon}));
 	}
 	$fvwm->send("@fvwmCommand");
