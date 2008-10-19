@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.8 2008/02/09 07:51:23 griph Exp $ -->
+<!-- $Id: Style.xml,v 1.9 2008/10/19 12:04:13 domivogt Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -27,7 +27,7 @@ command is used to set attributes of a window to values other than
 the default or to set the window manager default styles.</para>
 
 <para><replaceable>stylename</replaceable>
-can be a window's name, class, or resource string.  It may contain
+can be a window's name, class, visible name, or resource string.  It may contain
 the wildcards '*' and '?', which are matched in the usual Unix
 filename manner.  Multiple style options in a single
 <emphasis remap='B'>Style</emphasis>
