@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.10 2009/02/08 11:01:45 domivogt Exp $ -->
+<!-- $Id: Style.xml,v 1.11 2009/02/19 21:06:02 tadam Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -1393,7 +1393,9 @@ top left corner of the display.  With the argument
 <emphasis remap='I'>Center</emphasis>,
 all new window appear at the center of the screen, and with
 <emphasis remap='I'>UnderMouse</emphasis>,
-windows are centered under the mouse pointer.  If any other
+windows are centered under the mouse pointer where possible.  If the window
+is unable to fit on the screen because the pointer is at the edge of the
+screen, then the window is forced on-screen using this option.  If any other
 <emphasis remap='I'>move-arguments</emphasis>
 are given, they are interpreted exactly as the
 <emphasis remap='B'>Move</emphasis>
