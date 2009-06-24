@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: ResizeMove.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id: ResizeMove.xml,v 1.4 2009/06/24 21:38:30 tadam Exp $ -->
 
 <section id='ResizeMove'>
 <title>ResizeMove</title>
@@ -53,7 +53,7 @@ ResizeMove -10p -20p 0 0
 
 <para>Note: Fvwm may not be able to parse the command properly if the
 option
-<fvwmref cmd="Reize" opt="bottomright"/>
+<fvwmref cmd="Resize" opt="bottomright"/>
 of the
 <fvwmref cmd="Resize"/>
 command is used.</para>

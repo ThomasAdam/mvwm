@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: GotoPage.xml,v 1.3 2007/06/16 12:38:46 griph Exp $ -->
+<!-- $Id: GotoPage.xml,v 1.4 2009/06/24 21:38:30 tadam Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -35,10 +35,10 @@
 Moves the desktop viewport to page (x,y).  The upper left page is
 (0,0), the upper right is (M,0), where M is one less than the
 current number of horizontal pages specified in the
-<fvwmref cmd="DeskTopSize"/>
+<fvwmref cmd="DesktopSize"/>
 command.  The lower left page is (0,N), and the lower right page
 is (M,N), where N is the desktop's vertical size as specified in the
-<fvwmref cmd="DeskTopSize"/>
+<fvwmref cmd="DesktopSize"/>
 command.  To switch to a page relative to the current one add a
 trailing
 '<fvwmopt cmd="GotoPage" opt="p"/>'
