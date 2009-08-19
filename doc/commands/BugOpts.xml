@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: BugOpts.xml,v 1.3 2007/06/16 12:38:45 griph Exp $ -->
+<!-- $Id: BugOpts.xml,v 1.4 2009/08/19 17:33:16 griph Exp $ -->
 
 <section id='BugOpts'>
 <title>BugOpts</title>
@@ -124,5 +124,13 @@ option enables some debugging code in the ConfigureRequest
 handling routines of fvwm.  It is not helpful for the user, but if
 you report a bug to the fvwm team we may ask you to enable this
 option.</para>
+
+<para>The <fvwmopt cmd="BugOpts" opt="TransliterateUtf8"/> option
+enables transliteration during conversions from utf-8 strings.  By
+default fvwm will not transliterate during conversion, but will fall
+back to alternate strings provided by the clients if conversion from
+utf-8 fails due to characters which have no direct correspondance in
+the target charecter set. Some clients however neglect to set non utf-8
+properties correctly in which case this option may help.</para>
 
 </section>
