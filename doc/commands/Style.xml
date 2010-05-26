@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.14 2010/02/15 21:21:11 tadam Exp $ -->
+<!-- $Id: Style.xml,v 1.15 2010/05/26 07:57:44 tadam Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -1382,6 +1382,18 @@ initially mapped by fvwm.  Example:</para>
 <para>This would hence place the window called <emphasis>MyWindow</emphasis>
 on page 0 0 for the current desk, and immediately run the <fvwmref cmd="Iconify"/>
 command on that window.</para>
+
+<para>Note that should <fvwmref cmd="Style" opt="InitialMapCommand" /> be
+used as a global option for all windows, but there is a need that some
+windows should not have this command applied, then an action of 
+<fvwmref cmd="Nop" /> can be used on those windows, as in the following
+example:</para>
+
+<programlisting>
+<fvwmref cmd="Style"/> * InitialMapCommand Iconify
+<fvwmref cmd="Style"/> XTeddy InitialMapCommand Nop
+</programlisting>
+
 </section>
 
 <section id="window_manager_placement">
