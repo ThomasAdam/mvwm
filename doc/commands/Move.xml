@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: Move.xml,v 1.4 2007/08/05 08:25:16 domivogt Exp $ -->
+<!-- $Id: Move.xml,v 1.5 2010/09/14 20:42:47 tadam Exp $ -->
 
 <section id='Move'>
 <title>Move</title>
@@ -159,6 +159,11 @@ Move m+0 m+0
 # poition minus 50% of widow size).
 Move 50-50w 50-50w
 </programlisting>
+
+<para>Note:  In order to obtain moving windows which do not snap
+to screen, with interactive move, hold down <emphasis>Alt</emphasis>
+whilst moving the window to disable snap attraction if it's defined.
+</para>
 
 <para>See also the
 <fvwmref cmd="AnimatedMove"/>
