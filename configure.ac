@@ -4,6 +4,7 @@ AC_PREREQ(2.60)
 AC_INIT(fvwm/fvwm.c)
 
 dnl should be "yes" only within the released distribution
+<<<<<<< HEAD
 ISRELEASED=yes
 version=2.6.0
 VERSIONINFO=""
