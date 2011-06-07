@@ -11,9 +11,9 @@ VERSIONINFO=""
 dnl date of the released version (please zero pad the day in the last 2 dates)
 dnl for example: "4 February 2003", "04 Feb 2003", "2003-02-04"
 dnl date format strings: "%e %B %Y", "%d-%b-%Y", "%Y-%m-%d"
-RELDATELONG="15 April 2011"
-RELDATESHORT="15-April-2011"
-RELDATENUM="2011-04-15"
+RELDATELONG="16 April 2011"
+RELDATESHORT="16-April-2011"
+RELDATENUM="2011-04-16"
 
 # constant variable settings
 FVWMNAMELONG="F? Virtual Window Manager"
@@ -656,7 +656,7 @@ if test x"$with_xcursor" = xyes ; then
       ],[
          with_xcursor=no
          problem_xcursor=": Failed to detect libXcursor"
-      ],)
+      ],[$X_LIBS $X_PRE_LIBS -lXext -lX11 $X_EXTRA_LIBS])
 fi
 AC_SUBST(Xcursor_CFLAGS)
 AC_SUBST(Xcursor_LIBS)

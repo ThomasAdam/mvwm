@@ -2,24 +2,16 @@ Note, the changes for the last STABLE release start with release
 2.6.0.
 
 -------------------------------------------------------------------
-Changes in beta release 2.7.1 (not yet released)
+Changes in latest CVS HEAD (not yet released)
 
 * New features:
 
-* Bug fixes:
-
--------------------------------------------------------------------
-Changes in beta release 2.7.0 (15-Apr-2011)
-
-* New features:
-
-As 2.6.0 -- this release is to ensure there's no 2.5.X tarballs
-around, since this is now 2.7.0 in terms of development.
+  None.
 
 * Bug fixes:
 
-As 2.6.0 -- this release is to ensure there's no 2.5.X tarballs
-around, since this is now 2.7.0 in terms of development.
+  - Fix infinite loop crash when FvwmButtons quits/restarts with
+    RootTransparent colorsets.
 
 -------------------------------------------------------------------
 Changes in stable release 2.6.1 (16-Apr-2011)
