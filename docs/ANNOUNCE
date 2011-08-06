@@ -1,12 +1,19 @@
-Fvwm is a powerful window manager.  Version 2.7.0 is a beta
-maintenance release that fixes a couple of bugs and adds some
-minor features.  Please be aware that any features introduced in
-the 2.7.x development versions may be renamed, changed or removed
-without notice before 2.8.0.
+FVWM 2.6.2
+==========
 
-Upgrading from 2.5.31 or earlier is recommended.
+* New features:
 
-This release is available at the home page: http://www.fvwm.org/.
+  - New MenuStyle "UniqueHotkeyActivatesImmediate" and its
+    negation "!UniqueHotkeyActivatesImmediate" to retain the menu
+    until the user presses one of the menu keybindings to enact
+    that change in the case where there's only one item defined in
+    the menu at the specified hotkey.
 
-This release brings the lastest stable release (2.6.0) in-line with what
-2.7.X will be.  There is no difference between this version and 2.6.0.
+* Bug fixes:
+
+  - Fix infinite loop crash when FvwmButtons quits/restarts with
+    RootTransparent colorsets.
+  - Fix setting window states across FVWM restarts where those
+    windows do not set WM_COMMAND.
+  - Windows are now correctly restored when coming out of
+    fullscreen mode.
