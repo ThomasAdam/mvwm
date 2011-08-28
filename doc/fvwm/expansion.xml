@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: expansion.xml,v 1.3 2008/10/04 22:35:21 domivogt Exp $ -->
+<!-- $Id: expansion.xml,v 1.3.6.1 2011/08/28 16:28:52 tadam Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -350,7 +350,16 @@ command can be used:</para>
 	variables are not expanded.
       </para>
     </listitem>
-  </varlistentry>
+    </varlistentry>
+  <varlistentry>
+    <term>$[pointer.screen]</term>
+    <listitem>
+        <para>
+        The screen number the pointer is currently on.  Returns 0 if
+        Xinerama is not enabled.
+    </para>
+    </listitem>
+    </varlistentry>
   <varlistentry>
     <term>$[screen]</term>
     <listitem>
