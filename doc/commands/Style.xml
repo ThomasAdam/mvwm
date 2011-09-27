@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: Style.xml,v 1.15.2.1 2011/08/15 16:43:28 tadam Exp $ -->
+<!-- $Id: Style.xml,v 1.15.2.2 2011/09/27 21:12:38 tadam Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -669,6 +669,10 @@ valid:</para>
 <varlistentry>
         <term><emphasis remap='B'>%n</emphasis></term>
         <listitem><para>Insert the window's name.</para></listitem>
+</varlistentry>
+<varlistentry>
+        <term><emphasis remap='B'>%i</emphasis></term>
+        <listitem><para>Insert the window's icon name.</para></listitem>
 </varlistentry>
 <varlistentry>
         <term><emphasis remap='B'>%c</emphasis></term>
