@@ -1,3 +1,33 @@
+2012-07-12  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in: Applied patch from Thomas Funk.
+	Menu titles.  Verbose fixups.  Build all menus by default.
+
+2012-07-11  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.1.in: First pass on new man page.
+	* fvwm-menu-desktop.in: Set #! correctly.
+
+2012-06-29  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in: fix usage.
+
+2012-06-26  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in:
+	Apply rest Thomas Funk patch 1 and 2.
+	change --desktop to xfe, gnome.
+	add --menu-type application.
+
+2012-06-24  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in (main): When root menu doesn't exist,
+	print a clear error message and exit.
+	(parsemenu): Eliminate %U in exec strings
+	(parsemenu): Use printtext.
+	(geticonfile): run mkdir for users icon cache.
+	Based on Patch 1 from Thomas Funk.
+
 2012-06-22  Dan Espen  <despen@verizon.net>
 
 	* fvwm-menu-desktop.in:
