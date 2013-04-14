@@ -710,7 +710,7 @@ void module_input_execute(struct fmodule_input *input)
 	exc = exc_create_context(
 		&ecc, ECC_TYPE | ECC_ETRIGGER | ECC_FW | ECC_W | ECC_WCONTEXT |
 		ECC_MODULE);
-	execute_function(NULL, exc, input->command, 0);
+	execute_function(NULL, exc, input->command, flags);
 	exc_destroy_context(exc);
 	module_input_discard(input);
 
