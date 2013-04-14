@@ -11,6 +11,9 @@ Changes in beta release 2.7.1 (not yet released)
 
 * Bug fixes:
 
+  - FvwmForm now honours a Xinerama screen specifier in its
+    geometry.
+
 -------------------------------------------------------------------
 Changes in beta release 2.7.0 (15-Apr-2011)
 

@@ -2175,7 +2175,7 @@ static void OpenWindows(void)
     scr = FSCREEN_CURRENT;
   }
   /* hack to prevent mapping on wrong screen with StartsOnScreen */
-  FScreenMangleScreenIntoUSPosHints(FSCREEN_CURRENT, &sh);
+  FScreenMangleScreenIntoUSPosHints(scr, &sh);
   xswa.background_pixel = CF.screen_background;
   xswa.border_pixel = 0;
   xswa.colormap = Pcmap;
