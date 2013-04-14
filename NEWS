@@ -6,6 +6,9 @@ Changes in beta release 2.7.1 (not yet released)
 
 * New features:
 
+  - The option "forget" to the Maximize command allows to
+    unmaximize a window without changing its size and position.
+
 * Bug fixes:
 
 -------------------------------------------------------------------
