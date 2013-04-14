@@ -625,6 +625,7 @@ static Bool parse_options(void)
 			tail[127]=0;
 			pattern[0]=0;
 			args = sscanf(tail, "%*[^\"]\"%[^\"]\"",pattern);
+			(void)args;
 
 #if PROXY_GROUP_DEBUG
 			fprintf(stderr,
@@ -994,7 +995,6 @@ static void send_command_to_fvwm(char *command, Window w)
 static int GetProperty(Window w,char* propertyname)
 {
 	Atom atom,actual_type;
-	char *atom_name;
 	int actual_format;
 	unsigned long nitems;
 	unsigned long bytes_after;
@@ -1005,7 +1005,7 @@ static int GetProperty(Window w,char* propertyname)
 	int bytes;
 
 	atom = XInternAtom(dpy, propertyname, True);
-	atom_name = XGetAtomName (dpy,atom);
+	XGetAtomName (dpy,atom);
 
 	status = XGetWindowProperty(dpy, w, atom, 0L, 1024,
 		False, AnyPropertyType,
@@ -1067,6 +1067,7 @@ static int GetParentProcessId(int pid)
 		return 0;
 	}
 	bytes=fread(resultBuffer,32,1,statusfile);
+	(void)bytes;
 	sscanf(resultBuffer,"%*d %*[^)]) %*s %d",&ppid);
 	fclose(statusfile);
 	return ppid;

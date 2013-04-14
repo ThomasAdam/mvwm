@@ -1,5 +1,39 @@
 2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
+	* FvwmWinList/FvwmWinList.c (StartMeUp_II):
+	* FvwmWinList/ButtonArray.c (DoButton):
+	* FvwmWharf/FvwmWharf.c (CreateWindow, Loop, ParseOptions):
+	* FvwmTaskBar/FvwmTaskBar.c (HandleEvents):
+	* FvwmScript/FvwmScript.c (ReadFvwmScriptArg):
+	* FvwmScript/Instructions.c (Exec, LaunchScript, FuncGetOutput)
+	(FuncSendMsgAndGet, Loop, Diff, Equal):
+	* FvwmScript/Widgets/RadioButton.c (EvtMouseRadioButton):
+	* FvwmScript/Widgets/PushButton.c (EvtMousePushButton):
+	* FvwmScript/Widgets/PopupMenu.c (EvtMousePopupMenu):
+	* FvwmScript/Widgets/Menu.c (EvtMouseMenu):
+	* FvwmScript/Widgets/HScrollBar.c (EvtMouseHScrollBar)
+	* FvwmRearrange/FvwmRearrange.c (main):
+	* FvwmProxy/FvwmProxy.c (GetParentProcessId, GetProperty)
+	(parse_options):
+	* FvwmPager/FvwmPager.c (list_mini_icon):
+	* FvwmPager/x_pager.c (IconMoveWindow):
+	* FvwmM4/FvwmM4.c (m4_defs):
+	* FvwmIconMan/readconfig.c (add_weighted_sort):
+	* FvwmIconBox/FvwmIconBox.c (MySendFvwmPipe, ExecuteAction):
+	* FvwmForm/ReadXServer.c (ToggleChoice, ReadXServer):
+	* FvwmForm/ParseCommand.c (ParseCommand):
+	* FvwmForm/FvwmForm.c (TimerHandler, DoCommand):
+	* FvwmCommand/FvwmCommandS.c (open_fifos):
+	* FvwmCpp/FvwmCpp.c (cpp_defs):
+	* FvwmCommand/FvwmCommand.c (main, sendit):
+	* FvwmButtons/parse.c (ParseConfigFile):
+	* FvwmButtons/draw.c (RedrawButton):
+	* FvwmButtons/FvwmButtons.c (RedrawWindow):
+	* FvwmAnimate/FvwmAnimate.c (Loop):
+	fix write only variable compiler warnings
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
 	* FvwmIconMan/functions.c (builtin_print):
 	fix possible format string attack
 

@@ -1714,16 +1714,19 @@ void MySendFvwmPipe(int *fd, char *message, unsigned long window)
 
     if (!ExecIconBoxFunction(temp_msg))
     {
-      write(fd[0], &window, sizeof(unsigned long));
+      size_t n;
+
+      n = write(fd[0], &window, sizeof(unsigned long));
+      (void)n;
 
       w=strlen(temp_msg);
-      write(fd[0], &w, sizeof(w));
-      write(fd[0], temp_msg, w);
+      n = write(fd[0], &w, sizeof(w));
+      n = write(fd[0], temp_msg, w);
 
       /* keep going */
 
       w = 1;
-      write(fd[0], &w, sizeof(w));
+      n = write(fd[0], &w, sizeof(w));
     }
     if (temp_msg != hold) free(temp_msg);
     else break;
@@ -3371,7 +3374,6 @@ static int CheckActionType(
 void ExecuteAction(int x, int y, struct icon_info *item)
 {
   int type = NO_CLICK;
-  XEvent *ev;
   XEvent d;
   struct mousefunc *tmp;
 
@@ -3380,7 +3382,6 @@ void ExecuteAction(int x, int y, struct icon_info *item)
   type = CheckActionType(x, y, &d, False, True);
   if (type == CLICK)
   {
-    ev = &d;
     /* If it was a click, wait to see if its a double click */
     if (have_double_click)
     {
@@ -3389,7 +3390,6 @@ void ExecuteAction(int x, int y, struct icon_info *item)
       {
       case CLICK:
 	type = DOUBLE_CLICK;
-	ev = &d;
 	break;
       case TIMEOUT:
 	type = CLICK;

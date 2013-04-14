@@ -1577,7 +1577,6 @@ void RedrawWindow(void)
 	XEvent dummy;
 	button_info *ub, *b;
 	static Bool initial_redraw = True;
-	Bool clear_buttons;
 
 	if (ready < 1)
 	{
@@ -1593,12 +1592,10 @@ void RedrawWindow(void)
 	if (initial_redraw == False)
 	{
 		XClearWindow(Dpy, MyWindow);
-		clear_buttons = False;
 	}
 	else
 	{
 		initial_redraw = False;
-		clear_buttons = True;
 	}
 
 	button = -1;

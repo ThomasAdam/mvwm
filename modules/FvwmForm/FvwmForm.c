@@ -2040,7 +2040,10 @@ void DoCommand (Item *cmd)
 
     /* send command */
     if ( parsed_command[0] == '!') {    /* If command starts with ! */
-      system(parsed_command+1);         /* Need synchronous execution */
+      int rc;
+
+      rc = system(parsed_command+1);         /* Need synchronous execution */
+      (void)rc;
     } else {
       SendText(Channel,parsed_command, ref);
     }
@@ -2559,7 +2562,10 @@ TimerHandler(int sig)
 
     /* send command */
     if ( parsed_command[0] == '!') {    /* If command starts with ! */
-      system(parsed_command+1);         /* Need synchronous execution */
+      int rc;
+
+      rc = system(parsed_command+1);         /* Need synchronous execution */
+      (void)rc;
     } else {
       SendText(Channel,parsed_command, ref);
     }

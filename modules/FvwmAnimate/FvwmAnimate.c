@@ -845,6 +845,7 @@ static void Loop(void)
   struct tms time_buffer;              /* for time() */
   char cmd[200];
 
+  (void)time_accum;
   myfprintf((stderr,"Starting event loop\n"));
   while ( !isTerminated ) {
     if ( (packet = ReadFvwmPacket(Channel[1])) == NULL )
