@@ -1363,6 +1363,9 @@ int PictureAllocColorTable(
 		{0, 0, 0, 0, 1, FVWM_COLOR_CUBE|FVWM_GRAY_SCALE}
 	};
 
+	(void)dyn_cl_set;
+	(void)strict_cl_set;
+	(void)alloc_table_set;
 	cc_nbr = sizeof(cc)/(sizeof(cc[0]));
 
 	/* set up  default */

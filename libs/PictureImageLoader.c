@@ -395,6 +395,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_structp Fpng_ptr = NULL;
 	Fpng_infop Finfo_ptr = NULL;
 	CARD32 *data;
+	size_t n;
 	int w, h;
 	char hasa = 0, hasg = 0;
 	FILE *f;
@@ -416,7 +417,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	{
 		return False;
 	}
-	fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
+	n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
+	(void)n;
 	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK))
 	{
 		fclose(f);
@@ -650,7 +652,6 @@ Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
 	int w;
 	int h;
 	int depth;
-	int must_free_gc;
 
 	w = fimage->im->width;
 	h = fimage->im->height;
@@ -659,12 +660,10 @@ Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
 	if (depth == Pdepth)
 	{
 		gc = PictureDefaultGC(dpy, win);
-		must_free_gc = 0;
 	}
 	else
 	{
 		gc = fvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
-		must_free_gc = 1;
 	}
 	FPutFImage(dpy, pixmap, gc, fimage, 0, 0, 0, 0, w, h);
 	if (depth != Pdepth)

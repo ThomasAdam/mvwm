@@ -82,6 +82,8 @@ Bool is_iconv_supported(char *c1, char *c2)
 		dummy = Ficonv_close(cd1);
 	if (cd2 != (Ficonv_t) -1)
 		dummy = Ficonv_close(cd2);
+	(void)dummy;
+
 	return r;
 }
 

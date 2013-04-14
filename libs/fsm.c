@@ -191,6 +191,7 @@ Status SetAuthentication(
 	char command[256];
 	int i;
 	int fd;
+	int rc;
 
 	if (!SessionSupport)
 	{
@@ -274,7 +275,8 @@ Status SetAuthentication(
 	umask (original_umask);
 
 	sprintf (command, "iceauth source %s", addAuthFile);
-	system(command);
+	rc = system(command);
+	(void)rc;
 
 	unlink (addAuthFile);
 
@@ -313,6 +315,7 @@ void FreeAuthenticationData(int count, FIceAuthDataEntry *authDataEntries)
 
 	char command[256];
 	int i;
+	int rc;
 
 	if (!SessionSupport)
 	{
@@ -328,7 +331,8 @@ void FreeAuthenticationData(int count, FIceAuthDataEntry *authDataEntries)
 	free ((char *) authDataEntries);
 
 	sprintf (command, "iceauth source %s", remAuthFile);
-	system(command);
+	rc = system(command);
+	(void)rc;
 
 	unlink (remAuthFile);
 
@@ -697,7 +701,6 @@ void CompletNewConnectionMsg(void)
 {
 	flist *l = pending_ice_conn_list;
 	FIceConn ice_conn;
-	Bool pending = False;
 	FIceAcceptStatus cstatus;
 
 	if (!SessionSupport)
@@ -711,7 +714,6 @@ void CompletNewConnectionMsg(void)
 		cstatus = FIceConnectionStatus(ice_conn);
 		if (cstatus == (int)FIceConnectPending)
 		{
-			pending = True;
 			l = l->next;
 		}
 		else if (cstatus == (int)FIceConnectAccepted)

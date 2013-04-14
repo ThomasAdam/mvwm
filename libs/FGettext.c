@@ -159,6 +159,7 @@ const char *FGettext(char *str)
 	flist *l = FGPathList;
 	const char *s, *dummy;
 
+	(void)dummy;
 	if (!HaveNLSSupport || !FGettextInitOk || FGPathList == NULL ||
 	    str == NULL)
 	{

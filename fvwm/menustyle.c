@@ -831,7 +831,6 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	char *option = NULL;
 	char *poption = NULL;
 	char *optstring = NULL;
-	char *nextarg;
 	char *args = NULL;
 	char *arg1;
 	int on;
@@ -839,7 +838,6 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	MenuStyle *tmpms;
 	Bool is_initialised = True;
 	Bool has_gc_changed = False;
-	Bool is_default_style = False;
 	int val[2];
 	int n;
 	FlocaleFont *new_font = NULL;
@@ -866,10 +864,6 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	{
 		/* copy the structure over our temporary menu face. */
 		memcpy(tmpms, ms, sizeof(MenuStyle));
-		if (ms == default_menu_style)
-		{
-			is_default_style = True;
-		}
 		free(name);
 	}
 	else
@@ -925,7 +919,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				free(optstring);
 				break;
 			}
-			nextarg = GetNextToken(args, &arg1);
+			GetNextToken(args, &arg1);
 		}
 		poption = option;
 		while (poption[0] == '!')
@@ -1951,6 +1945,7 @@ void CMD_MenuStyle(F_CMD_ARGS)
 	char *poption;
 	MenuStyle *dummy;
 
+	(void)dummy;
 	GetNextSimpleOption(SkipNTokens(action, 1), &option);
 	poption = option;
 	while (poption && poption[0] == '!')

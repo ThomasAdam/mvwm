@@ -998,9 +998,8 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 		other_fw = other_fw->next)
 	{
 		rectangle other_g;
-		Bool rc;
-		get_window_borders(other_fw, &b);
 
+		get_window_borders(other_fw, &b);
 		if (
 			arg->place_fw == other_fw ||
 			IS_EWMH_DESKTOP(FW_W(other_fw)))
@@ -1014,7 +1013,7 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 		{
 			continue;
 		}
-		rc = get_visible_window_or_icon_geometry(other_fw, &other_g);
+		get_visible_window_or_icon_geometry(other_fw, &other_g);
 		if (IS_STICKY_ACROSS_PAGES(other_fw))
 		{
 			other_g.x -= arg->pdelta_p.x;

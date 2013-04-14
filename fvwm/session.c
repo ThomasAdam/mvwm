@@ -1112,7 +1112,7 @@ LoadGlobalState(char *filename)
 	FILE *f;
 	char s[4096], s1[4096];
 	/* char s2[256]; */
-	int i1, i2, i3, i4, i5;
+	int i1, i2, i3, i4;
 
 	if (!does_file_version_match)
 	{
@@ -1133,7 +1133,6 @@ LoadGlobalState(char *filename)
 		i2 = 0;
 		i3 = 0;
 		i4 = 0;
-		i5 = 0;
 		sscanf(s, "%4000s", s1);
 		/* If we are restarting, [REAL_STATE_FILENAME] points
 		 * to the file containing the true session state. */

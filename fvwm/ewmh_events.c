@@ -197,6 +197,7 @@ int ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 	win_gravity = ev->xclient.data.l[0] & 0xff;
 	value_mask = (ev->xclient.data.l[0] >> 8) & 0xf;
 	source = (ev->xclient.data.l[0] >> 12) & 0xf;
+	(void)source;
 	if (fw == NULL)
 	{
 		/* unmanaged window */

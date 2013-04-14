@@ -4440,6 +4440,7 @@ void parse_and_set_window_style(char *action, char *prefix, window_style *ps)
 		action++;
 	}
 	line = action;
+	(void)line;
 	while (action && *action && *action != '\n')
 	{
 		action = GetNextFullOption(action, &option);
