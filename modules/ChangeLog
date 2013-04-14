@@ -1,5 +1,11 @@
 2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
+	* FvwmIconMan/x.c (change_colorset, recreate_background)
+	(create_manager_window):
+	fix bad hilight colour on some systems (64 bit issue?)
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
 	* FvwmForm/FvwmForm.c (OpenWindows):
 	fix handling of screen spec
 

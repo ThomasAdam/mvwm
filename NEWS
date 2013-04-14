@@ -13,6 +13,8 @@ Changes in beta release 2.7.1 (not yet released)
 
   - FvwmForm now honours a Xinerama screen specifier in its
     geometry.
+  - FvwmIconMan had problems displaying the hilight colour on some
+    systems (64 bit issue?).
 
 -------------------------------------------------------------------
 Changes in beta release 2.7.0 (15-Apr-2011)
