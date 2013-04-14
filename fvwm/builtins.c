@@ -2683,7 +2683,7 @@ void CMD_Echo(F_CMD_ARGS)
 			action[len-1]='\0';
 		}
 	}
-	fvwm_msg(ECHO,"Echo",action);
+	fvwm_msg(ECHO,"Echo", "%s", action);
 
 	return;
 }

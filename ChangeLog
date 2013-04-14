@@ -1,5 +1,13 @@
 2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
+	* libs/FRenderInit.c (FRenderGetErrorText):
+	* fvwm/virtual.c (CMD_EdgeResistance):
+	* fvwm/builtins.c (CMD_Echo):
+	* fvwm/move_resize.c (CMD_SnapGrid, CMD_SnapAttraction):
+	fix possible format string exploit
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
 	* fvwm/move_resize.c (CMD_Maximize):
 	introduce option "forget" to the Maximize command
 
