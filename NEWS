@@ -15,6 +15,7 @@ Changes in beta release 2.7.1 (not yet released)
     geometry.
   - FvwmIconMan had problems displaying the hilight colour on some
     systems (64 bit issue?).
+  - Several possible format string attacks have been fixed.
 
 -------------------------------------------------------------------
 Changes in beta release 2.7.0 (15-Apr-2011)
