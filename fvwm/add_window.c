@@ -511,10 +511,10 @@ static void setup_name_count(FvwmWindow *fw, Bool is_icon)
 
 	titlename = (is_icon) ?
 	&(fw->icon_name) : &(fw->name);
-	
+
 	title_counterpart = (is_icon) ?
 	&(fw->name) : &(fw->icon_name);
-	
+
 	if (!titlename->name)
 	{
 		done = True;
@@ -540,18 +540,18 @@ static void setup_name_count(FvwmWindow *fw, Bool is_icon)
 				t->name_count;
 			win_count_counterpart = is_icon ?
 				t->name_count : t->icon_name_count;
-			
+
 			t_titlename = is_icon ? &(t->icon_name) :
 				&(t->name);
 			t_title_counterpart = is_icon ? &(t->name) :
 				&(t->icon_name);
 
 			if ((t_titlename->name &&
-						strcmp(titlename->name, 
+						strcmp(titlename->name,
 							t_titlename->name) == 0 &&
 						win_count == count) ||
 					(t_title_counterpart->name &&
-					 strcmp(t_title_counterpart->name, 
+					 strcmp(t_title_counterpart->name,
 						 titlename->name) == 0 &&
 					 win_count_counterpart == count))
 
@@ -561,7 +561,7 @@ static void setup_name_count(FvwmWindow *fw, Bool is_icon)
 			}
 		}
 	}
-	
+
 	if (is_icon)
 	{
 		fw->icon_name_count = count;

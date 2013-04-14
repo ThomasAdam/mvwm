@@ -836,7 +836,8 @@ int main(int argc, char **argv) {
 /*
  * Wait for some event like iconify, deiconify and stuff.
  */
-static void Loop(void) {
+static void Loop(void)
+{
   FvwmPacket* packet;
   clock_t time_start;                  /* for time() */
   clock_t time_end;                    /* for time() */
