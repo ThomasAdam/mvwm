@@ -133,15 +133,14 @@ static void menustyle_copy_face(MenuFace *destmf, MenuFace *origmf)
 	case PixmapMenu:
 	case TiledPixmapMenu:
 		fpa.mask = (Pdepth <= 8)?  FPAM_DITHER:0;
-	
-		if (destmf->u.p) 
+		if (destmf->u.p)
 			destmf->u.p = NULL;
 
 		if (origmf->u.p)
 			destmf->u.p = PCacheFvwmPicture(
 				dpy, Scr.NoFocusWin, NULL, origmf->u.p->name,
 				fpa);
-	
+
 		destmf->type = origmf->type;
 		break;
 	default:
@@ -1955,9 +1954,11 @@ void CMD_CopyMenuStyle(F_CMD_ARGS)
 
 void CMD_MenuStyle(F_CMD_ARGS)
 {
+	char *dummy;
 	char *option;
 	char *poption;
 
+	(void)dummy;
 	GetNextSimpleOption(SkipNTokens(action, 1), &option);
 	poption = option;
 	while (poption && poption[0] == '!')

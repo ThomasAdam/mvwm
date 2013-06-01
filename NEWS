@@ -7,9 +7,18 @@ Changes in 2.6.5 (20-Apr-2012)
 * New features:
   - N/A
 
+  - The option "forget" to the Maximize command allows to
+    unmaximize a window without changing its size and position.
+
 * Bug fixes:
   - Provide a wrapper for the deprecation of XKeycodeToKeysym and
     use XkbKeycodeToKeysym() where appropriate.
+
+  - FvwmForm now honours a Xinerama screen specifier in its
+    geometry.
+  - FvwmIconMan had problems displaying the hilight colour on some
+    systems (64 bit issue?).
+  - Several possible format string attacks have been fixed.
 
 -------------------------------------------------------------------
 

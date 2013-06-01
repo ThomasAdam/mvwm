@@ -69,6 +69,7 @@ Bool is_iconv_supported(char *c1, char *c2)
 {
 	Ficonv_t cd1,cd2;
 	Bool r = False;
+	int dummy;
 
 	if (!FiconvSupport || !c1 || !c2)
 		return False;
@@ -80,7 +81,9 @@ Bool is_iconv_supported(char *c1, char *c2)
 	if (cd1 != (Ficonv_t) -1)
 		(void)Ficonv_close(cd1);
 	if (cd2 != (Ficonv_t) -1)
-		(void)Ficonv_close(cd2);
+		dummy = Ficonv_close(cd2);
+	(void)dummy;
+
 	return r;
 }
 

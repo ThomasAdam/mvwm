@@ -3851,6 +3851,7 @@ static void pop_menu_down_and_repaint_parent(
 	MenuRoot **pmr, Bool *fSubmenuOverlaps, MenuParameters *pmp)
 {
 	MenuRoot *parent = MR_PARENT_MENU(*pmr);
+	Window win;
 	XEvent event;
 	int mr_x;
 	int mr_y;
@@ -3865,6 +3866,8 @@ static void pop_menu_down_and_repaint_parent(
 	{
 		/* popping down the menu may destroy the menu via the dynamic
 		 * popdown action! Thus we must not access *pmr afterwards. */
+		win = MR_WINDOW(*pmr);
+		(void)win;
 		/* Create a fake event to pass into paint_menu */
 		event.type = Expose;
 		if (!menu_get_geometry(
@@ -4377,6 +4380,7 @@ static mloop_ret_code_t __mloop_handle_event(
 		 * previous menu or possibly ignore the mouse position */
 		if (pmret->flags.is_menu_posted)
 		{
+			MenuItem *l_mi;
 			MenuRoot *l_mrMi;
 			int l_x_offset;
 			XEvent e;
@@ -4384,6 +4388,7 @@ static mloop_ret_code_t __mloop_handle_event(
 			pmret->flags.is_menu_posted = 0;
 			(void)find_entry(
 				pmp, &l_x_offset, &l_mrMi, None, -1, -1);
+			(void)l_mi;
 			if (l_mrMi != NULL)
 			{
 				if (pmp->menu != l_mrMi)
@@ -5260,13 +5265,15 @@ static mloop_ret_code_t __mloop_handle_action_without_mi(
 static void __mloop_exit_warp_back(MenuParameters *pmp)
 {
 	MenuRoot *tmrMi;
+	int tmi;
 
 	if (pmp->parent_menu && MR_SELECTED_ITEM(pmp->parent_menu))
 	{
 		warp_pointer_to_item(
 			pmp->parent_menu, MR_SELECTED_ITEM(pmp->parent_menu),
 			False);
-		(void)find_entry(pmp, NULL, &tmrMi, None, -1, -1);
+		tmi = find_entry(pmp, NULL, &tmrMi, None, -1, -1);
+		(void)tmi;
 		if (pmp->parent_menu != tmrMi && MR_XANIMATION(pmp->menu) == 0)
 		{
 			/* Warping didn't take us to the correct menu, i.e. the

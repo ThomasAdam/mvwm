@@ -157,8 +157,9 @@ void FGettextInit(const char *domain, const char *dir, const char *module)
 const char *FGettext(char *str)
 {
 	flist *l = FGPathList;
-	const char *s;
+	const char *s, *dummy;
 
+	(void)dummy;
 	if (!HaveNLSSupport || !FGettextInitOk || FGPathList == NULL ||
 	    str == NULL)
 	{

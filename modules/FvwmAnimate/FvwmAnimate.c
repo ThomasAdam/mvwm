@@ -836,10 +836,13 @@ int main(int argc, char **argv) {
 /*
  * Wait for some event like iconify, deiconify and stuff.
  */
-static void Loop(void) {
+static void Loop(void)
+{
   FvwmPacket* packet;
   char cmd[200];
+  clock_t time_accum;
 
+  (void)time_accum;
   myfprintf((stderr,"Starting event loop\n"));
   while ( !isTerminated ) {
     if ( (packet = ReadFvwmPacket(Channel[1])) == NULL )

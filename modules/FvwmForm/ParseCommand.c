@@ -71,7 +71,6 @@ char * ParseCommand (int dn, char *sp, char end, int *dn1, char **sp1)
     if (c == '$') {  /* variable */
       if (*sp != '(')
 	goto normal_char;
-      ++sp;
       vp = var;
       while (1) {
 	x = *(sp++);

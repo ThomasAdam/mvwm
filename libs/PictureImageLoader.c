@@ -397,6 +397,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_structp Fpng_ptr = NULL;
 	Fpng_infop Finfo_ptr = NULL;
 	CARD32 *data;
+	size_t n;
 	int w, h;
 	char hasa = 0, hasg = 0;
 	FILE *f;
@@ -421,7 +422,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	{
 		return False;
 	}
-	fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
+	n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
+	(void)n;
 	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK))
 	{
 		fclose(f);
@@ -465,7 +467,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	}
 
 	/* TA:  XXX:  (2011-02-14) -- Happy Valentines Day.
-	 * 
+	 *
 	 * png_get_color_type() defined in libpng 1.5 now hides a data member
 	 * to a struct:
 	 *

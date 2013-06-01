@@ -2479,11 +2479,11 @@ Bool __move_loop(
 
 			xl -= XOffset;
 			yt -= YOffset;
-			
+
 			rc = HandlePaging(
 				&le, dx, dy, &xl, &yt, &delta_x, &delta_y,
 				False, False, True, fw->edge_delay_ms_move);
-				
+
 			/* Fake an event to force window reposition */
 			if (delta_x)
 			{
@@ -3038,7 +3038,7 @@ void CMD_SnapAttraction(F_CMD_ARGS)
 		OLD, "CMD_SnapAttraction",
 		"The command SnapAttraction is obsolete. Please use the"
 		" following command instead:");
-	fvwm_msg(OLD, "", cmd);
+	fvwm_msg(OLD, "", "%s", cmd);
 	execute_function(
 		cond_rc, exc, cmd,
 		FUNC_DONT_REPEAT | FUNC_DONT_EXPAND_COMMAND);
@@ -3060,7 +3060,7 @@ void CMD_SnapGrid(F_CMD_ARGS)
 		OLD, "CMD_SnapGrid",
 		"The command SnapGrid is obsolete. Please use the following"
 		" command instead:");
-	fvwm_msg(OLD, "", cmd);
+	fvwm_msg(OLD, "", "%s", cmd);
 	execute_function(
 		cond_rc, exc, cmd,
 		FUNC_DONT_REPEAT | FUNC_DONT_EXPAND_COMMAND);
@@ -4724,6 +4724,7 @@ void CMD_Maximize(F_CMD_ARGS)
 	Bool grow_left = False;
 	Bool grow_right = False;
 	Bool do_force_maximize = False;
+	Bool do_forget = False;
 	Bool is_screen_given = False;
 	Bool ignore_working_area = False;
 	int layers[2] = { -1, -1 };
@@ -4835,7 +4836,12 @@ void CMD_Maximize(F_CMD_ARGS)
 	/* parse first parameter */
 	val1_unit = scr_w;
 	token = PeekToken(action, &taction);
-	if (token && StrEquals(token, "grow"))
+	if (token && StrEquals(token, "forget"))
+	{
+		do_forget = True;
+		do_force_maximize = True;
+	}
+	else if (token && StrEquals(token, "grow"))
 	{
 		grow_left = True;
 		grow_right = True;
@@ -4878,7 +4884,11 @@ void CMD_Maximize(F_CMD_ARGS)
 	/* parse second parameter */
 	val2_unit = scr_h;
 	token = PeekToken(taction, NULL);
-	if (token && StrEquals(token, "grow"))
+	if (do_forget == True)
+	{
+		/* nop */
+	}
+	else if (token && StrEquals(token, "grow"))
 	{
 		grow_up = True;
 		grow_down = True;
@@ -4923,7 +4933,12 @@ void CMD_Maximize(F_CMD_ARGS)
 		page_x, page_y, scr_x, scr_y, scr_w, scr_h);
 #endif
 
-	if (IS_MAXIMIZED(fw) && !do_force_maximize)
+	if (do_forget == True && IS_MAXIMIZED(fw))
+	{
+		fw->g.normal = fw->g.max;
+		unmaximize_fvwm_window(fw);
+	}
+	else if (IS_MAXIMIZED(fw) && !do_force_maximize)
 	{
 		unmaximize_fvwm_window(fw);
 	}

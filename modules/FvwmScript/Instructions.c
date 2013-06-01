@@ -110,8 +110,6 @@ static int InfEq(char *arg1,char *arg2)
 
 static int Equal(char *arg1,char *arg2)
 {
-  (void)atoi(arg1);
-  (void)atoi(arg2);
   return (strcmp(arg1,arg2)==0);
 }
 
@@ -133,8 +131,6 @@ static int Sup(char *arg1,char *arg2)
 
 static int Diff(char *arg1,char *arg2)
 {
-  (void)atoi(arg1);
-  (void)atoi(arg2);
   return (strcmp(arg1,arg2)!=0);
 }
 
@@ -324,6 +320,7 @@ static char *FuncGetOutput(int *NbArg, long *TabArg)
   int line,index,i=2,j=0,k,NewWord;
   FILE *f;
   int maxsize=32000;
+  size_t n;
 
   (*NbArg)++;
   cmndbuf=CalcArg(TabArg,NbArg);
@@ -350,7 +347,8 @@ static char *FuncGetOutput(int *NbArg, long *TabArg)
       if (strcmp(Command,"None"))
 	free(BufCom);
       BufCom = (char*)safecalloc(sizeof(char),maxsize);
-      fread(BufCom,1,maxsize,f);
+      n = fread(BufCom,1,maxsize,f);
+      (void)n;
       pclose(f);
       strncpy(Command,cmndbuf,255);
       TimeCom=time(NULL);
@@ -575,6 +573,7 @@ static char *LaunchScript (int *NbArg,long *TabArg)
   unsigned long leng;
   int i;
   Atom MyAtom;
+  size_t n;
 
   /* Lecture des arguments */
   (*NbArg)++;
@@ -620,12 +619,13 @@ static char *LaunchScript (int *NbArg,long *TabArg)
   free(arg);
 
   /* Envoi de la commande */
-  write(fd[0], &ref, sizeof(Window));
+  n = write(fd[0], &ref, sizeof(Window));
+  (void)n;
   leng = strlen(execstr);
-  write(fd[0], &leng, sizeof(unsigned long));
-  write(fd[0], execstr, leng);
+  n = write(fd[0], &leng, sizeof(unsigned long));
+  n = write(fd[0], execstr, leng);
   leng = 1;
-  write(fd[0], &leng, sizeof(unsigned long));
+  n = write(fd[0], &leng, sizeof(unsigned long));
   free(execstr);
 
   /* Retourne l'id du fils */
@@ -869,8 +869,11 @@ static char *FuncSendMsgAndGet(int *NbArg,long *TabArg)
     {
       if ((f = fopen (out_fifo, "r")) != NULL)
       {
+        size_t n;
+
 	buf=(char*)safecalloc(sizeof(char),maxsize);
-	fread(buf,1,maxsize,f);
+	n = fread(buf,1,maxsize,f);
+	(void)n;
 	fclose (f);
       }
       else
@@ -995,6 +998,7 @@ static void Exec (int NbArg,long *TabArg)
   char *execstr;
   char *tempstr;
   int i;
+  size_t n;
 
   for (i=0; i < NbArg; i++)
     leng += strlen(CalcArg(TabArg,&i));
@@ -1014,12 +1018,13 @@ static void Exec (int NbArg,long *TabArg)
     free(tempstr);
   }
 
-  write(fd[0], &ref, sizeof(Window));
+  n = write(fd[0], &ref, sizeof(Window));
+  (void)n;
   leng = strlen(execstr);
-  write(fd[0], &leng, sizeof(unsigned long));
-  write(fd[0], execstr, leng);
+  n = write(fd[0], &leng, sizeof(unsigned long));
+  n = write(fd[0], execstr, leng);
   leng = 1;
-  write(fd[0], &leng, sizeof(unsigned long));
+  n = write(fd[0], &leng, sizeof(unsigned long));
   free(execstr);
 }
 
@@ -1450,7 +1455,7 @@ static void ChangeWindowTitle(int NbArg,long * TabArg){
 static void ChangeWindowTitleFromArg(int NbArg,long * TabArg){
 
   char *arg;
-  int argVal;  
+  int argVal;
   int tmpVal=NbArg-1;
 
   arg=CalcArg(TabArg,&tmpVal);
@@ -1583,7 +1588,6 @@ static void Loop (int NbArg,long *TabArg)
   int i;
   int CurrArg=0;
 
-  /* le premier argument est une variable */
   /*On ajuste la taille de la var pour contenir un nombre */
   TabVVar[TabArg[0]] = (char*)saferealloc(TabVVar[TabArg[0]],sizeof(char)*10);
   /* Calcul des 2 autres arguments */

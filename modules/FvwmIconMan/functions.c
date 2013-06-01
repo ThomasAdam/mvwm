@@ -535,7 +535,7 @@ int builtin_print(int numargs, BuiltinArg *args)
 	else
 	{
 		sprintf(buf, "%s\n", s);
-		ConsoleMessage(buf);
+		ConsoleMessage("%s", buf);
 	}
 
 	return 0;

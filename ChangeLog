@@ -1,3 +1,46 @@
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* libs/fsm.c (CompletNewConnectionMsg, FreeAuthenticationData)
+	(SetAuthentication):
+	* libs/PictureBase.c (PictureDefaultGC):
+	* libs/Ficonv.c (is_iconv_supported):
+	* libs/Module.c (SendText):
+	* libs/PictureImageLoader.c (PImageCreatePixmapFromFImage)
+	(PImageLoadPng):
+	* libs/Graphics.c (CreateGradientPixmap):
+	* libs/PictureUtils.c (PictureAllocColorTable):
+	* fvwm/session.c (LoadGlobalState):
+	* fvwm/menustyle.c (menustyle_parse_style):
+	* fvwm/virtual.c (get_page_arguments):
+	* fvwm/placement.c (__pl_minoverlap_get_pos_penalty):
+	* fvwm/frame.c (frame_get_titlebar_dimensions):
+	* fvwm/fvwm.c (CreateGCs):
+	* fvwm/builtins.c (update_decors_colorset, CMD_ChangeDecor):
+	* fvwm/move_resize.c (resize_move_window, __resize_window):
+	* fvwm/events.c (HandleMapRequestKeepRaised):
+	* fvwm/borders.c (border_mp_draw_mp_titlebar)
+	(border_get_titlebar_draw_descr):
+	* fvwm/style.c (parse_and_set_window_style):
+	fix write only variable warnings
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/module_interface.c (module_input_execute):
+	fix execflags not being used
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* libs/FRenderInit.c (FRenderGetErrorText):
+	* fvwm/virtual.c (CMD_EdgeResistance):
+	* fvwm/builtins.c (CMD_Echo):
+	* fvwm/move_resize.c (CMD_SnapGrid, CMD_SnapAttraction):
+	fix possible format string exploit
+
+2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/move_resize.c (CMD_Maximize):
+	introduce option "forget" to the Maximize command
+
 2012-06-22  Dan Espen  <despen@verizon.net>
 
 	* configure.ac: Set variables for python.
@@ -23,7 +66,7 @@
 	  PImageLoadPng):
 	Add fvwm_msg() for hints about failed image load.
 
-2012-04-20  Thomas Adam  <thomas@fvwm.org>
+2011-04-15  Thomas Adam <thomas@fvwm.org>
 	* NEWS:
 	* configure.ac:
 	Updated for 2.6.6 (CVS HEAD)
@@ -383,7 +426,7 @@
 2011-02-05  Thomas Adam  <thomas@fvwm.org>
 	* acinclude.m4:
 	Fix DSO linker error (ld) with missing "-lfontconfig" for fontconfig
-	
+
 	Stricter DSO checks with newer Libc versions requires the linker find
 	the symbols elsewhere.  The only one that's missing is "-lfontconfig" as
 	we already supply -lX11 -lXent elsewhere.

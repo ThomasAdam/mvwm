@@ -2040,7 +2040,10 @@ void DoCommand (Item *cmd)
 
     /* send command */
     if ( parsed_command[0] == '!') {    /* If command starts with ! */
-      system(parsed_command+1);         /* Need synchronous execution */
+      int rc;
+
+      rc = system(parsed_command+1);         /* Need synchronous execution */
+      (void)rc;
     } else {
       SendText(Channel,parsed_command, ref);
     }
@@ -2094,6 +2097,7 @@ static void OpenWindows(void)
   static XSizeHints sh =
     { PPosition | PSize | USPosition | USSize | PWinGravity};
   XClassHint myclasshints;
+  fscreen_scr_t scr;
 
   if (!CF.pointer[input_pointer]) {
     CF.pointer[input_pointer] = XCreateFontCursor(dpy, XC_xterm);
@@ -2172,7 +2176,7 @@ static void OpenWindows(void)
       NULL, FSCREEN_CURRENT, &x, &y, CF.max_width, CF.total_height);
   }
   /* hack to prevent mapping on wrong screen with StartsOnScreen */
-  FScreenMangleScreenIntoUSPosHints(FSCREEN_CURRENT, &sh);
+  FScreenMangleScreenIntoUSPosHints(scr, &sh);
   xswa.background_pixel = CF.screen_background;
   xswa.border_pixel = 0;
   xswa.colormap = Pcmap;
@@ -2556,7 +2560,10 @@ TimerHandler(int sig)
 
     /* send command */
     if ( parsed_command[0] == '!') {    /* If command starts with ! */
-      system(parsed_command+1);         /* Need synchronous execution */
+      int rc;
+
+      rc = system(parsed_command+1);         /* Need synchronous execution */
+      (void)rc;
     } else {
       SendText(Channel,parsed_command, ref);
     }

@@ -618,13 +618,15 @@ static Bool parse_options(void)
 			char tail[128];
 			char pattern[128];
 			int bytes=0;
+			int args;
 			(void)sscanf(tline, "\"%[^\"]\"%s%n",
 				groupname,directive,&bytes);
 
 			strncpy(tail,&tline[bytes],128);
 			tail[127]=0;
 			pattern[0]=0;
-			(void)sscanf(tail, "%*[^\"]\"%[^\"]\"",pattern);
+			args = sscanf(tail, "%*[^\"]\"%[^\"]\"",pattern);
+			(void)args;
 
 #if PROXY_GROUP_DEBUG
 			fprintf(stderr,
@@ -1004,6 +1006,7 @@ static int GetProperty(Window w,char* propertyname)
 	int bytes;
 
 	atom = XInternAtom(dpy, propertyname, True);
+	XGetAtomName (dpy,atom);
 
 	status = XGetWindowProperty(dpy, w, atom, 0L, 1024,
 		False, AnyPropertyType,
@@ -1055,6 +1058,7 @@ static int GetLeader(Window w)
 static int GetParentProcessId(int pid)
 {
 	int ppid=0;
+	int bytes=0;
 	FILE* statusfile;
 
 	sprintf(commandBuffer,"/proc/%d/stat",pid);
@@ -1063,7 +1067,8 @@ static int GetParentProcessId(int pid)
 	{
 		return 0;
 	}
-	(void)fread(resultBuffer,32,1,statusfile);
+	bytes=fread(resultBuffer,32,1,statusfile);
+	(void)bytes;
 	sscanf(resultBuffer,"%*d %*[^)]) %*s %d",&ppid);
 	fclose(statusfile);
 	return ppid;
