@@ -422,8 +422,12 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	{
 		return False;
 	}
-	n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
-	(void)n;
+	{
+		int n;
+
+		n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
+		(void)n;
+	}
 	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK))
 	{
 		fclose(f);

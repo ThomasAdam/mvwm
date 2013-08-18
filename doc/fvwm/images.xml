@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: images.xml,v 1.4 2007/07/16 15:07:14 scott Exp $ -->
+<!-- $Id: images.xml,v 1.4.6.1 2013/01/20 05:09:05 dane Exp $ -->
 <!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
   "../docbook-xml/docbookx.dtd"
 [
@@ -59,7 +59,7 @@ might look something like this:</para>
 <para>
 By default, SVG images are rendered as the image creator intended
 them to. But since SVG is a vector graphics format, the images can
-be rendered at any choosen size and rotation, e.g. making it possible
+be rendered at any chosen size and rotation, e.g. making it possible
 to use the same icon file rendered at diffrent sizes for the
 <fvwmref cmd="Style" opt="Icon"/> and <fvwmref cmd="Style" opt="MiniIcon"/>
 styles.</para>

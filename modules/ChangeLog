@@ -1,41 +1,11 @@
-2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+2013-06-12  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
-	* FvwmWinList/FvwmWinList.c (StartMeUp_II):
-	* FvwmWinList/ButtonArray.c (DoButton):
-	* FvwmWharf/FvwmWharf.c (CreateWindow, Loop, ParseOptions):
-	* FvwmTaskBar/FvwmTaskBar.c (HandleEvents):
-	* FvwmScript/FvwmScript.c (ReadFvwmScriptArg):
-	* FvwmScript/Instructions.c (Exec, LaunchScript, FuncGetOutput)
-	(FuncSendMsgAndGet, Loop, Diff, Equal):
-	* FvwmScript/Widgets/RadioButton.c (EvtMouseRadioButton):
-	* FvwmScript/Widgets/PushButton.c (EvtMousePushButton):
-	* FvwmScript/Widgets/PopupMenu.c (EvtMousePopupMenu):
-	* FvwmScript/Widgets/Menu.c (EvtMouseMenu):
-	* FvwmScript/Widgets/HScrollBar.c (EvtMouseHScrollBar)
-	* FvwmRearrange/FvwmRearrange.c (main):
-	* FvwmProxy/FvwmProxy.c (GetParentProcessId, GetProperty)
-	(parse_options):
-	* FvwmPager/FvwmPager.c (list_mini_icon):
-	* FvwmPager/x_pager.c (IconMoveWindow):
-	* FvwmM4/FvwmM4.c (m4_defs):
-	* FvwmIconMan/readconfig.c (add_weighted_sort):
-	* FvwmIconBox/FvwmIconBox.c (MySendFvwmPipe, ExecuteAction):
-	* FvwmForm/ReadXServer.c (ToggleChoice, ReadXServer):
-	* FvwmForm/ParseCommand.c (ParseCommand):
-	* FvwmForm/FvwmForm.c (TimerHandler, DoCommand):
-	* FvwmCommand/FvwmCommandS.c (open_fifos):
-	* FvwmCpp/FvwmCpp.c (cpp_defs):
-	* FvwmCommand/FvwmCommand.c (main, sendit):
-	* FvwmButtons/parse.c (ParseConfigFile):
-	* FvwmButtons/draw.c (RedrawButton):
-	* FvwmButtons/FvwmButtons.c (RedrawWindow):
-	* FvwmAnimate/FvwmAnimate.c (Loop):
-	fix write only variable compiler warnings
+	* FvwmIconMan/xmanager.c (draw_button_background):
+	new attempt to fix bad hilight colour
 
-2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
-
-	* FvwmIconMan/functions.c (builtin_print):
-	fix possible format string attack
+	* FvwmIconMan/x.c (change_colorset, recreate_background)
+	(create_manager_window):
+	remove previous attempt to fix bad hilight colour
 
 2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
@@ -43,10 +13,77 @@
 	(create_manager_window):
 	fix bad hilight colour on some systems (64 bit issue?)
 
-2013-04-14  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+2013-04-24  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
-	* FvwmForm/FvwmForm.c (OpenWindows):
-	fix handling of screen spec
+	* FvwmScript/Instructions.c (Exec, FuncGetOutput, LaunchScript)
+	(FuncSendMsgAndGet, Equal, Diff):
+	* FvwmProxy/FvwmProxy.c (GetParentProcessId):
+	* FvwmIconMan/debug.c (ConsoleMessage):
+	* FvwmIconBox/FvwmIconBox.c (MySendFvwmPipe):
+	* FvwmForm/FvwmForm.c (TimerHandler, DoCommand):
+	* FvwmCommand/FvwmCommandS.c (open_fifos):
+	* FvwmCommand/FvwmCommand.c (main, sendit):
+	* FvwmButtons/parse.c (ParseConfigFile):
+	fix warnings about ignored function return code
+
+	* FvwmIconMan/functions.c (builtin_print):
+	remove unused variable
+
+	* FvwmForm/FvwmForm.c (RedrawSeparator):
+	fix pointer format in fprintf
+
+2013-04-04  Dan Espen  <despen@verizon.net>
+
+	* FvwmIconMan/FvwmIconMan.1.in: Grammar fix from scootch132@yahoo.com.
+
+2013-02-05  Thomas Adam  <thomas@fvwm.org>
+	* modules/FvwmPager/x_pager.c (MapBalloonWindow):
+	Don't let desks enter negative offsets.
+
+2013-01-22  Thomas Adam  <thomas@fvwm.org>
+	* modules/FvwmWharf/FvwmWharf.c (FindLockMode):
+	Fix missing deprecation of XKeycodeToKeysym() and fvwm_KeycodeToKeysym()
+
+2013-01-22  Thomas Adam  <thomas@fvwm.org>
+	* FvwmIconMan/debug.c (ConsoleMessage):
+	* FvwmIconMan/functions.c (builtin_print):
+	Comply with Debian's hardening rules.
+
+	Debian's policy of what's considered "fit for purpose" for inclusion in
+	its repositoy of packages says that all compiled programs must pass the
+	following:
+
+	CFLAGS="-I/usr/local/include -g -O2 -fstack-protector \
+			--param=ssp-buffer-size=4 -Wformat -Werror=format-security" \
+	LDFLAGS="-L/usr/local/lib"
+
+	http://wiki.debian.org/HardeningWalkthrough
+
+2013-01-19  Dan Espen  <despen@verizon.net>
+
+	* FvwmButtons/FvwmButtons.1.in:
+	* FvwmTheme/FvwmTheme.1.in:
+	* FvwmAuto/FvwmAuto.1.in: manpage-error patch
+	from Vincent W. Chen Lintain Debian.
+
+	* FvwmIconMan/FvwmIconMan.1.in:
+	* FvwmProxy/FvwmProxy.1.in:
+	* FvwmScript/FvwmScript.1.in:
+	* FvwmDebug/FvwmDebug.1:
+	* FvwmPerl/FvwmPerl.1:
+	* FvwmTabs/FvwmTabs.1: spelling-error-manpage patch
+	from Vincent W. Chen Lintain Debian.
+
+	* FvwmIconMan/readconfig.c:
+	* FvwmIconMan/winlist.c: spelling-error-binary patch
+	from Vincent W. Chen Lintain Debian.
+
+
+2012-07-30  Dan Espen  <despen@verizon.net>
+
+	* FvwmForm/FvwmForm.1.in: Document Separator feature.
+	* FvwmForm/FvwmForm.c: Add Separator feature.
+	* FvwmForm/FvwmForm.h: Add Separator Item.
 
 2012-06-29  Dan Espen  <despen@verizon.net>
 

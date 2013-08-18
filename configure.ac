@@ -1272,7 +1272,7 @@ AC_ARG_ENABLE(perllib,
 AC_SUBST(FVWM_PERLLIB)
 
 # ******* gettext
-ALL_LINGUAS="ar de fr sv_SE zh_CN"
+ALL_LINGUAS="ar de fr sv_SE zh_CN ru es"
 FVWM_DOMAIN="fvwm"
 FVWMTASKBAR_DOMAIN="FvwmTaskBar"
 FVWMSCRIPT_DOMAIN="FvwmScript"
@@ -1666,10 +1666,10 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 
 #ifdef HAVE_X11_XKBLIB_H
 #include <X11/XKBlib.h>
-#define fvwm_KeycodeToKeysym(d, k, g, l) \
+#define fvwm_KeycodeToKeysym(d, k, l, g) \
 	(XkbKeycodeToKeysym((d), (k), (g), (l)))
 #else
-#define fvwm_KeycodeToKeysym(d, k, i, x) (XKeycodeToKeysym((d), (k), (i)))
+#define fvwm_KeycodeToKeysym(d, k, x, i) (XKeycodeToKeysym((d), (k), (i)))
 #endif
 
 ])

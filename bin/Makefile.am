@@ -16,7 +16,6 @@ man_MANS = \
 	fvwm-convert-2.4.1 fvwm-convert-2.6.1 \
 	fvwm-menu-xlock.1 fvwm-menu-directory.1 \
 	fvwm-menu-desktop.1 fvwm-menu-headlines.1
-EXTRA_DIST = fvwm-convert-2.2 fvwm-convert-2.2.1 $(man_MANS)
 
 LDADD = -L$(top_builddir)/libs $(X_LIBS) -lfvwm $(xpm_LIBS) $(Xcursor_LIBS) \
 	$(X_PRE_LIBS) -lXext -lX11 -lm $(X_EXTRA_LIBS) $(Xrender_LIBS) \
@@ -24,6 +23,13 @@ LDADD = -L$(top_builddir)/libs $(X_LIBS) -lfvwm $(xpm_LIBS) $(Xcursor_LIBS) \
 INCLUDES = -I$(top_srcdir) $(xpm_CFLAGS) $(X_CFLAGS) $(png_CFLAGS) \
 	$(rsvg_CFLAGS)
 
+configdir = @FVWM_DATADIR@
+config_DATA = fvwm-menu-desktop-config.fpl
+
+EXTRA_DIST = fvwm-convert-2.2 \
+fvwm-menu-desktop-config.fpl \
+fvwm-convert-2.2.1 \
+$(man_MANS)
 
 ## The long generation for *.1 is to make both pod2man and 'make -j' happy.
 

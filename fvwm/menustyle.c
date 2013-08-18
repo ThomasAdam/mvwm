@@ -133,6 +133,7 @@ static void menustyle_copy_face(MenuFace *destmf, MenuFace *origmf)
 	case PixmapMenu:
 	case TiledPixmapMenu:
 		fpa.mask = (Pdepth <= 8)?  FPAM_DITHER:0;
+
 		if (destmf->u.p)
 			destmf->u.p = NULL;
 

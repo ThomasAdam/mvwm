@@ -523,7 +523,7 @@ int builtin_ret(int numargs, BuiltinArg *args)
 
 int builtin_print(int numargs, BuiltinArg *args)
 {
-	char *s, buf[256];
+	char *s;
 
 	ConsoleDebug(FUNCTIONS, "print: %s\n", args[0].value.string_value);
 
@@ -534,8 +534,7 @@ int builtin_print(int numargs, BuiltinArg *args)
 	}
 	else
 	{
-		sprintf(buf, "%s\n", s);
-		ConsoleMessage("%s", buf);
+		ConsoleMessage("%s\n", s);
 	}
 
 	return 0;

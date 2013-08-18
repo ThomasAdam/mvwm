@@ -129,9 +129,7 @@ Bool FRenderGetErrorText(int code, char *msg)
 		    code <= FRenderErrorBase +
 		    (sizeof(error_names) / sizeof(char *)) -1)
 		{
-			sprintf(
-				msg, "%s",
-				error_names[code - FRenderErrorBase]);
+			sprintf(msg, "%s\n", error_names[code - FRenderErrorBase]);
 			return 1;
 		}
 	}

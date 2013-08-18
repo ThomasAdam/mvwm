@@ -162,8 +162,12 @@ void SendText(int *fd, const char *message, unsigned long window)
 	p += sizeof(unsigned long);
 
 	/* Send it! */
-	n = write(fd[0], buf, p - buf);
-	(void)n;
+	{
+		int n;
+
+		n = write(fd[0], buf, p - buf);
+		(void)n;
+	}
 }
 
 /*

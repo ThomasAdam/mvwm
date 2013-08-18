@@ -1,3 +1,15 @@
+2013-04-13  Dan Espen  <despen@verizon.net>
+
+	* commands/Test.xml: Document that infostore works with EnvMatch.
+
+2013-01-20  Dan Espen  <despen@verizon.net>
+
+	* commands/BugOpts.xml:
+	* doc/fvwm/images.xml:
+	* doc/fvwm/xinerama.xml: spelling-error-manpage patch
+	from Vincent W. Chen Lintain Debian.
+
+
 2012-06-22  Dan Espen  <despen@verizon.net>
 
 	* commands/Style.xml: Cleanup iconsize.

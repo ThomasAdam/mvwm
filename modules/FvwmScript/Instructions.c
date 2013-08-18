@@ -110,6 +110,11 @@ static int InfEq(char *arg1,char *arg2)
 
 static int Equal(char *arg1,char *arg2)
 {
+  int n;
+
+  n = atoi(arg1);
+  n = atoi(arg2);
+  (void)n;
   return (strcmp(arg1,arg2)==0);
 }
 
@@ -131,6 +136,11 @@ static int Sup(char *arg1,char *arg2)
 
 static int Diff(char *arg1,char *arg2)
 {
+  int n;
+
+  n = atoi(arg1);
+  n = atoi(arg2);
+  (void)n;
   return (strcmp(arg1,arg2)!=0);
 }
 
@@ -344,6 +354,8 @@ static char *FuncGetOutput(int *NbArg, long *TabArg)
     }
     else
     {
+      int n;
+
       if (strcmp(Command,"None"))
 	free(BufCom);
       BufCom = (char*)safecalloc(sizeof(char),maxsize);
@@ -619,13 +631,17 @@ static char *LaunchScript (int *NbArg,long *TabArg)
   free(arg);
 
   /* Envoi de la commande */
-  n = write(fd[0], &ref, sizeof(Window));
-  (void)n;
-  leng = strlen(execstr);
-  n = write(fd[0], &leng, sizeof(unsigned long));
-  n = write(fd[0], execstr, leng);
-  leng = 1;
-  n = write(fd[0], &leng, sizeof(unsigned long));
+  {
+    int n;
+
+    n = write(fd[0], &ref, sizeof(Window));
+    (void)n;
+    leng = strlen(execstr);
+    n = write(fd[0], &leng, sizeof(unsigned long));
+    n = write(fd[0], execstr, leng);
+    leng = 1;
+    n = write(fd[0], &leng, sizeof(unsigned long));
+  }
   free(execstr);
 
   /* Retourne l'id du fils */
@@ -869,7 +885,7 @@ static char *FuncSendMsgAndGet(int *NbArg,long *TabArg)
     {
       if ((f = fopen (out_fifo, "r")) != NULL)
       {
-        size_t n;
+	int n;
 
 	buf=(char*)safecalloc(sizeof(char),maxsize);
 	n = fread(buf,1,maxsize,f);
@@ -1018,13 +1034,17 @@ static void Exec (int NbArg,long *TabArg)
     free(tempstr);
   }
 
-  n = write(fd[0], &ref, sizeof(Window));
-  (void)n;
-  leng = strlen(execstr);
-  n = write(fd[0], &leng, sizeof(unsigned long));
-  n = write(fd[0], execstr, leng);
-  leng = 1;
-  n = write(fd[0], &leng, sizeof(unsigned long));
+  {
+    int n;
+
+    n = write(fd[0], &ref, sizeof(Window));
+    (void)n;
+    leng = strlen(execstr);
+    n = write(fd[0], &leng, sizeof(unsigned long));
+    n = write(fd[0], execstr, leng);
+    leng = 1;
+    n = write(fd[0], &leng, sizeof(unsigned long));
+  }
   free(execstr);
 }
 

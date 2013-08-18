@@ -275,8 +275,12 @@ Status SetAuthentication(
 	umask (original_umask);
 
 	sprintf (command, "iceauth source %s", addAuthFile);
-	rc = system(command);
-	(void)rc;
+	{
+		int n;
+
+		n = system(command);
+		(void)n;
+	}
 
 	unlink (addAuthFile);
 
@@ -331,8 +335,12 @@ void FreeAuthenticationData(int count, FIceAuthDataEntry *authDataEntries)
 	free ((char *) authDataEntries);
 
 	sprintf (command, "iceauth source %s", remAuthFile);
-	rc = system(command);
-	(void)rc;
+	{
+		int n;
+
+		n = system(command);
+		(void)n;
+	}
 
 	unlink (remAuthFile);
 

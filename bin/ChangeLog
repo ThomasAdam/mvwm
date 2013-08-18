@@ -1,3 +1,74 @@
+2013-06-17  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop-config.fpl:
+	* fvwm-menu-desktop.in: Thomas Funk:
+	support for python-xdg > 0.19.
+	add gettext localization.
+
+2013-01-20  Dan Espen  <despen@verizon.net>
+
+	* fvwm-root.1.in: spelling-error-manpage patch
+	from Vincent W. Chen Lintain Debian.
+
+2012-12-30  Dan Espen  <despen@verizon.net>
+
+	* Makefile.am (config_DATA): Add fvwm-menu-desktop-config.fpl to EXTRA_DIST
+	without using a variable.  Seems to fix make distcheck2.  Don't know why.
+
+2012-12-17  Dan Espen  <despen@verizon.net>
+
+	* Makefile.am: Add fvwm-menu-desktop-config.fpl to EXTRA_DIST.
+
+2012-10-03  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in: Unicode support from Thomas Funk.
+
+2012-09-02  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.1.in: Applied patches from Thomas Funk
+	with some minor changes.
+	* fvwm-menu-desktop-config.fpl: 
+	* fvwm-menu-desktop.in: 
+
+2012-07-28  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop-config.fpl: New module Thomas Funk.
+	Some changes.  Got conflicts with old FvwmForm so changed name.
+
+	* Makefile.am: Add fvwm-menu-desktop-config.fpl.
+
+	* fvwm-menu-desktop.in (main): Applied patch from Thomas Funk.
+	Menus in users HOME only override /etc/xdg/menus.
+
+2012-07-27  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.1.in: Applied patch from Thomas Funk.
+	Capitalize titles, remove dashes from titles.
+
+2012-07-24  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.1.in: Latest patches from Thomas Funk with
+	some adjustments.
+
+2012-07-21  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.1.in: Applied patch from Thomas Funk.
+	Some changes.
+
+2012-07-19  Dan Espen  <despen@verizon.net>
+
+	* fvwm-menu-desktop.in (main): Change --get-menus option to all/desktop.
+	Add validation.
+
+	* fvwm-menu-desktop.1.in:  Applied patch from Thomas Funk.
+	Functionality for configuration tool for fvwm-menu-desktop.
+	Two new options:
+	- get-menus [selected, all] to send the found menus to the config gui
+	- set-menus [filelist] to tell fvwm-menu-desktop which menus should be
+	built.
+	Also another option --insert-in-menu NAME.
+
+
 2012-07-12  Dan Espen  <despen@verizon.net>
 
 	* fvwm-menu-desktop.in: Applied patch from Thomas Funk.

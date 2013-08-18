@@ -257,16 +257,16 @@ int main ( int argc, char *argv[])
 
   if( Opt_Serv )
   {
-    int rc;
+    int n;
 
     sprintf (cmd,"%s '%sS %s'", argv[0], MYNAME, sf_stem);
-    rc = system (cmd);
-    (void)rc;
+    n = system (cmd);
+    (void)n;
   }
 
   {
     char buf[64];
-    size_t n;
+    int n;
 
     sprintf(buf, "%d\n", (int)getpid());
     n = write(Fdrun, buf, strlen(buf));
@@ -445,7 +445,7 @@ void sendit( char *cmd )
     }
     if( clen != 1 )
     {
-      size_t n;
+      int n;
 
       n = write( Fdw, cmd, clen );
       (void)n;

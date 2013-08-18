@@ -2019,10 +2019,7 @@ void CMD_EdgeResistance(F_CMD_ARGS)
 			OLD, "CMD_EdgeResistance",
 			"The command EdgeResistance with three arguments is"
 			" obsolete. Please use the following commands"
-			" instead:");
-		fvwm_msg(OLD, "", "%s", cmd);
-		fvwm_msg(OLD, "", "%s", stylecmd);
-		fvwm_msg(OLD, "", "%s", stylecmd2);
+			" instead:\n%s\n%s\n%s\n", cmd, stylecmd, stylecmd2);
 		execute_function(
 			cond_rc, exc, cmd,
 			FUNC_DONT_REPEAT | FUNC_DONT_EXPAND_COMMAND);

@@ -1714,7 +1714,7 @@ void MySendFvwmPipe(int *fd, char *message, unsigned long window)
 
     if (!ExecIconBoxFunction(temp_msg))
     {
-      size_t n;
+      int n;
 
       n = write(fd[0], &window, sizeof(unsigned long));
       (void)n;

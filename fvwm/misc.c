@@ -346,6 +346,7 @@ static char *fvwm_msg_strings[] =
 void fvwm_msg(fvwm_msg_t type, char *id, char *msg, ...)
 {
 	va_list args;
+	char *mfmt;
 	char fvwm_id[20];
 	char time_str[40] = "\0";
 #ifdef FVWM_DEBUG_TIME
@@ -378,22 +379,6 @@ void fvwm_msg(fvwm_msg_t type, char *id, char *msg, ...)
 		sprintf(&fvwm_id[strlen(fvwm_id)], ".%d", (int)Scr.screen);
 	}
 
-	fprintf(stderr, "%s[%s][%s]: %s",
-		time_str, fvwm_id, id, fvwm_msg_strings[(int)type]);
-
-	if (type == ECHO)
-	{
-		/* user echos must be printed as a literal string */
-		fprintf(stderr, "%s", msg);
-	}
-	else
-	{
-		va_start(args, msg);
-		vfprintf(stderr, msg, args);
-		va_end(args);
-	}
-	fprintf(stderr, "\n");
-
 	if (type == ERR)
 	{
 		/* I hate to use a fixed length but this will do for now */
@@ -409,7 +394,24 @@ void fvwm_msg(fvwm_msg_t type, char *id, char *msg, ...)
 		{
 			sprintf(tmp + MAX_MODULE_INPUT_TEXT_LEN - 5, "...\n");
 		}
+		fprintf(stderr, "%s", tmp);
 		BroadcastName(M_ERROR, 0, 0, 0, tmp);
+	}
+	else
+	{
+		fprintf(stderr, "%s[%s][%s]: %s",
+				time_str, fvwm_id, id, fvwm_msg_strings[(int)type]);
+
+		va_start(args, msg);
+		{
+			int n;
+
+			n = asprintf(&mfmt, "%s\n", msg);
+			(void)n;
+		}
+		vfprintf(stderr, mfmt, args);
+		va_end(args);
+		free(mfmt);
 	}
 
 } /* fvwm_msg */
