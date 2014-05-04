@@ -1,0 +1,8 @@
+* Code cleanup needed!
+    - Remove SAFEFREE() macro;
+    - Add xasprintf() to libs/safemalloc.[ch]
+    - Audit xmalloc() use and consider xasprintf() wrapper
+    - Look at current code warnings at compilation and fix
+    - Remove rsvg support.
+    - Remove XBM/XPM support.
+    - Look at EWMH support.  Remove legacy KDE/GNOME crap.
