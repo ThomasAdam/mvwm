@@ -19,13 +19,6 @@ SUBDIRS = \
 
 EXTRA_DIST = \
 	INSTALL.fvwm \
-	vms/README \
-	vms/config.h \
-	vms/fvwmrc.dat \
-	vms/make_fvwm.mms \
-	vms/vms.c \
-	vms/vms.h \
-	vms/vms_shareables.opt
 
 ## ---------------------------------------------------------------------------
 ## Manage bzip2 archive together with gzip archive
