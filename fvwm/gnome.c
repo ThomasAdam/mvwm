@@ -291,7 +291,7 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
 		int asize;
 
 		asize = atom_size(format_ret);
-		data = safemalloc(num_ret * asize);
+		data = xmalloc(num_ret * asize);
 		if (data)
 		{
 			memcpy(data, retval, num_ret * asize);
@@ -811,7 +811,7 @@ GNOME_SetClientList(void)
 	}
 	if(displayed)
 	{
-		wl=(Window*)safemalloc(sizeof(Window*)*displayed);
+		wl = xmalloc(sizeof(Window *) * displayed);
 		for (t = Scr.FvwmRoot.next; t; t = t->next)
 		{
 			if (!DO_SKIP_WINDOW_LIST(t))

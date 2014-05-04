@@ -145,7 +145,7 @@ int set_default_iconv_charsets(FlocaleCharset *fc)
 					    FLC_GET_LOCALE_CHARSET(fc,j)))
 				{
 					FLC_SET_ICONV_TRANSLIT_CHARSET(
-						fc, safestrdup(translit_csname(
+						fc, xstrdup(translit_csname(
 							FLC_GET_LOCALE_CHARSET(
 								fc,j))));
 				} else {
@@ -193,7 +193,7 @@ void set_iconv_charset_index(FlocaleCharset *fc)
 				    FLC_GET_LOCALE_CHARSET(fc,i)))
 			{
 				FLC_SET_ICONV_TRANSLIT_CHARSET(
-					fc, safestrdup(
+					fc, xstrdup(
 						translit_csname(
 							FLC_GET_LOCALE_CHARSET(
 								fc,i))));
@@ -262,7 +262,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 	outbuf_size = len + 1;
 	outbytes_remaining = outbuf_size - 1;
 	insize = len;
-	outp = dest = safemalloc(outbuf_size);
+	outp = dest = xmalloc(outbuf_size);
 
 	inptr = in;
 
@@ -506,7 +506,8 @@ char *FiconvUtf8ToCharset(Display *dpy, FlocaleCharset *fc,
 	{
 		/* in can be a none terminate string so do not use CopyString
 		 */
-		out = safemalloc(in_size+1);
+		/* TA:  FIXME!  xasprintf() */
+		out = xmalloc(in_size+1);
 		strncpy(out, in, in_size);
 		out[in_size]=0;
 	}
@@ -557,7 +558,8 @@ char *FiconvCharsetToUtf8(Display *dpy, FlocaleCharset *fc,
 	if (FLC_ENCODING_TYPE_IS_UTF_8(my_fc))
 	{
 		/* in can be a non terminate string so do not use CopyString */
-		out = safemalloc(in_size+1);
+		/* TA:  FIXME!  xasprintf() */
+		out = xmalloc(in_size+1);
 		strncpy(out, in, in_size);
 		out[in_size]=0;
 	}

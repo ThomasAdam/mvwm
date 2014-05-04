@@ -267,7 +267,8 @@ char* PictureFindImageFile(const char* icon, const char* pathlist, int type)
 	    (render_opts = strrchr(icon, ':')))
 	{
 		length = render_opts - icon;
-		tmpbuf = (char *)safemalloc(length + 1);
+		/* TA:  FIXME!  asprintF() */
+		tmpbuf = xmalloc(length + 1);
 		strncpy(tmpbuf, icon, length);
 		tmpbuf[length] = 0;
 
@@ -282,7 +283,7 @@ char* PictureFindImageFile(const char* icon, const char* pathlist, int type)
 			   The format is ":svg_opts:/path/to/file.svg". */
 			tmpbuf = CatString3(render_opts, ":", full_filename);
 			free(full_filename);
-			full_filename = safestrdup(tmpbuf);
+			full_filename = xstrdup(tmpbuf);
 		}
 	}
 

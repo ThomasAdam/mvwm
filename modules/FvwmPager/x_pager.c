@@ -2783,7 +2783,7 @@ static void label_window_wrap(PagerWindow *t)
       }
     }
 
-    FwinString->str = safemalloc(next - cur + 1);
+    FwinString->str = xmalloc(next - cur + 1);
     strncpy(FwinString->str, cur, next - cur);
     FwinString->str[next - cur] = 0;
 
@@ -3310,7 +3310,7 @@ static void InsertExpand(char **dest, char *s)
   if (!s || !*s)
     return;
   len = strlen(*dest) + strlen(s) + 1;
-  *dest = (char *)safemalloc(len);
+  *dest = xmalloc(len);
   strcpy(*dest, tmp);
   free(tmp);
   strcat(*dest, s);
@@ -3322,7 +3322,7 @@ static void InsertExpand(char **dest, char *s)
    -- disching@fmi.uni-passau.de */
 char *GetBalloonLabel(const PagerWindow *pw,const char *fmt)
 {
-  char *dest = safestrdup("");
+  char *dest = xstrdup("");
   const char *pos = fmt;
   char buffer[2];
 

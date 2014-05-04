@@ -86,12 +86,14 @@ static char *get_desk_title(int desk, unsigned long flags, Bool is_top_title)
 	desk_name = GetDesktopName(desk);
 	if (desk_name != NULL)
 	{
-		tlabel = (char *)safemalloc(strlen(desk_name)+50);
+		tlabel = xmalloc(strlen(desk_name)+50);
 	}
 	else
 	{
-		tlabel = (char *)safemalloc(50);
+		tlabel = xmalloc(50);
 	}
+
+	/* TA:  FIXME! xasprintf() */
 
 	if (desk_name != NULL)
 	{
@@ -560,7 +562,7 @@ void CMD_WindowList(F_CMD_ARGS)
 			}
 			else if (!opts || !*opts)
 			{
-				default_action = safestrdup(tok);
+				default_action = xstrdup(tok);
 			}
 			else
 			{
@@ -861,7 +863,7 @@ void CMD_WindowList(F_CMD_ARGS)
 				free_name = True;
 			}
 
-			t_hot = safemalloc(strlen(name) + 80);
+			t_hot = xmalloc(strlen(name) + 80);
 			if (use_hotkey)
 			{
 				/* Generate label */
@@ -1015,9 +1017,11 @@ void CMD_WindowList(F_CMD_ARGS)
 				strcat(t_hot,tname);
 			}
 			ffunc = func ? func : "WindowListFunc";
-			tfunc = safemalloc(strlen(ffunc) + 36);
+			tfunc = xmalloc(strlen(ffunc) + 36);
 			/* support two ways for now: window context
 			 * (new) and window id param (old) */
+			
+			/* TA:  FIXME!  xasprintf() */
 			sprintf(tfunc, "WindowId %lu %s %lu",
 				FW_W(t), ffunc, FW_W(t));
 			AddToMenu(

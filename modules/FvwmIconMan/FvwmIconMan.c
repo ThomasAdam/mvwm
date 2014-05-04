@@ -58,7 +58,7 @@ char *copy_string(char **target, const char *src)
 	}
 
 	ConsoleDebug(CORE, "copy_string: 2\n");
-	*target = (char *)safemalloc((len + 1) * sizeof(char));
+	*target = xmalloc((len + 1) * sizeof(char));
 	strcpy(*target, src);
 	ConsoleDebug(CORE, "copy_string: 3\n");
 	return *target;
@@ -239,7 +239,7 @@ main(int argc, char **argv)
 		}
 	}
 	ModuleLen = strlen(MyName) + 1;
-	Module = safemalloc(ModuleLen+1);
+	Module = xmalloc(ModuleLen+1);
 	*Module = '*';
 	strcpy(Module+1, MyName);
 

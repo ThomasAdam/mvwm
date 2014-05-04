@@ -195,8 +195,7 @@ void fqueue_add_at_front(
 {
 	fqueue_record *rec;
 
-	rec = (fqueue_record *)safemalloc(sizeof(fqueue_record));
-	memset(rec, 0, sizeof(*rec));
+	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
 	rec->next = fq->first;
 	if (fq->lock_level > 0)
@@ -214,8 +213,7 @@ void fqueue_add_at_end(
 {
 	fqueue_record *rec;
 
-	rec = (fqueue_record *)safemalloc(sizeof(fqueue_record));
-	memset(rec, 0, sizeof(*rec));
+	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0)
 	{
@@ -243,8 +241,7 @@ void fqueue_add_inside(
 	fqueue_record *p;
 	fqueue_record *t;
 
-	rec = (fqueue_record *)safemalloc(sizeof(fqueue_record));
-	memset(rec, 0, sizeof(*rec));
+	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0)
 	{

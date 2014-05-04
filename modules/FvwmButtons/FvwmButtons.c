@@ -202,19 +202,6 @@ Window swallower_win = 0;
 
 /* ------------------------------ Misc functions ----------------------------*/
 
-#ifdef DEBUG
-char *mymalloc(int length)
-{
-	int i = length;
-	char *p = safemalloc(length);
-	while (i)
-	{
-		p[--i] = 255;
-	}
-	return p;
-}
-#endif
-
 /**
 *** Some fancy routines straight out of the manual :-) Used in DeadPipe.
 **/
@@ -450,7 +437,7 @@ void AddButtonAction(button_info *b, int n, char *action)
 	else
 	{
 		int i;
-		b->action = (char**)mymalloc(
+		b->action = xmalloc(
 			(NUMBER_OF_EXTENDED_MOUSE_BUTTONS + 1) * sizeof(char*));
 		for (i = 0; i <= NUMBER_OF_EXTENDED_MOUSE_BUTTONS;
 			b->action[i++] = NULL)
@@ -483,7 +470,7 @@ void AddButtonAction(button_info *b, int n, char *action)
 			break;
 		}
 	}
-	t = (char *)mymalloc(l + 1);
+	t = xmalloc(l + 1);
 	memmove(t, action, l);
 	t[l] = 0;
 	b->action[n] = t;
@@ -685,13 +672,13 @@ int main(int argc, char **argv)
 		/* There is a naming argument here! */
 		{
 			free(MyName);
-			MyName = safestrdup(argv[i]);
+			MyName = xstrdup(argv[i]);
 			has_name = 1;
 		}
 		else if (!has_file)
 		/* There is a config file here! */
 		{
-			config_file = safestrdup(argv[i]);
+			config_file = xstrdup(argv[i]);
 			has_file = 1;
 		}
 	}
@@ -720,7 +707,7 @@ int main(int argc, char **argv)
 
 	oldErrorHandler = XSetErrorHandler(myErrorHandler);
 
-	UberButton = (button_info*)mymalloc(sizeof(button_info));
+	UberButton = xmalloc(sizeof(button_info));
 	memset(UberButton, 0, sizeof(button_info));
 	UberButton->BWidth = 1;
 	UberButton->BHeight = 1;
@@ -975,7 +962,7 @@ void ButtonPressProcess (button_info *b, char **act)
 					if(i2-i>1)
 					{
 						b->flags.b_Hangon = 1;
-						b->hangon = mymalloc(i2-i);
+						b->hangon = xmalloc(i2-i);
 						strncpy(
 							b->hangon, &(*act)[i+1],
 							i2-i-1);
@@ -986,7 +973,7 @@ void ButtonPressProcess (button_info *b, char **act)
 				else
 					i2=i;
 
-				tmp.name = mymalloc(strlen(*act)+1);
+				tmp.name = xmalloc(strlen(*act)+1);
 				strcpy(tmp.name, "Exec ");
 				while (
 					(*act)[i2]!=0 &&
@@ -2250,8 +2237,8 @@ void CreateUberButtonWindow(button_info *ub, int maxx, int maxy)
 #endif
 	XSetWMProtocols(Dpy, MyWindow, &_XA_WM_DEL_WIN, 1);
 
-	myclasshints.res_name = safestrdup(MyName);
-	myclasshints.res_class = safestrdup("FvwmButtons");
+	myclasshints.res_name = xstrdup(MyName);
+	myclasshints.res_class = xstrdup("FvwmButtons");
 
 	{
 		XTextProperty mynametext;
@@ -3422,7 +3409,8 @@ void exec_swallow(char *action, button_info *b)
 		len = 45 + strlen(my_sm_env) + strlen(orig_sm_env);
 	}
 
-	cmd = safemalloc(len + strlen(action));
+	/* TA:  FIXME!  xasprintf() */
+	cmd = xmalloc(len + strlen(action));
 	sprintf(
 		cmd,
 		"FSMExecFuncWithSessionManagment \"%s\" \"%s\" \"%s\"",

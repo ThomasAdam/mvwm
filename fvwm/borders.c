@@ -1768,8 +1768,7 @@ static void border_setup_bar_pixmaps(
 	}
 	else
 	{
-		dcd->bar_pixmaps[bs].bps =
-			(bar_pixmap *)safemalloc(count*sizeof(bar_pixmap));
+		dcd->bar_pixmaps[bs].bps = xmalloc(count * sizeof(bar_pixmap));
 	}
 	dcd->bar_pixmaps[bs].count = count;
 	i = 0;
@@ -5066,7 +5065,8 @@ void CMD_BorderStyle(F_CMD_ARGS)
 				return;
 			}
 			len = end - action + 1;
-			tmp = safemalloc(len);
+			/* TA:  FIXME xasprintf */
+			tmp = xmalloc(len);
 			strncpy(tmp, action, len - 1);
 			tmp[len - 1] = 0;
 			ReadDecorFace(tmp, df,-1,True);
