@@ -337,7 +337,6 @@ if test ! x"$SED" = x; then
 			bnext
 		:found
 			s/modules.//
-			/FvwmTabs/bnext
 			p
 		:next
 			n
@@ -1250,9 +1249,7 @@ AC_SUBST(FVWM_PERLLIB)
 # ******* gettext
 ALL_LINGUAS="ar de fr sv_SE zh_CN ru es"
 FVWM_DOMAIN="fvwm"
-FVWMTASKBAR_DOMAIN="FvwmTaskBar"
-FVWMSCRIPT_DOMAIN="FvwmScript"
-ALL_DOMAINS="$FVWM_DOMAIN $FVWMTASKBAR_DOMAIN $FVWMSCRIPT_DOMAIN"
+ALL_DOMAINS="$FVWM_DOMAIN"
 
 AC_SUBST(ALL_LINGUAS)
 AC_SUBST(FVWM_DOMAIN)
@@ -1729,9 +1726,6 @@ dnl
 	doc/docbook-xsl/lib/Makefile
 	doc/docbook-xsl/html/Makefile
 	doc/modules/Makefile
-	doc/modules/images/Makefile
-	doc/images/Makefile
-	doc/images/svg_rendering/Makefile
 	docs/fvwm.lsm
 	docs/Makefile
 	sample.fvwmrc/Makefile
