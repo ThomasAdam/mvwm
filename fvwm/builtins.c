@@ -2621,7 +2621,7 @@ void CMD_Wait(F_CMD_ARGS)
 					name = NULL;
 				}
 				escape = CheckBinding(
-					Scr.AllBindings, STROKE_ARG(0)
+					Scr.AllBindings,
 					e.xkey.keycode, e.xkey.state,
 					GetUnusedModifiers(), context,
 					BIND_KEYPRESS, class, name);

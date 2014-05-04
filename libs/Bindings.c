@@ -43,10 +43,6 @@ void FreeBindingStruct(Binding *b)
 	{
 		free(b->key_name);
 	}
-	STROKE_CODE(
-		if (b->Stroke_Seq)
-		free(b->Stroke_Seq);
-		);
 	if (b->Action)
 	{
 		free(b->Action);
@@ -133,7 +129,6 @@ void RemoveBinding(Binding **pblist, Binding *b, Binding *prev)
  */
 int AddBinding(
 	Display *dpy, Binding **pblist, binding_t type,
-	STROKE_ARG(void *stroke)
 	int button, KeySym keysym, char *key_name, int modifiers, int contexts,
 	void *action, void *action2, char *windowName)
 {
@@ -180,7 +175,6 @@ int AddBinding(
 		     m <= maxmods && tkeysym != NoSymbol; m++)
 		{
 			if (BIND_IS_MOUSE_BINDING(type) ||
-			    STROKE_CODE(BIND_IS_STROKE_BINDING(type) ||)
 			    (tkeysym = fvwm_KeycodeToKeysym(dpy, i, m, 0)) == keysym)
 			{
 				unsigned int add_modifiers = 0;
@@ -238,9 +232,6 @@ int AddBinding(
 					sizeof(Binding));
 				(*pblist)->type = type;
 				(*pblist)->Button_Key = i;
-				STROKE_CODE((*pblist)->Stroke_Seq = (stroke) ?
-					    (void *)stripcpy((char *)stroke) :
-					    NULL);
 				if (BIND_IS_KEY_BINDING(type) &&
 				    key_name != NULL)
 				{
@@ -316,11 +307,6 @@ static int compare_bindings(Binding *b1, Binding *b2)
 	{
 		return 1;
 	}
-	if (1 STROKE_CODE(&& BIND_IS_STROKE_BINDING(b1->type) &&
-			  strcmp(b1->Stroke_Seq, b2->Stroke_Seq) == 0))
-	{
-		return 1;
-	}
 
 	return 0;
 }
@@ -334,7 +320,7 @@ static int compare_bindings(Binding *b1, Binding *b2)
 void CollectBindingList(
 	Display *dpy, Binding **pblist_src, Binding **pblist_dest,
 	Bool *ret_are_similar_bindings_left, binding_t type,
-	STROKE_ARG(void *stroke) int button, KeySym keysym,
+	int button, KeySym keysym,
 	int modifiers, int contexts, char *windowName)
 {
 	Binding *tmplist = NULL;
@@ -344,7 +330,7 @@ void CollectBindingList(
 	*ret_are_similar_bindings_left = False;
 	/* generate a private list of bindings to be removed */
 	AddBinding(
-		dpy, &tmplist, type, STROKE_ARG(stroke)
+		dpy, &tmplist, type,
 		button, keysym, NULL, modifiers, contexts, NULL, NULL,
 		windowName);
 	/* now find equivalent bindings in the given binding list and move
@@ -434,7 +420,7 @@ static Bool does_binding_apply_to_window(
 }
 
 static Bool __compare_binding(
-	Binding *b, STROKE_ARG(char *stroke)
+	Binding *b,
 	int button_keycode, unsigned int modifier, unsigned int used_modifiers,
 	int Context, binding_t type, const XClassHint *win_class,
 	const char *win_name)
@@ -457,14 +443,6 @@ static Bool __compare_binding(
 	{
 		return False;
 	}
-#ifdef HAVE_STROKE
-	else if (BIND_IS_STROKE_BINDING(type) &&
-		((strcmp(b->Stroke_Seq, stroke) != 0) ||
-		 b->Button_Key != button_keycode))
-	{
-		return False;
-	}
-#endif
 	if (!does_binding_apply_to_window(b, win_class, win_name))
 	{
 		return False;
@@ -487,7 +465,7 @@ Bool is_pass_through_action(const char *action)
 /* Check if something is bound to a key or button press and return the action
  * to be executed or NULL if not. */
 void *CheckBinding(
-	Binding *blist, STROKE_ARG(char *stroke)
+	Binding *blist,
 	int button_keycode, unsigned int modifier,unsigned int dead_modifiers,
 	int Context, binding_t type, const XClassHint *win_class,
 	const char *win_name)
@@ -500,7 +478,7 @@ void *CheckBinding(
 	for (b = blist; b != NULL; b = b->NextBinding)
 	{
 		if (__compare_binding(
-			    b, STROKE_ARG(stroke) button_keycode, modifier,
+			    b, button_keycode, modifier,
 			    used_modifiers, Context, type, win_class,
 			    win_name) == True)
 		{
@@ -527,7 +505,7 @@ void *CheckBinding(
 }
 
 void *CheckTwoBindings(
-	Bool *ret_is_second_binding, Binding *blist, STROKE_ARG(char *stroke)
+	Bool *ret_is_second_binding, Binding *blist,
 	int button_keycode, unsigned int modifier,unsigned int dead_modifiers,
 	int Context, binding_t type, const XClassHint *win_class,
 	const char *win_name, int Context2, binding_t type2,
@@ -541,7 +519,7 @@ void *CheckTwoBindings(
 	for (b = blist; b != NULL; b = b->NextBinding)
 	{
 		if (__compare_binding(
-			    b, STROKE_ARG(stroke) button_keycode, modifier,
+			    b, button_keycode, modifier,
 			    used_modifiers, Context, type, win_class, win_name)
 		    == True)
 		{
@@ -558,7 +536,7 @@ void *CheckTwoBindings(
 			}
 		}
 		if (__compare_binding(
-			    b, STROKE_ARG(stroke) button_keycode, modifier,
+			    b, button_keycode, modifier,
 			    used_modifiers, Context2, type2, win_class2,
 			    win_name2) == True)
 		{
@@ -692,9 +670,8 @@ void GrabWindowButton(
 	dead_modifiers &= ALL_MODIFIERS;
 
 	if ((binding->Context & contexts) &&
-	    ((BIND_IS_MOUSE_BINDING(binding->type) ||
-	      (BIND_IS_STROKE_BINDING(binding->type) &&
-	       binding->Button_Key !=0))))
+	    (BIND_IS_MOUSE_BINDING(binding->type) &&
+	       binding->Button_Key !=0))
 	{
 		int bmin = 1;
 		int bmax = NUMBER_OF_EXTENDED_MOUSE_BUTTONS;
@@ -797,8 +774,7 @@ void GrabAllWindowKeysAndButtons(
 	{
 		if (blist->Context & contexts)
 		{
-			if (BIND_IS_MOUSE_BINDING(blist->type) ||
-			    BIND_IS_STROKE_BINDING(blist->type))
+			if (BIND_IS_MOUSE_BINDING(blist->type))
 			{
 				GrabWindowButton(
 					dpy, w, blist, contexts,
@@ -822,8 +798,7 @@ void GrabWindowKeyOrButton(
 	Display *dpy, Window w, Binding *binding, unsigned int contexts,
 	unsigned int dead_modifiers, Cursor cursor, Bool fGrab)
 {
-	if (BIND_IS_MOUSE_BINDING(binding->type) ||
-	    BIND_IS_STROKE_BINDING(binding->type))
+	if (BIND_IS_MOUSE_BINDING(binding->type))
 	{
 		GrabWindowButton(
 			dpy, w, binding, contexts, dead_modifiers, cursor,
