@@ -1685,39 +1685,16 @@ dnl	bin/fvwm-menu-headlines.1
 dnl	bin/fvwm-menu-xlock.1
 dnl	bin/fvwm-perllib.1
 	bin/fvwm-root.1
-	modules/FvwmAnimate/FvwmAnimate.1
 	modules/FvwmAuto/FvwmAuto.1
 	modules/FvwmBacker/FvwmBacker.1
-	modules/FvwmBanner/FvwmBanner.1
 	modules/FvwmButtons/FvwmButtons.1
 	modules/FvwmCommand/FvwmCommand.1
 	modules/FvwmConsole/FvwmConsole.1
 	modules/FvwmConsole/FvwmConsoleC.pl.1
-	modules/FvwmCpp/FvwmCpp.1
-dnl	modules/FvwmDebug/FvwmDebug.1
-dnl	modules/FvwmDebug/FvwmGtkDebug.1
-dnl	modules/FvwmDebug/FvwmOldDebug.1
-	modules/FvwmDragWell/FvwmDragWell.1
 	modules/FvwmEvent/FvwmEvent.1
-	modules/FvwmForm/FvwmForm.1
-	modules/FvwmGtk/FvwmGtk.1
-	modules/FvwmIconBox/FvwmIconBox.1
 	modules/FvwmIconMan/FvwmIconMan.1
 	modules/FvwmIdent/FvwmIdent.1
-	modules/FvwmM4/FvwmM4.1
 	modules/FvwmPager/FvwmPager.1
-dnl	modules/FvwmPerl/FvwmPerl.1
-	modules/FvwmProxy/FvwmProxy.1
-	modules/FvwmRearrange/FvwmRearrange.1
-	modules/FvwmSave/FvwmSave.1
-	modules/FvwmSaveDesk/FvwmSaveDesk.1
-	modules/FvwmScript/FvwmScript.1
-	modules/FvwmScroll/FvwmScroll.1
-	modules/FvwmTaskBar/FvwmTaskBar.1
-	modules/FvwmTheme/FvwmTheme.1
-	modules/FvwmWharf/FvwmWharf.1
-	modules/FvwmWinList/FvwmWinList.1
-dnl	modules/FvwmWindowMenu/FvwmWindowMenu.1
 dnl
 	bin/Makefile
 	bin/fvwm-config
@@ -1757,7 +1734,6 @@ dnl
 	doc/docbook-xsl/html/Makefile
 	doc/modules/Makefile
 	doc/modules/images/Makefile
-	doc/modules/images/FvwmTabs/Makefile
 	doc/images/Makefile
 	doc/images/svg_rendering/Makefile
 	docs/fvwm.lsm
@@ -1767,46 +1743,21 @@ dnl
 	tests/hints/Makefile
 	po/Makefile
 dnl
-	modules/FvwmAnimate/Makefile
 	modules/FvwmAuto/Makefile
 	modules/FvwmBacker/Makefile
-	modules/FvwmBanner/Makefile
 	modules/FvwmButtons/Makefile
 	modules/FvwmCommand/Makefile
 	modules/FvwmCommand/scripts/Makefile
 	modules/FvwmConsole/Makefile
 	modules/FvwmConsole/FvwmConsoleC.pl
-	modules/FvwmCpp/Makefile
-	modules/FvwmDebug/Makefile
-	modules/FvwmDebug/FvwmDebug
-	modules/FvwmDebug/FvwmGtkDebug
-	modules/FvwmDragWell/Makefile
 	modules/FvwmEvent/Makefile
-	modules/FvwmForm/Makefile
-	modules/FvwmIconBox/Makefile
 	modules/FvwmIconMan/Makefile
 	modules/FvwmIdent/Makefile
-	modules/FvwmM4/Makefile
 	modules/FvwmPager/Makefile
 	modules/FvwmPerl/Makefile
 	modules/FvwmPerl/FvwmPerl
-	modules/FvwmProxy/Makefile
-	modules/FvwmRearrange/Makefile
-	modules/FvwmSave/Makefile
-	modules/FvwmSaveDesk/Makefile
-	modules/FvwmScript/Makefile
-	modules/FvwmScript/Scripts/Makefile
-	modules/FvwmScript/Widgets/Makefile
-	modules/FvwmScroll/Makefile
-	modules/FvwmTabs/Makefile
-	modules/FvwmTabs/FvwmTabs
-	modules/FvwmTaskBar/Makefile
-	modules/FvwmTheme/Makefile
-	modules/FvwmWharf/Makefile
-	modules/FvwmWinList/Makefile
 	modules/FvwmWindowMenu/Makefile
 	modules/FvwmWindowMenu/FvwmWindowMenu
-	modules/FvwmGtk/Makefile
 )
 
 # ---------------------------------------------------------------------------
