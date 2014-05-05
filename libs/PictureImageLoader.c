@@ -42,7 +42,6 @@
 #include "PictureUtils.h"
 #include "Graphics.h"
 #include "ColorUtils.h"
-#include "Fxpm.h"
 #include "Fpng.h"
 #include "FRenderInit.h"
 #include "Fcursor.h"
@@ -76,13 +75,11 @@ typedef struct PImageLoader
 /* ---------------------------- forward declarations ----------------------- */
 
 static Bool PImageLoadPng(FIMAGE_CMD_ARGS);
-static Bool PImageLoadXpm(FIMAGE_CMD_ARGS);
 
 /* ---------------------------- local variables ---------------------------- */
 
 PImageLoader Loaders[] =
 {
-	{ "xpm", PImageLoadXpm },
 	{ "png", PImageLoadPng },
 	{NULL,0}
 };
@@ -285,112 +282,6 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, (png_infopp) NULL);
 	fclose(f);
 	free(lines);
-	*argb_data = data;
-
-	return True;
-}
-
-/*
- *
- * xpm loader
- *
- */
-static
-Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
-{
-	FxpmImage xpm_im;
-	FxpmColor *xpm_color;
-	XColor color;
-	CARD32 *colors;
-	CARD32 *data;
-	char *visual_color;
-	int i;
-	int w;
-	int h;
-	int rc;
-#ifdef HAVE_SIGACTION
-	struct sigaction defaultHandler;
-	struct sigaction originalHandler;
-#else
-	RETSIGTYPE (*originalHandler)(int);
-#endif
-
-	if (!XpmSupport)
-	{
-		fprintf(stderr, "[PImageLoadXpm]: Tried to load XPM file "
-				"when FVWM has not been compiled with XPm Support.\n");
-		return False;
-	}
-	memset(&xpm_im, 0, sizeof(FxpmImage));
-
-#ifdef HAVE_SIGACTION
-	sigemptyset(&defaultHandler.sa_mask);
-	defaultHandler.sa_flags = 0;
-	defaultHandler.sa_handler = SIG_DFL;
-	sigaction(SIGCHLD, &defaultHandler, &originalHandler);
-#else
-	originalHandler = signal(SIGCHLD, SIG_DFL);
-#endif
-
-
-	rc = FxpmReadFileToXpmImage(path, &xpm_im, NULL);
-
-#ifdef HAVE_SIGACTION
-	sigaction(SIGCHLD, &originalHandler, NULL);
-#else
-	signal(SIGCHLD, originalHandler);
-#endif
-
-	if (rc != FxpmSuccess)
-	{
-		return False;
-	}
-
-	if (xpm_im.ncolors <= 0)
-	{
-		FxpmFreeXpmImage(&xpm_im);
-		return False;
-	}
-	colors = xmalloc(xpm_im.ncolors * sizeof(CARD32));
-	for (i=0; i < xpm_im.ncolors; i++)
-	{
-		xpm_color = &xpm_im.colorTable[i];
-		if (xpm_color->c_color)
-		{
-			visual_color = xpm_color->c_color;
-		}
-		else if (xpm_color->g_color)
-		{
-			visual_color = xpm_color->g_color;
-		}
-		else if (xpm_color->g4_color)
-		{
-			visual_color = xpm_color->g4_color;
-		}
-		else
-		{
-			visual_color = xpm_color->m_color;
-		}
-		if (XParseColor(dpy, Pcmap, visual_color, &color))
-		{
-			colors[i] = 0xff000000 |
-				((color.red  << 8) & 0xff0000) |
-				((color.green    ) & 0xff00) |
-				((color.blue >> 8) & 0xff);
-		}
-		else
-		{
-			colors[i] = 0;
-		}
-	}
-	*width = w = xpm_im.width;
-	*height = h = xpm_im.height;
-	data = xmalloc(w * h * sizeof(CARD32));
-	for (i=0; i < w * h; i++)
-	{
-		data[i] = colors[xpm_im.data[i]];
-	}
-	free(colors);
 	*argb_data = data;
 
 	return True;
@@ -691,36 +582,6 @@ Cursor PImageLoadCursorFromFile(
 
 		fpa.mask = FPAM_NO_ALPHA | FPAM_MONOCHROME;
 
-		/* Adjust the hot-spot if necessary */
-		if (
-			x_hot < 0 || x_hot >= width ||
-			y_hot < 0 || y_hot >= height)
-		{
-			FxpmImage xpm_im;
-			FxpmInfo xpm_info;
-
-			memset(&xpm_im, 0, sizeof(FxpmImage));
-			memset(&xpm_info, 0, sizeof(FxpmInfo));
-			if (FxpmReadFileToXpmImage(path, &xpm_im, &xpm_info)
-			    == FxpmSuccess)
-			{
-				if (xpm_info.valuemask & FxpmHotspot)
-				{
-					x_hot = xpm_info.x_hotspot;
-					y_hot = xpm_info.y_hotspot;
-				}
-				FxpmFreeXpmImage(&xpm_im);
-				FxpmFreeXpmInfo(&xpm_info);
-			}
-			if (x_hot < 0 || x_hot >= width)
-			{
-				x_hot = width / 2;
-			}
-			if (y_hot < 0 || y_hot >= height)
-			{
-				y_hot = height / 2;
-			}
-		}
 		/* Use the Xcursor library to create the argb cursor */
 		if ((fci = FcursorImageCreate(width, height)))
 		{
@@ -768,40 +629,4 @@ Cursor PImageLoadCursorFromFile(
 	}
 
 	return cursor;
-}
-
-/* FIXME: Use color limit */
-Bool PImageLoadPixmapFromXpmData(
-	Display *dpy, Window win, int color_limit,
-	char **data,
-	Pixmap *pixmap, Pixmap *mask,
-	int *width, int *height, int *depth)
-{
-	FxpmAttributes xpm_attributes;
-
-	if (!XpmSupport)
-	{
-		return False;
-	}
-	xpm_attributes.valuemask = FxpmCloseness |
-		FxpmExtensions | FxpmVisual | FxpmColormap | FxpmDepth;
-	xpm_attributes.closeness = 40000;
-	xpm_attributes.visual = Pvisual;
-	xpm_attributes.colormap = Pcmap;
-	xpm_attributes.depth = Pdepth;
-	/* suppress compiler warning if xpm library is not compiled in */
-	xpm_attributes.width = 0;
-	xpm_attributes.height = 0;
-	if (
-		FxpmCreatePixmapFromData(
-			dpy, win, data, pixmap, mask, &xpm_attributes) !=
-		FxpmSuccess)
-	{
-		return False;
-	}
-	*width = xpm_attributes.width;
-	*height = xpm_attributes.height;
-	*depth = Pdepth;
-
-	return True;
 }
