@@ -208,7 +208,6 @@ Atom _XA_OL_DECOR_ICON_NAME;
 Atom _XA_WM_WINDOW_ROLE;
 Atom _XA_WINDOW_ROLE;
 Atom _XA_WM_CLIENT_LEADER;
-Atom _XA_SM_CLIENT_ID;
 
 Atom _XA_XROOTPMAP_ID;
 Atom _XA_XSETROOT_ID;
@@ -266,7 +265,6 @@ static void InternUsefulAtoms (void)
 	_XA_WM_WINDOW_ROLE=XInternAtom(dpy, "WM_WINDOW_ROLE",False);
 	_XA_WINDOW_ROLE=XInternAtom(dpy, "WINDOW_ROLE",False);
 	_XA_WM_CLIENT_LEADER=XInternAtom(dpy, "WM_CLIENT_LEADER",False);
-	_XA_SM_CLIENT_ID=XInternAtom(dpy, "SM_CLIENT_ID",False);
 	_XA_XROOTPMAP_ID=XInternAtom(dpy, "_XROOTPMAP_ID",False);
 	_XA_XSETROOT_ID=XInternAtom(dpy, "_XSETROOT_ID",False);
 
@@ -573,7 +571,6 @@ void Done(int restart, char *command)
 	EWMH_ExitStuff();
 	if (restart)
 	{
-		Bool do_preserve_state = True;
 		SaveDesktopState();
 
 		if (command)
@@ -593,11 +590,6 @@ void Done(int restart, char *command)
 		{
 			command = NULL; /* native restart */
 		}
-
-		/* won't return under SM on Restart without parameters */
-		RestartInSession(
-			restart_state_filename, command == NULL,
-			do_preserve_state);
 
 		/* RBW - 06/08/1999 - without this, windows will wander to
 		 * other pages on a Restart/Recapture because Restart gets the
@@ -1326,9 +1318,6 @@ static void setVersionInfo(void)
 #ifdef HAVE_XSHM
 	strcat(support_str, " XShm,");
 #endif
-#ifdef SESSION
-	strcat(support_str, " SM,");
-#endif
 #ifdef HAVE_BIDI
 	strcat(support_str, " Bidi text,");
 #endif
@@ -1861,30 +1850,6 @@ int main(int argc, char **argv)
 			 strcmp(argv[i], "--debug") == 0)
 		{
 			debugging = True;
-		}
-		else if (strcmp(argv[i], "-i") == 0 ||
-			 strcmp(argv[i], "-clientid") == 0 ||
-			 strcmp(argv[i], "--clientid") == 0 ||
-			 strcmp(argv[i], "-clientId") == 0 ||
-			 strcmp(argv[i], "--clientId") == 0)
-		{
-			if (++i >= argc)
-			{
-				usage(0);
-				exit(1);
-			}
-			SetClientID(argv[i]);
-		}
-		else if (strcmp(argv[i], "-F") == 0 ||
-			 strcmp(argv[i], "-restore") == 0 ||
-			 strcmp(argv[i], "--restore") == 0)
-		{
-			if (++i >= argc)
-			{
-				usage(0);
-				exit(1);
-			}
-			state_filename = argv[i];
 		}
 		else if (strcmp(argv[i], "-s") == 0 ||
 			 strcmp(argv[i], "-single-screen") == 0 ||
@@ -2579,7 +2544,6 @@ int main(int argc, char **argv)
 	checkPanFrames();
 	MyXUngrabServer(dpy);
 	CoerceEnterNotifyOnCurrentWindow();
-	SessionInit();
 	GNOME_Init();
 	DBUG("main", "Entering HandleEvents loop...");
 

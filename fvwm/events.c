@@ -4313,13 +4313,6 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 		FD_ZERO(&out_fdset);
 		FD_SET(x_fd, &in_fdset);
 
-		/* nothing is done here if fvwm was compiled without session
-		 * support */
-		if (sm_fd >= 0)
-		{
-			FD_SET(sm_fd, &in_fdset);
-		}
-
 		module_list_itr_init(&moditr);
 		while ( (module = module_list_itr_next(&moditr)) != NULL)
 		{
@@ -4374,14 +4367,6 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 
 		/* cleanup dead modules */
 		module_cleanup();
-
-		/* nothing is done here if fvwm was compiled without session
-		 * support */
-		if ((sm_fd >= 0) && (FD_ISSET(sm_fd, &in_fdset)))
-		{
-			ProcessICEMsgs();
-		}
-
 	}
 	else
 	{

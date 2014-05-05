@@ -31,7 +31,6 @@
 #include <X11/Xatom.h>
 
 #include "libs/fvwmlib.h"
-#include "libs/FSMlib.h"
 #include "libs/Strings.h"
 #include "libs/System.h"
 #include "fvwm.h"
@@ -48,12 +47,6 @@
 #include "virtual.h"
 #include "geometry.h"
 #include "move_resize.h"
-
-/* ---------------------------- local definitions -------------------------- */
-
-/*#define FVWM_SM_DEBUG_PROTO*/
-/*#define FVWM_SM_DEBUG_WINMATCH*/
-/*#define FVWM_SM_DEBUG_FILES*/
 
 /* ---------------------------- local macros ------------------------------- */
 
@@ -97,14 +90,6 @@ typedef struct _match
 /* ---------------------------- forward declarations ----------------------- */
 
 /* ---------------------------- local variables ---------------------------- */
-
-static char *previous_sm_client_id = NULL;
-static char *sm_client_id = NULL;
-static Bool sent_save_done = 0;
-static char *real_state_filename = NULL;
-static Bool going_to_restart = False;
-static FIceIOErrorHandler prev_handler;
-static FSmcConn sm_conn = NULL;
 
 static int num_match = 0;
 static Match *matches = NULL;
@@ -190,68 +175,6 @@ SaveGlobalState(FILE *f)
 	return 1;
 }
 
-static void set_real_state_filename(char *filename)
-{
-	if (!SessionSupport)
-	{
-		return;
-	}
-	if (real_state_filename)
-	{
-		free(real_state_filename);
-	}
-	real_state_filename = xstrdup(filename);
-
-	return;
-}
-
-static char *get_unique_state_filename(void)
-{
-	const char *path = getenv("SM_SAVE_DIR");
-	char *filename;
-	int fd;
-
-	if (!SessionSupport)
-	{
-		return NULL;
-	}
-
-	if (!path)
-	{
-		path = getenv ("HOME");
-	}
-
-#ifdef HAVE_GETPWUID
-	if (!path)
-	{
-		struct passwd *pwd;
-
-		pwd = getpwuid(getuid());
-		if (pwd)
-		{
-			path = pwd->pw_dir;
-		}
-	}
-#endif
-	if (!path)
-	{
-		return NULL;
-	}
-	filename = xstrdup(CatString2(path, "/.fs-XXXXXX"));
-	fd = fvwm_mkstemp(filename);
-	if (fd == -1)
-	{
-		free (filename);
-		filename = NULL;
-	}
-	else
-	{
-		close (fd);
-	}
-
-	return filename;
-}
-
 static char *
 GetWindowRole(Window window)
 {
@@ -283,7 +206,6 @@ GetClientID(FvwmWindow *fw)
 	char *client_id = NULL;
 	Window client_leader = None;
 	Window window;
-	XTextProperty tp;
 	Atom actual_type;
 	int actual_format;
 	unsigned long nitems;
@@ -308,20 +230,6 @@ GetClientID(FvwmWindow *fw)
 	    (fw->wmhints->flags & WindowGroupHint))
 	{
 		client_leader = fw->wmhints->window_group;
-	}
-
-	if (client_leader)
-	{
-		if (
-			XGetTextProperty(
-				dpy, client_leader, &tp, _XA_SM_CLIENT_ID))
-		{
-			if (tp.encoding == XA_STRING && tp.format == 8 &&
-			    tp.nitems != 0)
-			{
-				client_id = (char *) tp.value;
-			}
-		}
 	}
 
 	if (prop)
@@ -715,12 +623,6 @@ static int save_state_file(char *filename)
 	fprintf(f, "# Normally, you must never delete this file,"
 		" it will be auto-deleted.\n\n");
 
-	if (SessionSupport && going_to_restart)
-	{
-		fprintf(f, "[REAL_STATE_FILENAME] %s\n", real_state_filename);
-		going_to_restart = False;  /* not needed */
-	}
-
 	success = do_preserve_state
 		? SaveVersionInfo(f) && SaveWindowStates(f) && SaveGlobalState(f)
 		: 1;
@@ -728,394 +630,7 @@ static int save_state_file(char *filename)
 	if (fclose(f) != 0)
 		return 0;
 
-#ifdef FVWM_SM_DEBUG_FILES
-	system(CatString3(
-		       "mkdir -p /tmp/fs-save; cp ", filename,
-		       " /tmp/fs-save"));
-#endif
-#if defined(FVWM_SM_DEBUG_PROTO) || defined(FVWM_SM_DEBUG_FILES)
-	fprintf(stderr, "[FVWM_SMDEBUG] Saving %s\n", filename);
-#endif
-
 	return success;
-}
-
-static void
-set_sm_properties(FSmcConn sm_conn, char *filename, char hint)
-{
-	FSmProp prop1, prop2, prop3, prop4, prop5, prop6, prop7, *props[7];
-	FSmPropValue prop1val, prop2val, prop3val, prop4val, prop7val;
-	struct passwd *pwd;
-	char *user_id;
-	char screen_num[32];
-	int numVals, i, priority = 30;
-	Bool is_xsm_detected = False;
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][set_sm_properties] state filename: %s%s\n",
-		filename ? filename : "(null)", sm_conn ? "" : " - not connected");
-#endif
-
-	if (!sm_conn)
-	{
-		return;
-	}
-
-	pwd = getpwuid (getuid());
-	user_id = pwd->pw_name;
-
-	prop1.name = FSmProgram;
-	prop1.type = FSmARRAY8;
-	prop1.num_vals = 1;
-	prop1.vals = &prop1val;
-	prop1val.value = g_argv[0];
-	prop1val.length = strlen (g_argv[0]);
-
-	prop2.name = FSmUserID;
-	prop2.type = FSmARRAY8;
-	prop2.num_vals = 1;
-	prop2.vals = &prop2val;
-	prop2val.value = (FSmPointer) user_id;
-	prop2val.length = strlen (user_id);
-
-	prop3.name = FSmRestartStyleHint;
-	prop3.type = FSmCARD8;
-	prop3.num_vals = 1;
-	prop3.vals = &prop3val;
-	prop3val.value = (FSmPointer) &hint;
-	prop3val.length = 1;
-
-	prop4.name = "_GSM_Priority";
-	prop4.type = FSmCARD8;
-	prop4.num_vals = 1;
-	prop4.vals = &prop4val;
-	prop4val.value = (FSmPointer) &priority;
-	prop4val.length = 1;
-
-	sprintf(screen_num, "%d", (int)Scr.screen);
-
-	prop5.name = FSmCloneCommand;
-	prop5.type = FSmLISTofARRAY8;
-	prop5.vals = (FSmPropValue *)malloc((g_argc + 2) * sizeof (FSmPropValue));
-	numVals = 0;
-	for (i = 0; i < g_argc; i++)
-	{
-		if (strcmp (g_argv[i], "-clientId") == 0 ||
-		    strcmp (g_argv[i], "-restore") == 0 ||
-		    strcmp (g_argv[i], "-d") == 0 ||
-		    (strcmp (g_argv[i], "-s") == 0 && i+1 < g_argc &&
-		     g_argv[i+1][0] != '-'))
-		{
-			i++;
-		}
-		else if (strcmp (g_argv[i], "-s") != 0)
-		{
-			prop5.vals[numVals].value = (FSmPointer) g_argv[i];
-			prop5.vals[numVals++].length = strlen (g_argv[i]);
-		}
-	}
-
-	prop5.vals[numVals].value = (FSmPointer) "-s";
-	prop5.vals[numVals++].length = 2;
-
-	prop5.vals[numVals].value = (FSmPointer) screen_num;
-	prop5.vals[numVals++].length = strlen (screen_num);
-
-
-	prop5.num_vals = numVals;
-
-	if (filename)
-	{
-		prop6.name = FSmRestartCommand;
-		prop6.type = FSmLISTofARRAY8;
-
-		prop6.vals = (FSmPropValue *)malloc(
-			(g_argc + 6) * sizeof (FSmPropValue));
-
-		numVals = 0;
-
-		for (i = 0; i < g_argc; i++)
-		{
-			if (strcmp (g_argv[i], "-clientId") == 0 ||
-			    strcmp (g_argv[i], "-restore") == 0 ||
-			    strcmp (g_argv[i], "-d") == 0 ||
-			    (strcmp (g_argv[i], "-s") == 0 && i+1 < g_argc &&
-			     g_argv[i+1][0] != '-'))
-			{
-				i++;
-			}
-			else if (strcmp (g_argv[i], "-s") != 0)
-			{
-				prop6.vals[numVals].value =
-					(FSmPointer) g_argv[i];
-				prop6.vals[numVals++].length =
-					strlen (g_argv[i]);
-			}
-		}
-
-		prop6.vals[numVals].value = (FSmPointer) "-s";
-		prop6.vals[numVals++].length = 2;
-
-		prop6.vals[numVals].value = (FSmPointer) screen_num;
-		prop6.vals[numVals++].length = strlen (screen_num);
-
-		prop6.vals[numVals].value = (FSmPointer) "-clientId";
-		prop6.vals[numVals++].length = 9;
-
-		prop6.vals[numVals].value = (FSmPointer) sm_client_id;
-		prop6.vals[numVals++].length = strlen (sm_client_id);
-
-		prop6.vals[numVals].value = (FSmPointer) "-restore";
-		prop6.vals[numVals++].length = 8;
-
-		prop6.vals[numVals].value = (FSmPointer) filename;
-		prop6.vals[numVals++].length = strlen (filename);
-
-		prop6.num_vals = numVals;
-
-		prop7.name = FSmDiscardCommand;
-
-		is_xsm_detected = StrEquals(getenv("SESSION_MANAGER_NAME"), "xsm");
-
-		if (is_xsm_detected)
-		{
-			/* the protocol spec says that the discard command
-			   should be LISTofARRAY8 on posix systems, but xsm
-			   demands that it be ARRAY8.
-			*/
-			char *discardCommand = alloca(
-				(10 + strlen(filename)) * sizeof(char));
-			sprintf (discardCommand, "rm -f '%s'", filename);
-			prop7.type = FSmARRAY8;
-			prop7.num_vals = 1;
-			prop7.vals = &prop7val;
-			prop7val.value = (FSmPointer) discardCommand;
-			prop7val.length = strlen (discardCommand);
-		}
-		else
-		{
-			prop7.type = FSmLISTofARRAY8;
-			prop7.num_vals = 3;
-			prop7.vals =
-				(FSmPropValue *) malloc (
-					3 * sizeof (FSmPropValue));
-			prop7.vals[0].value = "rm";
-			prop7.vals[0].length = 2;
-			prop7.vals[1].value = "-f";
-			prop7.vals[1].length = 2;
-			prop7.vals[2].value = filename;
-			prop7.vals[2].length = strlen (filename);
-		}
-	}
-
-	props[0] = &prop1;
-	props[1] = &prop2;
-	props[2] = &prop3;
-	props[3] = &prop4;
-	props[4] = &prop5;
-
-	if (filename)
-	{
-		props[5] = &prop6;
-		props[6] = &prop7;
-		FSmcSetProperties (sm_conn, 7, props);
-
-		free ((char *) prop6.vals);
-		if (!is_xsm_detected)
-		{
-			free ((char *) prop7.vals);
-		}
-	}
-	else
-	{
-		FSmcSetProperties (sm_conn, 5, props);
-	}
-	free ((char *) prop5.vals);
-}
-
-static void
-callback_save_yourself2(FSmcConn sm_conn, FSmPointer client_data)
-{
-	Bool success = 0;
-	char *filename;
-
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-	filename = get_unique_state_filename();
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_save_yourself2]\n");
-#endif
-
-	success = save_state_file(filename);
-	if (success)
-	{
-		set_sm_properties(sm_conn, filename, FSmRestartIfRunning);
-		set_real_state_filename(filename);
-	}
-	free(filename);
-
-	FSmcSaveYourselfDone (sm_conn, success);
-	sent_save_done = 1;
-}
-
-static void
-callback_save_yourself(FSmcConn sm_conn, FSmPointer client_data,
-		       int save_style, Bool shutdown, int interact_style,
-		       Bool fast)
-{
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_save_yourself] "
-		"(save=%d, shut=%d, intr=%d, fast=%d)\n",
-		save_style, shutdown, interact_style, fast);
-#endif
-
-	if (save_style == FSmSaveGlobal)
-	{
-		/* nothing to do */
-#ifdef FVWM_SM_DEBUG_PROTO
-		fprintf(stderr, "[FVWM_SMDEBUG][callback_save_yourself] "
-		"Global Save type ... do nothing\n");
-#endif
-		FSmcSaveYourselfDone (sm_conn, True);
-		sent_save_done = 1;
-		return;
-
-	}
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_save_yourself] "
-		"Both or Local save type, going to phase 2 ...");
-#endif
-	if (!FSmcRequestSaveYourselfPhase2(
-		    sm_conn, callback_save_yourself2, NULL))
-	{
-		FSmcSaveYourselfDone (sm_conn, False);
-		sent_save_done = 1;
-#ifdef FVWM_SM_DEBUG_PROTO
-		fprintf(stderr, " failed!\n");
-#endif
-	}
-	else
-	{
-#ifdef FVWM_SM_DEBUG_PROTO
-		fprintf(stderr, " OK\n");
-#endif
-		sent_save_done = 0;
-	}
-
-	return;
-}
-
-static void
-callback_die(FSmcConn sm_conn, FSmPointer client_data)
-{
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_die]\n");
-#endif
-
-	if (FSmcCloseConnection(sm_conn, 0, NULL) != FSmcClosedNow)
-	{
-		/* go a head any way ? */
-	}
-	sm_fd = -1;
-
-	if (master_pid != getpid())
-	{
-		kill(master_pid, SIGTERM);
-	}
-	Done(0, NULL);
-}
-
-static void
-callback_save_complete(FSmcConn sm_conn, FSmPointer client_data)
-{
-	if (!SessionSupport)
-	{
-		return;
-	}
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_save_complete]\n");
-#endif
-
-	return;
-}
-
-static void
-callback_shutdown_cancelled(FSmcConn sm_conn, FSmPointer client_data)
-{
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr, "[FVWM_SMDEBUG][callback_shutdown_cancelled]\n");
-#endif
-
-	if (!sent_save_done)
-	{
-		FSmcSaveYourselfDone(sm_conn, False);
-		sent_save_done = 1;
-	}
-
-	return;
-}
-
-/* the following is taken from xsm */
-static void
-MyIoErrorHandler(FIceConn ice_conn)
-{
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-	if (prev_handler)
-	{
-		(*prev_handler) (ice_conn);
-	}
-
-	return;
-}
-
-static void
-InstallIOErrorHandler(void)
-{
-	FIceIOErrorHandler default_handler;
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-	prev_handler = FIceSetIOErrorHandler (NULL);
-	default_handler = FIceSetIOErrorHandler (MyIoErrorHandler);
-	if (prev_handler == default_handler)
-	{
-		prev_handler = NULL;
-	}
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -1148,18 +663,7 @@ LoadGlobalState(char *filename)
 		i3 = 0;
 		i4 = 0;
 		sscanf(s, "%4000s", s1);
-		/* If we are restarting, [REAL_STATE_FILENAME] points
-		 * to the file containing the true session state. */
-		if (SessionSupport && !strcmp(s1, "[REAL_STATE_FILENAME]"))
-		{
-			/* migo: temporarily (?) moved to
-			   LoadWindowStates (trick for gnome-session)
-			   sscanf(s, "%*s %s", s2);
-			   set_sm_properties(sm_conn, s2, FSmRestartIfRunning);
-			   set_real_state_filename(s2);
-			*/
-		}
-		else if (!strcmp(s1, "[DESKTOP]"))
+		if (!strcmp(s1, "[DESKTOP]"))
 		{
 			sscanf(s, "%*s %i", &i1);
 			goto_desk(i1);
@@ -1176,54 +680,6 @@ LoadGlobalState(char *filename)
 			*/
 			MoveViewport(i1, i2, True);
 		}
-#if 0
-		/* migo (08-Dec-1999): we don't want to eliminate config yet */
-		else if (/*!Restarting*/ 0)
-		{
-			/* Matthias: We don't want to restore too much
-			 * state if we are restarting, since that
-			 * would make restarting useless for rereading
-			 * changed rc files. */
-			if (!strcmp(s1, "[SCROLL]"))
-			{
-				sscanf(s, "%*s %i %i %i %i ", &i1,
-				       &i2, &i3, &i4);
-				Scr.EdgeScrollX = i1;
-				Scr.EdgeScrollY = i2;
-				Scr.ScrollDelay = i3;
-				if (i4)
-				{
-					Scr.flags.edge_wrap_x = 1;
-				}
-				else
-				{
-					Scr.flags.edge_wrap_x = 0;
-				}
-				if (i3)
-				{
-					Scr.flags.edge_wrap_y = 1;
-				}
-				else
-				{
-					Scr.flags.edge_wrap_y = 0;
-				}
-			}
-			else if (!strcmp(s1, "[MISC]"))
-			{
-				sscanf(s, "%*s %i %i %i", &i1, &i2,
-				       &i3);
-				Scr.ClickTime = i1;
-				Scr.ColormapFocus = i2;
-				Scr.ColorLimit = i3;
-			}
-			else if (!strcmp(s1, "[STYLE]"))
-			{
-				sscanf(s, "%*s %i %i", &i1, &i2);
-				Scr.gs.EmulateMWM = i1;
-				Scr.gs.EmulateWIN = i2;
-			}
-		}
-#endif
 	}
 	fclose(f);
 
@@ -1256,33 +712,16 @@ LoadWindowStates(char *filename)
 	{
 		return;
 	}
-	set_real_state_filename(filename);
 	if ((f = fopen(filename, "r")) == NULL)
 	{
 		return;
 	}
 
-#if defined(FVWM_SM_DEBUG_PROTO) ||  defined(FVWM_SM_DEBUG_FILES)
-	fprintf(stderr, "[FVWM_SMDEBUG] Loading %s\n", filename);
-#endif
-#ifdef FVWM_SM_DEBUG_FILES
-	system(CatString3(
-		       "mkdir -p /tmp/fs-load; cp ", filename,
-		       " /tmp/fs-load"));
-#endif
-
 	while (fgets(s, sizeof(s), f))
 	{
 		n = 0;
 		sscanf(s, "%4000s%n", s1, &n);
-		if (!SessionSupport /* migo: temporarily */ &&
-		    !strcmp(s1, "[REAL_STATE_FILENAME]"))
-		{
-			sscanf(s, "%*s %s", s1);
-			set_sm_properties(sm_conn, s1, FSmRestartIfRunning);
-			set_real_state_filename(s1);
-		}
-		else if (!strcmp(s1, "[CLIENT]"))
+		if (!strcmp(s1, "[CLIENT]"))
 		{
 			sscanf(s, "%*s %lx", &w);
 			num_match++;
@@ -1601,290 +1040,8 @@ RestartInSession (char *filename, Bool is_native, Bool _do_preserve_state)
 {
 	do_preserve_state = _do_preserve_state;
 
-	if (SessionSupport && sm_conn && is_native)
-	{
-		going_to_restart = True;
-
-		save_state_file(filename);
-		set_sm_properties(sm_conn, filename, FSmRestartImmediately);
-
-		MoveViewport(0, 0, False);
-		Reborder();
-
-		CloseICCCM2();
-		XCloseDisplay(dpy);
-
-		if (!FSmcCloseConnection(sm_conn, 0, NULL) != FSmcClosedNow)
-		{
-			/* go a head any way ? */
-		}
-
-#ifdef  FVWM_SM_DEBUG_PROTO
-		fprintf(stderr, "[FVWM_SMDEBUG]: Exiting, now SM must "
-			"restart us.\n");
-#endif
-		/* Close all my pipes */
-		module_kill_all();
-
-		exit(0); /* let the SM restart us */
-	}
-
 	save_state_file(filename);
 	/* return and let Done restart us */
-
-	return;
-}
-
-void SetClientID(char *client_id)
-{
-	if (!SessionSupport)
-	{
-		return;
-	}
-	previous_sm_client_id = client_id;
-
-	return;
-}
-
-void
-SessionInit(void)
-{
-	char error_string_ret[4096] = "";
-	FSmPointer context;
-	FSmcCallbacks callbacks;
-
-	if (!SessionSupport)
-	{
-		/* -Wall fixes */
-		MyIoErrorHandler(NULL);
-		callback_save_yourself2(NULL, NULL);
-		return;
-	}
-
-	context = NULL;
-	InstallIOErrorHandler();
-
-	callbacks.save_yourself.callback = callback_save_yourself;
-	callbacks.die.callback = callback_die;
-	callbacks.save_complete.callback = callback_save_complete;
-	callbacks.shutdown_cancelled.callback = callback_shutdown_cancelled;
-	callbacks.save_yourself.client_data =
-		callbacks.die.client_data =
-		callbacks.save_complete.client_data =
-		callbacks.shutdown_cancelled.client_data = (FSmPointer) NULL;
-	sm_conn = FSmcOpenConnection(
-		NULL, &context, FSmProtoMajor, FSmProtoMinor,
-		FSmcSaveYourselfProcMask | FSmcDieProcMask |
-		FSmcSaveCompleteProcMask | FSmcShutdownCancelledProcMask,
-		&callbacks, previous_sm_client_id, &sm_client_id, 4096,
-		error_string_ret);
-	if (!sm_conn)
-	{
-		/*
-		  Don't annoy users which don't use a session manager
-		*/
-		if (previous_sm_client_id)
-		{
-			fvwm_msg(
-				ERR, "SessionInit",
-				"While connecting to session manager:\n%s.",
-				error_string_ret);
-		}
-		sm_fd = -1;
-#ifdef FVWM_SM_DEBUG_PROTO
-		fprintf(stderr,"[FVWM_SMDEBUG] No SM connection\n");
-#endif
-	}
-	else
-	{
-		sm_fd = FIceConnectionNumber(FSmcGetIceConnection(sm_conn));
-#ifdef FVWM_SM_DEBUG_PROTO
-		fprintf(stderr,"[FVWM_SMDEBUG] Connectecd to a SM\n");
-#endif
-		set_init_function_name(0, "SessionInitFunction");
-		set_init_function_name(1, "SessionRestartFunction");
-		set_init_function_name(2, "SessionExitFunction");
-		/* basically to restet our restart style hint after a
-		 * restart */
-		set_sm_properties(sm_conn, NULL, FSmRestartIfRunning);
-	}
-
-	return;
-}
-
-void
-ProcessICEMsgs(void)
-{
-	FIceProcessMessagesStatus status;
-
-	if (!SessionSupport)
-	{
-		return;
-	}
-
-#ifdef FVWM_SM_DEBUG_PROTO
-	fprintf(stderr,"[FVWM_SMDEBUG][ProcessICEMsgs] %i\n", (int)sm_fd);
-#endif
-	if (sm_fd < 0)
-	{
-		return;
-	}
-	status = FIceProcessMessages(FSmcGetIceConnection(sm_conn), NULL, NULL);
-	if (status == FIceProcessMessagesIOError)
-	{
-		fvwm_msg(ERR, "ProcessICEMSGS",
-			 "Connection to session manager lost\n");
-		sm_conn = NULL;
-		sm_fd = -1;
-	}
-
-	return;
-}
-
-/*
- * Fvwm Function implementation: QuitSession, SaveSession, SaveQuitSession.
- * migo (15-Jun-1999): I am not sure this is right.
- * The session mabager must implement SmsSaveYourselfRequest (xsm doesn't?).
- * Alternative implementation may use unix signals, but this does not work
- * with all session managers (also must suppose that SM runs locally).
- */
-int get_sm_pid(void)
-{
-	const char *session_manager_var = getenv("SESSION_MANAGER");
-	const char *sm_pid_str_ptr;
-	int sm_pid = 0;
-
-	if (!SessionSupport)
-	{
-		return 0;
-	}
-
-	if (!session_manager_var)
-	{
-		return 0;
-	}
-	sm_pid_str_ptr = strchr(session_manager_var, ',');
-	if (!sm_pid_str_ptr)
-	{
-		return 0;
-	}
-	while (sm_pid_str_ptr > session_manager_var && isdigit(*(--sm_pid_str_ptr)))
-	{
-		/* nothing */
-	}
-	while (isdigit(*(++sm_pid_str_ptr)))
-	{
-		sm_pid = sm_pid * 10 + *sm_pid_str_ptr - '0';
-	}
-
-	return sm_pid;
-}
-
-/*
- * quit_session - hopefully shutdowns the session
- */
-Bool quit_session(void)
-{
-	if (!SessionSupport)
-	{
-		return False;
-	}
-	if (!sm_conn)
-	{
-		return False;
-	}
-
-	FSmcRequestSaveYourself(
-		sm_conn, FSmSaveLocal, True /* shutdown */, FSmInteractStyleAny,
-		False /* fast */, True /* global */);
-	return True;
-
-	/* migo: xsm does not support RequestSaveYourself, but supports
-	 * signals: */
-	/*
-	  int sm_pid = get_sm_pid();
-	  if (!sm_pid) return False;
-	  return kill(sm_pid, SIGTERM) == 0 ? True : False;
-	*/
-}
-
-/*
- * save_session - hopefully saves the session
- */
-Bool save_session(void)
-{
-	if (!SessionSupport)
-	{
-		return False;
-	}
-	if (!sm_conn)
-	{
-		return False;
-	}
-
-	FSmcRequestSaveYourself(
-		sm_conn, FSmSaveBoth, False /* shutdown */, FSmInteractStyleAny,
-		False /* fast */, True /* global */);
-	return True;
-
-	/* migo: xsm does not support RequestSaveYourself, but supports
-	 * signals: */
-	/*
-	  int sm_pid = get_sm_pid();
-	  if (!sm_pid) return False;
-	  return kill(sm_pid, SIGUSR1) == 0 ? True : False;
-	*/
-}
-
-/*
- * save_quit_session - hopefully saves and shutdowns the session
- */
-Bool save_quit_session(void)
-{
-	if (!SessionSupport)
-	{
-		return False;
-	}
-
-	if (!sm_conn)
-	{
-		return False;
-	}
-
-	FSmcRequestSaveYourself(
-		sm_conn, FSmSaveBoth, True /* shutdown */, FSmInteractStyleAny,
-		False /* fast */, True /* global */);
-	return True;
-
-	/* migo: xsm does not support RequestSaveYourself, but supports
-	 * signals: */
-	/*
-	  if (save_session() == False) return False;
-	  sleep(3);  / * doesn't work anyway * /
-	  if (quit_session() == False) return False;
-	  return True;
-	*/
-}
-
-/* ---------------------------- builtin commands --------------------------- */
-
-void CMD_QuitSession(F_CMD_ARGS)
-{
-	quit_session();
-
-	return;
-}
-
-void CMD_SaveSession(F_CMD_ARGS)
-{
-	save_session();
-
-	return;
-}
-
-void CMD_SaveQuitSession(F_CMD_ARGS)
-{
-	save_quit_session();
 
 	return;
 }

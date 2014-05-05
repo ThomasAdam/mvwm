@@ -87,7 +87,6 @@ with_readline=@with_readline@
 with_rsvg=@with_rsvg@
 with_shape=@with_shape@
 with_shm=@with_shm@
-with_sm=@with_sm@
 with_xcursor=@with_xcursor@
 with_xinerama=@with_xinerama@
 with_xft=@with_xft@
@@ -205,7 +204,6 @@ while test $# -gt 0; do
 			echo "	readline: $with_readline"
 			echo "	shape (shaped windows): $with_shape"
 			echo "	shm (shared memory): $with_shm"
-			echo "	sm (session management): $with_sm"
 			echo "	rsvg (SVG icons and images): $with_rsvg"
 			echo "	xcursor (ARGB/animated cursors): $with_xcursor"
 			echo "	xinerama (multi-head): $with_xinerama"

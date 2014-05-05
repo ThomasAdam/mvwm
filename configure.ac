@@ -434,45 +434,6 @@ if test ! x"$with_htmldoc" = xno; then
 fi
 AM_CONDITIONAL([FVWM_BUILD_HTMLDOC], [test x"$with_htmldoc" = xyes])
 
-
-# ********* session management
-# Check the availability of SM; we don't have to add any extra libraries,
-# since -lSM -lICE are in X_PRE_LIBS when they exist.
-dnl [old check] AC_CHECK_LIB(SM, SmcOpenConnection, AC_DEFINE(SESSION), ,
-dnl [old check]            [$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS])
-
-problem_sm=""
-
-AC_ARG_ENABLE(sm,
-  AS_HELP_STRING([--disable-sm],[disable session management support]),
-  [ if test x"$enableval" = xyes; then
-    with_sm="yes, check"
-  else
-    with_sm="no"
-    problem_sm=": Explicitly disabled"
-  fi ],
-  [ with_sm="not specified, check" ]
-)
-
-if test ! x"$with_sm" = xno; then
-  dnl Uncomment the following and comment out AC_CHECK_LIB to get --with-sm-*
-  dnl $UNSET ac_cv_lib_SM_SmcOpenConnection
-  dnl $UNSET ac_cv_header_X11_SM_SMlib_h
-  dnl smr_CHECK_LIB(sm, SM, adds session management support, SmcOpenConnection,
-  dnl   X11/SM/SMlib.h,
-  dnl   [$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS], $X_CFLAGS)
-  dnl test "$sm_LIBS" && AC_DEFINE(SESSION)
-
-  $UNSET ac_cv_lib_SM_SmcOpenConnection
-  AH_TEMPLATE([SESSION],[Enables session management functionality.])
-  AC_CHECK_LIB(SM, SmcOpenConnection, with_sm=yes; AC_DEFINE(SESSION),
-    with_sm=no; problem_sm=": Failed to detect libSM",
-    [$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS])
-fi
-dnl AC_SUBST(sm_LIBS)
-dnl AC_SUBST(sm_CFLAGS)
-
-
 # Checking for optional libraries
 # Default is to use them if found; can be disable using --without
 # These are put up front so that if they are requested, but
@@ -1741,7 +1702,6 @@ Fvwm Configuration:
   With ReadLine sup. in FvwmConsole?  $with_readline$problem_readline
   With Shaped window support?         $with_shape$problem_shape
   With Shared memory for XImage?      $with_shm$problem_shm
-  With Session Management support?    $with_sm$problem_sm
   With SVG image support?             $with_rsvg$problem_rsvg
   With Xcursor support?               $with_xcursor$problem_xcursor
   With Xinerama multi-head support?   $with_xinerama$problem_xinerama

@@ -6,14 +6,14 @@ noinst_LIBRARIES = libfvwm.a
 libfvwm_a_SOURCES = \
 	BidiJoin.h Bindings.h ClientMsg.h ColorUtils.h Colorset.h \
 	CombineChars.h Cursor.h Event.h FBidi.h FEvent.h FGettext.h FImage.h \
-	FRender.h FRenderInit.h FRenderInterface.h FSMlib.h FScreen.h \
+	FRender.h FRenderInit.h FRenderInterface.h FScreen.h \
 	FShape.h FShm.h FTips.h Fcursor.h Fft.h FftInterface.h Ficonv.h \
 	Flocale.h FlocaleCharset.h Fpng.h Fsvg.h Fxpm.h Grab.h \
 	Graphics.h Module.h Parse.h Picture.h PictureBase.h \
 	PictureDitherMatrice.h PictureGraphics.h PictureImageLoader.h \
 	PictureUtils.h Rectangles.h Strings.h System.h Target.h WinMagic.h \
 	XError.h XResource.h charmap.h defaults.h envvar.h fio.h flist.h \
-	fsm.h ftime.h fvwm_sys_stat.h fvwmlib.h fvwmrect.h fvwmsignal.h \
+	ftime.h fvwm_sys_stat.h fvwmlib.h fvwmrect.h fvwmsignal.h \
 	gravity.c gravity.h lang-strings.h modifiers.h queue.h safemalloc.h \
 	setpgrp.h strlcpy.h timeout.h vpacket.h wcontext.h wild.h \
 	\
@@ -26,7 +26,7 @@ libfvwm_a_SOURCES = \
 	fvwmrect.c FRenderInit.c safemalloc.c  FBidi.c \
 	wild.c Grab.c Event.c ClientMsg.c setpgrp.c FShape.c \
 	FGettext.c Rectangles.c timeout.c flist.c charmap.c wcontext.c \
-	modifiers.c fsm.c FTips.c fio.c fvwmlib.c strlcpy.c
+	modifiers.c FTips.c fio.c fvwmlib.c strlcpy.c
 
 libfvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
 

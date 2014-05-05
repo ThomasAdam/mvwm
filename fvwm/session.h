@@ -28,12 +28,6 @@ void DisableRestoringState(void);
 void LoadWindowStates (char *filename);
 
 /*
-** Save state to the named file, and if running under SM,
-** make the SM properly restart fvwm.
-*/
-void RestartInSession (char *filename, Bool isNative, Bool doPreserveState);
-
-/*
 **  Fill in the FvwmWindow struct with information saved from
 **  the last session. This expects the fields
 **    t->w
@@ -56,32 +50,4 @@ typedef struct
 Bool MatchWinToSM(
 	FvwmWindow *ewin, mwtsm_state_args *ret_state_args,
 	initial_window_options_t *win_opts);
-
-void SetClientID(char *client_id);
-
-/*
-**  Try to open a connection to the session manager. If non-NULL,
-**  reuse the client_id.
-*/
-void SessionInit(void);
-
-/*
-**  The file number of the session manager connection or -1
-**  if no session manager was found.
-*/
-extern int sm_fd;
-
-/*
-**  Process messages received from the session manager. Call this
-**  from the main event loop when there is input waiting sm_fd.
-*/
-void ProcessICEMsgs(void);
-
-/*
- * Fvwm Function implementation
- */
-Bool quitSession(void);
-Bool saveSession(void);
-Bool saveQuitSession(void);
-
 #endif

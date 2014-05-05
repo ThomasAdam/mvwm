@@ -457,9 +457,6 @@ const func_t func_table[] =
 	CMD_ENT("quitscreen", CMD_QuitScreen, F_QUIT_SCREEN, 0, 0),
 	/* - Stop managing the specified screen */
 
-	CMD_ENT("quitsession", CMD_QuitSession, F_QUIT_SESSION, 0, 0),
-	/* - Ask session manager to shut down itself and fvwm */
-
 	CMD_ENT("raise", CMD_Raise, F_RAISE,
 		FUNC_NEEDS_WINDOW, CRS_SELECT),
 	/* - Raise a window in a layer */
@@ -513,13 +510,6 @@ const func_t func_table[] =
 
 	CMD_ENT("restart", CMD_Restart, F_RESTART, 0, 0),
 	/* - Restart itself or replace with another window manager */
-
-	CMD_ENT("savequitsession", CMD_SaveQuitSession, F_SAVE_QUIT_SESSION,
-		0, 0),
-	/* - Cause session manager to save and shutdown fvwm */
-
-	CMD_ENT("savesession", CMD_SaveSession, F_SAVE_SESSION, 0, 0),
-	/* - Cause session manager to save the session */
 
 	CMD_ENT("scanforwindow", CMD_ScanForWindow, F_SCANFORWINDOW, 0, 0),
 	/* - Operate on the matching window in the given direction */
