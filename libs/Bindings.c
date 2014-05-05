@@ -39,11 +39,25 @@ static int key_max = 0;
 /* Free the memory use by a binding. */
 void FreeBindingStruct(Binding *b)
 {
-	free(b->key_name);
-	free(b->Action);
-	free(b->Action2);
-	free(b->windowName);
+	if (b->key_name)
+	{
+		free(b->key_name);
+	}
+	if (b->Action)
+	{
+		free(b->Action);
+	}
+	if (b->Action2)
+	{
+		free(b->Action2);
+	}
+	if (b->windowName)
+	{
+		free(b->windowName);
+	}
 	free(b);
+
+	return;
 }
 
 void FreeBindingList(Binding *b)
@@ -55,6 +69,8 @@ void FreeBindingList(Binding *b)
 		t = b->NextBinding;
 		FreeBindingStruct(b);
 	}
+
+	return;
 }
 
 /* Unlink a binding b from a binding list pblist.  The previous binding in the
@@ -87,6 +103,8 @@ static void UnlinkBinding(Binding **pblist, Binding *b, Binding *prev)
 		/* must have been first one, set new start */
 		*pblist = b->NextBinding;
 	}
+
+	return;
 }
 
 /* To remove a binding from the global list (probably needs more processing
@@ -96,6 +114,8 @@ void RemoveBinding(Binding **pblist, Binding *b, Binding *prev)
 {
 	UnlinkBinding(pblist, b, NULL);
 	FreeBindingStruct(b);
+
+	return;
 }
 
 /*
@@ -362,6 +382,8 @@ void CollectBindingList(
 	}
 	/* throw away the temporary list */
 	FreeBindingList(tmplist);
+
+	return;
 }
 
 /*
@@ -630,6 +652,8 @@ void GrabAllWindowKeys(
 	}
 	is_grabbing_everything = False;
 	MyXUngrabServer(dpy);
+
+	return;
 }
 
 void GrabWindowButton(
@@ -718,6 +742,8 @@ void GrabWindowButton(
 			}
 		}
 	}
+
+	return;
 }
 
 void GrabAllWindowButtons(
@@ -733,6 +759,8 @@ void GrabAllWindowButtons(
 	}
 	is_grabbing_everything = False;
 	MyXUngrabServer(dpy);
+
+	return;
 }
 
 void GrabAllWindowKeysAndButtons(
@@ -761,6 +789,8 @@ void GrabAllWindowKeysAndButtons(
 	}
 	is_grabbing_everything = False;
 	MyXUngrabServer(dpy);
+
+	return;
 }
 
 void GrabWindowKeyOrButton(
@@ -778,6 +808,8 @@ void GrabWindowKeyOrButton(
 		GrabWindowKey(
 			dpy, w, binding, contexts, dead_modifiers, fGrab);
 	}
+
+	return;
 }
 
 /*

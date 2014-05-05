@@ -75,7 +75,10 @@ void fgettext_add_one_path(char *path, int position)
 	domain = GetQuotedString(path, &dir, ";", NULL, NULL, NULL);
 	if (!dir || dir[0] == '\0' || dir[0] != '/')
 	{
-		free(dir);
+		if (dir)
+		{
+			free(dir);
+		}
 		CopyString(&dir, FGDefaultDir);
 	}
 	if (!domain || domain[0] == '\0')
@@ -103,8 +106,14 @@ static void fgettext_free_fgpath_list(void)
 	{
 		if (l->object)
 		{
-			free(FGP_DOMAIN(l));
-			free(FGP_DIR(l));
+			if (FGP_DOMAIN(l))
+			{
+				free(FGP_DOMAIN(l));
+			}
+			if (FGP_DIR(l))
+			{
+				free(FGP_DIR(l));
+			}
 			free(l->object);
 		}
 		l = l->next;
@@ -250,7 +259,10 @@ void FGettextSetLocalePath(const char *path)
 		{
 			fgettext_add_one_path(p,-1);
 		}
-		free(p);
+		if (p)
+		{
+			free(p);
+		}
 	}
 	count = 0;
 	str = before;
@@ -262,11 +274,20 @@ void FGettextSetLocalePath(const char *path)
 			fgettext_add_one_path(p,count);
 			count++;
 		}
-		free(p);
+		if (p)
+		{
+			free(p);
+		}
 	}
  bail:
-	free(before);
-	free(exp_path);
+	if (before)
+	{
+		free(before);
+	}
+	if (exp_path)
+	{
+		free(exp_path);
+	}
 }
 
 

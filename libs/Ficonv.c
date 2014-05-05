@@ -581,6 +581,7 @@ char *FiconvCharsetToCharset(
 	char *out = NULL;
 	char *tmp = NULL;
 	int tmp_len;
+	Bool free_tmp = False;
 	FlocaleCharset *my_in_fc;
 	FlocaleCharset *my_out_fc;
 
@@ -603,6 +604,7 @@ char *FiconvCharsetToCharset(
 			dpy, my_in_fc, (const char *)in, in_size);
 		if (tmp != NULL)
 		{
+			free_tmp = True;
 			tmp_len = strlen(tmp);
 		}
 		else
@@ -617,7 +619,10 @@ char *FiconvCharsetToCharset(
 	{
 		out = FiconvUtf8ToCharset(
 			dpy, my_out_fc, (const char *)tmp, tmp_len);
-		free(tmp);
+		if (free_tmp)
+		{
+			free(tmp);
+		}
 	}
 
 	return out;
