@@ -1749,7 +1749,6 @@ Fvwm Configuration:
   With Asian bi-direct. text support? $with_bidi$problem_bidi
   With Gettext Native Lang support?   $with_gettext$problem_gettext
   With Iconv support?                 $with_iconv_type$problem_iconv
-  With Mouse strokes (gestures)?      $with_stroke$problem_stroke
   With PNG image support?             $with_png$problem_png
   With ReadLine sup. in FvwmConsole?  $with_readline$problem_readline
   With RPlay support in FvwmEvent?    $with_rplay$problem_rplay
