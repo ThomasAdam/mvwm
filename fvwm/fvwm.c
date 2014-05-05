@@ -581,7 +581,6 @@ void Done(int restart, char *command)
 			}
 			if (strncmp(command, "--dont-preserve-state", 21) == 0)
 			{
-				do_preserve_state = False;
 				command += 21;
 				while (isspace(command[0])) command++;
 			}
