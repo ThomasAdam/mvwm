@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <err.h>
 #include <sys/param.h>
+#include <stdint.h>
 #include "safemalloc.h"
 
 void *

@@ -1634,6 +1634,10 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 #define fvwm_KeycodeToKeysym(d, k, x, i) (XKeycodeToKeysym((d), (k), (i)))
 #endif
 
+#ifndef HAVE_STRLCPY
+#   include "libs/strlcpy.h"
+#endif
+
 ])
 
 # mainly for fvwm-config
