@@ -63,7 +63,6 @@
 #include "Colorset.h"
 #include "Picture.h"
 #include "PictureUtils.h"
-#include "Fsvg.h"
 
 static FvwmPicture *FvwmPictureList=NULL;
 
@@ -119,16 +118,7 @@ FvwmPicture *PCacheFvwmPicture(
 	{
 		return NULL;
 	}
-        /* Remove any svg rendering options from real_path */
-	if (USE_SVG && *path == ':' &&
-	    (real_path = strchr(path + 1, ':')))
-	{
-		real_path++;
-	}
-	else
-	{
-		real_path = path;
-	}
+	real_path = path;
 
 	/* See if the picture is already cached */
 	while (p)

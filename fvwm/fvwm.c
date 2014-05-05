@@ -55,7 +55,6 @@
 #include "libs/FShape.h"
 #include "libs/PictureBase.h"
 #include "libs/PictureUtils.h"
-#include "libs/Fsvg.h"
 #include "libs/FRenderInit.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"

@@ -84,7 +84,6 @@ with_iconv=@with_iconv@
 with_perllib=@with_perllib@
 with_png=@with_png@
 with_readline=@with_readline@
-with_rsvg=@with_rsvg@
 with_shape=@with_shape@
 with_shm=@with_shm@
 with_xcursor=@with_xcursor@
@@ -153,10 +152,8 @@ while test $# -gt 0; do
 			test "$with_perllib"    = "yes" && echo "perllib"
 			test "$with_png"        = "yes" && echo "png"
 			test "$with_readline"   = "yes" && echo "readline"
-			test "$with_rsvg"       = "yes" && echo "rsvg"
 			test "$with_shape"      = "yes" && echo "shape"
 			test "$with_shm"        = "yes" && echo "shm"
-			test "$with_sm"         = "yes" && echo "sm"
 			test "$with_xcursor"    = "yes" && echo "xcursor"
 			test "$with_xinerama"   = "yes" && echo "xinerama"
 			test "$with_xft"        = "yes" && echo "xft"
@@ -204,7 +201,6 @@ while test $# -gt 0; do
 			echo "	readline: $with_readline"
 			echo "	shape (shaped windows): $with_shape"
 			echo "	shm (shared memory): $with_shm"
-			echo "	rsvg (SVG icons and images): $with_rsvg"
 			echo "	xcursor (ARGB/animated cursors): $with_xcursor"
 			echo "	xinerama (multi-head): $with_xinerama"
 			echo "	xft (FreeType anti-alias font): $with_xft"

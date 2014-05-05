@@ -21,7 +21,6 @@
 #include "fvwmlib.h"
 #include "FScreen.h"
 #include "FShape.h"
-#include "Fsvg.h"
 #include "FRenderInit.h"
 #include "Graphics.h"
 #include "PictureBase.h"
@@ -54,7 +53,6 @@ void flib_init_graphics(Display *dpy)
 	AllocColorset(0);
 	FShapeInit(dpy);
 	FRenderInit(dpy);
-	Frsvg_init();
 
 	return;
 }

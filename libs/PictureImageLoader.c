@@ -44,7 +44,6 @@
 #include "ColorUtils.h"
 #include "Fxpm.h"
 #include "Fpng.h"
-#include "Fsvg.h"
 #include "FRenderInit.h"
 #include "Fcursor.h"
 #include "FImage.h"
@@ -76,7 +75,6 @@ typedef struct PImageLoader
 
 /* ---------------------------- forward declarations ----------------------- */
 
-static Bool PImageLoadSvg(FIMAGE_CMD_ARGS);
 static Bool PImageLoadPng(FIMAGE_CMD_ARGS);
 static Bool PImageLoadXpm(FIMAGE_CMD_ARGS);
 
@@ -85,7 +83,6 @@ static Bool PImageLoadXpm(FIMAGE_CMD_ARGS);
 PImageLoader Loaders[] =
 {
 	{ "xpm", PImageLoadXpm },
-	{ "svg", PImageLoadSvg },
 	{ "png", PImageLoadPng },
 	{NULL,0}
 };
@@ -137,255 +134,6 @@ Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
 
 /*
  *
- * svg loader
- *
- */
-static
-Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
-{
-	char *allocated_path;
-	char *render_opts;
-	FRsvgHandle *rsvg;
-	FRsvgDimensionData dim;
-	CARD32 *data;
-	Fcairo_surface_t *surface;
-	Fcairo_t *cr;
-	int i;
-	int j;
-	int b1;
-	int b2;
-	int w = 0;
-	int h = 0;
-	int dw = 0;
-	int dh = 0;
-	int w_sgn = 1;
-	int h_sgn = 1;
-	double angle = 0;
-	double w_scale = 1;
-	double h_scale = 1;
-	double buf;
-	Bool transpose = False;
-	unsigned char a_value;
-	unsigned char r_value;
-	unsigned char g_value;
-	unsigned char b_value;
-
-	if (!USE_SVG)
-	{
-		fprintf(stderr, "[PImageLoadSvg]: Tried to load SVG file "
-				"when FVWM has not been compiled with SVG support.\n");
-		return False;
-	}
-
-	/* Separate rendering options from path */
-	render_opts = path = allocated_path = xstrdup(path);
-	if (*path == ':' && (path = strchr(path + 1, ':')))
-	{
-		*path = 0;
-		path ++;
-		render_opts ++;
-	}
-	else
-	{
-		render_opts = "";
-	}
-
-	if (!(rsvg = Frsvg_handle_new_from_file(path, NULL)))
-	{
-		free(allocated_path);
-
-		return False;
-	}
-
-	/* Parsing of rendering options */
-	while (*render_opts)
-	{
-		i = 0;
-		switch (*render_opts)
-		{
-		case '!':
-			transpose = !transpose;
-			break;
-		case '*':
-			if (sscanf(render_opts, "*%lf%n", &buf, &i) >= 1)
-			{
-				switch (render_opts[i])
-				{
-				case 'x':
-					w_scale *= buf;
-					i ++;
-					break;
-				case 'y':
-					h_scale *= buf;
-					i ++;
-					break;
-				default:
-					w_scale *= buf;
-					h_scale *= buf;
-				}
-			}
-			break;
-		case '/':
-			if (sscanf(render_opts, "/%lf%n", &buf, &i) >= 1 &&
-			    buf)
-			{
-				switch (render_opts[i])
-				{
-				case 'x':
-					w_scale /= buf;
-					i ++;
-					break;
-				case 'y':
-					h_scale /= buf;
-					i ++;
-					break;
-				default:
-					w_scale /= buf;
-					h_scale /= buf;
-				}
-			}
-			break;
-		case '@':
-			if (sscanf(render_opts, "@%lf%n", &buf, &i) >= 1)
-			{
-				angle += buf;
-			}
-			break;
-		default:
-			j = 0;
-			if (
-				sscanf(
-					render_opts, "%dx%n%d%n", &b1, &j, &b2,
-					&i) >= 2 &&
-				i > j)
-			{
-				w = b1;
-				h = b2;
-
-				if (w < 0 || (!w && render_opts[0] == '-'))
-				{
-					w *= (w_sgn = -1);
-				}
-				if (h < 0 || (!h && render_opts[j] == '-'))
-				{
-					h *= (h_sgn = -1);
-				}
-			}
-			else if (
-				sscanf(render_opts, "%d%d%n", &b1, &b2, &i) >=
-				2)
-			{
-				dw += b1;
-				dh += b2;
-			}
-		}
-		render_opts += i ? i : 1;
-	}
-	free(allocated_path);
-
-	/* Keep the original aspect ratio when either w or h is 0 */
-        Frsvg_handle_get_dimensions(rsvg, &dim);
-	if (!w && !h)
-	{
-		w = dim.width;
-		h = dim.height;
-	}
-	else if (!w)
-	{
-		w = h * dim.em / dim.ex;
-	}
-	else if (!h)
-	{
-		h = w * dim.ex / dim.em;
-	}
-
-	w_scale *= w;
-	h_scale *= h;
-
-	if (transpose)
-	{
-		b1 = w;
-		w = h;
-		h = b1;
-
-		b1 = w_sgn;
-		w_sgn = - h_sgn;
-		h_sgn = b1;
-
-		b1 = dw;
-		dw = - dh;
-		dh = b1;
-
-		angle += 90;
-	}
-
-	data = xcalloc(1, w * h * sizeof(CARD32));
-	surface = Fcairo_image_surface_create_for_data((unsigned char *)data,
-		FCAIRO_FORMAT_ARGB32, w, h, w * sizeof(CARD32));
-	if (Fcairo_surface_status(surface) != FCAIRO_STATUS_SUCCESS)
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		free(data);
-		if (surface)
-		{
-		   	Fcairo_surface_destroy(surface);
-		}
-
-		return False;
-	}
-	cr = Fcairo_create(surface);
-	Fcairo_surface_destroy(surface);
-	if (Fcairo_status(cr) != FCAIRO_STATUS_SUCCESS)
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		free(data);
-		if (cr)
-		{
-			Fcairo_destroy(cr);
-		}
-
-		return False;
-	}
-
-	/* Affine transformations ...
-	 * mirroring, rotation, scaling and translation */
-	Fcairo_translate(cr, .5 * w, .5 * h);
-	Fcairo_scale(cr, w_sgn, h_sgn);
-	Fcairo_translate(cr, dw, dh);
-	Fcairo_rotate(cr, angle * M_PI / 180);
-	Fcairo_scale(cr, w_scale, h_scale);
-	Fcairo_translate(cr, -.5, -.5);
-	Fcairo_scale(cr, 1 / dim.em, 1 / dim.ex);
-
-	Frsvg_handle_render_cairo(rsvg, cr);
-	Fg_object_unref(FG_OBJECT(rsvg));
-	Fcairo_destroy(cr);
-
-	/* Cairo gave us alpha prescaled RGB values, hence we need
-	 * to rescale them for PImageCreatePixmapFromArgbData() */
-	for (i = 0; i < w * h; i++)
-	{
-		if ((a_value = (data[i] >> 030) & 0xff))
-		{
-			r_value = ((data[i] >> 020) & 0xff) * 0xff / a_value;
-			g_value = ((data[i] >> 010) & 0xff) * 0xff / a_value;
-			b_value =  (data[i]         & 0xff) * 0xff / a_value;
-
-			data[i] =
-				(a_value << 030) | (r_value << 020) |
-				(g_value << 010) | b_value;
-		}
-	}
-
-	*width = w;
-	*height = h;
-	*argb_data = data;
-
-	return True;
-}
-
-/*
- *
  * png loader
  *
  */
@@ -396,7 +144,6 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_structp Fpng_ptr = NULL;
 	Fpng_infop Finfo_ptr = NULL;
 	CARD32 *data;
-	size_t n;
 	int w, h;
 	char hasa = 0, hasg = 0;
 	FILE *f;
@@ -881,16 +628,8 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	Pixel *alloc_pixels = NULL;
 	char *real_path;
 
-        /* Remove any svg rendering options from real_path */
-	if (USE_SVG && *path == ':' &&
-	    (real_path = strchr(path + 1, ':')))
-	{
-		real_path ++;
-	}
-	else
-	{
-		real_path = path;
-	}
+	real_path = path;
+
 	if (!PImageLoadPixmapFromFile(
 		dpy, win, path, &pixmap, &mask, &alpha, &width, &height,
 		&depth, &nalloc_pixels, &alloc_pixels, &no_limit, fpa))

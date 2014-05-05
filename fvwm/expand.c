@@ -41,7 +41,6 @@
 #include "libs/FGettext.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
-#include "libs/Fsvg.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -196,8 +195,6 @@ enum
 	VAR_W_ICONNAME,
 	VAR_W_ICONFILE,
 	VAR_W_MINIICONFILE,
-	VAR_W_ICONFILE_SVGOPTS,
-	VAR_W_MINIICONFILE_SVGOPTS,
 	VAR_W_ID,
 	VAR_W_NAME,
 	VAR_W_RESOURCE,
@@ -516,40 +513,9 @@ static signed int expand_vars_extended(
 			{
 				string = t;
 			}
-			else if (USE_SVG && *allocated_string == ':' &&
-				 (string = strchr(allocated_string + 1, ':')))
-			{
-				string++;
-			}
 			else
 			{
 				string = allocated_string;
-			}
-		}
-		break;
-	case VAR_W_ICONFILE_SVGOPTS:
-	case VAR_W_MINIICONFILE_SVGOPTS:
-		if (fw && !IS_EWMH_DESKTOP(FW_W(fw)))
-		{
-			char *t;
-
-			if (!USE_SVG)
-			{
-				return -1;
-			}
-			t = (i == VAR_W_ICONFILE_SVGOPTS) ?
-				fw->icon_bitmap_file : fw->mini_pixmap_file;
-			/* expand the path if possible */
-			allocated_string = PictureFindImageFile(t, NULL, R_OK);
-			string = allocated_string;
-			if (string && *string == ':' &&
-			    (t = strchr(string + 1, ':')))
-			{
-				*t = 0;
-			}
-			else
-			{
-				string = "";
 			}
 		}
 		break;

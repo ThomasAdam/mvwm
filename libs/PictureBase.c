@@ -56,7 +56,6 @@
 #include "Graphics.h"
 #include "PictureBase.h"
 #include "PictureUtils.h"
-#include "Fsvg.h"
 #include "Strings.h"
 
 Bool Pdefault;
@@ -244,11 +243,6 @@ char* PictureGetImagePath(void)
  */
 char* PictureFindImageFile(const char* icon, const char* pathlist, int type)
 {
-	int length;
-	char *tmpbuf;
-	char *full_filename;
-	const char *render_opts;
-
 	if (pathlist == NULL)
 	{
 		pathlist = imagePath;
@@ -258,35 +252,6 @@ char* PictureFindImageFile(const char* icon, const char* pathlist, int type)
 		return NULL;
 	}
 
-	full_filename = searchPath(pathlist, icon, ".gz", type);
-
-	/* With USE_SVG, rendering options may be appended to the
-	   original filename, hence seachPath() won't find the file.
-	   So we hide any such appended options and try once more. */
-        if (USE_SVG && !full_filename &&
-	    (render_opts = strrchr(icon, ':')))
-	{
-		length = render_opts - icon;
-		/* TA:  FIXME!  asprintF() */
-		tmpbuf = xmalloc(length + 1);
-		strncpy(tmpbuf, icon, length);
-		tmpbuf[length] = 0;
-
-		full_filename = searchPath(pathlist, tmpbuf, ".gz", type);
-		free(tmpbuf);
-		if (full_filename)
-		{
-			/* Prepending (the previously appended) options
-			   will leave any file suffix exposed. Callers
-			   who want to access the file on disk will have
-			   to remove these prepended options themselves.
-			   The format is ":svg_opts:/path/to/file.svg". */
-			tmpbuf = CatString3(render_opts, ":", full_filename);
-			free(full_filename);
-			full_filename = xstrdup(tmpbuf);
-		}
-	}
-
-	return full_filename;
+	return (searchPath(pathlist, icon, ".gz", type));
 }
 
