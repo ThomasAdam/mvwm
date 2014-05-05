@@ -11,12 +11,6 @@
 #define XRenderSupport 0
 #endif
 
-#ifdef XPM
-#define XpmSupport 1
-#else
-#define XpmSupport 0
-#endif
-
 #ifdef HAVE_PNG
 #define PngSupport 1
 #else

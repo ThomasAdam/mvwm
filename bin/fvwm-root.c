@@ -34,9 +34,6 @@ void usage(int verbose)
 	FILE *output = verbose ? stdout : stderr;
 	fprintf(
 		output, "fvwm-root version %s with support for: XBM"
-#ifdef XPM
-		", XPM"
-#endif
 #ifdef HAVE_PNG
 		", PNG"
 #endif

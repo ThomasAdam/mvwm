@@ -39,18 +39,6 @@
 
 /* ---------------------------- local definitions and macro ----------------- */
 
-#if 0
-/* dv: unused */
-/* form alloc_in_cmap from the xpm lib */
-#define XPM_DIST(r1,g1,b1,r2,g2,b2) (long)\
-                          (3*(abs((long)r1-(long)r2) + \
-			      abs((long)g1-(long)g2) + \
-			      abs((long)b1-(long)b2)) + \
-			   abs((long)r1 + (long)g1 + (long)b1 - \
-			       ((long)r2 +  (long)g2 + (long)b2)))
-#define XPM_COLOR_CLOSENESS 40000
-#endif
-
 #define SQUARE(X) ((X)*(X))
 
 #define TRUE_DIST(r1,g1,b1,r2,g2,b2) (long)\
@@ -2132,39 +2120,6 @@ Pixel PictureGetNextColor(Pixel p, int n)
 		}
 	}
 	return p;
-}
-
-/* Replace the color in my_color by the closest matching color
-   from base_table */
-void PictureReduceColorName(char **my_color)
-{
-	int index;
-	XColor rgb;          /* place to calc rgb for each color in xpm */
-
-	if (!XpmSupport)
-		return;
-
-	if (!strcasecmp(*my_color,"none")) {
-		return; /* do not substitute the "none" color */
-	}
-
-	if (!XParseColor(Pdpy, Pcmap, *my_color, &rgb))
-	{
-		fprintf(stderr,"color_to_rgb: can't parse color %s\n",
-			*my_color);
-	}
-	index = get_color_index(rgb.red,rgb.green,rgb.blue, False);
-	/* Finally: replace the color string by the newly determined color
-	 * string */
-	free(*my_color);                    /* free old color */
-	/* area for new color */
-	/* TA:  FIXME!  xasprintf() */
-	*my_color = xmalloc(8);
-	sprintf(*my_color,"#%x%x%x",
-		Pct[index].color.red >> 8,
-		Pct[index].color.green >> 8,
-		Pct[index].color.blue >> 8); /* put it there */
-	return;
 }
 
 Bool PictureDitherByDefault(void)

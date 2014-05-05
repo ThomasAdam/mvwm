@@ -8,7 +8,7 @@ libfvwm_a_SOURCES = \
 	CombineChars.h Cursor.h Event.h FBidi.h FEvent.h FGettext.h FImage.h \
 	FRender.h FRenderInit.h FRenderInterface.h FScreen.h \
 	FShape.h FShm.h FTips.h Fcursor.h Fft.h FftInterface.h Ficonv.h \
-	Flocale.h FlocaleCharset.h Fpng.h Fsvg.h Fxpm.h Grab.h \
+	Flocale.h FlocaleCharset.h Fpng.h Fsvg.h Grab.h \
 	Graphics.h Module.h Parse.h Picture.h PictureBase.h \
 	PictureDitherMatrice.h PictureGraphics.h PictureImageLoader.h \
 	PictureUtils.h Rectangles.h Strings.h System.h Target.h WinMagic.h \
@@ -30,6 +30,6 @@ libfvwm_a_SOURCES = \
 
 libfvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
 
-INCLUDES = -I$(top_srcdir) $(xpm_CFLAGS) $(Xft_CFLAGS) $(X_CFLAGS) \
+INCLUDES = -I$(top_srcdir) $(Xft_CFLAGS) $(X_CFLAGS) \
 	$(iconv_CFLAGS) $(Xrender_CFLAGS) $(Bidi_CFLAGS) $(png_CFLAGS) \
 	$(rsvg_CFLAGS) $(intl_CFLAGS)

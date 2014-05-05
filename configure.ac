@@ -1481,8 +1481,6 @@ dnl
 	bin/fvwm-convert-2.6.1
 	bin/fvwm-menu-desktop.1
 dnl	bin/fvwm-menu-directory.1
-dnl	bin/fvwm-menu-headlines.1
-dnl	bin/fvwm-menu-xlock.1
 dnl	bin/fvwm-perllib.1
 	bin/fvwm-root.1
 	modules/FvwmAuto/FvwmAuto.1
@@ -1500,10 +1498,8 @@ dnl
 	bin/fvwm-config
 	bin/fvwm-bug
 	bin/fvwm-perllib
-	bin/fvwm-menu-xlock
 	bin/fvwm-menu-directory
 	bin/fvwm-menu-desktop
-	bin/fvwm-menu-headlines
 	bin/fvwm-convert-2.4
 	bin/fvwm-convert-2.6
 dnl

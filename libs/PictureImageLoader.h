@@ -55,15 +55,4 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 Cursor PImageLoadCursorFromFile(
 	Display *dpy, Window win, char *path, int x_hot, int y_hot);
 
-/*
- * <pubfunc>PImageLoadPixmapFromFile
- * <description>
- * Create a pixmap with its mask from xpm data.
- * </description>
- */
-Bool PImageLoadPixmapFromXpmData(
-	Display *dpy, Window win, int color_limit, char **data,
-	Pixmap *pixmap, Pixmap *mask, int *width,
-	int *height, int *depth);
-
 #endif /* PICTURE_IMAGE_LOADER_H  */

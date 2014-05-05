@@ -436,7 +436,7 @@ def decodetext(text):
     return new_text
     
 def geticonfile(icon):
-    iconpath = xdg.IconTheme.getIconPath(icon, size, current_theme, ["png", "xpm", "svg"])
+    iconpath = xdg.IconTheme.getIconPath(icon, size, current_theme, ["png", "svg"])
 
     if not iconpath == None:
         extension = os.path.splitext(iconpath)[1]

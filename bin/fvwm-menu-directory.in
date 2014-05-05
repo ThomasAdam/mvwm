@@ -82,7 +82,6 @@ GetOptions(
 	"command-file=s"  => \$commf,
 	"command-app=s"   => \$comma,
 	"reuse!"       => \$reuse,
-	"wm-icons"     => \$wm_icons,
 	"check-subdirs!"    => \$check_subdirs,
 	"special-dirs:s"    => \$special_dir_val,
 	"memory-for-speed!" => \$memory_for_speed,
@@ -130,13 +129,6 @@ if ($itemf_eval) {
 
 my @type1 = ("Sock", "Link", "File", "Blck", "Dir ", "Char", "Pipe");
 my @type2 = ("S", "L", "F", "B", "D", "C", "P");
-
-if ($wm_icons) {
-	$icont ||= "menu/folder-open.xpm";
-	$icond ||= "menu/folder.xpm";
-	$iconf ||= "menu/file.xpm";
-	$icona ||= "menu/utility.xpm";
-}
 
 my $icont_str = $icont ? "%$icont%" : "";
 my $icond_str = $icond ? "%$icond%" : "";
@@ -368,7 +360,6 @@ sub show_help {
 	print "\t--icon-dir=XPM     menu dir   icon, default is none\n";
 	print "\t--icon-file=XPM    menu file  icon, default is none\n";
 	print "\t--icon-app=XPM     menu +x    icon, default is none\n";
-	print "\t--wm-icons         define icon names to use with wm-icons\n";
 	print "\t--dir=NAME         starting dir, default is '$dir'\n";
 	print "\t--order=NUM        NUM (-6 .. 6), default is 5\n";
 	print "\t\t1 - do not sort,  2 - dirs first, 3 - files first\n";
@@ -422,7 +413,6 @@ B<fvwm-menu-directory>
 [ B<--icon-dir>|B<-icon-d> XPM ]
 [ B<--icon-file>|B<-icon-f> XPM ]
 [ B<--icon-app>|B<-icon-a> XPM ]
-[ B<--wm-icons> ]
 [ B<--dir>|B<-d> NAME ]
 [ B<--order>|B<-o> NUM ]
 [ B<--[no]all>|B<-a> ]
@@ -522,12 +512,6 @@ menu file icon, default is none
 =item B<--icon-app> icon
 
 menu application icon, default is none
-
-=item B<--wm-icons>
-
-define icon names suitable for use with wm-icons package.
-Currently this is equivalent to: --icon-title menu/folder-open.xpm --icon-item
-menu/file.xpm --icon-dir menu/folder.xpm --icon-app menu/utility.xpm.
 
 =item B<--dir> dir
 
@@ -674,7 +658,7 @@ More complex example:
   # AddToFunc FuncFvwmMenuDirectory
   # + I PipeRead "fvwm-menu-directory -d '$0' -x 'Eterm -g 80x40 -e' \\
     -a -l -o 6 --exec-app --exec-title 'tcsh -l' --exec-file 'vim -R' \\
-    -t 'Go to: %d' --wm-icons"
+    -t 'Go to: %d'"
 
 And put this in the menu from which you want to pop-up the directory menus:
 
