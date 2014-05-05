@@ -40,10 +40,6 @@
 #include "config.h"
 
 #include <stdio.h>
-/*
- * rplay includes:
- */
-#include "libs/Fplay.h"
 
 #include "libs/Module.h"
 #include "libs/fvwmlib.h"
@@ -65,7 +61,6 @@
 #define BUILTIN_SHUTDOWN        1
 #define BUILTIN_UNKNOWN         2
 #define MAX_BUILTIN             3
-#define MAX_RPLAY_HOSTNAME_LEN  MAX_MODULE_INPUT_TEXT_LEN
 #define SYNC_MASK_M             (M_DESTROY_WINDOW | M_LOWER_WINDOW | \
 	M_RESTACK | M_CONFIGURE_WINDOW)
 #define SYNC_MASK_MX            (M_EXTENDED_MSG)
@@ -82,10 +77,8 @@ typedef struct
 {
 	char *name;
 	int action_arg;
-	union
-	{
+	union {
 		char *action;
-		FPLAY *rplay;
 	} action;
 } event_entry;
 
@@ -107,11 +100,8 @@ static char *cmd_line = NULL;
 static time_t audio_delay = 0; /* seconds */
 static time_t last_time = 0;
 static time_t now;
-static time_t start_audio_delay = 0;
 /* don't tag on the windowID by default */
 static Bool PassID = False;
-static Bool audio_compat = False;
-static char *audio_play_dir = NULL;
 
 #define ARG_NO_WINID 1024  /* just a large number */
 
@@ -168,18 +158,6 @@ static event_entry builtin_event_table[] =
 	EVENT_ENTRY(NULL,0)
 };
 
-#if 0
-/* These are some events described in the man page, which does not exist in
-   fvwm. */
-static event_entry future_event_table[] =
-{
-#ifdef M_BELL
-	EVENT_ENTRY( "beep", -1 ),
-#endif
-	EVENT_ENTRY(NULL,0)
-}
-#endif
-
 static event_entry* event_tables[] =
 {
 	message_event_table,
@@ -190,7 +168,6 @@ static event_entry* event_tables[] =
 
 #undef EVENT_ENTRY
 
-static int rplay_fd = -1;
 static unsigned int m_selected = 0;
 static unsigned int mx_selected = 0;
 static unsigned int m_sync = 0;
@@ -242,18 +219,6 @@ int main(int argc, char **argv)
 		/* no slash */
 		s = argv[0];
 	}
-	if (argc == 7)
-	{
-		if (strcmp(argv[6], "-audio") == 0)
-		{
-			audio_compat = True;
-		}
-		else
-		{
-			/* use an alias */
-			s = argv[6];
-		}
-	}
 
 	/* account for '*' */
 	MyNameLen=strlen(s)+1;
@@ -262,11 +227,6 @@ int main(int argc, char **argv)
 	*MyName='*';
 	/* append name */
 	strcpy(MyName+1, s);
-	if (StrEquals("FvwmAudio", s))
-	{
-                /* catch the FvwmAudio alias */
-		audio_compat = True;
-	}
 
 	/* Now MyName is defined */
 	if ((argc != 6)&&(argc != 7))
@@ -306,10 +266,6 @@ int main(int argc, char **argv)
 	config();
 	/* Startup event */
 	execute_event(builtin_event_table, BUILTIN_STARTUP, NULL);
-	if (start_audio_delay)
-	{
-		last_time = time(0);
-	}
 	/* tell fvwm we're running */
 	SetMessageMask(fd, m_selected);
 	SetMessageMask(fd, mx_selected | M_EXTENDED_MSG);
@@ -370,15 +326,11 @@ int main(int argc, char **argv)
 			total +=count;
 		}
 
-		if (now < last_time + audio_delay + start_audio_delay)
+		if (now < last_time)
 		{
 			/* quash event */
 			unlock_event(header[1]);
 			continue;
-		}
-		else
-		{
-			start_audio_delay = 0;
 		}
 
 		/* event will equal the number of shifts in the base-2
@@ -427,20 +379,6 @@ int main(int argc, char **argv)
  */
 void execute_event(event_entry *event_table, short event, unsigned long *body)
 {
-	/* this is the sign that rplay is used */
-	if (rplay_fd != -1 && event_table[event].action.rplay != NULL)
-	{
-		if (Fplay(rplay_fd, event_table[event].action.rplay) >= 0)
-		{
-			last_time = now;
-		}
-		else
-		{
-			Fplay_perror("rplay");
-		}
-		return;
-	}
-
 	if (event_table[event].action.action != NULL)
 	{
 		char *buf = NULL;
@@ -449,62 +387,37 @@ void execute_event(event_entry *event_table, short event, unsigned long *body)
 
 		action = event_table[event].action.action;
 		len = strlen(cmd_line) + strlen(action) + 32;
-		if (audio_play_dir)
-		{
-			len += strlen(audio_play_dir);
-		}
 		buf = xmalloc(len);
-		if (audio_compat)
+
+		int action_arg = event_table[event].action_arg;
+		int fw = 0;
+
+		if (action_arg != -1 && !(action_arg & ARG_NO_WINID))
 		{
-			/* Don't use audio_play_dir if it's NULL or if
-			 * the sound file is an absolute pathname. */
-			if (!audio_play_dir || audio_play_dir[0] == '\0' ||
-			    action[0] == '/')
+			fw = body[action_arg];
+		}
+
+		if (PassID && action_arg != -1)
+		{
+			if (action_arg & ARG_NO_WINID)
 			{
-				sprintf(buf,"%s %s", cmd_line, action);
+				action_arg &= ~ARG_NO_WINID;
+				sprintf(buf, "%s %s %ld", cmd_line,
+					action,	body[action_arg]);
 			}
 			else
 			{
-				sprintf(buf,"%s %s/%s &", cmd_line,
-					audio_play_dir, action);
-			}
-			if (!system(buf))
-			{
-				last_time = now;
+				sprintf(buf, "%s %s 0x%lx", cmd_line,
+					action,	body[action_arg]);
 			}
 		}
 		else
 		{
-			int action_arg = event_table[event].action_arg;
-			int fw = 0;
-
-			if (action_arg != -1 && !(action_arg & ARG_NO_WINID))
-			{
-				fw = body[action_arg];
-			}
-
-			if (PassID && action_arg != -1)
-			{
-				if (action_arg & ARG_NO_WINID)
-				{
-					action_arg &= ~ARG_NO_WINID;
-					sprintf(buf, "%s %s %ld", cmd_line,
-						action,	body[action_arg]);
-				}
-				else
-				{
-					sprintf(buf, "%s %s 0x%lx", cmd_line,
-						action,	body[action_arg]);
-				}
-			}
-			else
-			{
-				sprintf(buf,"%s %s", cmd_line, action);
-			}
-			/* let fvwm execute the function */
-			SendText(fd, buf, fw);
-			last_time = now;
+			sprintf(buf,"%s %s", cmd_line, action);
 		}
+		/* let fvwm execute the function */
+		SendText(fd, buf, fw);
+		last_time = now;
 		free(buf);
 
 		return;
@@ -514,15 +427,6 @@ void execute_event(event_entry *event_table, short event, unsigned long *body)
 }
 
 
-/*
- *
- *  Procedure:
- *      config - read the configuration file.
- *
- */
-
-static int volume   = FPLAY_DEFAULT_VOLUME;
-static int priority = FPLAY_DEFAULT_PRIORITY;
 void handle_config_line(char *buf, char **phost)
 {
 	char *event;
@@ -537,13 +441,13 @@ void handle_config_line(char *buf, char **phost)
 	{
 		"Cmd",
 		"Delay",
-		"Dir",
+		"",
 		"PassID",
-		"PlayCmd",
-		"RplayHost",
-		"RplayPriority",
-		"RplayVolume",
-		"StartDelay"
+		"",
+		"",
+		"",
+		"",
+		""
 	}; /* define entries here, if this list becomes unsorted, use FindToken */
 
 
@@ -556,17 +460,6 @@ void handle_config_line(char *buf, char **phost)
 		token = PeekToken(p, &p);
 		switch (e - (char**)table)
 		{
-		case 4:
-			/* PlayCmd */
-			if (!audio_compat)
-			{
-				/* PlayCmd */
-				fprintf(stderr,
-					"%s: PlayCmd supported only when"
-					" invoked as FvwmAudio\n", MyName+1);
-				break;
-			}
-			/* fall through */
 		case 0:
 			/* Cmd */
 			if (cmd_line)
@@ -591,81 +484,9 @@ void handle_config_line(char *buf, char **phost)
 			}
 			break;
 
-		case 2:
-			/* Dir */
-			if (!audio_compat)
-			{
-				fprintf(stderr,
-					"%s: Dir supported only when invoked as"
-					" FvwmAudio\n", MyName+1);
-				break;
-			}
-			if (token)
-			{
-				if (audio_play_dir)
-				{
-					free(audio_play_dir);
-				}
-				audio_play_dir = xstrdup(token);
-			}
-			break;
-
 		case 3:
 			/* PassID */
 			PassID = True;
-			break;
-
-		case 5:
-			/* RPlayHost */
-			if (*phost)
-			{
-				free(*phost);
-				*phost = NULL;
-			}
-			if (token && (*token == '$'))
-			{
-				/* Check for $HOSTDISPLAY */
-				char *c1 = (char *)getenv(token + 1);
-				char *c2;
-				if (c1 != NULL)
-				{
-					*phost = xstrdup(c1);
-					c2 = *phost;
-					while (c1 && *c1 != ':')
-					{
-						*c2++ = *c1++;
-					}
-					*c2 = '\0';
-				}
-			}
-			else if (token)
-			{
-				*phost = xstrdup(token);
-			}
-			break;
-
-		case 6:
-			/* RplayPriority */
-			if (token)
-			{
-				priority = atoi(token);
-			}
-			break;
-
-		case 7:
-			/* RplayVolume */
-			if (token)
-			{
-				volume = atoi(token);
-			}
-			break;
-
-		case 8:
-			/* StartDelay */
-			if (token)
-			{
-				start_audio_delay = atoi(token);
-			}
 			break;
 
 		}
@@ -746,11 +567,6 @@ void config(void)
 	char *buf;
 	char *host = NULL;
 
-	if (USE_FPLAY)
-	{
-		host = xstrdup(Fplay_default_host());
-	}
-
 	/* get config lines with my name */
 	InitGetConfigLine(fd,MyName);
 	while (GetConfigLine(fd,&buf), buf != NULL && *buf != 0)
@@ -767,47 +583,6 @@ void config(void)
 			handle_config_line(buf, &host);
 		}
 	}
-
-	/* Builtin rplay support is enabled when
-	 * FvwmAudioPlayCmd == builtin-rplay. */
-	if (USE_FPLAY && StrEquals(cmd_line, "builtin-rplay"))
-	{
-		event_entry **event_table;
-
-		if ((rplay_fd = Fplay_open(host)) < 0)
-		{
-			Fplay_perror("rplay_open");
-			exit(1);
-		}
-		/* change actions to rplay objects */
-		event_table = event_tables;
-		while(*event_table != NULL)
-		{
-			event_entry *loop_event;
-			for (loop_event = *event_table;
-			     loop_event->name != NULL; loop_event++)
-			{
-				if (loop_event->action.action != NULL)
-				{
-					char *tmp_action;
-					tmp_action = loop_event->action.action;
-					loop_event->action.rplay =
-						Fplay_create(
-							FPLAY_PLAY);
-					Fplay_set(
-						loop_event->action.rplay,
-						FPLAY_APPEND,
-						FPLAY_SOUND, tmp_action,
-						FPLAY_PRIORITY, priority,
-						FPLAY_VOLUME, volume, NULL);
-					free(tmp_action);
-				}
-			}
-			event_table++;
-		}
-	}
-
-	return;
 }
 
 /*
