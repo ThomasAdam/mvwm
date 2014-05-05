@@ -506,10 +506,7 @@ void FTipsOn(
 	}
 	current_config = fc;
 
-	if (label != NULL)
-	{
-		free(label);
-	}
+	free(label);
 	CopyString(&label, str);
 	win_for = win_f;
 
@@ -632,10 +629,7 @@ void FTipsUpdateLabel(Display *dpy, char *str)
 		return;
 	}
 
-	if (label)
-	{
-		free(label);
-	}
+	free(label);
 	CopyString(&label, str);
 	if (state == FVWM_TIPS_MAPPED)
 	{

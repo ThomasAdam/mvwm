@@ -333,7 +333,6 @@ XChar2b *FlocaleStringToString2b(
 {
 	XChar2b *str2b = NULL;
 	char *tmp = NULL;
-	Bool free_str = False;
 	int i = 0, j = 0;
 	Bool euc = True; /* KSC5601 (EUC-KR), GB2312 (EUC-CN), CNS11643-1986-1
 			  * (EUC-TW) and converted  jisx (EUC-JP) */
@@ -345,7 +344,6 @@ XChar2b *FlocaleStringToString2b(
 			len);
 		if (tmp != NULL)
 		{
-			free_str = True;
 			str = tmp;
 			len = strlen(tmp);
 		}
@@ -414,14 +412,13 @@ XChar2b *FlocaleStringToString2b(
 		}
 	}
 	*nl = j;
-	if (free_str)
-		free(str);
+	free(str);
 	return str2b;
 }
 
 static
 char *FlocaleEncodeString(
-	Display *dpy, FlocaleFont *flf, char *str, int *do_free, int len,
+	Display *dpy, FlocaleFont *flf, char *str, int len,
 	int *nl, int *is_rtl, superimpose_char_t **comb_chars,
 	int **l_to_v)
 {
@@ -437,7 +434,6 @@ char *FlocaleEncodeString(
 
 	if (is_rtl != NULL)
 		*is_rtl = False;
-	*do_free = False;
 	*nl = len;
 
 	if (flf->str_fc == NULL || flf->fc == NULL ||
@@ -472,7 +468,6 @@ char *FlocaleEncodeString(
 			if (str1)
 			{
 				*nl = len = strlen(str1);
-				*do_free = True;
 			}
 			else
 			{
@@ -494,12 +489,8 @@ char *FlocaleEncodeString(
 		}
 		if (str2 != str1)
 		{
-			if (*do_free && str1)
-			{
-				free(str1);
-				str1 = str2;
-			}
-			*do_free = True;
+			free(str1);
+			str1 = str2;
 			len1 = strlen(str2);
 		}
 	}
@@ -537,11 +528,7 @@ char *FlocaleEncodeString(
 				    l_to_v != NULL ? *l_to_v : NULL);
 		if (str3 != NULL && str3  != str2)
 		{
-			if (*do_free)
-			{
-				free(str2);
-			}
-			*do_free = True;
+			free(str2);
 			len1 = len2;
 			str1 = str3;
 		}
@@ -561,12 +548,12 @@ char *FlocaleEncodeString(
 
 static
 void FlocaleEncodeWinString(
-	Display *dpy, FlocaleFont *flf, FlocaleWinString *fws, int *do_free,
+	Display *dpy, FlocaleFont *flf, FlocaleWinString *fws, 
 	int *len, superimpose_char_t **comb_chars, int **l_to_v)
 {
 	int len2b;
 	fws->e_str = FlocaleEncodeString(
-		dpy, flf, fws->str, do_free, *len, len, NULL, comb_chars,
+		dpy, flf, fws->str, *len, len, NULL, comb_chars,
 		l_to_v);
 	fws->str2b = NULL;
 
@@ -788,10 +775,7 @@ void FlocaleRotateDrawString(
 			}
 
 			free(buf2);
-			if(tmp_fws.str2b != NULL)
-			{
-				free(tmp_fws.str2b);
-			}
+			free(tmp_fws.str2b);
 			i++;
 		}
 	}
@@ -1260,10 +1244,7 @@ FlocaleFont *FlocaleGetFont(
 	{
 		free(fn);
 	}
-	if (tmp != NULL)
-	{
-		free(tmp);
-	}
+	free(tmp);
 
 	return flf;
 }
@@ -1440,11 +1421,7 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 				&shadow_dir, fontname, module);
 			break;
 		case 1: /* encoding= */
-			if (encoding != NULL)
-			{
-				free(encoding);
-				encoding = NULL;
-			}
+			free(encoding);
 			if (opt_str && *opt_str)
 			{
 				CopyString(&encoding, opt_str);
@@ -1472,7 +1449,6 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 		    fn != fallback_font)
 		{
 			free(fn);
-			fn = NULL;
 		}
 		if (!flf && str && *str)
 		{
@@ -1585,10 +1561,7 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 		flf->next = FlocaleFontList;
 		FlocaleFontList = flf;
 	}
-	if (encoding != NULL)
-	{
-		free(encoding);
-	}
+	free(encoding);
 
 	return flf;
 }
@@ -1634,10 +1607,8 @@ void FlocaleUnloadFont(Display *dpy, FlocaleFont *flf)
 	}
 	if (flf->flags.must_free_fc)
 	{
-		if (flf->fc->x)
-			free(flf->fc->x);
-		if (flf->fc->bidi)
-			free(flf->fc->bidi);
+		free(flf->fc->x);
+		free(flf->fc->bidi);
 		if (flf->fc->locale != NULL)
 		{
 			while (FLC_GET_LOCALE_CHARSET(flf->fc,i) != NULL)
@@ -1815,7 +1786,6 @@ void FlocaleDrawString(
 	unsigned long flags)
 {
 	int len;
-	Bool do_free = False;
 	Pixel fg = 0, fgsh = 0;
 	Bool has_fg_pixels = False;
 	flocale_gstp_args gstp_args;
@@ -1845,7 +1815,7 @@ void FlocaleDrawString(
 
 	/* encode the string */
 	FlocaleEncodeWinString(
-		dpy, flf, fws, &do_free, &len, &comb_chars, NULL);
+		dpy, flf, fws, &len, &comb_chars, NULL);
 	curr_str = fws->e_str;
 	for(char_len = 0, i = 0 ;
 	    i < len && curr_str[i] != 0 ;
@@ -2066,35 +2036,15 @@ void FlocaleDrawString(
 			}
 
 			free(buf2);
-			if(tmp_fws.str2b != NULL)
-			{
-			        free(tmp_fws.str2b);
-			}
+			free(tmp_fws.str2b);
 			i++;
 		}
 	}
 
-	if (do_free)
-	{
-		if (fws->e_str != NULL)
-		{
-			free(fws->e_str);
-			fws->e_str = NULL;
-		}
-	}
-
-	if (fws->str2b != NULL)
-	{
-		free(fws->str2b);
-		fws->str2b = NULL;
-	}
-
-	if(comb_chars != NULL)
-	{
-	        free(comb_chars);
-		if(pixel_pos)
-			free(pixel_pos);
-	}
+	free(fws->e_str);
+	free(fws->str2b);
+	free(comb_chars);
+	free(pixel_pos);
 
 	return;
 }
@@ -2105,7 +2055,6 @@ void FlocaleDrawUnderline(
 	int off1, off2, y, x_s, x_e;
 	superimpose_char_t *comb_chars = NULL;
 	int *l_to_v = NULL;
-	Bool do_free = True;
 	int len = strlen(fws->str);
 	int l_coffset;
 	int v_coffset;
@@ -2117,7 +2066,7 @@ void FlocaleDrawUnderline(
 	}
 
 	/* need to encode the string first to get BIDI and combining chars */
-	FlocaleEncodeWinString(dpy, flf, fws, &do_free, &len, &comb_chars,
+	FlocaleEncodeWinString(dpy, flf, fws, &len, &comb_chars,
 			       &l_to_v);
 	/* we don't need this, only interested in char mapping */
 	free(comb_chars);
@@ -2148,13 +2097,11 @@ void FlocaleDrawUnderline(
 	if(fws->e_str != fws->str)
 	{
 		free(fws->e_str);
-		fws->e_str = NULL;
 	}
 
 	if(fws->str2b != NULL)
 	{
 		free(fws->str2b);
-		fws->str2b = NULL;
 	}
 	free(l_to_v);
 
@@ -2165,7 +2112,7 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 {
 	int result = 0;
 	char *tmp_str;
-	int new_l,do_free;
+	int new_l;
 	superimpose_char_t *comb_chars = NULL;
 
 	if (!str || sl == 0)
@@ -2186,12 +2133,11 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	{
 		tmp_str = str;
 		new_l = sl;
-		do_free = False;
 	}
 	else
 	{
 		tmp_str = FlocaleEncodeString(
-			   Pdpy, flf, str, &do_free, sl, &new_l, NULL,
+			   Pdpy, flf, str, sl, &new_l, NULL,
 			   &comb_chars, NULL);
 	}
 	/* if we get zero-length, check to to see if there if there's any
@@ -2200,14 +2146,8 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	if (strlen(tmp_str) == 0 && comb_chars &&
 	    (comb_chars[0].c.byte1 != 0 || comb_chars[0].c.byte2 != 0))
 	{
-		if(do_free)
-		{
-			free(tmp_str);
-		}
-		if(comb_chars)
-		{
-			free(comb_chars);
-		}
+		free(tmp_str);
+		free(comb_chars);
 		return FlocaleTextWidth(flf, " ", 1);
 	}
 	else if (FftSupport && flf->fftf.fftfont != NULL)
@@ -2242,14 +2182,8 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 			result = XTextWidth(flf->font, tmp_str, new_l);
 		}
 	}
-	if (do_free)
-	{
-		free(tmp_str);
-	}
-	if (comb_chars)
-	{
-		free(comb_chars);
-	}
+	free(tmp_str);
+	free(comb_chars);
 
 	return result + ((result != 0)? FLF_SHADOW_WIDTH(flf):0);
 }

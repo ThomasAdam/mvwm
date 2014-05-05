@@ -395,7 +395,6 @@ void FftDrawString(
 		int yt, char *str, int len);
 	DrawStringFuncType DrawStringFunc;
 	char *str;
-	Bool free_str = False;
 	XGCValues vr;
 	XColor xfg, xfgsh;
 	FftColor fft_fg, fft_fgsh;
@@ -524,7 +523,6 @@ void FftDrawString(
 		DrawStringFunc = (DrawStringFuncType)FftPDrawString16;
 		str = (char *)FftUtf8ToFftString16(
 			  (unsigned char *)fws->e_str, len, &len);
-		free_str = True;
 	}
 	else if (FLC_ENCODING_TYPE_IS_USC_2(flf->fc))
 	{
@@ -552,10 +550,7 @@ void FftDrawString(
 	yt = gstp_args.orig_y;
 	DrawStringFunc(fftdraw, &fft_fg, uf, xt, yt, str, len);
 
-	if (free_str && str != NULL)
-	{
-		free(str);
-	}
+	free(str);
 	FftDrawDestroy(fftdraw);
 
 	return;
