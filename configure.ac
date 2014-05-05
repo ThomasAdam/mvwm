@@ -1403,56 +1403,6 @@ fi
 # Check for unsetenv function
 AC_CHECK_FUNCS(unsetenv)
 
-
-# ********* GTK, IMLIB, GNOME
-# Check the availability of gtk
-FVWMGTK=""
-MANFVWMGTK=""
-AC_ARG_ENABLE(gtk,
-  AS_HELP_STRING([--disable-gtk],[do not build modules using gtk library]),
-    enable_gtktest="$enableval", enable_gtktest=yes)
-if test x"$enable_gtktest" = xyes; then
-  AM_PATH_GTK(1.1.0,[
-    FVWMGTK="FvwmGtk$EXEEXT" AC_SUBST(FVWMGTK)
-    MANFVWMGTK=FvwmGtk.1 AC_SUBST(MANFVWMGTK)
-  ],)
-  if test x"$no_gtk" = x; then
-    with_gtk=yes
-    problem_gtk=""
-  else
-    with_gtk=no
-    problem_gtk=": Failed to detect GTK, see config.log"
-  fi
-else
-  with_gtk=no
-  problem_gtk=": Explicitly disabled"
-fi
-AC_SUBST(FVWMGTK)
-AC_SUBST(MANFVWMGTK)
-
-# Check the availability of gdk-imlib
-AH_TEMPLATE([GDK_IMLIB],[Define if gdk-imlib is used])
-AM_PATH_GDK_IMLIB(1.8.0, AC_DEFINE(GDK_IMLIB))
-if test x"$no_imlib" = x; then
-  with_gdkimlib=yes
-  problem_gdkimlib=""
-else
-  with_gdkimlib=no
-  problem_gdkimlib=": Failed on gdk-imlib, see config.log"
-fi
-
-GNOME_INIT_HOOK
-
-# Unfortunately we have 2 gnome supports: WM hints and gnome libs.
-# The $with_gnomehints below refers to the first, not GNOME_INIT_HOOK.
-if test ! x"$enable_gnome_hints" = xno; then
-  with_gnomehints=yes
-  problem_gnomehints=""
-else
-  with_gnomehints=no
-  problem_gnomehints=": Explicitly disabled"
-fi
-
 # Define some compatibility macros needed for config.h.
 mg_DEFINE_IF_NOT([#include <X11/keysym.h>],
   [defined XK_Page_Up && defined XK_Page_Down],
@@ -1785,13 +1735,6 @@ test x"$FVWM_PERLLIB" = x && my_plldir="(Not installed) $my_plldir"
 eval my_localedir="`eval echo ${LOCALEDIR}`"
 test x"$USE_NLS" = xno && my_localedir="(Not installed) $my_localdir"
 
-case "$with_gtk" in
-  yes) fvwmgtk_msg="
-  With GDK image support in FvwmGtk?  $with_gdkimlib$problem_gdkimlib
-  With GNOME libs support in FvwmGtk? $with_gnomelibs$problem_gnomelibs" ;;
-  no) fvwmgtk_msg="" ;;
-esac
-
 echo "
 Fvwm Configuration:
 
@@ -1807,7 +1750,6 @@ Fvwm Configuration:
 
   With Asian bi-direct. text support? $with_bidi$problem_bidi
   With Gettext Native Lang support?   $with_gettext$problem_gettext
-  With GTK+ required for FvwmGtk?     $with_gtk$problem_gtk$fvwmgtk_msg
   With Iconv support?                 $with_iconv_type$problem_iconv
   With Mouse strokes (gestures)?      $with_stroke$problem_stroke
   With PNG image support?             $with_png$problem_png
