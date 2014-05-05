@@ -1700,8 +1700,6 @@ dnl
 	modules/FvwmPager/Makefile
 	modules/FvwmPerl/Makefile
 	modules/FvwmPerl/FvwmPerl
-	modules/FvwmWindowMenu/Makefile
-	modules/FvwmWindowMenu/FvwmWindowMenu
 )
 
 # ---------------------------------------------------------------------------

@@ -3,6 +3,4 @@
 SUBDIRS = \
 	FvwmAuto FvwmBacker FvwmButtons FvwmCommand \
 	FvwmConsole FvwmEvent \
-	FvwmIconMan FvwmIdent FvwmPager \
-	FvwmPerl \
-	FvwmWindowMenu
+	FvwmIconMan FvwmIdent FvwmPager FvwmPerl
