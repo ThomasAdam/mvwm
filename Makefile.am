@@ -13,9 +13,7 @@ SUBDIRS = \
 	$(FVWM_PERLLIB) \
 	doc \
 	docs \
-	sample.fvwmrc \
-	$(POSUB) \
-	tests
+	$(POSUB)
 
 EXTRA_DIST = \
 	INSTALL.fvwm

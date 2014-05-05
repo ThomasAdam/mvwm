@@ -729,62 +729,6 @@ fi
 AC_SUBST(Xft_LIBS)
 AC_SUBST(Xft_CFLAGS)
 
-# ********* xpm
-problem_xpm=": Xpm library or header not found"
-
-$UNSET ac_cv_header_X11_xpm_h
-$UNSET ac_cv_lib_Xpm_XpmReadFileToXpmImage
-smr_CHECK_LIB(xpm, Xpm, for coloured or shaped icons,
-    XpmReadFileToXpmImage, X11/xpm.h,
-    [$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS], $X_CFLAGS)
-
-if test ! x"$xpm_LIBS" = x; then
-  # Check for proper version of Xpm -- from XEmacs 21.x configure.in
-  AC_MSG_CHECKING([for Xpm 3.4g or better])
-  my_CPPFLAGS="$CPPFLAGS"
-  my_LIBS="$LIBS"
-  CPPFLAGS="$CPPFLAGS $xpm_CFLAGS $X_CFLAGS"
-  LIBS="$LIBS $xpm_LIBS $X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
-  AC_TRY_RUN([#include <X11/xpm.h>
-   int main(int c, char **v) {
-   return c == 1 ? 0 :
-     XpmIncludeVersion != XpmLibraryVersion() ? 1 :
-     XpmIncludeVersion < 30407 ? 2 : 0 ;}],
-    [./conftest dummy_arg; xpm_status=$?;
-     if test x"$xpm_status" = x0; then
-       with_xpm=yes
-       problem_xpm=""
-     else
-       with_xpm=no;
-       if test x"$xpm_status" = x1; then
-	 problem_xpm=": Xpm library and header versions don't match"
-       elif test x"$xpm_status" = x2x; then
-	 problem_xpm=": Xpm library version is too old"
-       else
-	 problem_xpm=": Internal xpm detection logic error"
-       fi
-     fi],
-   [with_xpm=no; problem_xpm=": Xpm test error, see config.log"],
-   [echo $ac_n "cross compiling; assumed OK... $ac_c"])
-  AC_MSG_RESULT($with_xpm)
-  CPPFLAGS="$my_CPPFLAGS"
-  LIBS="$my_LIBS"
-
-  AH_TEMPLATE([XPM],[Define if Xpm library is used.])
-  if test x"$with_xpm" = xyes; then
-    AC_DEFINE(XPM)
-    # FVWMBANNER=FvwmBanner AC_SUBST(FVWMBANNER)
-    # XPMROOT=xpmroot AC_SUBST(XPMROOT)
-    # FVWMSCRIPT=FvwmScript AC_SUBST(FVWMSCRIPT)
-  else
-    xpm_LIBS=
-    xpm_CFLAGS=
-  fi
-fi
-AC_SUBST(xpm_LIBS)
-AC_SUBST(xpm_CFLAGS)
-
-# ********* png
 problem_png=": png library or header not found"
 
 $UNSET ac_cv_header_png_h
@@ -1527,9 +1471,6 @@ dnl
 	doc/modules/Makefile
 	docs/fvwm.lsm
 	docs/Makefile
-	sample.fvwmrc/Makefile
-	tests/Makefile
-	tests/hints/Makefile
 	po/Makefile
 dnl
 	modules/FvwmAuto/Makefile
@@ -1601,7 +1542,6 @@ Fvwm Configuration:
   With Xcursor support?               $with_xcursor$problem_xcursor
   With Xinerama multi-head support?   $with_xinerama$problem_xinerama
   With Xft anti-alias font support?   $with_xft$problem_xft
-  With XPM image support?             $with_xpm$problem_xpm
   With Xrender image support?         $with_xrender$problem_xrender
   Build man pages?                    $with_mandoc$problem_mandoc
   Build HTML documentation?           $with_htmldoc$problem_htmldoc
