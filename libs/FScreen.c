@@ -94,7 +94,7 @@ static int grav_matrix[3][3] =
 
 static Display            *disp              = NULL;
 static Bool                is_xinerama_enabled = DEFAULT_XINERAMA_ENABLED;
-static int		   FScreenHaveXinerama;
+static int		   FScreenHaveXinerama = 0;
 static XineramaScreenInfo *screens;
 static XineramaScreenInfo *screens_xi;
 /* # of Xinerama screens, *not* counting the global, 0 if disabled */
@@ -151,36 +151,8 @@ static void GetMouseXY(XEvent *eventp, int *x, int *y)
 
 Bool FScreenIsEnabled(void)
 {
-	return (!is_xinerama_enabled || num_screens == 0) ? False : True;
-}
-
-
-static void FScreenUpdateEmulationMapState(void)
-{
-	static Bool is_mapped = False;
-
-	if (is_xinerama_enabled)
-	{
-		if (!is_mapped)
-		{
-			XMapRaised(disp, blank_w);
-			XMapRaised(disp, blank2_w);
-			XMapRaised(disp, blank3_w);
-			XMapRaised(disp, vert_w);
-			is_mapped = True;
-		}
-	}
-	else
-	{
-		if (is_mapped)
-		{
-			XUnmapWindow(disp, blank_w);
-			XUnmapWindow(disp, blank2_w);
-			XUnmapWindow(disp, blank3_w);
-			XUnmapWindow(disp, vert_w);
-			is_mapped = False;
-		}
-	}
+	return (!FScreenHaveXinerama || !is_xinerama_enabled ||
+		num_screens == 0) ? False : True;
 }
 
 static void FScreenSetState(Bool do_enable)
@@ -198,7 +170,6 @@ static void FScreenSetState(Bool do_enable)
 		first_to_check = 0;
 		last_to_check = 0;
 	}
-	FScreenUpdateEmulationMapState();
 }
 
 
