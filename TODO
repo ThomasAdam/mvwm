@@ -1,6 +1,71 @@
-* Code cleanup needed!
+Here's a very brief list of things on my immediate radar. -- Thomas Adam
+
+* Code auditing/security:
     - Remove SAFEFREE() macro;
     - Add xasprintf() to libs/safemalloc.[ch]
     - Audit xmalloc() use and consider xasprintf() wrapper
     - Look at current code warnings at compilation and fix
+    - Every sodding command in FVWM does its own string parsing!!!  Bad!
+
+* Code cleanup needed!
     - Look at EWMH support.  Remove legacy KDE/GNOME crap.
+    - Don't use typedefs for structs:
+        - Opaqueness is not useful here!
+            - 'struct foo' versus 'foo_t' or 'Foo' as the type.
+            - Will allow for reducing the number of structs used as the main
+              API, and will allow for better streamlining and accessing.
+        - There's a lot of macro #defines for accessing struct members,
+          presumably to hide the type; that's usually OK, but I'd like to
+          see these go away.  FW and Decor are good examples of this!  I'd
+          rather see more exposed functions to replace these.  The API will
+          need discussion.
+    - What's in libs/ -- the static linking of libfvwm.a useful anymore?
+      There's a lot of code being ripped out of libs/ and I don't see much
+      more being added in.
+
+* Despite this being GNU licenced (for now), I'd like to see KNF from
+  OpenBSD's style(9) guide being applied.  Might be possible to script
+  using indent(1).  Some examples of an indent.pro might exist.
+
+* liblfg as a configuration file framework?
+    - http://liblcfg.carnivore.it/
+    - It would stop every command doing its own string parsing!
+
+* Separate desktops per monitor:
+    - XRandR support, with Xinerama as a fallback???
+    - Does having pages *and* desks make sense anymore?
+        - Just go with pages, which can be named.
+        - Only allow a linear arrangement; 3x3 for example makes no sense
+          with multi-monitor setups.
+
+* Clients:
+    - Have an "undo" list of geometries which can be reverted to.
+    - Per-page geometries for windows, makes handling sticky windows easier.
+    - No special-casing of maximised state, it's just another geometry set
+      which is added on to a list, and popped when no longer used in that
+      state.
+
+* Documentation:
+    - It's broken; as I'm removing code I'm not removing the documentation!
+    - I don't like docbook and hence XML descriptions.  Use mdoc!  But how
+      do we convert to that?
+
+* Commands:
+    - There's wayyy too many commands in FVWM:
+        - Too many duplicates; merge.
+            - And hence consider those commands to be authoritative and with
+              many options.
+        - Think about a common way of referring to pages/windows/etc -- much
+          like with tmux's "-t session:window.pane" syntax, can we not do
+          something similar here for referring to pages/windows?
+
+* Functions / Conditionals / Exec (PipeRead) / Etc.:
+    - Context is powerful, but:
+        - Next/Prev/etc., are all very scripting-like.  Do we just want hook
+          support?
+
+* Modules:
+    - The module interface (FVWM <-> Module) is a mess; consider DBUS?  Or
+      imsg?
+    - What about third-party scripting languages?  How do we handle that
+      without requiring linking against the specific language in question?
