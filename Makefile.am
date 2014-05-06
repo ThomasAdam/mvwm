@@ -9,14 +9,9 @@ SUBDIRS = \
 	fvwm \
 	modules \
 	bin \
-	utils \
 	$(FVWM_PERLLIB) \
 	doc \
-	docs \
 	$(POSUB)
-
-EXTRA_DIST = \
-	INSTALL.fvwm
 
 ## ---------------------------------------------------------------------------
 ## Manage bzip2 archive together with gzip archive

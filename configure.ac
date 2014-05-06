@@ -1,12 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
+VERSIONINFO=""
 AC_PREREQ(2.60)
-AC_INIT(fvwm/fvwm.c)
+AC_INIT([fvwm/fvwm.c], [2.6.6], [thomas@xteddy.org])
 
 dnl should be "yes" only within the released distribution
 ISRELEASED=no
-version=2.6.6
-VERSIONINFO=""
 
 dnl date of the released version (please zero pad the day in the last 2 dates)
 dnl for example: "4 February 2003", "04 Feb 2003", "2003-02-04"
@@ -68,7 +67,7 @@ AC_SUBST(FVWMWORKERSLIST)
 AC_SUBST(FVWMWORKERSLISTLONG)
 AC_SUBST(MANPAGE_PREAMBLE)
 
-AM_INIT_AUTOMAKE(fvwm, ${version})
+AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER(config.h)
 
 # check for programs needed to build html docs
@@ -1447,7 +1446,6 @@ dnl
 	bin/fvwm-convert-2.4
 	bin/fvwm-convert-2.6
 dnl
-	utils/Makefile
 	perllib/Makefile
 	perllib/General/Makefile
 	perllib/FVWM/Makefile
@@ -1469,8 +1467,6 @@ dnl
 	doc/docbook-xsl/lib/Makefile
 	doc/docbook-xsl/html/Makefile
 	doc/modules/Makefile
-	docs/fvwm.lsm
-	docs/Makefile
 	po/Makefile
 dnl
 	modules/FvwmAuto/Makefile
@@ -1545,9 +1541,7 @@ Fvwm Configuration:
   With Xrender image support?         $with_xrender$problem_xrender
   Build man pages?                    $with_mandoc$problem_mandoc
   Build HTML documentation?           $with_htmldoc$problem_htmldoc
-
-See INSTALL.fvwm for the description of what this may mean."
-
+"
 case "$with_xinerama_emulation" in
   yes) echo "  Xinerama emulation enabled." ;;
 esac
