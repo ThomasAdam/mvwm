@@ -31,11 +31,9 @@
 #include "misc.h"
 #include "screen.h"
 #include "update.h"
-#include "style.h"
 #include "builtins.h"
 #include "borders.h"
 #include "frame.h"
-#include "gnome.h"
 #include "ewmh.h"
 #include "icons.h"
 #include "geometry.h"
@@ -98,12 +96,6 @@ static void apply_window_updates(
 	frame_g.width = t->g.frame.width;
 	frame_g.height = t->g.frame.height;
 
-	/* TA:  2010-07-28:  Conditionally update window states if they're
-	 * present -- i.e., we're preserving states set via Windowstyle.
-	 */
-	CLEAR_USER_STATES(t, S_USER_STATES(SCM(*pstyle)));
-	SET_USER_STATES(t, S_USER_STATES(SCF(*pstyle)));
-
 	if (flags->do_setup_focus_policy)
 	{
 		setup_focus_policy(t);
@@ -116,13 +108,6 @@ static void apply_window_updates(
 				Scr.Hilite = NULL;
 			}
 			flags->do_redraw_decoration = True;
-		}
-	}
-	if (flags->do_update_gnome_styles)
-	{
-		if (!S_DO_IGNORE_GNOME_HINTS(SCF(*pstyle)))
-		{
-			GNOME_GetStyle(t, pstyle);
 		}
 	}
 	if (flags->do_update_window_grabs)
@@ -147,6 +132,7 @@ static void apply_window_updates(
 	ecc.w.wcontext = C_FRAME;
 	exc = exc_create_context(
 		&ecc, ECC_TYPE | ECC_FW | ECC_W | ECC_WCONTEXT);
+#if 0
 	if (flags->do_update_stick_icon && IS_ICONIFIED(t) &&
 	    !(IS_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_DESKS(t)))
 	{
@@ -169,6 +155,7 @@ static void apply_window_updates(
 			NULL, exc, "", S_IS_STICKY_ACROSS_PAGES(SCF(*pstyle)),
 			S_IS_STICKY_ACROSS_DESKS(SCF(*pstyle)), 0, 0);
 	}
+#endif
 	exc_destroy_context(exc);
 	if (FMiniIconsSupported && flags->do_update_mini_icon)
 	{
@@ -258,7 +245,6 @@ static void apply_window_updates(
 		{
 			/* new border sizes */
 			get_window_borders(t, &b_old);
-			SET_TITLE_DIR(t, S_TITLE_DIR(SCF(*pstyle)));
 			setup_title_geometry(t, pstyle);
 			get_window_borders(t, &b_new);
 
@@ -375,7 +361,6 @@ static void apply_window_updates(
 			t, frame_g.x, frame_g.y, frame_g.width, frame_g.height,
 			True);
 		set_focus_window(tmp);
-		GNOME_SetWinArea(t);
 		EWMH_SetFrameStrut(t);
 	}
 	if (flags->do_update_window_color)
@@ -384,7 +369,6 @@ static void apply_window_updates(
 		{
 			flags->do_redraw_decoration = True;
 		}
-		update_window_color_style(t, pstyle);
 		if (t != Scr.Hilite)
 		{
 			flags->do_broadcast_focus = True;
@@ -396,7 +380,6 @@ static void apply_window_updates(
 		{
 			flags->do_redraw_decoration = True;
 		}
-		update_window_color_hi_style(t, pstyle);
 		flags->do_broadcast_focus = True;
 		if (t == Scr.Hilite)
 		{
@@ -409,7 +392,6 @@ static void apply_window_updates(
 		{
 			flags->do_redraw_icon = True;
 		}
-		update_icon_title_cs_hi_style(t, pstyle);
 	}
 	if (flags->do_update_icon_title_cs)
 	{
@@ -417,13 +399,11 @@ static void apply_window_updates(
 		{
 			flags->do_redraw_icon = True;
 		}
-		update_icon_title_cs_style(t, pstyle);
 	}
 	if (flags->do_update_icon_background_cs)
 	{
 		int old_cs = t->icon_background_cs;
 
-		update_icon_background_cs_style(t, pstyle);
 		if ((old_cs < 0 && t->icon_background_cs >= 0) ||
 		    (old_cs >= 0 && t->icon_background_cs < 0))
 		{
@@ -448,10 +428,6 @@ static void apply_window_updates(
 		}
 		setup_icon_font(t, pstyle, flags->do_update_icon_font);
 		flags->do_update_icon_title = True;
-	}
-	if (flags->do_update_icon_boxes)
-	{
-		change_icon_boxes(t, pstyle);
 	}
 	if (flags->do_update_icon)
 	{
@@ -522,10 +498,6 @@ static void apply_window_updates(
 			t, flags->do_update_ewmh_mini_icon,
 			flags->do_update_ewmh_icon);
 	}
-	if (flags->do_update_placement_penalty)
-	{
-		setup_placement_penalty(t, pstyle);
-	}
 	if (flags->do_update_working_area)
 	{
 		EWMH_UpdateWorkArea();
@@ -579,39 +551,6 @@ static void apply_window_updates(
 		}
 	}
 	setup_numeric_vals(t, pstyle);
-	if (flags->do_update_cr_motion_method)
-	{
-		switch (SCR_MOTION_METHOD(&pstyle->flags))
-		{
-		case WS_CR_MOTION_METHOD_AUTO:
-			if (WAS_CR_MOTION_METHOD_DETECTED(t))
-			{
-				/* method was already detected, keep it */
-				break;
-			}
-			/* fall through */
-		case WS_CR_MOTION_METHOD_USE_GRAV:
-		case WS_CR_MOTION_METHOD_STATIC_GRAV:
-			SET_CR_MOTION_METHOD(
-				t, SCR_MOTION_METHOD(&pstyle->flags));
-			SET_CR_MOTION_METHOD_DETECTED(t, 0);
-			break;
-		}
-	}
-
-	if (flags->do_update_layer)
-	{
-		int layer = get_layer(t);
-
-		if (SUSE_LAYER(&pstyle->flags))
-		{
-			/* use layer from style */
-			layer = SGET_LAYER(*pstyle);
-		}
-
-		/* Set the layer, and modify the stack ring. */
-		new_layer(t, layer);
-	}
 
 	return;
 }
@@ -660,7 +599,6 @@ void apply_decor_change(FvwmWindow *fw)
 	window_style style;
 	update_win flags;
 
-	lookup_style(fw, &style);
 	memset(&flags, 0, sizeof(flags));
 	flags.do_redecorate = True;
 	flags.do_update_window_font_height = True;
@@ -701,10 +639,8 @@ void flush_window_updates(void)
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
 	{
 		memset(&flags, 0, sizeof(update_win));
-		check_window_style_change(t, &flags, &style);
 		if (Scr.flags.has_xinerama_state_changed)
 		{
-			flags.do_update_icon_boxes = True;
 			flags.do_update_icon_placement = True;
 		}
 		if (Scr.flags.has_nr_buttons_changed)
@@ -753,7 +689,6 @@ void flush_window_updates(void)
 	}
 
 	/* finally clean up the change flags */
-	reset_style_changes();
 	reset_decor_changes();
 	Scr.flags.do_need_window_update = 0;
 	Scr.flags.has_default_font_changed = 0;

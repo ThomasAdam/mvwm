@@ -33,7 +33,6 @@
 #include "virtual.h"
 #include "commands.h"
 #include "update.h"
-#include "style.h"
 #include "stack.h"
 #include "events.h"
 #include "ewmh.h"
@@ -311,6 +310,7 @@ int ewmh_WMDesktop(EWMH_CMD_ARGS)
 		return 0;
 	}
 
+#if 0
 	if (style != NULL && ev == NULL)
 	{
 		/* start on desk */
@@ -365,6 +365,7 @@ int ewmh_WMDesktop(EWMH_CMD_ARGS)
 		fw->ewmh_hint_desktop = val[0];
 		free(val);
 	}
+#endif
 	return 0;
 }
 
@@ -908,28 +909,12 @@ int ewmh_WMStateModal(EWMH_CMD_ARGS)
 			SET_EWMH_MODAL(fw, True);
 			/* the window is a modal transient window so we grab
 			 * the focus it will be good to raise it but ... */
-			FPS_GRAB_FOCUS_TRANSIENT(
-				S_FOCUS_POLICY(SCF(*style)), 1);
-			FPS_GRAB_FOCUS_TRANSIENT(
-				S_FOCUS_POLICY(SCM(*style)), 1);
-			FPS_GRAB_FOCUS_TRANSIENT(
-				S_FOCUS_POLICY(SCC(*style)), 1);
 			SET_HAS_EWMH_INIT_MODAL_STATE(
 				fw, EWMH_STATE_HAS_HINT);
 		}
 		else
 		{
 			SET_EWMH_MODAL(fw, False);
-			if (!FP_DO_GRAB_FOCUS_TRANSIENT(
-				    S_FOCUS_POLICY(SCF(*style))))
-			{
-				FPS_GRAB_FOCUS_TRANSIENT(
-					S_FOCUS_POLICY(SCF(*style)), 0);
-				FPS_GRAB_FOCUS_TRANSIENT(
-					S_FOCUS_POLICY(SCM(*style)), 1);
-				FPS_GRAB_FOCUS_TRANSIENT(
-					S_FOCUS_POLICY(SCC(*style)), 1);
-			}
 		}
 		return 0;
 	}
@@ -1088,9 +1073,6 @@ int ewmh_WMStateSkipPager(EWMH_CMD_ARGS)
 			return 0;
 		}
 
-		S_SET_DO_WINDOW_LIST_SKIP(SCF(*style), 1);
-		S_SET_DO_WINDOW_LIST_SKIP(SCM(*style), 1);
-		S_SET_DO_WINDOW_LIST_SKIP(SCC(*style), 1);
 		SET_HAS_EWMH_INIT_SKIP_PAGER_STATE(fw, EWMH_STATE_HAS_HINT);
 		return 0;
 	}
@@ -1158,9 +1140,6 @@ int ewmh_WMStateSkipTaskBar(EWMH_CMD_ARGS)
 			return 0;
 		}
 
-		S_SET_DO_WINDOW_LIST_SKIP(SCF(*style), 1);
-		S_SET_DO_WINDOW_LIST_SKIP(SCM(*style), 1);
-		S_SET_DO_WINDOW_LIST_SKIP(SCC(*style), 1);
 		SET_HAS_EWMH_INIT_SKIP_TASKBAR_STATE(
 			fw, EWMH_STATE_HAS_HINT);
 		return 0;
@@ -1228,10 +1207,6 @@ int ewmh_WMStateStaysOnTop(EWMH_CMD_ARGS)
 		}
 
 		fw->ewmh_hint_layer = Scr.TopLayer;
-		SSET_LAYER(*style, Scr.TopLayer);
-		style->flags.use_layer = 1;
-		style->flag_mask.use_layer = 1;
-		style->change_mask.use_layer = 1;
 		return 0;
 	}
 
@@ -1313,10 +1288,6 @@ int ewmh_WMStateStaysOnBottom(EWMH_CMD_ARGS)
 		}
 
 		fw->ewmh_hint_layer = Scr.BottomLayer;
-		SSET_LAYER(*style, Scr.BottomLayer);
-		style->flags.use_layer = 1;
-		style->flag_mask.use_layer = 1;
-		style->change_mask.use_layer = 1;
 		return 0;
 	}
 
@@ -1403,12 +1374,6 @@ int ewmh_WMStateSticky(EWMH_CMD_ARGS)
 				fw, EWMH_STATE_NO_HINT);
 			return 0;
 		}
-		S_SET_IS_STICKY_ACROSS_PAGES(SCF(*style), 1);
-		S_SET_IS_STICKY_ACROSS_PAGES(SCM(*style), 1);
-		S_SET_IS_STICKY_ACROSS_PAGES(SCC(*style), 1);
-		S_SET_IS_STICKY_ACROSS_DESKS(SCF(*style), 1);
-		S_SET_IS_STICKY_ACROSS_DESKS(SCM(*style), 1);
-		S_SET_IS_STICKY_ACROSS_DESKS(SCC(*style), 1);
 		SET_HAS_EWMH_INIT_STICKY_STATE(fw, EWMH_STATE_HAS_HINT);
 		return 0;
 	}

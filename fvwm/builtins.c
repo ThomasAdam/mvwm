@@ -70,7 +70,6 @@
 #include "decorations.h"
 #include "add_window.h"
 #include "update.h"
-#include "style.h"
 #include "move_resize.h"
 #include "menus.h"
 #include "infostore.h"
@@ -2144,7 +2143,6 @@ void update_fvwm_colorset(int cset)
 		Scr.flags.has_default_color_changed = 1;
 	}
 	UpdateMenuColorset(cset);
-	update_style_colorset(cset);
 	update_decors_colorset(cset);
 
 	return;
@@ -2696,10 +2694,6 @@ void CMD_PrintInfo(F_CMD_ARGS)
 	{
 		FGettextPrintLocalePath(verbose);
 	}
-	else if (StrEquals(subject, "style"))
-	{
-		print_styles(verbose);
-	}
 	else if (StrEquals(subject, "ImageCache"))
 	{
 		PicturePrintImageCache(verbose);
@@ -2825,44 +2819,6 @@ void CMD_ModuleTimeout(F_CMD_ARGS)
 	return;
 }
 
-void CMD_HilightColor(F_CMD_ARGS)
-{
-	char *fore;
-	char *back;
-#ifdef USEDECOR
-	if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
-	{
-		fvwm_msg(
-			ERR, "SetHiColor",
-			"Decors do not support the HilightColor command"
-			" anymore. Please use"
-			" 'Style <stylename> HilightFore <forecolor>' and"
-			" 'Style <stylename> HilightBack <backcolor>' instead."
-			" Sorry for the inconvenience.");
-		return;
-	}
-#endif
-	action = GetNextToken(action, &fore);
-	GetNextToken(action, &back);
-	if (fore && back)
-	{
-		/* TA:  FIXME:  xasprintf() */
-		action = xmalloc(strlen(fore) + strlen(back) + 29);
-		sprintf(action, "* HilightFore %s, HilightBack %s", fore, back);
-		CMD_Style(F_PASS_ARGS);
-	}
-	if (fore)
-	{
-		free(fore);
-	}
-	if (back)
-	{
-		free(back);
-	}
-
-	return;
-}
-
 void CMD_HilightColorset(F_CMD_ARGS)
 {
 	char *newaction;
@@ -2885,7 +2841,6 @@ void CMD_HilightColorset(F_CMD_ARGS)
 		newaction = xmalloc(strlen(action) + 32);
 		sprintf(newaction, "* HilightColorset %s", action);
 		action = newaction;
-		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
 
@@ -3101,7 +3056,6 @@ void CMD_IconFont(F_CMD_ARGS)
 		newaction = xmalloc(strlen(action) + 16);
 		sprintf(newaction, "* IconFont %s", action);
 		action = newaction;
-		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
 
@@ -3129,7 +3083,6 @@ void CMD_WindowFont(F_CMD_ARGS)
 		newaction = xmalloc(strlen(action) + 16);
 		sprintf(newaction, "* Font %s", action);
 		action = newaction;
-		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
 
@@ -3304,67 +3257,6 @@ void CMD_AddToDecor(F_CMD_ARGS)
 }
 #endif /* USEDECOR */
 
-
-/*
- *
- * Updates window decoration styles (veliaa@rpi.edu)
- *
- */
-void CMD_UpdateDecor(F_CMD_ARGS)
-{
-	FvwmWindow *fw2;
-#ifdef USEDECOR
-	FvwmDecor *decor, *found = NULL;
-	FvwmWindow *hilight = Scr.Hilite;
-	char *item = NULL;
-
-	action = GetNextToken(action, &item);
-	if (item)
-	{
-		/* search for tag */
-		for (decor = &Scr.DefaultDecor; decor; decor = decor->next)
-		{
-			if (decor->tag && StrEquals(item, decor->tag))
-			{
-				found = decor;
-				break;
-			}
-		}
-		free(item);
-	}
-#endif
-
-	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next)
-	{
-#ifdef USEDECOR
-		/* update specific decor, or all */
-		if (found)
-		{
-			if (fw2->decor == found)
-			{
-				border_draw_decorations(
-					fw2, PART_ALL, True, True, CLEAR_ALL,
-					NULL, NULL);
-				border_draw_decorations(
-					fw2, PART_ALL, False, True, CLEAR_ALL,
-					NULL, NULL);
-			}
-		}
-		else
-#endif
-		{
-			border_draw_decorations(
-				fw2, PART_ALL, True, True, CLEAR_ALL, NULL,
-				NULL);
-			border_draw_decorations(
-				fw2, PART_ALL, False, True, CLEAR_ALL, NULL,
-				NULL);
-		}
-	}
-	border_draw_decorations(
-		hilight, PART_ALL, True, True, CLEAR_ALL, NULL, NULL);
-}
-
 void CMD_ButtonStyle(F_CMD_ARGS)
 {
 	do_button_style(F_PASS_ARGS, False);
@@ -3505,12 +3397,6 @@ void CMD_GlobalOpts(F_CMD_ARGS)
 			}
 			tmp = action;
 			action = replace;
-			if (!is_bugopt)
-			{
-				CMD_Style(F_PASS_ARGS);
-				cmd = "Style";
-			}
-			else
 			{
 				CMD_BugOpts(F_PASS_ARGS);
 				cmd = "BugOpts";

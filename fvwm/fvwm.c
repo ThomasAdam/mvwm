@@ -71,7 +71,6 @@
 #include "eventhandler.h"
 #include "eventmask.h"
 #include "icccm2.h"
-#include "gnome.h"
 #include "ewmh.h"
 #include "add_window.h"
 #include "libs/fvwmsignal.h"
@@ -2452,7 +2451,6 @@ int main(int argc, char **argv)
 	DBUG("main", "Setting up rc file defaults...");
 	SetRCDefaults();
 	flush_window_updates();
-	simplify_style_list();
 
 	DBUG("main", "Running config_commands...");
 	ecc.type = Restarting ? EXCT_RESTART : EXCT_INIT;
@@ -2542,7 +2540,6 @@ int main(int argc, char **argv)
 	checkPanFrames();
 	MyXUngrabServer(dpy);
 	CoerceEnterNotifyOnCurrentWindow();
-	GNOME_Init();
 	DBUG("main", "Entering HandleEvents loop...");
 
 	HandleEvents();

@@ -66,7 +66,6 @@
 #include "screen.h"
 #include "update.h"
 #include "stack.h"
-#include "style.h"
 #include "externs.h"
 #include "decorations.h"
 #include "ewmh.h"
@@ -1320,11 +1319,12 @@ int ewmh_HandleDesktop(EWMH_CMD_ARGS)
 	fw->ewmh_window_type = EWMH_WINDOW_TYPE_DESKTOP_ID;
 	Scr.EwmhDesktop = fw;
 
-	SSET_LAYER(*style, 0);
 	style->flags.use_layer = 1;
 	style->flag_mask.use_layer = 1;
 	style->change_mask.use_layer = 1;
 
+#if 0
+	/* TA:  Yeah... */
 	S_SET_IS_STICKY_ACROSS_PAGES(SCF(*style), 1);
 	S_SET_IS_STICKY_ACROSS_PAGES(SCM(*style), 1);
 	S_SET_IS_STICKY_ACROSS_PAGES(SCC(*style), 1);
@@ -1397,6 +1397,7 @@ int ewmh_HandleDesktop(EWMH_CMD_ARGS)
 	FPS_RAISE_UNFOCUSED_DECOR_CLICK(S_FOCUS_POLICY(SCF(*style)), 0);
 	FPS_RAISE_UNFOCUSED_DECOR_CLICK(S_FOCUS_POLICY(SCM(*style)), 1);
 	FPS_RAISE_UNFOCUSED_DECOR_CLICK(S_FOCUS_POLICY(SCC(*style)), 1);
+#endif
 
 	return 1;
 }
@@ -1412,6 +1413,8 @@ int ewmh_HandleDock(EWMH_CMD_ARGS)
 {
 	fw->ewmh_window_type = EWMH_WINDOW_TYPE_DOCK_ID;
 
+#if 0
+	/* TA: !!! */
 	S_SET_IS_STICKY_ACROSS_PAGES(SCF(*style), 1);
 	S_SET_IS_STICKY_ACROSS_PAGES(SCM(*style), 1);
 	S_SET_IS_STICKY_ACROSS_PAGES(SCC(*style), 1);
@@ -1454,6 +1457,7 @@ int ewmh_HandleDock(EWMH_CMD_ARGS)
 		}
 	}
 	/* no title ? MWM hints should be used by the app but ... */
+#endif
 
 	return 1;
 }
@@ -1462,6 +1466,7 @@ int ewmh_HandleMenu(EWMH_CMD_ARGS)
 {
 	fw->ewmh_window_type = EWMH_WINDOW_TYPE_MENU_ID;
 
+#if 0
 	/* tear off menu */
 
 	S_SET_DO_WINDOW_LIST_SKIP(SCF(*style), 1);
@@ -1496,6 +1501,7 @@ int ewmh_HandleMenu(EWMH_CMD_ARGS)
 	FPS_FOCUS_CLICK_ICON(S_FOCUS_POLICY(SCC(*style)), 1);
 	FPS_FOCUS_BY_FUNCTION(S_FOCUS_POLICY(SCM(*style)), 1);
 	FPS_FOCUS_BY_FUNCTION(S_FOCUS_POLICY(SCC(*style)), 1);
+#endif
 
 	return 1;
 }
@@ -1511,6 +1517,7 @@ int ewmh_HandleToolBar(EWMH_CMD_ARGS)
 {
 	fw->ewmh_window_type = EWMH_WINDOW_TYPE_TOOLBAR_ID;
 
+#if 0
 	/* this ok for KDE 2 (and 3??) but I do not think that a toolbar
 	   should be sticky */
 	S_SET_IS_STICKY_ACROSS_PAGES(SCF(*style), 1);
@@ -1529,6 +1536,7 @@ int ewmh_HandleToolBar(EWMH_CMD_ARGS)
 	S_SET_DO_CIRCULATE_SKIP(SCC(*style), 1);
 
 	/* no title ? MWM hints should be used by the app but ... */
+#endif
 
 	return 1;
 }
@@ -1542,10 +1550,6 @@ int ewmh_HandleNotification(EWMH_CMD_ARGS)
 	 * the future.
 	 */
 	fw->ewmh_window_type = EWMH_WINDOW_TYPE_NOTIFICATION_ID;
-
-	style->flags.is_unmanaged = 1;
-	style->flag_mask.is_unmanaged = 1;
-	style->change_mask.is_unmanaged = 1;
 
 	return 1;
 }
@@ -1630,14 +1634,6 @@ int ksmserver_workarround(FvwmWindow *fw)
 
 void EWMH_GetStyle(FvwmWindow *fw, window_style *style)
 {
-	if (style->change_mask.use_layer)
-	{
-		fw->ewmh_normal_layer = SGET_LAYER(*style);
-	}
-	else if (fw->ewmh_normal_layer == 0)
-	{
-		fw->ewmh_normal_layer = Scr.DefaultLayer;
-	}
 	ewmh_WMState(fw, NULL, style, 0);
 	ewmh_WMDesktop(fw, NULL, style, 0);
 	/* the window type override the state hint */

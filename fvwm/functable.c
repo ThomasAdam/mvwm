@@ -212,13 +212,6 @@ const func_t func_table[] =
 		0, 0),
 	/* - Delete matching module config lines defined using "*" */
 
-	CMD_ENT("destroystyle", CMD_DestroyStyle, F_DESTROY_STYLE, 0, 0),
-	/* - Delete style defined using Style */
-
-	CMD_ENT("destroywindowstyle", CMD_DestroyWindowStyle,
-		F_DESTROY_WINDOW_STYLE, FUNC_NEEDS_WINDOW, CRS_SELECT),
-	/* - Delete style defined using WindowStyle */
-
 	CMD_ENT("direction", CMD_Direction, F_DIRECTION, 0, 0),
 	/* - Operate on the next window in the specified direction */
 
@@ -279,20 +272,11 @@ const func_t func_table[] =
 		FUNC_NEEDS_WINDOW, CRS_SELECT),
 	/* - Give focus to a window */
 
-	CMD_ENT("focusstyle", CMD_FocusStyle, F_FOCUSSTYLE, 0, 0),
-	/* - Configure focus and raise policy for windows */
-
 	CMD_ENT("function", CMD_Function, F_FUNCTION, 0, 0),
 	/* Function - Execute a user defined function, see AddToFunc */
 
 	CMD_ENT("globalopts", CMD_GlobalOpts, F_GLOBAL_OPTS, 0, 0),
 	/* - (obsolete, use corresponding Style * instead) */
-
-	CMD_ENT("gnomebutton", CMD_GnomeButton, F_MOUSE, 0, 0),
-	/* - Pass mouse button presses on root to GNOME program */
-
-	CMD_ENT("gnomeshowdesks", CMD_GnomeShowDesks, F_GOTO_DESK, 0, 0),
-	/* - Limit GNOME pager to the number of desks */
 
 	CMD_ENT("gotodesk", CMD_GotoDesk, F_GOTO_DESK, 0, 0),
 	/* - Switch viewport to another desk same page */
@@ -306,9 +290,6 @@ const func_t func_table[] =
 	CMD_ENT("hidegeometrywindow", CMD_HideGeometryWindow,
 		F_HIDEGEOMWINDOW, 0, 0),
 	/* - Hide/show the position/size window */
-
-	CMD_ENT("hilightcolor", CMD_HilightColor, F_HICOLOR, 0, 0),
-	/* - (obsolete, use Style * HighlightFore/Back) */
 
 	CMD_ENT("hilightcolorset", CMD_HilightColorset, F_HICOLORSET, 0, 0),
 	/* - (obsolete, use Style * HighlightColorset) */
@@ -428,10 +409,6 @@ const func_t func_table[] =
 
 	CMD_ENT("pixmappath", CMD_PixmapPath, F_PIXMAP_PATH, 0, 0),
 	/* - (obsolete, use ImagePath instead) */
-
-	CMD_ENT("placeagain", CMD_PlaceAgain, F_PLACEAGAIN,
-		FUNC_NEEDS_WINDOW, CRS_SELECT),
-	/* - Replace a window using initial window placement logic */
 
 	CMD_ENT("pointerkey", CMD_PointerKey, F_POINTERKEY, 0, 0),
 	/* - Bind an action to a key based on pointer not focus */
@@ -578,17 +555,6 @@ const func_t func_table[] =
 		FUNC_NEEDS_WINDOW, CRS_SELECT),
 	/* - Change window stickyness on a page basis */
 
-#ifdef HAVE_STROKE
-	CMD_ENT("stroke", CMD_Stroke, F_STROKE, 0, 0),
-	/* - Bind a stroke to an fvwm action */
-
-	CMD_ENT("strokefunc", CMD_StrokeFunc, F_STROKE_FUNC, 0, 0),
-	/* - Record stroke and execute corresponding stroke action */
-
-#endif /* HAVE_STROKE */
-	CMD_ENT("style", CMD_Style, F_STYLE, 0, 0),
-	/* - Set attributes of windows that match a pattern */
-
 	CMD_ENT("tearmenuoff", CMD_TearMenuOff, F_TEARMENUOFF, 0, 0),
 	/* TearMenuOff - Convert a menu to a window, for use in menu items */
 
@@ -609,12 +575,6 @@ const func_t func_table[] =
 
 	CMD_ENT("unsetenv", CMD_UnsetEnv, F_SETENV, 0, 0),
 	/* - Remove an environment variable */
-
-	CMD_ENT("updatedecor", CMD_UpdateDecor, F_UPDATE_DECOR, 0, 0),
-	/* - Update window decor (obsolete and not needed anymore) */
-
-	CMD_ENT("updatestyles", CMD_UpdateStyles, F_UPDATE_STYLES, 0, 0),
-	/* - Cause styles to update while still in a function */
 
 	CMD_ENT("wait", CMD_Wait, F_WAIT, 0, 0),
 	/* - Pause until a matching window appears */
@@ -640,10 +600,6 @@ const func_t func_table[] =
 	CMD_ENT("windowshadeanimate", CMD_WindowShadeAnimate, F_SHADE_ANIMATE,
 		0, 0),
 	/* - (obsolete, use Style * WindowShadeSteps) */
-
-	CMD_ENT("windowstyle", CMD_WindowStyle, F_WINDOW_STYLE,
-		FUNC_NEEDS_WINDOW, CRS_SELECT),
-	/* - Set styles on the selected window */
 
 	CMD_ENT("xinerama", CMD_Xinerama, F_XINERAMA, 0, 0),
 	/* - Control Xinerama support */

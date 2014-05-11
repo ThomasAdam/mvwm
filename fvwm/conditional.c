@@ -43,7 +43,6 @@
 #include "misc.h"
 #include "screen.h"
 #include "update.h"
-#include "style.h"
 #include "focus.h"
 #include "geometry.h"
 #include "stack.h"
@@ -863,11 +862,14 @@ Bool MatchesConditionMask(FvwmWindow *fw, WindowConditionMask *mask)
 	{
 	        return False;
 	}
+#if 0
+	/* TA:  Will need to rework this, now that styles are gone. */
 	if (!blockcmpmask((char *)&(fw->flags), (char *)&(mask->flags),
 			  (char *)&(mask->flag_mask), sizeof(fw->flags)))
 	{
 		return False;
 	}
+#endif
 	if (!mask->my_flags.use_circulate_hit && DO_SKIP_CIRCULATE(fw))
 	{
 		return False;

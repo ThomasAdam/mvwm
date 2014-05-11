@@ -41,7 +41,6 @@
 #include "misc.h"
 #include "screen.h"
 #include "update.h"
-#include "style.h"
 #include "geometry.h"
 #include "decorations.h"
 
@@ -325,16 +324,14 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 	int handle_width;
 	int used_width;
 	PropMwmHints *prop;
-	style_flags *sflags = &(pstyle->flags);
 
-	border_width = (SHAS_BORDER_WIDTH(sflags)) ?
-		SGET_BORDER_WIDTH(*pstyle) : DEFAULT_BORDER_WIDTH;
+	border_width = DEFAULT_BORDER_WIDTH;
 	if (border_width > MAX_BORDER_WIDTH)
 	{
 		border_width = MAX_BORDER_WIDTH;
 	}
-	handle_width = (SHAS_HANDLE_WIDTH(sflags)) ?
-		SGET_HANDLE_WIDTH(*pstyle) : DEFAULT_HANDLE_WIDTH;
+	/* TA:  handle_width is no more... */
+	handle_width = 0;
 	if (handle_width > MAX_HANDLE_WIDTH)
 	{
 		handle_width = MAX_HANDLE_WIDTH;
@@ -347,7 +344,7 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 	if (t->mwm_hints)
 	{
 		prop = (PropMwmHints *)t->mwm_hints;
-		if (SHAS_MWM_DECOR(sflags))
+		if (1 /*SHAS_MWM_DECOR(sflags)*/)
 		{
 			if (prop->flags & MWM_HINTS_DECORATIONS)
 			{
@@ -382,7 +379,7 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 				}
 			}
 		}
-		if (SHAS_MWM_FUNCTIONS(sflags))
+		if (1 /*SHAS_MWM_FUNCTIONS(sflags)*/)
 		{
 			if (prop->flags & MWM_HINTS_FUNCTIONS)
 			{
@@ -404,7 +401,7 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 			 MWM_FUNC_MAXIMIZE | MWM_FUNC_CLOSE) &
 			(~(t->functions));
 	}
-	if (SHAS_MWM_FUNCTIONS(sflags) && IS_TRANSIENT(t))
+	if (1 /*SHAS_MWM_FUNCTIONS(sflags)*/ && IS_TRANSIENT(t))
 	{
 		t->functions &= ~(MWM_FUNC_MAXIMIZE|MWM_FUNC_MINIMIZE);
 	}
@@ -415,53 +412,6 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 		 * ALL except the other things... */
 		decor &= ~MWM_DECOR_ALL;
 		decor = MWM_DECOR_EVERYTHING & (~decor);
-	}
-
-	/* now add/remove any functions specified in the OL hints */
-	if (SHAS_OL_DECOR(sflags) && (t->ol_hints & OL_ANY_HINTS))
-	{
-		if (t->ol_hints & OL_DECOR_CLOSE)
-		{
-			t->functions |= MWM_FUNC_MINIMIZE;
-			decor      |= MWM_FUNC_MINIMIZE;
-		}
-		else
-		{
-			t->functions &= ~MWM_FUNC_MINIMIZE;
-			decor      &= ~MWM_FUNC_MINIMIZE;
-		}
-		if (t->ol_hints & OL_DECOR_RESIZEH)
-		{
-			t->functions |= (MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE);
-			decor      |= (MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE);
-		}
-		else
-		{
-			t->functions &= ~(MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE);
-			decor      &= ~(MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE);
-		}
-		if (t->ol_hints & OL_DECOR_HEADER)
-		{
-			t->functions |= (MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
-					 MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
-			decor      |= (MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
-				       MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
-		}
-		else
-		{
-			t->functions &= ~(MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
-					  MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
-			decor      &= ~(MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
-					MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
-		}
-		if (t->ol_hints & OL_DECOR_ICON_NAME)
-		{
-			SET_HAS_NO_ICON_TITLE(t, 0);
-		}
-		else
-		{
-			SET_HAS_NO_ICON_TITLE(t, 1);
-		}
 	}
 
 	/* Now I have the un-altered decor and functions, but with the
@@ -491,20 +441,10 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 
 	/* Selected the mwm-decor field, now trim down, based on
 	 * .fvwmrc entries */
-	if (SHAS_NO_TITLE(sflags) ||
-	    (!SDO_DECORATE_TRANSIENT(sflags) && IS_TRANSIENT(t)))
+	if (IS_TRANSIENT(t))
 	{
 		decor &= ~MWM_DECOR_TITLE;
-	}
-
-	if (SHAS_NO_HANDLES(sflags) ||
-	    (!SDO_DECORATE_TRANSIENT(sflags) && IS_TRANSIENT(t)))
-	{
 		decor &= ~MWM_DECOR_RESIZEH;
-	}
-
-	if (SHAS_MWM_DECOR(sflags) && IS_TRANSIENT(t))
-	{
 		decor &= ~(MWM_DECOR_MAXIMIZE|MWM_DECOR_MINIMIZE);
 	}
 
@@ -544,12 +484,10 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 		SET_HAS_HANDLES(t, 1);
 		used_width = handle_width;
 	}
-	SET_HAS_NO_BORDER(t, S_HAS_NO_BORDER(SFC(*sflags)) || used_width <= 0);
 	if (HAS_NO_BORDER(t))
 	{
 		used_width = 0;
 	}
-	SET_HAS_HANDLES(t, (!HAS_NO_BORDER(t) && HAS_HANDLES(t)));
 	set_window_border_size(t, used_width);
 	if (!(decor & MWM_DECOR_MENU))
 	{

@@ -74,12 +74,9 @@
 #include "module_interface.h"
 #include "stack.h"
 #include "update.h"
-#include "style.h"
 #include "icons.h"
-#include "gnome.h"
 #include "ewmh.h"
 #include "focus.h"
-#include "placement.h"
 #include "geometry.h"
 #include "session.h"
 #include "move_resize.h"
@@ -202,13 +199,6 @@ static void CaptureOneWindow(
 		XChangeProperty(
 			dpy, FW_W(fw), _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
 			PropModeReplace, (unsigned char *) data, 1);
-
-		/* are all these really needed ? */
-		/* EWMH_SetWMDesktop(fw); */
-		GNOME_SetHints(fw);
-		GNOME_SetDesk(fw);
-		GNOME_SetLayer(fw);
-		GNOME_SetWinArea(fw);
 
 		XSelectInput(dpy, FW_W(fw), NoEventMask);
 		w = FW_W(fw);
@@ -499,214 +489,6 @@ static void setup_window_structure(
 	return;
 }
 
-static void setup_name_count(FvwmWindow *fw, Bool is_icon)
-{
-	FvwmWindow *t;
-	int count = 0;
-	int win_count;
-	int win_count_counterpart;
-	Bool done = False;
-	FlocaleNameString *titlename, *title_counterpart;
-	FlocaleNameString *t_titlename, *t_title_counterpart;
-
-	titlename = (is_icon) ?
-	&(fw->icon_name) : &(fw->name);
-
-	title_counterpart = (is_icon) ?
-	&(fw->name) : &(fw->icon_name);
-
-	if (!titlename->name)
-	{
-		done = True;
-	}
-
-	if (titlename->name && title_counterpart->name &&
-		strcmp(titlename->name, title_counterpart->name) == 0)
-	{
-		count = is_icon ? fw->icon_name_count :
-			fw->name_count;
-	}
-
-	while (!done)
-	{
-		done = True;
-		for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
-		{
-			if (t == fw)
-			{
-				continue;
-			}
-			win_count = is_icon ? t->icon_name_count :
-				t->name_count;
-			win_count_counterpart = is_icon ?
-				t->name_count : t->icon_name_count;
-
-			t_titlename = is_icon ? &(t->icon_name) :
-				&(t->name);
-			t_title_counterpart = is_icon ? &(t->name) :
-				&(t->icon_name);
-
-			if ((t_titlename->name &&
-						strcmp(titlename->name,
-							t_titlename->name) == 0 &&
-						win_count == count) ||
-					(t_title_counterpart->name &&
-					 strcmp(t_title_counterpart->name,
-						 titlename->name) == 0 &&
-					 win_count_counterpart == count))
-
-			{
-				count++;
-				done = False;
-			}
-		}
-	}
-
-	if (is_icon)
-	{
-		fw->icon_name_count = count;
-	} else {
-		fw->name_count = count;
-	}
-
-	return;
-}
-
-static char *interpolate_titleformat_name(FvwmWindow *fw, window_style *style,
-		Bool is_icon)
-{
-	char stringbuf[MAX_VISIBLE_NAME_LEN] = "";
-
-	/* Get the title format string.  This check should be redundant thanks
-	 * to the checking done in style.c
-	 */
-	const char *format;
-	int count;
-
-	/* MAX_WINDOW_NAME_NUMBER is defined as "999" -- that's three
-	 * characters maximum.
-	 */
-	char win_name_len[MAX_WINDOW_NAME_NUMBER_DIGITS];
-	char w_id[12];
-
-	if (is_icon)
-	{
-		format = (style->flags.has_icon_title_format_string) ?
-			SGET_ICON_TITLE_FORMAT_STRING(*style) :
-			DEFAULT_TITLE_FORMAT;
-	} else {
-		format = (style->flags.has_title_format_string) ?
-			SGET_TITLE_FORMAT_STRING(*style) :
-			DEFAULT_TITLE_FORMAT;
-	}
-
-	while (*format)
-	{
-		int pos;
-		for (pos = 0; format[pos] && format[pos] != '%'; pos++);
-
-		strncat(stringbuf, format, pos);
-		format += pos;
-
-		if (*format != '%')
-			continue;
-
-		format++;
-		switch (*format)
-		{
-			case 'n':
-				if (strlen(stringbuf) +
-					strlen(fw->name.name) >
-					MAX_VISIBLE_NAME_LEN)
-				{
-					fvwm_msg(WARN,
-					"interpolate_titleformat_name",
-					"Visible name is too long based on "
-					"TitleFormat.  Not expanding further.");
-
-					break;
-				}
-
-				strcat(stringbuf, fw->name.name);
-				break;
-			case 'c':
-				if (strlen(stringbuf) +
-					strlen(fw->class.res_class) >
-					MAX_VISIBLE_NAME_LEN)
-				{
-					fvwm_msg(WARN,
-					"interpolate_titleformat_name",
-					"Visible name is too long based on "
-					"TitleFormat.  Not expanding further.");
-
-					break;
-				}
-				strcat(stringbuf, fw->class.res_class);
-				break;
-			case 'i':
-				/* Not every application will have an icon
-				 * name set; don't crash trying to dereference
-				 * this if the name doesn't exist.
-				 */
-				if (fw->icon_name.name == NULL)
-					break;
-
-				if (strlen(stringbuf) +
-					strlen(fw->icon_name.name) >
-					MAX_VISIBLE_NAME_LEN)
-				{
-					fvwm_msg(WARN,
-					"interpolate_titleformat_name",
-					"Visible name is too long based on "
-					"TitleFormat.  Not expanding further.");
-
-					break;
-				}
-
-				strcat(stringbuf, fw->icon_name.name);
-				break;
-			case 'r':
-				if (strlen(stringbuf) +
-					strlen(fw->class.res_name) >
-					MAX_VISIBLE_NAME_LEN)
-				{
-					fvwm_msg(WARN,
-					"interpolate_titleformat_name",
-					"Visible name is too long based on "
-					"TitleFormat.  Not expanding further.");
-
-					break;
-				}
-				strcat(stringbuf, fw->class.res_name);
-				break;
-			case 't':
-				setup_name_count(fw, is_icon);
-				count = is_icon ? fw->icon_name_count :
-					fw->name_count;
-
-				if (count > (MAX_WINDOW_NAME_NUMBER - 1))
-					count = MAX_WINDOW_NAME_NUMBER - 1;
-
-				sprintf(win_name_len, "%d", ++count);
-				strcat(stringbuf, win_name_len);
-				break;
-			case 'I':
-				sprintf(w_id, "0x%x", (int)FW_W(fw));
-				strcat(stringbuf, w_id);
-				break;
-			case '%':
-				strcat(stringbuf, "%");
-				break;
-			default:
-				break;
-		}
-		if (*format)
-			format++;
-	}
-	/* Now allocate our string. */
-	return strdup(stringbuf);
-}
-
 static void setup_class_and_resource(FvwmWindow *fw)
 {
 	/* removing NoClass change for now... */
@@ -827,12 +609,14 @@ static void broadcast_mini_icon(FvwmWindow *fw)
 
 static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
 {
-	FvwmPictureAttributes fpa;
+	/*FvwmPictureAttributes fpa;*/
 
 	if (!FMiniIconsSupported)
 	{
 		return;
 	}
+#if 0
+	/* TA:  Disable for now. */
 	if (SHAS_MINI_ICON(&pstyle->flags))
 	{
 		fw->mini_pixmap_file = SGET_MINI_ICON_NAME(*pstyle);
@@ -851,7 +635,7 @@ static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
 	{
 		fw->mini_icon = NULL;
 	}
-
+#endif
 	return;
 }
 
@@ -861,6 +645,8 @@ static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
  */
 void setup_icon_size_limits(FvwmWindow *fw, window_style *pstyle)
 {
+#if 0
+	/* TA:  Disable for now. */
 	if (SHAS_ICON_SIZE_LIMITS(&pstyle->flags))
 	{
 		fw->min_icon_width = SGET_MIN_ICON_WIDTH(*pstyle);
@@ -877,12 +663,15 @@ void setup_icon_size_limits(FvwmWindow *fw, window_style *pstyle)
 		fw->max_icon_height = MAX_ALLOWABLE_ICON_DIMENSION;
 		fw->icon_resize_type = ICON_RESIZE_TYPE_NONE;
 	}
+#endif
 
 	return;
 }
 
 void setup_icon_background_parameters(FvwmWindow *fw, window_style *pstyle)
 {
+#if 0
+	/* TA:  Disable for now. */
 	if (SHAS_ICON_BACKGROUND_PADDING(&pstyle->flags))
 	{
 		fw->icon_background_padding =
@@ -901,11 +690,14 @@ void setup_icon_background_parameters(FvwmWindow *fw, window_style *pstyle)
 	{
 		fw->icon_background_relief = ICON_RELIEF_WIDTH;
 	}
+#endif
 	return;
 }
 
 void setup_icon_title_parameters(FvwmWindow *fw, window_style *pstyle)
 {
+#if 0
+	/* TA:  Disable for now. */
 	if (SHAS_ICON_TITLE_RELIEF(&pstyle->flags))
 	{
 		fw->icon_title_relief =
@@ -915,6 +707,7 @@ void setup_icon_title_parameters(FvwmWindow *fw, window_style *pstyle)
 	{
 		fw->icon_title_relief = ICON_RELIEF_WIDTH;
 	}
+#endif
 	return;
 }
 
@@ -1421,6 +1214,8 @@ static void destroy_auxiliary_windows(
 
 static void setup_icon(FvwmWindow *fw, window_style *pstyle)
 {
+#if 0
+	/* TA:  Disable for now. */
 	increase_icon_hint_count(fw);
 	/* find a suitable icon pixmap */
 	if ((fw->wmhints) && (fw->wmhints->flags & IconWindowHint))
@@ -1467,6 +1262,7 @@ static void setup_icon(FvwmWindow *fw, window_style *pstyle)
 		ICON_DBG((stderr,"si: using default '%s'\n", fw->name.name));
 		fw->icon_bitmap_file = Scr.DefaultIcon;
 	}
+#endif
 
 	/* icon name */
 	if (!EWMH_WMIconName(fw, NULL, NULL, 0))
@@ -1557,47 +1353,13 @@ static void destroy_icon(FvwmWindow *fw)
 	return;
 }
 
-static void setup_icon_boxes(FvwmWindow *fw, window_style *pstyle)
-{
-	icon_boxes *ib;
-
-	/* copy iconboxes ptr (if any) */
-	if (SHAS_ICON_BOXES(&pstyle->flags))
-	{
-		fw->IconBoxes = SGET_ICON_BOXES(*pstyle);
-		for (ib = fw->IconBoxes; ib; ib = ib->next)
-		{
-			ib->use_count++;
-		}
-	}
-	else
-	{
-		fw->IconBoxes = NULL;
-	}
-
-	return;
-}
-
-static void destroy_icon_boxes(FvwmWindow *fw)
-{
-	if (fw->IconBoxes)
-	{
-		fw->IconBoxes->use_count--;
-		if (fw->IconBoxes->use_count == 0 && fw->IconBoxes->is_orphan)
-		{
-			/* finally destroy the icon box */
-			free_icon_boxes(fw->IconBoxes);
-			fw->IconBoxes = NULL;
-		}
-	}
-
-	return;
-}
-
 static void setup_layer(FvwmWindow *fw, window_style *pstyle)
 {
-	FvwmWindow *tf;
+	/*FvwmWindow *tf;*/
 	int layer;
+
+#if 0
+	/* TA:  Disable for now. */
 
 	if (SUSE_LAYER(&pstyle->flags))
 	{
@@ -1610,6 +1372,7 @@ static void setup_layer(FvwmWindow *fw, window_style *pstyle)
 		layer = get_layer(tf);
 	}
 	else
+#endif
 	{
 		/* use default layer */
 		layer = Scr.DefaultLayer;
@@ -1714,7 +1477,7 @@ static void __add_window_handle_x_resources(FvwmWindow *fw)
 void setup_visible_name(FvwmWindow *fw, Bool is_icon)
 {
 	char *ext_name;
-	window_style style;
+	/*window_style style;*/
 
 	if (fw == NULL)
 	{
@@ -1722,9 +1485,8 @@ void setup_visible_name(FvwmWindow *fw, Bool is_icon)
 		return;
 	}
 
-	/* TA:  Get the window style. */
-	lookup_style(fw, &style);
-	ext_name = interpolate_titleformat_name(fw, &style, is_icon);
+	/* TA:  FIXME!  */
+	ext_name = fw->name.name;
 
 	if (is_icon)
 	{
@@ -1734,8 +1496,6 @@ void setup_visible_name(FvwmWindow *fw, Bool is_icon)
 	{
 		fw->visible_name = strdup(ext_name);
 	}
-
-	free(ext_name);
 
 	return;
 }
@@ -1763,9 +1523,11 @@ void setup_wm_hints(FvwmWindow *fw)
 void setup_title_geometry(
 	FvwmWindow *fw, window_style *pstyle)
 {
-	int width;
-	int offset;
-
+	/* TA:  Dunno, made these up. */
+	int width = 12;
+	int offset = 0;
+#if 0
+	/* TA:  Disable for now. */
 	get_title_font_size_and_offset(
 		fw, S_TITLE_DIR(SCF(*pstyle)),
 		S_IS_LEFT_TITLE_ROTATED_CW(SCF(*pstyle)),
@@ -1773,6 +1535,7 @@ void setup_title_geometry(
 		S_IS_TOP_TITLE_ROTATED(SCF(*pstyle)),
 		S_IS_BOTTOM_TITLE_ROTATED(SCF(*pstyle)),
 		&width, &offset);
+#endif
 	fw->title_thickness = width;
 	fw->title_text_offset = offset;
 	fw->corner_width = fw->title_thickness + fw->boundary_width;
@@ -1793,25 +1556,13 @@ void setup_window_font(
 		destroy_window_font(fw);
 		/* destroy_window_font resets the IS_WINDOW_FONT_LOADED flag */
 	}
-	/* load new font */
-	if (!IS_WINDOW_FONT_LOADED(fw))
-	{
-		if (S_HAS_WINDOW_FONT(SCF(*pstyle)) &&
-		    SGET_WINDOW_FONT(*pstyle) &&
-		    (fw->title_font =
-		     FlocaleLoadFont(dpy, SGET_WINDOW_FONT(*pstyle), "fvwm")))
-		{
-			SET_USING_DEFAULT_WINDOW_FONT(fw, 0);
-		}
-		else
-		{
-			/* no explicit font or failed to load, use default font
-			 * instead */
-			fw->title_font = Scr.DefaultFont;
-			SET_USING_DEFAULT_WINDOW_FONT(fw, 1);
-		}
-		SET_WINDOW_FONT_LOADED(fw, 1);
-	}
+
+	/* no explicit font or failed to load, use default font
+	 * instead */
+	fw->title_font = Scr.DefaultFont;
+	SET_USING_DEFAULT_WINDOW_FONT(fw, 1);
+	SET_WINDOW_FONT_LOADED(fw, 1);
+
 	setup_title_geometry(fw, pstyle);
 
 	return;
@@ -1841,19 +1592,10 @@ void setup_icon_font(
 	/* load new font */
 	if (!IS_ICON_FONT_LOADED(fw))
 	{
-		if (S_HAS_ICON_FONT(SCF(*pstyle)) && SGET_ICON_FONT(*pstyle) &&
-		    (fw->icon_font =
-		     FlocaleLoadFont(dpy, SGET_ICON_FONT(*pstyle), "fvwm")))
-		{
-			SET_USING_DEFAULT_ICON_FONT(fw, 0);
-		}
-		else
-		{
-			/* no explicit font or failed to load, use default font
-			 * instead */
-			fw->icon_font = Scr.DefaultFont;
-			SET_USING_DEFAULT_ICON_FONT(fw, 1);
-		}
+		/* no explicit font or failed to load, use default font
+		 * instead */
+		fw->icon_font = Scr.DefaultFont;
+		SET_USING_DEFAULT_ICON_FONT(fw, 1);
 		SET_ICON_FONT_LOADED(fw, 1);
 	}
 	/* adjust y position of existing icons */
@@ -1872,9 +1614,6 @@ void setup_icon_font(
 void setup_style_and_decor(
 	FvwmWindow *fw, window_style *pstyle, short *buttons)
 {
-	/* first copy the static styles into the window struct */
-	memcpy(&(FW_COMMON_FLAGS(fw)), &(SCF(*pstyle)),
-	       sizeof(common_flags_t));
 	fw->wShaped = None;
 	if (FShapesSupported)
 	{
@@ -1897,32 +1636,13 @@ void setup_style_and_decor(
 		}
 	}
 
-#ifdef USEDECOR
-	/* search for a UseDecor tag in the style */
-	if (!IS_DECOR_CHANGED(fw))
-	{
-		FvwmDecor *decor = &Scr.DefaultDecor;
-
-		for (; decor; decor = decor->next)
-		{
-			if (StrEquals(SGET_DECOR_NAME(*pstyle), decor->tag))
-			{
-				fw->decor = decor;
-				break;
-			}
-		}
-	}
 	if (fw->decor == NULL)
 	{
 		fw->decor = &Scr.DefaultDecor;
 	}
-#endif
 
 	GetMwmHints(fw);
 	GetOlHints(fw);
-
-	fw->buttons = SIS_BUTTON_DISABLED(&pstyle->flags);
-	SelectDecor(fw, pstyle, buttons);
 
 	if (IS_TRANSIENT(fw) && !pstyle->flags.do_decorate_transient)
 	{
@@ -1939,48 +1659,14 @@ void setup_style_and_decor(
 			SET_HAS_HANDLES(fw, 0);
 		}
 	}
-
-	/****** window colors ******/
-	update_window_color_style(fw, pstyle);
-	update_window_color_hi_style(fw, pstyle);
-
-	/***** icons colorsets *****/
-	update_icon_title_cs_style(fw, pstyle);
-	update_icon_title_cs_hi_style(fw, pstyle);
-	update_icon_background_cs_style(fw, pstyle);
-
-	/***** icons title/background parameters ****/
-	setup_icon_background_parameters(fw, pstyle);
-	setup_icon_title_parameters(fw, pstyle);
-
-	/****** some numeric values ******/
-	setup_numeric_vals(fw, pstyle);
-
-	/****** GNOME style hints ******/
-	if (!S_DO_IGNORE_GNOME_HINTS(SCF(*pstyle)))
-	{
-		GNOME_GetStyle(fw, pstyle);
-	}
-
-	/* ConfigureNotify motion method */
-	if (SCR_MOTION_METHOD(&pstyle->flag_mask))
-	{
-		CR_MOTION_METHOD(fw) = SCR_MOTION_METHOD(&pstyle->flags);
-	}
-
-	return;
-}
-
-void change_icon_boxes(FvwmWindow *fw, window_style *pstyle)
-{
-	destroy_icon_boxes(fw);
-	setup_icon_boxes(fw, pstyle);
-
 	return;
 }
 
 void setup_frame_size_limits(FvwmWindow *fw, window_style *pstyle)
 {
+#if 0
+	/* Disable for now. */
+
 	if (SHAS_MIN_WINDOW_SIZE(&pstyle->flags))
 	{
 		fw->min_window_width = SGET_MIN_WINDOW_WIDTH(*pstyle);
@@ -2001,28 +1687,7 @@ void setup_frame_size_limits(FvwmWindow *fw, window_style *pstyle)
 		fw->max_window_width = DEFAULT_MAX_MAX_WINDOW_WIDTH;
 		fw->max_window_height = DEFAULT_MAX_MAX_WINDOW_HEIGHT;
 	}
-
-	return;
-}
-
-void setup_placement_penalty(FvwmWindow *fw, window_style *pstyle)
-{
-	if (!SHAS_PLACEMENT_PENALTY(&pstyle->flags))
-	{
-		pl_penalty_struct *p;
-
-		p = SGET_PLACEMENT_PENALTY_PTR(*pstyle);
-		*p = default_pl_penalty;
-	}
-	if (!SHAS_PLACEMENT_PERCENTAGE_PENALTY(&pstyle->flags))
-	{
-		pl_percent_penalty_struct *p;
-
-		p = SGET_PLACEMENT_PERCENTAGE_PENALTY_PTR(*pstyle);
-		*p = default_pl_percent_penalty;
-	}
-	fw->pl_penalty = (*pstyle).pl_penalty;
-	fw->pl_percent_penalty = (*pstyle).pl_percent_penalty;
+#endif
 
 	return;
 }
@@ -2032,27 +1697,9 @@ void setup_frame_attributes(
 {
 	XSetWindowAttributes xswa;
 
-	/* Backing_store is controlled on the client, borders, title & buttons
-	 */
-	switch (pstyle->flags.use_backing_store)
-	{
-	case BACKINGSTORE_DEFAULT:
-		xswa.backing_store = fw->attr_backup.backing_store;
-		break;
-	case BACKINGSTORE_ON:
-		xswa.backing_store = Scr.use_backing_store;
-		break;
-	case BACKINGSTORE_OFF:
-	default:
-		xswa.backing_store = NotUseful;
-		break;
-	}
-	/* parent_relative is applied to the frame and the parent */
-	xswa.background_pixmap = pstyle->flags.use_parent_relative
-		? ParentRelative : None;
-	/* Save_under is only useful on the frame */
-	xswa.save_under = pstyle->flags.do_save_under
-		? Scr.flags.do_save_under : NotUseful;
+	xswa.backing_store = NotUseful;
+	xswa.background_pixmap = None;
+	xswa.save_under = NotUseful;
 	XChangeWindowAttributes(dpy, FW_W(fw), CWBackingStore, &xswa);
 	XChangeWindowAttributes(
 		dpy, FW_W_PARENT(fw), CWBackPixmap | CWBackingStore, &xswa);
@@ -2216,7 +1863,6 @@ FvwmWindow *AddWindow(
 	/* area for merged styles */
 	window_style style;
 	/* used for faster access */
-	style_flags *sflags;
 	short buttons;
 	Bool used_sm = False;
 	Bool do_resize_too = False;
@@ -2257,9 +1903,8 @@ FvwmWindow *AddWindow(
 
 	/****** style setup ******/
 	__add_window_handle_x_resources(fw);
-	/* get merged styles */
-	lookup_style(fw, &style);
-	sflags = SGET_FLAGS_POINTER(style);
+#if 0
+	/* TA:  Disable for now. */
 	if (SIS_UNMANAGED(sflags))
 	{
 		if (Scr.bo.do_display_new_window_names)
@@ -2282,6 +1927,7 @@ FvwmWindow *AddWindow(
 		MyXUngrabServer(dpy);
 		return AW_UNMANAGED;
 	}
+#endif
 
 	/****** window attributes and hints ******/
 	setup_window_attr(fw, &wattr);
@@ -2320,12 +1966,15 @@ FvwmWindow *AddWindow(
 	}
 
 	/****** InitialMapCommand ******/
+#if 0
+	/* TA:  Disable for now. */
 	*ret_initial_map_command =
 		(style.flags.has_initial_map_command_string) ?
 		SGET_INITIAL_MAP_COMMAND_STRING(style) : NULL;
+#endif
+	*ret_initial_map_command = NULL;
 
 	/****** state setup ******/
-	setup_icon_boxes(fw, &style);
 	SET_ICONIFIED(fw, 0);
 	SET_ICON_UNMAPPED(fw, 0);
 	SET_MAXIMIZED(fw, 0);
@@ -2366,8 +2015,6 @@ FvwmWindow *AddWindow(
 	/****** icon size limits ******/
 	setup_icon_size_limits(fw, &style);
 
-	/***** placement penalities *****/
-	setup_placement_penalty(fw, &style);
 	/*
 	 * MatchWinToSM changes fw->attr and the stacking order.
 	 * Thus it is important have this call *after* PlaceWindow and the
@@ -2436,8 +2083,7 @@ FvwmWindow *AddWindow(
 		attr_g.y = wattr.y;
 		attr_g.width = wattr.width;
 		attr_g.height = wattr.height;
-		do_resize_too = setup_window_placement(
-			fw, &style, &attr_g, win_opts, PLACE_INITIAL);
+		do_resize_too = False;
 		wattr.x = attr_g.x;
 		wattr.y = attr_g.y;
 
@@ -2518,7 +2164,7 @@ FvwmWindow *AddWindow(
 	BroadcastWindowIconNames(fw, True, False);
 
 	/****** place the window in the stack ring ******/
-	if (!position_new_window_in_stack_ring(fw, SDO_START_LOWERED(sflags)))
+	if (!position_new_window_in_stack_ring(fw, False))
 	{
 		XWindowChanges xwc;
 		xwc.sibling = FW_W_FRAME(get_next_window_in_stack_ring(fw));
@@ -2609,14 +2255,9 @@ FvwmWindow *AddWindow(
 	/****** ewmh setup *******/
 	EWMH_WindowInit(fw);
 
-	/****** gnome setup ******/
-	/* set GNOME hints on the window from flags set on fw */
-	GNOME_SetHints(fw);
-	GNOME_SetLayer(fw);
-	GNOME_SetDesk(fw);
-	GNOME_SetWinArea(fw);
-
 	/****** windowshade ******/
+#if 0
+	/* TA:  Disable for now. */
 	if (state_args.do_shade || SDO_START_SHADED(sflags))
 	{
 		rectangle big_g;
@@ -2647,6 +2288,8 @@ FvwmWindow *AddWindow(
 		frame_free_move_resize_args(fw, mr_args);
 	}
 	if (!IS_SHADED(fw) && !IS_ICONIFIED(fw))
+#endif
+	if (!IS_ICONIFIED(fw))
 	{
 		/* TK always wants some special treatment: If the window is
 		 * simply mapped, the tk menus come up at funny Y coordinates.
@@ -3206,6 +2849,8 @@ void destroy_window(FvwmWindow *fw)
 	}
 
 	/* remove window style */
+#if 0
+	/* TA:  disable for now. */
 	if (!IS_SCHEDULED_FOR_DESTROY(fw) && !DO_REUSE_DESTROYED(fw))
 	{
 		style_id_t s_id;
@@ -3216,6 +2861,7 @@ void destroy_window(FvwmWindow *fw)
 
 		style_destroy_style(s_id);
 	}
+#endif
 
 	/****** remove from window list ******/
 	/* if the window is sheduled fro destroy the window has been already
@@ -3311,7 +2957,6 @@ void destroy_window(FvwmWindow *fw)
 
 	/****** destroy icon ******/
 
-	destroy_icon_boxes(fw);
 	destroy_icon(fw);
 
 	/****** destroy mini icon ******/
