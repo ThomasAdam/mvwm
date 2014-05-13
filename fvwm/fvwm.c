@@ -1170,9 +1170,7 @@ static void InitVariables(void)
 	/* ewmh desktop */
 	Scr.EwmhDesktop = NULL;
 	InitFvwmDecor(&Scr.DefaultDecor);
-#ifdef USEDECOR
 	Scr.DefaultDecor.tag = "Default";
-#endif
 	/* Initialize RaiseHackNeeded by identifying X servers
 	   possibly running under NT. This is probably not an
 	   ideal solution, since eg NCD also produces X servers

@@ -209,9 +209,7 @@ enum
 P(Plus);
 P(AddButtonStyle);
 P(AddTitleStyle);
-#ifdef USEDECOR
 P(AddToDecor);
-#endif /* USEDECOR */
 P(AddToFunc);
 P(AddToMenu);
 P(Alias);
@@ -225,9 +223,7 @@ P(BugOpts);
 P(BusyCursor);
 P(ButtonState);
 P(ButtonStyle);
-#ifdef USEDECOR
 P(ChangeDecor);
-#endif /* USEDECOR */
 P(ChangeMenuStyle);
 P(CleanupColorsets);
 P(ClickTime);
@@ -250,9 +246,7 @@ P(Desk);
 P(DesktopName);
 P(DesktopSize);
 P(Destroy);
-#ifdef USEDECOR
 P(DestroyDecor);
-#endif /* USEDECOR */
 P(DestroyFunc);
 P(DestroyMenu);
 P(DestroyMenuStyle);

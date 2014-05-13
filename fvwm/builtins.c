@@ -440,11 +440,7 @@ static void do_title_style(F_CMD_ARGS, Bool do_add)
 {
 	char *parm;
 	char *prev;
-#ifdef USEDECOR
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
-#else
-	FvwmDecor *decor = &Scr.DefaultDecor;
-#endif
 
 	Scr.flags.do_need_window_update = 1;
 	decor->flags.has_changed = 1;
@@ -775,13 +771,11 @@ static void DestroyFvwmDecor(FvwmDecor *decor)
 	}
 	FreeDecorFace(dpy, &decor->BorderStyle.active);
 	FreeDecorFace(dpy, &decor->BorderStyle.inactive);
-#ifdef USEDECOR
 	if (decor->tag)
 	{
 		free(decor->tag);
 		decor->tag = NULL;
 	}
-#endif
 
 	return;
 }
@@ -891,11 +885,7 @@ static void do_button_style(F_CMD_ARGS, Bool do_add)
 	char *prev = NULL;
 	char *parm = NULL;
 	TitleButton *tb = NULL;
-#ifdef USEDECOR
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
-#else
-	FvwmDecor *decor = &Scr.DefaultDecor;
-#endif
 
 	parm = PeekToken(action, &text);
 	if (parm && isdigit(*parm))
@@ -1181,9 +1171,7 @@ void update_decors_colorset(int cset)
 	int i;
 	FvwmDecor *decor = &Scr.DefaultDecor;
 
-#ifdef USEDECOR
 	for(decor = &Scr.DefaultDecor; decor != NULL; decor = decor->next)
-#endif
 	{
 		for(i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++)
 		{
@@ -2051,7 +2039,6 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 	return True;
 }
 
-#ifdef USEDECOR
 /*
  *
  * Diverts a style definition to an FvwmDecor structure (veliaa@rpi.edu)
@@ -2120,10 +2107,6 @@ void InitFvwmDecor(FvwmDecor *decor)
 
 void reset_decor_changes(void)
 {
-#ifndef USEDECOR
-	Scr.DefaultDecor.flags.has_changed = 0;
-	Scr.DefaultDecor.flags.has_title_height_changed = 0;
-#else
 	FvwmDecor *decor;
 	for (decor = &Scr.DefaultDecor; decor; decor = decor->next)
 	{
@@ -2131,7 +2114,6 @@ void reset_decor_changes(void)
 		decor->flags.has_title_height_changed = 0;
 	}
 	/* todo: must reset individual change flags too */
-#endif
 
 	return;
 }
@@ -2829,7 +2811,6 @@ void CMD_HilightColor(F_CMD_ARGS)
 {
 	char *fore;
 	char *back;
-#ifdef USEDECOR
 	if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
 	{
 		fvwm_msg(
@@ -2841,7 +2822,6 @@ void CMD_HilightColor(F_CMD_ARGS)
 			" Sorry for the inconvenience.");
 		return;
 	}
-#endif
 	action = GetNextToken(action, &fore);
 	GetNextToken(action, &back);
 	if (fore && back)
@@ -2867,7 +2847,6 @@ void CMD_HilightColorset(F_CMD_ARGS)
 {
 	char *newaction;
 
-#ifdef USEDECOR
 	if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
 	{
 		fvwm_msg(
@@ -2878,7 +2857,6 @@ void CMD_HilightColorset(F_CMD_ARGS)
 			" instead. Sorry for the inconvenience.");
 		return;
 	}
-#endif
 	if (action)
 	{
 		/* TA:  FIXME!  xasprintf() */
@@ -3084,7 +3062,6 @@ void CMD_IconFont(F_CMD_ARGS)
 {
 	char *newaction;
 
-#ifdef USEDECOR
 	if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
 	{
 		fvwm_msg(
@@ -3094,7 +3071,6 @@ void CMD_IconFont(F_CMD_ARGS)
 			" instead.  Sorry for the inconvenience.");
 		return;
 	}
-#endif
 	if (action)
 	{
 		/* TA:  FIXME!  xasprintf() */
@@ -3112,7 +3088,6 @@ void CMD_WindowFont(F_CMD_ARGS)
 {
 	char *newaction;
 
-#ifdef USEDECOR
 	if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
 	{
 		fvwm_msg(
@@ -3122,7 +3097,6 @@ void CMD_WindowFont(F_CMD_ARGS)
 			" instead.  Sorry for the inconvenience.");
 		return;
 	}
-#endif
 	if (action)
 	{
 		/* TA;  FIXME!  xasprintf() */
@@ -3302,7 +3276,6 @@ void CMD_AddToDecor(F_CMD_ARGS)
 
 	return;
 }
-#endif /* USEDECOR */
 
 
 /*
@@ -3313,7 +3286,6 @@ void CMD_AddToDecor(F_CMD_ARGS)
 void CMD_UpdateDecor(F_CMD_ARGS)
 {
 	FvwmWindow *fw2;
-#ifdef USEDECOR
 	FvwmDecor *decor, *found = NULL;
 	FvwmWindow *hilight = Scr.Hilite;
 	char *item = NULL;
@@ -3332,11 +3304,9 @@ void CMD_UpdateDecor(F_CMD_ARGS)
 		}
 		free(item);
 	}
-#endif
 
 	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next)
 	{
-#ifdef USEDECOR
 		/* update specific decor, or all */
 		if (found)
 		{
@@ -3351,7 +3321,6 @@ void CMD_UpdateDecor(F_CMD_ARGS)
 			}
 		}
 		else
-#endif
 		{
 			border_draw_decorations(
 				fw2, PART_ALL, True, True, CLEAR_ALL, NULL,
