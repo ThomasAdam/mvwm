@@ -280,8 +280,6 @@ P(Focus);
 P(FocusStyle);
 P(Function);
 P(GlobalOpts);
-P(GnomeButton);
-P(GnomeShowDesks);
 P(GotoDesk);
 P(GotoDeskAndPage);
 P(GotoPage);

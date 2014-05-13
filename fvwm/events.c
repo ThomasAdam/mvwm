@@ -86,7 +86,6 @@
 #include "add_window.h"
 #include "icccm2.h"
 #include "icons.h"
-#include "gnome.h"
 #include "ewmh.h"
 #include "update.h"
 #include "style.h"
@@ -1200,7 +1199,6 @@ static inline int __handle_cr_on_client(
 		/* make sure the window structure has the new position */
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
-		GNOME_SetWinArea(fw);
 	}
 	else if (DO_FORCE_NEXT_CR(fw))
 	{
@@ -1607,11 +1605,6 @@ static void __handle_bpress_on_root(const exec_context_t *exc)
 		exc_destroy_context(exc2);
 		WaitForButtonsUp(True);
 	}
-	else
-	{
-		/* do gnome buttonpress forwarding if win == root */
-		GNOME_ProxyButtonEvent(exc->x.etrigger);
-	}
 
 	return;
 }
@@ -1773,16 +1766,6 @@ void HandleButtonRelease(const evh_args_t *ea)
 		execute_function(NULL, ea->exc, action, 0);
 		WaitForButtonsUp(True);
 	}
-	else
-	{
-		/*
-		 * do gnome buttonpress forwarding if win == root
-		 */
-		if (Scr.Root == te->xany.window)
-		{
-			GNOME_ProxyButtonEvent(te);
-		}
-	}
 
 	return;
 }
@@ -1795,12 +1778,7 @@ void HandleClientMessage(const evh_args_t *ea)
 
 	DBUG("HandleClientMessage", "Routine Entered");
 
-	/* Process GNOME and EWMH Messages */
-	if (GNOME_ProcessClientMessage(ea->exc))
-	{
-		return;
-	}
-	else if (EWMH_ProcessClientMessage(ea->exc))
+	if (EWMH_ProcessClientMessage(ea->exc))
 	{
 		return;
 	}
@@ -1898,7 +1876,6 @@ void HandleDestroyNotify(const evh_args_t *ea)
 		ea->exc->x.etrigger->xdestroywindow.window,
 		ea->exc->x.etrigger->type);
 	EWMH_WindowDestroyed();
-	GNOME_SetClientList();
 
 	return;
 }
@@ -3203,7 +3180,6 @@ void HandleMapRequestKeepRaised(
 	}
 	EWMH_SetClientList();
 	EWMH_SetClientListStacking();
-	GNOME_SetClientList();
 
 	return;
 }
@@ -3731,7 +3707,6 @@ void HandleShapeNotify(const evh_args_t *ea)
 		}
 		frame_setup_shape(
 			fw, fw->g.frame.width, fw->g.frame.height, sev->shaped);
-		GNOME_SetWinArea(fw);
 		EWMH_SetFrameStrut(fw);
 		if (!IS_ICONIFIED(fw))
 		{
@@ -3890,7 +3865,6 @@ void HandleUnmapNotify(const evh_args_t *ea)
 	}
 	EWMH_ManageKdeSysTray(te->xunmap.window, te->type);
 	EWMH_WindowDestroyed();
-	GNOME_SetClientList();
 	if (do_map == True)
 	{
 		map_event.xmaprequest.window = cw;
