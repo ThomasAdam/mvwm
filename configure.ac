@@ -3,6 +3,8 @@ dnl
 VERSIONINFO=""
 AC_PREREQ(2.60)
 AC_INIT([fvwm/fvwm.c], [2.6.6], [thomas@xteddy.org])
+AC_CONFIG_AUX_DIR(etc)
+AC_CONFIG_HEADER(config.h)
 
 dnl should be "yes" only within the released distribution
 ISRELEASED=no
@@ -68,7 +70,6 @@ AC_SUBST(FVWMWORKERSLISTLONG)
 AC_SUBST(MANPAGE_PREAMBLE)
 
 AM_INIT_AUTOMAKE([foreign])
-AM_CONFIG_HEADER(config.h)
 
 # check for programs needed to build html docs
 AC_CHECK_PROG(SED, sed, sed, "")
