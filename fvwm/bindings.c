@@ -94,8 +94,8 @@ static void update_nr_buttons(
 	}
 	if (*nr_left_buttons != l || *nr_right_buttons != r)
 	{
-		Scr.flags.do_need_window_update = 1;
-		Scr.flags.has_nr_buttons_changed = 1;
+		scr_flags.do_need_window_update = 1;
+		scr_flags.has_nr_buttons_changed = 1;
 	}
 
 	return;
@@ -539,11 +539,11 @@ static void binding_cmd(F_CMD_ARGS, binding_t type)
 
 	count = ParseBinding(
 		dpy, &Scr.AllBindings, action, type, &Scr.nr_left_buttons,
-		&Scr.nr_right_buttons, &btg, Scr.flags.are_functions_silent);
+		&Scr.nr_right_buttons, &btg, scr_flags.are_functions_silent);
 	if (btg != Scr.buttons2grab)
 	{
-		Scr.flags.do_need_window_update = 1;
-		Scr.flags.has_mouse_binding_changed = 1;
+		scr_flags.do_need_window_update = 1;
+		scr_flags.has_mouse_binding_changed = 1;
 		Scr.buttons2grab = btg;
 	}
 	for (

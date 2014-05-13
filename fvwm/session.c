@@ -165,12 +165,12 @@ SaveGlobalState(FILE *f)
 		Scr.Vx, Scr.Vy, Scr.VxMax, Scr.VyMax);
 	fprintf(f, "  [SCROLL] %i %i %i %i %i\n",
 		Scr.EdgeScrollX, Scr.EdgeScrollY, Scr.ScrollDelay,
-		!!(Scr.flags.do_edge_wrap_x), !!(Scr.flags.do_edge_wrap_y));
+		!!(scr_flags.do_edge_wrap_x), !!(scr_flags.do_edge_wrap_y));
 	fprintf(f, "  [MISC] %i %i %i\n",
 		Scr.ClickTime, Scr.ColormapFocus, Scr.ColorLimit);
 	fprintf(
-		f, "  [STYLE] %i %i\n", Scr.gs.do_emulate_mwm,
-		Scr.gs.do_emulate_win);
+		f, "  [STYLE] %i %i\n", gso.do_emulate_mwm,
+		gso.do_emulate_win);
 
 	return 1;
 }

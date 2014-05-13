@@ -396,7 +396,7 @@ static void unmap_window(FvwmWindow *t)
 		/* this is required by the ICCCM2 */
 		XUnmapWindow(dpy, FW_W(t));
 #endif
-		if (!Scr.bo.do_enable_ewmh_iconic_state_workaround)
+		if (!bo.do_enable_ewmh_iconic_state_workaround)
 		{
 			SetMapStateProp(t, IconicState);
 		}
@@ -459,7 +459,7 @@ static void map_window(FvwmWindow *t)
 		/* this is required by the ICCCM2 */
 		XMapWindow(dpy, FW_W(t));
 #endif
-		if (!Scr.bo.do_enable_ewmh_iconic_state_workaround)
+		if (!bo.do_enable_ewmh_iconic_state_workaround)
 		{
 			SetMapStateProp(t, NormalState);
 		}
@@ -541,7 +541,7 @@ static void MapDesk(int desk, Bool grab)
 	FvwmWindow *StickyWin = NULL;
 	FvwmWindow *sf = get_focus_window();
 
-	Scr.flags.is_map_desk_in_progress = 1;
+	scr_flags.is_map_desk_in_progress = 1;
 	if (grab)
 	{
 		MyXGrabServer(dpy);
@@ -606,7 +606,7 @@ static void MapDesk(int desk, Bool grab)
 			DeleteFocus(True);
 		}
 	}
-	Scr.flags.is_map_desk_in_progress = 0;
+	scr_flags.is_map_desk_in_progress = 0;
 
 	return;
 }
@@ -798,7 +798,7 @@ int HandlePaging(
 	/* Ouch! lots of bounds checking */
 	if (Scr.Vx + *delta_x < 0)
 	{
-		if (!(Scr.flags.do_edge_wrap_x))
+		if (!(scr_flags.do_edge_wrap_x))
 		{
 			*delta_x = -Scr.Vx;
 			*xl = x - *delta_x;
@@ -811,7 +811,7 @@ int HandlePaging(
 	}
 	else if (Scr.Vx + *delta_x > Scr.VxMax)
 	{
-		if (!(Scr.flags.do_edge_wrap_x))
+		if (!(scr_flags.do_edge_wrap_x))
 		{
 			*delta_x = Scr.VxMax - Scr.Vx;
 			*xl = x - *delta_x;
@@ -829,7 +829,7 @@ int HandlePaging(
 
 	if (Scr.Vy + *delta_y < 0)
 	{
-		if (!(Scr.flags.do_edge_wrap_y))
+		if (!(scr_flags.do_edge_wrap_y))
 		{
 			*delta_y = -Scr.Vy;
 			*yt = y - *delta_y;
@@ -842,7 +842,7 @@ int HandlePaging(
 	}
 	else if (Scr.Vy + *delta_y > Scr.VyMax)
 	{
-		if (!(Scr.flags.do_edge_wrap_y))
+		if (!(scr_flags.do_edge_wrap_y))
 		{
 			*delta_y = Scr.VyMax - Scr.Vy;
 			*yt = y - *delta_y;
@@ -931,7 +931,7 @@ void checkPanFrames(void)
 	Bool do_unmap_t = False;
 	Bool do_unmap_b = False;
 
-	if (!Scr.flags.are_windows_captured)
+	if (!scr_flags.are_windows_captured)
 		return;
 
 	/* thickness of 0 means remove the pan frames */
@@ -954,19 +954,19 @@ void checkPanFrames(void)
 		do_unmap_t = True;
 		do_unmap_b = True;
 	}
-	if (Scr.Vx == 0 && !Scr.flags.do_edge_wrap_x)
+	if (Scr.Vx == 0 && !scr_flags.do_edge_wrap_x)
 	{
 		do_unmap_l = True;
 	}
-	if (Scr.Vx == Scr.VxMax && !Scr.flags.do_edge_wrap_x)
+	if (Scr.Vx == Scr.VxMax && !scr_flags.do_edge_wrap_x)
 	{
 		do_unmap_r = True;
 	}
-	if (Scr.Vy == 0 && !Scr.flags.do_edge_wrap_y)
+	if (Scr.Vy == 0 && !scr_flags.do_edge_wrap_y)
 	{
 		do_unmap_t = True;
 	}
-	if (Scr.Vy == Scr.VyMax && !Scr.flags.do_edge_wrap_y)
+	if (Scr.Vy == Scr.VyMax && !scr_flags.do_edge_wrap_y)
 	{
 		do_unmap_b = True;
 	}
@@ -1923,20 +1923,20 @@ void CMD_EdgeScroll(F_CMD_ARGS)
 	if (val1 >= 1000 && val1_unit != 100)
 	{
 		val1 /= 1000;
-		Scr.flags.do_edge_wrap_x = 1;
+		scr_flags.do_edge_wrap_x = 1;
 	}
 	else
 	{
-		Scr.flags.do_edge_wrap_x = 0;
+		scr_flags.do_edge_wrap_x = 0;
 	}
 	if (val2 >= 1000 && val2_unit != 100)
 	{
 		val2 /= 1000;
-		Scr.flags.do_edge_wrap_y = 1;
+		scr_flags.do_edge_wrap_y = 1;
 	}
 	else
 	{
-		Scr.flags.do_edge_wrap_y = 0;
+		scr_flags.do_edge_wrap_y = 0;
 	}
 
 	action=SkipNTokens(action,2);
@@ -1946,16 +1946,16 @@ void CMD_EdgeScroll(F_CMD_ARGS)
 	{
 		if (StrEquals(token, "wrap"))
 		{
-			Scr.flags.do_edge_wrap_x = 1;
-			Scr.flags.do_edge_wrap_y = 1;
+			scr_flags.do_edge_wrap_x = 1;
+			scr_flags.do_edge_wrap_y = 1;
 		}
 		else if (StrEquals(token, "wrapx"))
 		{
-			Scr.flags.do_edge_wrap_x = 1;
+			scr_flags.do_edge_wrap_x = 1;
 		}
 		else if (StrEquals(token, "wrapy"))
 		{
-			Scr.flags.do_edge_wrap_y = 1;
+			scr_flags.do_edge_wrap_y = 1;
 		}
 	}
 
@@ -2041,8 +2041,8 @@ void CMD_Xinerama(F_CMD_ARGS)
 	}
 	if (!toggle != !FScreenIsEnabled())
 	{
-		Scr.flags.do_need_window_update = True;
-		Scr.flags.has_xinerama_state_changed = True;
+		scr_flags.do_need_window_update = True;
+		scr_flags.has_xinerama_state_changed = True;
 		FScreenOnOff(toggle);
 		broadcast_xinerama_state();
 	}
@@ -2058,8 +2058,8 @@ void CMD_XineramaPrimaryScreen(F_CMD_ARGS)
 	FScreenSetPrimaryScreen(val);
 	if (FScreenIsEnabled())
 	{
-		Scr.flags.do_need_window_update = True;
-		Scr.flags.has_xinerama_state_changed = True;
+		scr_flags.do_need_window_update = True;
+		scr_flags.has_xinerama_state_changed = True;
 	}
 	broadcast_xinerama_state();
 

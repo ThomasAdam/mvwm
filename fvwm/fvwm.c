@@ -148,6 +148,10 @@ static const char *init_function_names[4] =
 int master_pid;                 /* process number of 1st fvwm process */
 
 ScreenInfo Scr;                 /* structures for the screen */
+struct bug_opts	 bo;		/* BugOpts handling. */
+struct global_style_opts gso;	/* Global Style options. */
+struct screen_flags scr_flags;	/* Screen flags. */
+
 Display *dpy = NULL;            /* which display are we talking to */
 
 Bool fFvwmInStartup = True;     /* Set to False when startup has finished */
@@ -209,6 +213,10 @@ Atom _XA_WM_CLIENT_LEADER;
 
 Atom _XA_XROOTPMAP_ID;
 Atom _XA_XSETROOT_ID;
+
+static void	 init_bugopts(void);
+static void	 init_global_style_opts(void);
+static void	 init_screen_flags(void);
 
 /* ---------------------------- local functions ---------------------------- */
 
@@ -1085,13 +1093,57 @@ static void CreateGCs(void)
 	return;
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *      InitVariables - initialize fvwm variables
- *
- ************************************************************************/
-static void InitVariables(void)
+static void init_bugopts(void)
+{
+	/* Initialize RaiseHackNeeded by identifying X servers
+	   possibly running under NT. This is probably not an
+	   ideal solution, since eg NCD also produces X servers
+	   which do not run under NT.
+
+	   "Hummingbird Communications Ltd."
+	   is the ServerVendor string of the Exceed X server under NT,
+
+	   "Network Computing Devices Inc."
+	   is the ServerVendor string of the PCXware X server under Windows.
+
+	   "WRQ, Inc."
+	   is the ServerVendor string of the Reflection X server under Windows.
+	*/
+	bo.is_raise_hack_needed =
+		(strcmp (
+			ServerVendor (dpy),
+			"Hummingbird Communications Ltd.") == 0) ||
+		(strcmp (
+			ServerVendor (dpy),
+			"Network Computing Devices Inc.") == 0) ||
+		(strcmp (ServerVendor (dpy), "WRQ, Inc.") == 0);
+
+	bo.is_modality_evil = 0;
+	bo.do_disable_configure_notify = 0;
+	bo.do_install_root_cmap = 0;
+	bo.do_enable_flickering_qt_dialogs_workaround = 1;
+	bo.do_enable_qt_drag_n_drop_workaround = 0;
+	bo.do_enable_ewmh_iconic_state_workaround = 0;
+}
+
+static void init_global_style_opts(void)
+{
+	gso.do_emulate_mwm = DEFAULT_EMULATE_MWM;
+	gso.do_emulate_win = DEFAULT_EMULATE_WIN;
+	gso.use_active_down_buttons = DEFAULT_USE_ACTIVE_DOWN_BUTTONS;
+	gso.use_inactive_buttons = DEFAULT_USE_INACTIVE_BUTTONS;
+	gso.use_inactive_down_buttons = DEFAULT_USE_INACTIVE_DOWN_BUTTONS;
+}
+
+static void init_screen_flags(void)
+{
+	memset(&scr_flags, 0, sizeof(scr_flags));
+	scr_flags.is_pointer_on_this_screen = !!FQueryPointer(
+		dpy, Scr.Root, &JunkRoot, &JunkChild, &JunkX, &JunkY, &JunkX,
+		&JunkY, &JunkMask);
+}
+
+static void init_scr(void)
 {
 	FvwmContext = XUniqueContext();
 	MenuContext = XUniqueContext();
@@ -1107,8 +1159,6 @@ static void InitVariables(void)
 	Scr.StdReliefGC = 0;
 	Scr.StdShadowGC = 0;
 	Scr.XorGC = 0;
-	/* zero all flags */
-	memset(&Scr.flags, 0, sizeof(Scr.flags));
 	/* create graphics contexts */
 	CreateGCs();
 
@@ -1171,41 +1221,7 @@ static void InitVariables(void)
 	Scr.EwmhDesktop = NULL;
 	InitFvwmDecor(&Scr.DefaultDecor);
 	Scr.DefaultDecor.tag = "Default";
-	/* Initialize RaiseHackNeeded by identifying X servers
-	   possibly running under NT. This is probably not an
-	   ideal solution, since eg NCD also produces X servers
-	   which do not run under NT.
 
-	   "Hummingbird Communications Ltd."
-	   is the ServerVendor string of the Exceed X server under NT,
-
-	   "Network Computing Devices Inc."
-	   is the ServerVendor string of the PCXware X server under Windows.
-
-	   "WRQ, Inc."
-	   is the ServerVendor string of the Reflection X server under Windows.
-	*/
-	Scr.bo.is_raise_hack_needed =
-		(strcmp (
-			ServerVendor (dpy),
-			"Hummingbird Communications Ltd.") == 0) ||
-		(strcmp (
-			ServerVendor (dpy),
-			"Network Computing Devices Inc.") == 0) ||
-		(strcmp (ServerVendor (dpy), "WRQ, Inc.") == 0);
-
-	Scr.bo.is_modality_evil = 0;
-	Scr.bo.do_disable_configure_notify = 0;
-	Scr.bo.do_install_root_cmap = 0;
-	Scr.bo.do_enable_flickering_qt_dialogs_workaround = 1;
-	Scr.bo.do_enable_qt_drag_n_drop_workaround = 0;
-	Scr.bo.do_enable_ewmh_iconic_state_workaround = 0;
-
-	Scr.gs.do_emulate_mwm = DEFAULT_EMULATE_MWM;
-	Scr.gs.do_emulate_win = DEFAULT_EMULATE_WIN;
-	Scr.gs.use_active_down_buttons = DEFAULT_USE_ACTIVE_DOWN_BUTTONS;
-	Scr.gs.use_inactive_buttons = DEFAULT_USE_INACTIVE_BUTTONS;
-	Scr.gs.use_inactive_down_buttons = DEFAULT_USE_INACTIVE_DOWN_BUTTONS;
 	/* Not the right place for this, should only be called once
 	 * somewhere .. */
 
@@ -1219,10 +1235,6 @@ static void InitVariables(void)
 	Scr.PanFrameBottom.command_leave = NULL;
 	Scr.PanFrameRight.command_leave  = NULL;
 	Scr.PanFrameLeft.command_leave   = NULL;
-	Scr.flags.is_pointer_on_this_screen = !!FQueryPointer(
-		dpy, Scr.Root, &JunkRoot, &JunkChild, &JunkX, &JunkY, &JunkX,
-		&JunkY, &JunkMask);
-
 	/* make sure colorset 0 exists */
 	alloc_colorset(0);
 
@@ -1675,7 +1687,7 @@ void SetMWM_INFO(Window window)
 		return;
 	}
 
-	if (Scr.bo.is_modality_evil)
+	if (bo.is_modality_evil)
 	{
 		/* Set Motif WM_INFO atom to make motif relinquish
 		 * broken handling of modal dialogs */
@@ -2341,7 +2353,7 @@ int main(int argc, char **argv)
 	FRenderInit(dpy);
 	Scr.pscreen = XScreenOfDisplay(dpy, Scr.screen);
 	Scr.use_backing_store = DoesBackingStore(Scr.pscreen);
-	Scr.flags.do_save_under = DoesSaveUnders(Scr.pscreen);
+	scr_flags.do_save_under = DoesSaveUnders(Scr.pscreen);
 
 	InternUsefulAtoms();
 
@@ -2431,7 +2443,10 @@ int main(int argc, char **argv)
 	 * before the first call to AddWindow. */
 	LoadWindowStates(state_filename);
 
-	InitVariables();
+	init_scr();
+	init_bugopts();
+	init_global_style_opts();
+	init_screen_flags();
 	if (visualClass != -1 || visualId != -1)
 	{
 		/* this is so that menus use the (non-default) fvwm colormap */

@@ -262,7 +262,7 @@ static void __update_windowlist(
 
 static Bool __try_other_screen_focus(const FvwmWindow *fw)
 {
-	if (fw == NULL && !Scr.flags.is_pointer_on_this_screen)
+	if (fw == NULL && !scr_flags.is_pointer_on_this_screen)
 	{
 		FvwmWindow *sf;
 

@@ -615,9 +615,9 @@ void destroy_scheduled_windows(void)
 	flist *t;
 	Bool do_need_ungrab = False;
 
-	if (Scr.flags.is_executing_complex_function ||
-	    Scr.flags.is_executing_menu_function ||
-	    !Scr.flags.is_window_scheduled_for_destroy)
+	if (scr_flags.is_executing_complex_function ||
+	    scr_flags.is_executing_menu_function ||
+	    !scr_flags.is_window_scheduled_for_destroy)
 	{
 		return;
 	}
@@ -627,7 +627,7 @@ void destroy_scheduled_windows(void)
 		do_need_ungrab = True;
 	}
 	MyXGrabServer(dpy);
-	Scr.flags.is_window_scheduled_for_destroy = 0;
+	scr_flags.is_window_scheduled_for_destroy = 0;
 	/* need to destroy one or more windows before looking at the window
 	 * list */
 	for (t = Scr.FWScheduledForDestroy; t != NULL; t = t->next)
@@ -682,8 +682,8 @@ void flush_window_updates(void)
 	DeleteFocus(False);
 
 	/* Apply the new default font and colours first */
-	if (Scr.flags.has_default_color_changed ||
-	    Scr.flags.has_default_font_changed)
+	if (scr_flags.has_default_color_changed ||
+	    scr_flags.has_default_font_changed)
 	{
 		ApplyDefaultFontAndColors();
 	}
@@ -693,12 +693,12 @@ void flush_window_updates(void)
 	{
 		memset(&flags, 0, sizeof(update_win));
 		check_window_style_change(t, &flags, &style);
-		if (Scr.flags.has_xinerama_state_changed)
+		if (scr_flags.has_xinerama_state_changed)
 		{
 			flags.do_update_icon_boxes = True;
 			flags.do_update_icon_placement = True;
 		}
-		if (Scr.flags.has_nr_buttons_changed)
+		if (scr_flags.has_nr_buttons_changed)
 		{
 			flags.do_redecorate = True;
 		}
@@ -708,11 +708,11 @@ void flush_window_updates(void)
 			flags.do_redecorate = True;
 			flags.do_update_window_font_height = True;
 		}
-		if (Scr.flags.has_default_font_changed && !HAS_ICON_FONT(t))
+		if (scr_flags.has_default_font_changed && !HAS_ICON_FONT(t))
 		{
 			flags.do_update_icon_font = True;
 		}
-		if (Scr.flags.has_default_font_changed && !HAS_WINDOW_FONT(t))
+		if (scr_flags.has_default_font_changed && !HAS_WINDOW_FONT(t))
 		{
 			flags.do_update_window_font = True;
 		}
@@ -720,7 +720,7 @@ void flush_window_updates(void)
 		{
 			flags.do_update_window_font_height = True;
 		}
-		if (Scr.flags.has_mouse_binding_changed)
+		if (scr_flags.has_mouse_binding_changed)
 		{
 			flags.do_update_window_grabs = True;
 		}
@@ -733,7 +733,7 @@ void flush_window_updates(void)
 	if (focus_fw)
 	{
 		SetFocusWindow(focus_fw, False, FOCUS_SET_FORCE);
-		if (Scr.flags.has_mouse_binding_changed)
+		if (scr_flags.has_mouse_binding_changed)
 		{
 			focus_grab_buttons(focus_fw);
 		}
@@ -746,12 +746,12 @@ void flush_window_updates(void)
 	/* finally clean up the change flags */
 	reset_style_changes();
 	reset_decor_changes();
-	Scr.flags.do_need_window_update = 0;
-	Scr.flags.has_default_font_changed = 0;
-	Scr.flags.has_default_color_changed = 0;
-	Scr.flags.has_mouse_binding_changed = 0;
-	Scr.flags.has_nr_buttons_changed = 0;
-	Scr.flags.has_xinerama_state_changed = 0;
+	scr_flags.do_need_window_update = 0;
+	scr_flags.has_default_font_changed = 0;
+	scr_flags.has_default_color_changed = 0;
+	scr_flags.has_mouse_binding_changed = 0;
+	scr_flags.has_nr_buttons_changed = 0;
+	scr_flags.has_xinerama_state_changed = 0;
 
 	MyXUngrabServer(dpy);
 	if (do_need_ungrab)
@@ -764,7 +764,7 @@ void flush_window_updates(void)
 
 void CMD_UpdateStyles(F_CMD_ARGS)
 {
-	if (Scr.flags.do_need_window_update)
+	if (scr_flags.do_need_window_update)
 	{
 		flush_window_updates();
 	}

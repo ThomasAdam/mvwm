@@ -252,10 +252,10 @@ static void __menu_execute_function(const exec_context_t **pexc, char *action)
 
 	ecc.w.w = ((*pexc)->w.fw) ? FW_W((*pexc)->w.fw) : None;
 	exc = exc_clone_context(*pexc, &ecc, ECC_W);
-	old_emf = Scr.flags.is_executing_menu_function;
-	Scr.flags.is_executing_menu_function = 1;
+	old_emf = scr_flags.is_executing_menu_function;
+	scr_flags.is_executing_menu_function = 1;
 	execute_function(NULL, exc, action, FUNC_DONT_EXPAND_COMMAND);
-	Scr.flags.is_executing_menu_function = old_emf;
+	scr_flags.is_executing_menu_function = old_emf;
 	exc_destroy_context(exc);
 	/* See if the window has been deleted */
 	if (!check_if_fvwm_window_exists((*pexc)->w.fw))

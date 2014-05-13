@@ -582,7 +582,7 @@ static inline void __cr_detect_icccm_move(
 
 	if (CR_MOTION_METHOD(fw) != CR_MOTION_METHOD_AUTO)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr,
@@ -594,7 +594,7 @@ static inline void __cr_detect_icccm_move(
 	}
 	if (HAS_EWMH_WM_PID(fw))
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr,"_cdim: +++ has ewmh_wm_pid: icccm"
@@ -606,7 +606,7 @@ static inline void __cr_detect_icccm_move(
 	}
 	if (fw->ewmh_window_type != EWMH_WINDOW_TYPE_NONE_ID)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "_cdim: +++ has ewmh_window_type:"
@@ -619,7 +619,7 @@ static inline void __cr_detect_icccm_move(
 	}
 	if (FShapesSupported && fw->wShaped)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "_cdim: --- shaped window %p "
@@ -630,7 +630,7 @@ static inline void __cr_detect_icccm_move(
 	}
 	if (fw->hints.win_gravity == StaticGravity)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "_cdim: --- using StaticGravity"
@@ -642,7 +642,7 @@ static inline void __cr_detect_icccm_move(
 	has_y = (cre->value_mask & CWY);
 	if (!has_x && !has_y)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "_cdim: --- not moved %p '%s'\n",
@@ -664,7 +664,7 @@ static inline void __cr_detect_icccm_move(
 	}
 	if (!has_x && !has_y)
 	{
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "_cdim: --- not moved %p '%s'\n",
@@ -676,7 +676,7 @@ static inline void __cr_detect_icccm_move(
 	dg_g.y = grav_g.y - fw->g.frame.y;
 	ds_g.x = static_g.x - fw->g.frame.x;
 	ds_g.y = static_g.y - fw->g.frame.y;
-	if (Scr.bo.do_debug_cr_motion_method == 1)
+	if (bo.do_debug_cr_motion_method == 1)
 	{
 		fprintf(
 			stderr, "s %3d/%3d %2d/%2d, g %3d/%3d %2d/%2d: ",
@@ -695,7 +695,7 @@ static inline void __cr_detect_icccm_move(
 			/* Window is fullscreen using the ICCCM way. */
 			SET_CR_MOTION_METHOD(fw, CR_MOTION_METHOD_USE_GRAV);
 			SET_CR_MOTION_METHOD_DETECTED(fw, 1);
-			if (Scr.bo.do_debug_cr_motion_method == 1)
+			if (bo.do_debug_cr_motion_method == 1)
 			{
 				fprintf(
 					stderr, "+++ fullscreen icccm %p"
@@ -709,7 +709,7 @@ static inline void __cr_detect_icccm_move(
 			/* Window is fullscreen using the traditional way. */
 			SET_CR_MOTION_METHOD(fw, CR_MOTION_METHOD_STATIC_GRAV);
 			SET_CR_MOTION_METHOD_DETECTED(fw, 1);
-			if (Scr.bo.do_debug_cr_motion_method == 1)
+			if (bo.do_debug_cr_motion_method == 1)
 			{
 				fprintf(
 					stderr, "+++ fullscreen traditional"
@@ -727,7 +727,7 @@ static inline void __cr_detect_icccm_move(
 		 * height.  Use ICCCM way. */
 		SET_CR_MOTION_METHOD(fw, CR_MOTION_METHOD_USE_GRAV);
 		SET_CR_MOTION_METHOD_DETECTED(fw, 1);
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "+++ travelling icccm %p '%s'\n",
@@ -742,7 +742,7 @@ static inline void __cr_detect_icccm_move(
 		 * Use traditional way. */
 		SET_CR_MOTION_METHOD(fw, CR_MOTION_METHOD_STATIC_GRAV);
 		SET_CR_MOTION_METHOD_DETECTED(fw, 1);
-		if (Scr.bo.do_debug_cr_motion_method == 1)
+		if (bo.do_debug_cr_motion_method == 1)
 		{
 			fprintf(
 				stderr, "+++ travelling traditional %p"
@@ -795,7 +795,7 @@ static inline void __cr_detect_icccm_move(
 		{
 			SET_CR_MOTION_METHOD(fw, m);
 			SET_CR_MOTION_METHOD_DETECTED(fw, 1);
-			if (Scr.bo.do_debug_cr_motion_method == 1)
+			if (bo.do_debug_cr_motion_method == 1)
 			{
 				fprintf(
 					stderr, "+++ near border %s %p "
@@ -807,7 +807,7 @@ static inline void __cr_detect_icccm_move(
 			return;
 		}
 	}
-	if (Scr.bo.do_debug_cr_motion_method == 1)
+	if (bo.do_debug_cr_motion_method == 1)
 	{
 		fprintf(
 			stderr, "--- not detected %p '%s'\n", fw,
@@ -1827,7 +1827,7 @@ void HandleClientMessage(const evh_args_t *ea)
 	 */
 	if (fw)
 	{
-		if ((!Scr.bo.do_enable_qt_drag_n_drop_workaround) &&
+		if ((!bo.do_enable_qt_drag_n_drop_workaround) &&
 				(te->xclient.window != FW_W(fw)))
 		{
 			XEvent e;
@@ -1936,7 +1936,7 @@ ENTER_DBG((stderr, "++++++++ en (%d): fw %p w 0x%08x sw 0x%08x mode 0x%x detail 
 	{
 		EnterSubWindowColormap(ewp->window);
 	}
-	if (Scr.flags.is_wire_frame_displayed)
+	if (scr_flags.is_wire_frame_displayed)
 	{
 ENTER_DBG((stderr, "en: exit: iwfd\n"));
 		/* Ignore EnterNotify events while a window is resized or moved
@@ -2068,9 +2068,9 @@ ENTER_DBG((stderr, "en: exit: found LeaveNotify\n"));
 	{
 		FvwmWindow *lf = get_last_screen_focus_window();
 
-		if (!Scr.flags.is_pointer_on_this_screen)
+		if (!scr_flags.is_pointer_on_this_screen)
 		{
-			Scr.flags.is_pointer_on_this_screen = 1;
+			scr_flags.is_pointer_on_this_screen = 1;
 			if (lf && lf != &Scr.FvwmRoot &&
 			    !FP_DO_UNFOCUS_LEAVE(FW_FOCUS_POLICY(lf)))
 			{
@@ -2107,7 +2107,7 @@ ENTER_DBG((stderr, "en: exit: found LeaveNotify\n"));
 	}
 	else
 	{
-		Scr.flags.is_pointer_on_this_screen = 1;
+		scr_flags.is_pointer_on_this_screen = 1;
 	}
 
 	/* An EnterEvent in one of the PanFrameWindows activates the Paging or
@@ -2158,7 +2158,7 @@ ENTER_DBG((stderr, "en: exit: found LeaveNotify\n"));
 			XEvent e;
 
 			/* this was in the HandleMotionNotify before, HEDU */
-			Scr.flags.is_pointer_on_this_screen = 1;
+			scr_flags.is_pointer_on_this_screen = 1;
 			e = *te;
 			HandlePaging(
 				&e, Scr.EdgeScrollX, Scr.EdgeScrollY, &JunkX,
@@ -2375,7 +2375,7 @@ void HandleFocusIn(const evh_args_t *ea)
 		/* Only show a non-focused window as focused,
 		 * if the focus is on unmanaged and flickering qt dialogs
 		 * workaround is on. */
-		if (!Scr.bo.do_enable_flickering_qt_dialogs_workaround ||
+		if (!bo.do_enable_flickering_qt_dialogs_workaround ||
 		    !is_unmanaged_focused)
 		{
 			border_draw_decorations(
@@ -2447,7 +2447,7 @@ void HandleFocusIn(const evh_args_t *ea)
 	    focus_w != last_focus_w || focus_fw != last_focus_fw ||
 	    do_force_broadcast)
 	{
-		if (!Scr.bo.do_enable_flickering_qt_dialogs_workaround ||
+		if (!bo.do_enable_flickering_qt_dialogs_workaround ||
 		    !is_unmanaged_focused)
 		{
 			BroadcastPacket(
@@ -2630,7 +2630,7 @@ ENTER_DBG((stderr, "-------- ln (%d): fw %p w 0x%08x sw 0x%08x mode 0x%x detail 
 	}
 	/* Ignore LeaveNotify events while a window is resized or moved as a
 	 * wire frame; otherwise the window list may be screwed up. */
-	if (Scr.flags.is_wire_frame_displayed)
+	if (scr_flags.is_wire_frame_displayed)
 	{
 		return;
 	}
@@ -2721,7 +2721,7 @@ ENTER_DBG((stderr, "ln: *** lgw = %p\n", fw));
 			{
 				FvwmWindow *sf = get_focus_window();
 
-				Scr.flags.is_pointer_on_this_screen = 0;
+				scr_flags.is_pointer_on_this_screen = 0;
 				set_last_screen_focus_window(sf);
 				if (sf != NULL)
 				{
@@ -3057,7 +3057,7 @@ void HandleMapRequestKeepRaised(
 				XMapWindow(dpy, FW_W_FRAME(fw));
 				XMapWindow(dpy, FW_W(fw));
 				SetMapStateProp(fw, NormalState);
-				if (Scr.flags.is_map_desk_in_progress)
+				if (scr_flags.is_map_desk_in_progress)
 				{
 					do_grab_focus = False;
 				}
@@ -3123,7 +3123,7 @@ void HandleMapRequestKeepRaised(
 			 * instance.
 			 */
 			if ((initial_map_command != NULL) &&
-			   (!Restarting && Scr.flags.are_windows_captured))
+			   (!Restarting && scr_flags.are_windows_captured))
 			{
 				execute_function_override_window(
 					NULL, ea->exc,
@@ -4159,11 +4159,11 @@ void HandleEvents(void)
 	while (!isTerminated)
 	{
 		last_event_type = 0;
-		if (Scr.flags.is_window_scheduled_for_destroy)
+		if (scr_flags.is_window_scheduled_for_destroy)
 		{
 			destroy_scheduled_windows();
 		}
-		if (Scr.flags.do_need_window_update)
+		if (scr_flags.do_need_window_update)
 		{
 			flush_window_updates();
 		}
@@ -4171,7 +4171,7 @@ void HandleEvents(void)
 		{
 			dispatch_event(&ev);
 		}
-		if (Scr.flags.do_need_style_list_update)
+		if (scr_flags.do_need_style_list_update)
 		{
 			simplify_style_list();
 		}
@@ -4355,7 +4355,7 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 			timeoutP = NULL; /* set an infinite timeout to stop
 					  * ticking */
 			reset_style_changes();
-			Scr.flags.do_need_window_update = 0;
+			scr_flags.do_need_window_update = 0;
 		}
 		/* run scheduled commands if necessary */
 		squeue_execute();

@@ -866,7 +866,7 @@ static void position_geometry_window(const XEvent *eventp)
 	fscr.mouse_ev = (XEvent *)eventp;
 	/* Probably should remove this positioning code from {builtins,fvwm}.c?
 	 */
-	if (Scr.gs.do_emulate_mwm)
+	if (gso.do_emulate_mwm)
 	{
 		FScreenCenterOnScreen(
 			&fscr, FSCREEN_CURRENT, &x, &y, sizew_g.width,
@@ -938,7 +938,7 @@ static void DisplayPosition(
 	fscreen_scr_arg fscr;
 	FlocaleWinString fstr;
 
-	if (Scr.gs.do_hide_position_window)
+	if (gso.do_hide_position_window)
 	{
 		return;
 	}
@@ -1013,7 +1013,7 @@ static void DisplaySize(
 	static int last_height = 0;
 	FlocaleWinString fstr;
 
-	if (Scr.gs.do_hide_resize_window)
+	if (gso.do_hide_resize_window)
 	{
 		return;
 	}
@@ -1199,7 +1199,7 @@ static void InteractiveMove(
 
 	w = *win;
 
-	if (Scr.bo.do_install_root_cmap)
+	if (bo.do_install_root_cmap)
 	{
 		InstallRootColormap();
 	}
@@ -1273,7 +1273,7 @@ static void InteractiveMove(
 	}
 	else
 	{
-		Scr.flags.is_wire_frame_displayed = True;
+		scr_flags.is_wire_frame_displayed = True;
 	}
 
 	if (!do_move_opaque && IS_ICONIFIED(exc->w.fw))
@@ -1283,7 +1283,7 @@ static void InteractiveMove(
 
 	XOffset = origDragX - DragX;
 	YOffset = origDragY - DragY;
-	if (!Scr.gs.do_hide_position_window)
+	if (!gso.do_hide_position_window)
 	{
 		position_geometry_window(NULL);
 		XMapRaised(dpy,Scr.SizeWindow);
@@ -1291,11 +1291,11 @@ static void InteractiveMove(
 	__move_loop(
 		exc, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY,
 		do_move_opaque, CRS_MOVE);
-	if (!Scr.gs.do_hide_position_window)
+	if (!gso.do_hide_position_window)
 	{
 		XUnmapWindow(dpy,Scr.SizeWindow);
 	}
-	if (Scr.bo.do_install_root_cmap)
+	if (bo.do_install_root_cmap)
 	{
 		UninstallRootColormap();
 	}
@@ -1308,7 +1308,7 @@ static void InteractiveMove(
 	{
 		/* Throw away some events that dont interest us right now. */
 		discard_events(EnterWindowMask|LeaveWindowMask);
-		Scr.flags.is_wire_frame_displayed = False;
+		scr_flags.is_wire_frame_displayed = False;
 		MyXUngrabServer(dpy);
 	}
 	MyXUngrabKeyboard(dpy);
@@ -1442,7 +1442,7 @@ static void AnimatedMoveAnyWindow(
 				dpy, None, Scr.Root, 0, 0, 0, 0, pointerX,
 				pointerY);
 		}
-		if (fw && !IS_SHADED(fw) && !Scr.bo.do_disable_configure_notify)
+		if (fw && !IS_SHADED(fw) && !bo.do_disable_configure_notify)
 		{
 			/* send configure notify event for windows that care
 			 * about their location */
@@ -2414,7 +2414,7 @@ Bool __move_loop(
 
 	/* draw initial outline */
 	if (!IS_ICONIFIED(fw) &&
-	    ((!do_move_opaque && !Scr.gs.do_emulate_mwm) || !IS_MAPPED(fw)))
+	    ((!do_move_opaque && !gso.do_emulate_mwm) || !IS_MAPPED(fw)))
 	{
 		draw_move_resize_grid(xl, yt, Width - 1, Height - 1);
 	}
@@ -2613,9 +2613,9 @@ Bool __move_loop(
 				break;
 			}
 			if (!IS_MAPPED(fw) &&
-			    ((e.xbutton.button == 2 && !Scr.gs.do_emulate_mwm)
+			    ((e.xbutton.button == 2 && !gso.do_emulate_mwm)
 			     ||
-			    (e.xbutton.button == 1 && Scr.gs.do_emulate_mwm &&
+			    (e.xbutton.button == 1 && gso.do_emulate_mwm &&
 			     (e.xbutton.state & ShiftMask))))
 			{
 				do_resize_too = True;
@@ -2846,7 +2846,7 @@ Bool __move_loop(
 		xl += x_virtual_offset;
 		yt += y_virtual_offset;
 		if (do_move_opaque && !IS_ICONIFIED(fw) &&
-		    !IS_SHADED(fw) && !Scr.bo.do_disable_configure_notify)
+		    !IS_SHADED(fw) && !bo.do_disable_configure_notify)
 		{
 			/* send configure notify event for windows that care
 			 * about their location; don't send anything if
@@ -2897,7 +2897,7 @@ Bool __move_loop(
 		}
 	} /* while (!is_finished) */
 
-	if (!Scr.gs.do_hide_position_window)
+	if (!gso.do_hide_position_window)
 	{
 		XUnmapWindow(dpy,Scr.SizeWindow);
 	}
@@ -2996,21 +2996,21 @@ void CMD_HideGeometryWindow(F_CMD_ARGS)
 {
 	char *token = PeekToken(action, NULL);
 
-	Scr.gs.do_hide_position_window = 0;
-	Scr.gs.do_hide_resize_window = 0;
+	gso.do_hide_position_window = 0;
+	gso.do_hide_resize_window = 0;
 	switch(GetTokenIndex(token, hide_options, 0, NULL))
 	{
 	case 0:
 		break;
 	case 1:
-		Scr.gs.do_hide_position_window = 1;
+		gso.do_hide_position_window = 1;
 		break;
 	case 2:
-		Scr.gs.do_hide_resize_window = 1;
+		gso.do_hide_resize_window = 1;
 		break;
 	default:
-		Scr.gs.do_hide_position_window = 1;
-		Scr.gs.do_hide_resize_window = 1;
+		gso.do_hide_position_window = 1;
+		gso.do_hide_resize_window = 1;
 		break;
 	}
 	return;
@@ -3748,7 +3748,7 @@ static Bool __resize_window(F_CMD_ARGS)
 			NULL, NULL);
 	}
 
-	if (Scr.bo.do_install_root_cmap)
+	if (bo.do_install_root_cmap)
 	{
 		InstallRootColormap();
 	}
@@ -3763,10 +3763,10 @@ static Bool __resize_window(F_CMD_ARGS)
 	}
 
 	/* handle problems with edge-wrapping while resizing */
-	edge_wrap_x = Scr.flags.do_edge_wrap_x;
-	edge_wrap_y = Scr.flags.do_edge_wrap_y;
-	Scr.flags.do_edge_wrap_x = 0;
-	Scr.flags.do_edge_wrap_y = 0;
+	edge_wrap_x = scr_flags.do_edge_wrap_x;
+	edge_wrap_y = scr_flags.do_edge_wrap_y;
+	scr_flags.do_edge_wrap_x = 0;
+	scr_flags.do_edge_wrap_y = 0;
 
 	if (!do_resize_opaque)
 	{
@@ -3798,7 +3798,7 @@ static Bool __resize_window(F_CMD_ARGS)
 	}
 	else
 	{
-		Scr.flags.is_wire_frame_displayed = True;
+		scr_flags.is_wire_frame_displayed = True;
 	}
 	MyXGrabKeyboard(dpy);
 
@@ -3807,7 +3807,7 @@ static Bool __resize_window(F_CMD_ARGS)
 	xmotion = 0;
 
 	/* pop up a resize dimensions window */
-	if (!Scr.gs.do_hide_resize_window)
+	if (!gso.do_hide_resize_window)
 	{
 		position_geometry_window(NULL);
 		XMapRaised(dpy, Scr.SizeWindow);
@@ -4216,7 +4216,7 @@ static Bool __resize_window(F_CMD_ARGS)
 		switch_move_resize_grid(False);
 	}
 	/* pop down the size window */
-	if (!Scr.gs.do_hide_resize_window)
+	if (!gso.do_hide_resize_window)
 	{
 		XUnmapWindow(dpy, Scr.SizeWindow);
 	}
@@ -4302,7 +4302,7 @@ static Bool __resize_window(F_CMD_ARGS)
 			fw, PART_BUTTONS, (fw == Scr.Hilite), True, CLEAR_ALL,
 			NULL, NULL);
 	}
-	if (Scr.bo.do_install_root_cmap)
+	if (bo.do_install_root_cmap)
 	{
 		UninstallRootColormap();
 	}
@@ -4315,7 +4315,7 @@ static Bool __resize_window(F_CMD_ARGS)
 	{
 		/* Throw away some events that dont interest us right now. */
 		discard_events(EnterWindowMask|LeaveWindowMask);
-		Scr.flags.is_wire_frame_displayed = False;
+		scr_flags.is_wire_frame_displayed = False;
 		MyXUngrabServer(dpy);
 	}
 	if (mr_args != NULL)
@@ -4339,8 +4339,8 @@ static Bool __resize_window(F_CMD_ARGS)
 	MyXUngrabKeyboard(dpy);
 	WaitForButtonsUp(True);
 	UngrabEm(GRAB_NORMAL);
-	Scr.flags.do_edge_wrap_x = edge_wrap_x;
-	Scr.flags.do_edge_wrap_y = edge_wrap_y;
+	scr_flags.do_edge_wrap_x = edge_wrap_x;
+	scr_flags.do_edge_wrap_y = edge_wrap_y;
 	update_absolute_geometry(fw);
 	maximize_adjust_offset(fw);
 	if (is_aborted)

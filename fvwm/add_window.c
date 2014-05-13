@@ -2036,7 +2036,7 @@ void setup_frame_attributes(
 		? ParentRelative : None;
 	/* Save_under is only useful on the frame */
 	xswa.save_under = pstyle->flags.do_save_under
-		? Scr.flags.do_save_under : NotUseful;
+		? scr_flags.do_save_under : NotUseful;
 	XChangeWindowAttributes(dpy, FW_W(fw), CWBackingStore, &xswa);
 	XChangeWindowAttributes(
 		dpy, FW_W_PARENT(fw), CWBackPixmap | CWBackingStore, &xswa);
@@ -2226,7 +2226,7 @@ FvwmWindow *AddWindow(
 		    (unsigned int*)&JunkWidth, (unsigned int*)&JunkHeight,
 		    (unsigned int*)&JunkBW, (unsigned int*)&JunkDepth) == 0)
 	{
-		if (Scr.bo.do_display_new_window_names)
+		if (bo.do_display_new_window_names)
 		{
 			fvwm_msg(INFO, "AddWindow", "new window disappeared");
 		}
@@ -2246,7 +2246,7 @@ FvwmWindow *AddWindow(
 	sflags = SGET_FLAGS_POINTER(style);
 	if (SIS_UNMANAGED(sflags))
 	{
-		if (Scr.bo.do_display_new_window_names)
+		if (bo.do_display_new_window_names)
 		{
 			fvwm_msg(
 				INFO, "AddWindow", "new window is unmanaged:\n"
@@ -2290,7 +2290,7 @@ FvwmWindow *AddWindow(
 	/***** visible window name ****/
 	setup_visible_name(fw, False);
 	EWMH_SetVisibleName(fw, False);
-	if (Scr.bo.do_display_new_window_names)
+	if (bo.do_display_new_window_names)
 	{
 		fvwm_msg(
 			INFO, "AddWindow", "new window:\n"
@@ -3223,8 +3223,8 @@ void destroy_window(FvwmWindow *fw)
 
 	/****** check if we have to delay window destruction ******/
 
-	if ((Scr.flags.is_executing_complex_function ||
-	     Scr.flags.is_executing_menu_function) &&
+	if ((scr_flags.is_executing_complex_function ||
+	     scr_flags.is_executing_menu_function) &&
 	    !DO_REUSE_DESTROYED(fw))
 	{
 		if (IS_SCHEDULED_FOR_DESTROY(fw))
@@ -3233,7 +3233,7 @@ void destroy_window(FvwmWindow *fw)
 		}
 		/* mark window for destruction */
 		SET_SCHEDULED_FOR_DESTROY(fw, 1);
-		Scr.flags.is_window_scheduled_for_destroy = 1;
+		scr_flags.is_window_scheduled_for_destroy = 1;
 		/* this is necessary in case the application destroys the
 		 * client window and a new window is created with the same
 		 * window id */
@@ -3535,7 +3535,7 @@ void CaptureAllWindows(const exec_context_t *exc, Bool is_recapture)
 	memset(&win_opts, 0, sizeof(win_opts));
 	win_opts.flags.do_override_ppos = 1;
 	win_opts.flags.is_recapture = 1;
-	if (!(Scr.flags.are_windows_captured)) /* initial capture? */
+	if (!(scr_flags.are_windows_captured)) /* initial capture? */
 	{
 		evh_args_t ea;
 		exec_context_changes_t ecc;
@@ -3591,7 +3591,7 @@ void CaptureAllWindows(const exec_context_t *exc, Bool is_recapture)
 				exc_destroy_context(ea.exc);
 			}
 		}
-		Scr.flags.are_windows_captured = 1;
+		scr_flags.are_windows_captured = 1;
 	}
 	else /* must be recapture */
 	{

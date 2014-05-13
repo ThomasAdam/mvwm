@@ -1597,7 +1597,7 @@ static int __place_window(
 		 * it's a restart or recapture, and that option's disallowed...
 		 */
 		if (win_opts->flags.do_override_ppos &&
-		    (Restarting || (Scr.flags.are_windows_captured)) &&
+		    (Restarting || (scr_flags.are_windows_captured)) &&
 		    !SRECAPTURE_HONORS_STARTS_ON_PAGE(&pstyle->flags))
 		{
 			flags.do_honor_starts_on_page = 0;
@@ -1610,7 +1610,7 @@ static int __place_window(
 		 * it's a cold start window capture, and that's disallowed...
 		 */
 		if (win_opts->flags.do_override_ppos &&
-		    (!Restarting && !(Scr.flags.are_windows_captured)) &&
+		    (!Restarting && !(scr_flags.are_windows_captured)) &&
 		    !SCAPTURE_HONORS_STARTS_ON_PAGE(&pstyle->flags))
 		{
 			flags.do_honor_starts_on_page = 0;
@@ -2274,7 +2274,7 @@ Bool setup_window_placement(
 	rc = __place_window(
 		exc, pstyle, attr_g, start_style, mode, win_opts, &reason);
 	exc_destroy_context(exc);
-	if (Scr.bo.do_explain_window_placement == 1)
+	if (bo.do_explain_window_placement == 1)
 	{
 		__explain_placement(fw, &reason);
 	}

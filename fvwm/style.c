@@ -903,7 +903,7 @@ static void add_style_to_list(window_style *new_style)
 	SSET_PREV_STYLE(*new_style, last_style_in_list);
 	SSET_NEXT_STYLE(*new_style, NULL);
 	last_style_in_list = new_style;
-	Scr.flags.do_need_style_list_update = 1;
+	scr_flags.do_need_style_list_update = 1;
 
 	return;
 } /* end function */
@@ -4639,7 +4639,7 @@ static void __style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	/* mark style as changed */
 	ps->has_style_changed = 1;
 	/* set global flag */
-	Scr.flags.do_need_window_update = 1;
+	scr_flags.do_need_window_update = 1;
 	/* default StartsOnPage behavior for initial capture */
 	ps->flags.capture_honors_starts_on_page = 1;
 
@@ -4758,7 +4758,7 @@ void free_icon_boxes(icon_boxes *ib)
 void simplify_style_list(void)
 {
 	/* one pass through the style list, then process other events first */
-	Scr.flags.do_need_style_list_update = __simplify_style_list();
+	scr_flags.do_need_style_list_update = __simplify_style_list();
 
 	return;
 }
@@ -5235,49 +5235,49 @@ void update_style_colorset(int colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_colorset = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_COLORSET_HI(&temp->flags) &&
 		    SGET_COLORSET_HI(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_colorset_hi = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_BORDER_COLORSET(&temp->flags) &&
 		    SGET_BORDER_COLORSET(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_border_colorset = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_BORDER_COLORSET_HI(&temp->flags) &&
 		    SGET_BORDER_COLORSET_HI(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_border_colorset_hi = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_ICON_TITLE_COLORSET(&temp->flags) &&
 		    SGET_ICON_TITLE_COLORSET(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_icon_title_colorset = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_ICON_TITLE_COLORSET_HI(&temp->flags) &&
 		    SGET_ICON_TITLE_COLORSET_HI(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_icon_title_colorset_hi = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 		if (SUSE_ICON_BACKGROUND_COLORSET(&temp->flags) &&
 		    SGET_ICON_BACKGROUND_COLORSET(*temp) == colorset)
 		{
 			temp->has_style_changed = 1;
 			temp->change_mask.use_icon_background_colorset = 1;
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 	}
 
@@ -5435,7 +5435,7 @@ void style_destroy_style(style_id_t s_id)
 	if (remove_all_of_style_from_list(s_id))
 	{
 		/* compact the current list of styles */
-		Scr.flags.do_need_style_list_update = 1;
+		scr_flags.do_need_style_list_update = 1;
 	}
 	else
 	{
@@ -5447,7 +5447,7 @@ void style_destroy_style(style_id_t s_id)
 		if (fw_match_style_id(t, s_id))
 		{
 			SET_STYLE_DELETED(t, 1);
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 	}
 

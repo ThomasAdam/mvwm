@@ -442,7 +442,7 @@ static void do_title_style(F_CMD_ARGS, Bool do_add)
 	char *prev;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
-	Scr.flags.do_need_window_update = 1;
+	scr_flags.do_need_window_update = 1;
 	decor->flags.has_changed = 1;
 	decor->titlebar.flags.has_changed = 1;
 
@@ -902,7 +902,7 @@ static void do_button_style(F_CMD_ARGS, Bool do_add)
 		return;
 	}
 
-	Scr.flags.do_need_window_update = 1;
+	scr_flags.do_need_window_update = 1;
 
 	do_return = 0;
 	if (!isdigit(*parm))
@@ -1186,7 +1186,7 @@ void update_decors_colorset(int cset)
 			&(decor->BorderStyle.inactive), cset);
 		if (decor->flags.has_changed)
 		{
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 		}
 	}
 }
@@ -1288,7 +1288,7 @@ void refresh_window(Window w, Bool window_update)
 		CopyFromParent, CopyFromParent, CopyFromParent, valuemask,
 		&attributes);
 	XMapWindow(dpy, w);
-	if (Scr.flags.do_need_window_update && window_update)
+	if (scr_flags.do_need_window_update && window_update)
 	{
 		flush_window_updates();
 	}
@@ -2122,8 +2122,8 @@ void update_fvwm_colorset(int cset)
 {
 	if (cset == Scr.DefaultColorset)
 	{
-		Scr.flags.do_need_window_update = 1;
-		Scr.flags.has_default_color_changed = 1;
+		scr_flags.do_need_window_update = 1;
+		scr_flags.has_default_color_changed = 1;
 	}
 	UpdateMenuColorset(cset);
 	update_style_colorset(cset);
@@ -2968,8 +2968,8 @@ void CMD_DefaultColorset(F_CMD_ARGS)
 		Scr.DefaultColorset = -1;
 	}
 	alloc_colorset(Scr.DefaultColorset);
-	Scr.flags.do_need_window_update = 1;
-	Scr.flags.has_default_color_changed = 1;
+	scr_flags.do_need_window_update = 1;
+	scr_flags.has_default_color_changed = 1;
 
 	return;
 }
@@ -3008,8 +3008,8 @@ void CMD_DefaultColors(F_CMD_ARGS)
 	free(back);
 
 	Scr.DefaultColorset = -1;
-	Scr.flags.do_need_window_update = 1;
-	Scr.flags.has_default_color_changed = 1;
+	scr_flags.do_need_window_update = 1;
+	scr_flags.has_default_color_changed = 1;
 
 	return;
 }
@@ -3052,8 +3052,8 @@ void CMD_DefaultFont(F_CMD_ARGS)
 		}
 	}
 	/* set flags to indicate that the font has changed */
-	Scr.flags.do_need_window_update = 1;
-	Scr.flags.has_default_font_changed = 1;
+	scr_flags.do_need_window_update = 1;
+	scr_flags.has_default_font_changed = 1;
 
 	return;
 }
@@ -3199,7 +3199,7 @@ void CMD_DestroyDecor(F_CMD_ARGS)
 
 			InitFvwmDecor(found);
 			found->tag = xstrdup(item);
-			Scr.flags.do_need_window_update = 1;
+			scr_flags.do_need_window_update = 1;
 			found->flags.has_changed = 1;
 			found->flags.has_title_height_changed = 0;
 			found->titlebar.flags.has_changed = 1;
@@ -3540,14 +3540,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_disable_configure_notify ^= 1;
+				bo.do_disable_configure_notify ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_disable_configure_notify = toggle;
+				bo.do_disable_configure_notify = toggle;
 				break;
 			default:
-				Scr.bo.do_disable_configure_notify = 0;
+				bo.do_disable_configure_notify = 0;
 				break;
 			}
 		}
@@ -3556,14 +3556,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_install_root_cmap ^= 1;
+				bo.do_install_root_cmap ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_install_root_cmap = toggle;
+				bo.do_install_root_cmap = toggle;
 				break;
 			default:
-				Scr.bo.do_install_root_cmap = 0;
+				bo.do_install_root_cmap = 0;
 				break;
 			}
 		}
@@ -3572,17 +3572,17 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.is_modality_evil ^= 1;
+				bo.is_modality_evil ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.is_modality_evil = toggle;
+				bo.is_modality_evil = toggle;
 				break;
 			default:
-				Scr.bo.is_modality_evil = 0;
+				bo.is_modality_evil = 0;
 				break;
 			}
-			if (Scr.bo.is_modality_evil)
+			if (bo.is_modality_evil)
 			{
 				SetMWM_INFO(Scr.NoFocusWin);
 			}
@@ -3592,14 +3592,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.is_raise_hack_needed ^= 1;
+				bo.is_raise_hack_needed ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.is_raise_hack_needed = toggle;
+				bo.is_raise_hack_needed = toggle;
 				break;
 			default:
-				Scr.bo.is_raise_hack_needed = 0;
+				bo.is_raise_hack_needed = 0;
 				break;
 			}
 		}
@@ -3608,14 +3608,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_raise_over_unmanaged ^= 1;
+				bo.do_raise_over_unmanaged ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_raise_over_unmanaged = toggle;
+				bo.do_raise_over_unmanaged = toggle;
 				break;
 			default:
-				Scr.bo.do_raise_over_unmanaged = 0;
+				bo.do_raise_over_unmanaged = 0;
 				break;
 			}
 		}
@@ -3624,14 +3624,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround ^= 1;
+				bo.do_enable_flickering_qt_dialogs_workaround ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround = toggle;
+				bo.do_enable_flickering_qt_dialogs_workaround = toggle;
 				break;
 			default:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround = 0;
+				bo.do_enable_flickering_qt_dialogs_workaround = 0;
 				break;
 			}
 		}
@@ -3640,14 +3640,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_enable_qt_drag_n_drop_workaround ^= 1;
+				bo.do_enable_qt_drag_n_drop_workaround ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_enable_qt_drag_n_drop_workaround = toggle;
+				bo.do_enable_qt_drag_n_drop_workaround = toggle;
 				break;
 			default:
-				Scr.bo.do_enable_qt_drag_n_drop_workaround = 0;
+				bo.do_enable_qt_drag_n_drop_workaround = 0;
 				break;
 			}
 		}
@@ -3660,14 +3660,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_display_new_window_names ^= 1;
+				bo.do_display_new_window_names ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_display_new_window_names = toggle;
+				bo.do_display_new_window_names = toggle;
 				break;
 			default:
-				Scr.bo.do_display_new_window_names = 0;
+				bo.do_display_new_window_names = 0;
 				break;
 			}
 		}
@@ -3676,14 +3676,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_explain_window_placement ^= 1;
+				bo.do_explain_window_placement ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_explain_window_placement = toggle;
+				bo.do_explain_window_placement = toggle;
 				break;
 			default:
-				Scr.bo.do_explain_window_placement = 0;
+				bo.do_explain_window_placement = 0;
 				break;
 			}
 		}
@@ -3692,14 +3692,14 @@ void CMD_BugOpts(F_CMD_ARGS)
 			switch (toggle)
 			{
 			case -1:
-				Scr.bo.do_debug_cr_motion_method ^= 1;
+				bo.do_debug_cr_motion_method ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_debug_cr_motion_method = toggle;
+				bo.do_debug_cr_motion_method = toggle;
 				break;
 			default:
-				Scr.bo.do_debug_cr_motion_method = 0;
+				bo.do_debug_cr_motion_method = 0;
 				break;
 			}
 		}
@@ -3724,27 +3724,27 @@ void CMD_Emulate(F_CMD_ARGS)
 	style = PeekToken(action, NULL);
 	if (!style || StrEquals(style, "fvwm"))
 	{
-		Scr.gs.do_emulate_mwm = False;
-		Scr.gs.do_emulate_win = False;
+		gso.do_emulate_mwm = False;
+		gso.do_emulate_win = False;
 	}
 	else if (StrEquals(style, "mwm"))
 	{
-		Scr.gs.do_emulate_mwm = True;
-		Scr.gs.do_emulate_win = False;
+		gso.do_emulate_mwm = True;
+		gso.do_emulate_win = False;
 	}
 	else if (StrEquals(style, "win"))
 	{
-		Scr.gs.do_emulate_mwm = False;
-		Scr.gs.do_emulate_win = True;
+		gso.do_emulate_mwm = False;
+		gso.do_emulate_win = True;
 	}
 	else
 	{
 		fvwm_msg(ERR, "Emulate", "Unknown style '%s'", style);
 		return;
 	}
-	Scr.flags.do_need_window_update = 1;
-	Scr.flags.has_default_font_changed = 1;
-	Scr.flags.has_default_color_changed = 1;
+	scr_flags.do_need_window_update = 1;
+	scr_flags.has_default_font_changed = 1;
+	scr_flags.has_default_color_changed = 1;
 
 	return;
 }

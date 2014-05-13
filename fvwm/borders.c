@@ -294,9 +294,9 @@ static Bool is_button_toggled(
 static ButtonState border_flags_to_button_state(
 	int is_pressed, int is_lit, int is_toggled)
 {
-	if (!is_lit && Scr.gs.use_inactive_buttons)
+	if (!is_lit && gso.use_inactive_buttons)
 	{
-		if (is_pressed && Scr.gs.use_inactive_down_buttons)
+		if (is_pressed && gso.use_inactive_down_buttons)
 		{
 			return (is_toggled) ?
 				BS_ToggledInactiveDown : BS_InactiveDown;
@@ -309,7 +309,7 @@ static ButtonState border_flags_to_button_state(
 	}
 	else
 	{
-		if (is_pressed && Scr.gs.use_active_down_buttons)
+		if (is_pressed && gso.use_active_down_buttons)
 		{
 			return (is_toggled) ?
 				BS_ToggledActiveDown : BS_ActiveDown;
@@ -4945,40 +4945,40 @@ void CMD_ButtonState(F_CMD_ARGS)
 		static char first = True;
 		if (!token && first)
 		{
-			Scr.gs.use_active_down_buttons =
+			gso.use_active_down_buttons =
 				DEFAULT_USE_ACTIVE_DOWN_BUTTONS;
-			Scr.gs.use_inactive_buttons =
+			gso.use_inactive_buttons =
 				DEFAULT_USE_INACTIVE_BUTTONS;
-			Scr.gs.use_inactive_down_buttons =
+			gso.use_inactive_down_buttons =
 				DEFAULT_USE_INACTIVE_DOWN_BUTTONS;
 			return;
 		}
 		first = False;
 		if (StrEquals("activedown", token))
 		{
-			Scr.gs.use_active_down_buttons = ParseToggleArgument(
+			gso.use_active_down_buttons = ParseToggleArgument(
 				action, &action,
 				DEFAULT_USE_ACTIVE_DOWN_BUTTONS, True);
 		}
 		else if (StrEquals("inactive", token))
 		{
-			Scr.gs.use_inactive_buttons = ParseToggleArgument(
+			gso.use_inactive_buttons = ParseToggleArgument(
 				action, &action,
 				DEFAULT_USE_INACTIVE_BUTTONS, True);
 		}
 		else if (StrEquals("inactivedown", token))
 		{
-			Scr.gs.use_inactive_down_buttons = ParseToggleArgument(
+			gso.use_inactive_down_buttons = ParseToggleArgument(
 				action, &action,
 				DEFAULT_USE_INACTIVE_DOWN_BUTTONS, True);
 		}
 		else
 		{
-			Scr.gs.use_active_down_buttons =
+			gso.use_active_down_buttons =
 				DEFAULT_USE_ACTIVE_DOWN_BUTTONS;
-			Scr.gs.use_inactive_buttons =
+			gso.use_inactive_buttons =
 				DEFAULT_USE_INACTIVE_BUTTONS;
-			Scr.gs.use_inactive_down_buttons =
+			gso.use_inactive_down_buttons =
 				DEFAULT_USE_INACTIVE_DOWN_BUTTONS;
 			fvwm_msg(ERR, "cmd_button_state",
 				 "Unknown button state %s", token);
@@ -5000,7 +5000,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 	char *prev;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
-	Scr.flags.do_need_window_update = 1;
+	scr_flags.do_need_window_update = 1;
 	decor->flags.has_changed = 1;
 	for (prev = action; (parm = PeekToken(action, &action)); prev = action)
 	{
