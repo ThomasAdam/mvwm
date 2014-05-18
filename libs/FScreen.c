@@ -14,48 +14,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- *  FScreen.c
- *    Xinerama abstraction support for window manager.
- *
- *  This module is all original code
- *  by Dmitry Yu. Bolkhovityanov <bolkhov@inp.nsk.su>
- *  Copyright 2001, Dmitry Bolkhovityanov
- *     You may use this code for any purpose, as long as the original
- *     copyright remains in the source code and all documentation
- */
-
-/*
- * Brief description of used concept:
- *
- *   This code is always used by client, regardless of if Xinerama is
- *   available or not (either because -lXinerama was missing or
- *   because Xinerama extension is missing on display).
- *
- *   If Xinerama is available, this module maintains a list of screens,
- *   from [1] to [num_screens].  screens[0] is always the "global" screen,
- *   so if Xinerama is unavailable or disabled, the module performs
- *   all checks on screens[0] instead of screens[1..num_screens].
- *
- *   The client should first call the FScreenInit(), passing
- *   it the opened display descriptor.  During this call the list of
- *   Xinerama screens is retrieved and 'dpy' is saved for future
- *   reference.
- *
- *   If the client wishes to hard-disable Xinerama support (e.g. if
- *   Xinerama extension is present but is broken on display), it should
- *   call FScreenDisable() *before* FScreenInit().
- *
- *   Using real Xinerama screens info may be switched on/off "on the
- *   fly" by calling FScreenSetState(0=off/else=on).
- *
- *   Modules with Xinerama support should listen to the XineramaEnable
- *   and XineramaDisable strings coming over the module pipe as
- *   M_CONFIG_INFO packets and call FScreenEnable() or
- *   FScreenDisable in response.
- *
- */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -67,19 +25,9 @@
 #include "FScreen.h"
 #include "PictureBase.h"
 
-#ifdef HAVE_XINERAMA
-#   include <X11/extensions/Xinerama.h>
-# endif
-
-#ifndef MAXFRAMEBUFFERS
-#define	MAXFRAMEBUFFERS 16
+#ifdef HAVE_XRANDR
+#	include <X11/extensions/Xrandr.h>
 #endif
-
-enum
-{
-	/* Replace with FSCREEN_GLOBAL to restore default behaviour */
-	DEFAULT_GEOMETRY_SCREEN = FSCREEN_PRIMARY
-};
 
 /* In fact, only corners matter -- there will never be GRAV_NONE */
 enum {GRAV_POS = 0, GRAV_NONE = 1, GRAV_NEG = 2};
@@ -91,24 +39,8 @@ static int grav_matrix[3][3] =
 };
 #define DEFAULT_GRAVITY NorthWestGravity
 
-
-static Display            *disp              = NULL;
-static Bool                is_xinerama_enabled = DEFAULT_XINERAMA_ENABLED;
-static int		   FScreenHaveXinerama = 0;
-static XineramaScreenInfo *screens;
-static XineramaScreenInfo *screens_xi;
-/* # of Xinerama screens, *not* counting the global, 0 if disabled */
-static int                 num_screens       = 0;
-/* # of Xinerama screens, *not* counting the global */
-static int                 total_screens     = 0;
-static int                 total_screens_xi  = 0;
-static int                 first_to_check    = 0;
-static int                 last_to_check     = 0;
-static int                 default_geometry_scr = FSCREEN_PRIMARY;
-/* only to be accessed vie the set/get functions! */
-static int                 primary_scr       = DEFAULT_PRIMARY_SCREEN;
-
-static Window blank_w, vert_w, blank2_w, blank3_w;
+static Bool already_initialised;
+static Bool is_randr_enabled;
 
 static int FScreenParseScreenBit(char *arg, char default_screen);
 static int FindScreenOfXY(int x, int y);
@@ -151,112 +83,24 @@ static void GetMouseXY(XEvent *eventp, int *x, int *y)
 
 Bool FScreenIsEnabled(void)
 {
-	return (!FScreenHaveXinerama || !is_xinerama_enabled ||
-		num_screens == 0) ? False : True;
+	return (is_randr_enabled);
 }
-
-static void FScreenSetState(Bool do_enable)
-{
-	is_xinerama_enabled = do_enable;
-	if (do_enable && total_screens > 0)
-	{
-		num_screens = total_screens;
-		first_to_check = 1;
-		last_to_check  = total_screens;
-	}
-	else
-	{
-		num_screens = 0;
-		first_to_check = 0;
-		last_to_check = 0;
-	}
-}
-
 
 void FScreenInit(Display *dpy)
 {
-	static Bool is_initialised = False;
-	int dummy_rc;
 
-	if (is_initialised)
-	{
+	if (already_initialised)
 		return;
-	}
-	dummy_rc = 0;
-	is_initialised = True;
-	disp = dpy;
-
-	if ( XineramaQueryExtension(disp, &dummy_rc, &dummy_rc) &&
-		XineramaIsActive(disp))
-	{
-		FScreenHaveXinerama = 1;
-		int count;
-		XineramaScreenInfo *info;
-
-		info = FXineramaQueryScreens(disp, &count);
-		total_screens_xi = count;
-		screens_xi = xmalloc(sizeof(XineramaScreenInfo) * (1 + count));
-		memcpy(screens_xi + 1, info,
-		       sizeof(XineramaScreenInfo) * count);
-		XFree(info);
-	}
-	else
-	{
-		total_screens_xi = 0;
-		screens_xi = xmalloc(sizeof(XineramaScreenInfo) * 1);
-	}
-	total_screens = total_screens_xi;
-	screens = screens_xi;
-
-	/* Now, fill screens[0] with global screen parameters */
-	screens_xi[0].screen_number = -1;
-	screens_xi[0].x_org         = 0;
-	screens_xi[0].y_org         = 0;
-	screens_xi[0].width         = DisplayWidth (disp, DefaultScreen(disp));
-	screens_xi[0].height        = DisplayHeight(disp, DefaultScreen(disp));
-
-	/* Fill in the screen range */
-	FScreenSetState(is_xinerama_enabled);
-
-	return;
-}
-
-void FScreenOnOff(Bool do_enable)
-{
-	FScreenSetState(do_enable);
 }
 
 static int FScreenGetPrimaryScreen(XEvent *ev)
 {
-	if (!is_xinerama_enabled)
-	{
-		return 0;
-	}
-	if (primary_scr == FSCREEN_GLOBAL)
-	{
-		return 0;
-	}
-	else if (primary_scr == FSCREEN_CURRENT)
-	{
-		int mx;
-		int my;
+	int mx;
+	int my;
 
-		/* use current screen as primary screen */
-		GetMouseXY(ev, &mx, &my);
-		return FindScreenOfXY(mx, my);
-	}
-	else if (primary_scr < 0 || primary_scr >= last_to_check)
-	{
-		/* out of range */
-		return 0;
-	}
-
-	return primary_scr + 1;
-}
-
-void FScreenSetPrimaryScreen(int scr)
-{
-	primary_scr = scr;
+	/* use current screen as primary screen */
+	GetMouseXY(ev, &mx, &my);
+	return FindScreenOfXY(mx, my);
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
