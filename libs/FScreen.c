@@ -27,6 +27,9 @@
 
 #ifdef HAVE_XRANDR
 #	include <X11/extensions/Xrandr.h>
+#	define IS_RANDR_ENABLED 1
+#else
+#	define IS_RANDR_ENABLED 0
 #endif
 
 struct monitor {
@@ -55,7 +58,6 @@ static int grav_matrix[3][3] =
 #define DEFAULT_GRAVITY NorthWestGravity
 
 static Bool already_initialised;
-static Bool is_randr_enabled;
 
 static int FScreenParseScreenBit(char *arg, char default_screen);
 static int FindScreenOfXY(int x, int y);
@@ -98,7 +100,7 @@ static void GetMouseXY(XEvent *eventp, int *x, int *y)
 
 Bool FScreenIsEnabled(void)
 {
-	return (is_randr_enabled);
+	return (IS_RANDR_ENABLED);
 }
 
 void FScreenInit(Display *dpy)
