@@ -29,6 +29,21 @@
 #	include <X11/extensions/Xrandr.h>
 #endif
 
+struct monitor {
+	char	*name;
+	struct {
+		int x;
+		int y;
+		int w;
+		int h;
+	} coord;
+
+	TAILQ_ENTRY(monitor) entry;
+};
+TAILQ_HEAD(monitors, monitor);
+
+static struct monitors monitor_q;
+
 /* In fact, only corners matter -- there will never be GRAV_NONE */
 enum {GRAV_POS = 0, GRAV_NONE = 1, GRAV_NEG = 2};
 static int grav_matrix[3][3] =
@@ -88,9 +103,16 @@ Bool FScreenIsEnabled(void)
 
 void FScreenInit(Display *dpy)
 {
+	int	 err_base = 0;
 
 	if (already_initialised)
 		return;
+
+	if (XRRQueryExtension(dpy, &event, &err_base)) {
+		/* Do something. */
+	}
+
+	TAILQ_INIT(&monitor_q);
 }
 
 static int FScreenGetPrimaryScreen(XEvent *ev)
