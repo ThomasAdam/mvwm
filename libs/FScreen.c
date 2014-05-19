@@ -105,13 +105,25 @@ Bool FScreenIsEnabled(void)
 
 void FScreenInit(Display *dpy)
 {
-	int	 err_base = 0;
+	XRRScreenResources	*res = NULL;
+	XRRCrtcInfo		*crtc = NULL;
+	int			 i;
+	int			 err_base = 0;
 
 	if (already_initialised)
 		return;
 
-	if (XRRQueryExtension(dpy, &event, &err_base)) {
-		/* Do something. */
+	if (FScreenIsEnabled() && !XRRQueryExtension(dpy, &event, &err_base)) {
+		/* Something went wrong. */
+		fprintf(stderr, "Couldn't initialise XRandR: %s\n",
+			strerror(errno));
+		exit(1);
+	}
+
+	/* XRandR is present, so query the screens we have. */
+	res = XRRGetScreenResourcesCurrent(dpy, DefaultRootWindow(dpy));
+	if (res != NULL) {
+		/* Parse into crtc information. */
 	}
 
 	TAILQ_INIT(&monitor_q);
