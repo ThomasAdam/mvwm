@@ -2043,7 +2043,6 @@ void CMD_Xinerama(F_CMD_ARGS)
 	{
 		scr_flags.do_need_window_update = True;
 		scr_flags.has_xinerama_state_changed = True;
-		FScreenOnOff(toggle);
 		broadcast_xinerama_state();
 	}
 
@@ -2052,10 +2051,6 @@ void CMD_Xinerama(F_CMD_ARGS)
 
 void CMD_XineramaPrimaryScreen(F_CMD_ARGS)
 {
-	int val;
-
-	val = FScreenGetScreenArgument(action, 0);
-	FScreenSetPrimaryScreen(val);
 	if (FScreenIsEnabled())
 	{
 		scr_flags.do_need_window_update = True;
