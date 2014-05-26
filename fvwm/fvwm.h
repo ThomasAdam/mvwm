@@ -674,7 +674,7 @@ typedef struct window_style
 	int start_desk;
 	int start_page_x;
 	int start_page_y;
-	int start_screen;
+	char *start_screen;
 	int min_window_width;
 	int min_window_height;
 	int max_window_width;

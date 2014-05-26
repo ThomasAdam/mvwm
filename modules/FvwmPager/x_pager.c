@@ -680,7 +680,7 @@ void initialize_pager(void)
 			       valuemask, &attributes);
   XSetWMProtocols(dpy,Scr.Pager_w,&wm_del_win,1);
   /* hack to prevent mapping on wrong screen with StartsOnScreen */
-  FScreenMangleScreenIntoUSPosHints(FSCREEN_XYPOS, &sizehints);
+  //FScreenMangleScreenIntoUSPosHints(FSCREEN_XYPOS, &sizehints);
   XSetWMNormalHints(dpy,Scr.Pager_w,&sizehints);
   if (is_transient)
   {

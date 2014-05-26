@@ -7193,8 +7193,8 @@ char *get_menu_options(
 		}
 		else if (StrEquals(tok,"rectangle"))
 		{
+			char *screen;
 			int flags;
-			int screen;
 			int sx;
 			int sy;
 			int sw;

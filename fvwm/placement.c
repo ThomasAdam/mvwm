@@ -139,7 +139,7 @@ typedef struct
 	struct
 	{
 		preason_screen_t reason;
-		int screen;
+		char *screen;
 		rectangle g;
 		unsigned was_modified_by_ewmh_workingarea : 1;
 	} screen;
@@ -166,7 +166,7 @@ typedef struct
 	int desk;
 	int page_x;
 	int page_y;
-	int screen;
+	char *screen;
 } pl_start_style_t;
 
 typedef struct

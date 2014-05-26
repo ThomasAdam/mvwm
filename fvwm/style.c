@@ -1804,8 +1804,7 @@ static char *style_parse_icon_box_style(
 		is_screen_given = True;
 		option = PeekToken(rest, &rest); /* skip screen */
 		option = PeekToken(rest, &rest); /* get the screen spec */
-		IconBoxes->IconScreen =
-			FScreenGetScreenArgument(option, FSCREEN_SPEC_PRIMARY);
+		IconBoxes->IconScreen = option;
 	}
 
 	/* try for 4 numbers x y x y */

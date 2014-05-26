@@ -32,4 +32,4 @@ libfvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
 
 INCLUDES = -I$(top_srcdir) $(Xft_CFLAGS) $(X_CFLAGS) \
 	$(iconv_CFLAGS) $(Xrender_CFLAGS) $(Bidi_CFLAGS) $(png_CFLAGS) \
-	$(rsvg_CFLAGS) $(intl_CFLAGS)
+	$(rsvg_CFLAGS) $(intl_CFLAGS) $(XRandR_CFLAGS)
