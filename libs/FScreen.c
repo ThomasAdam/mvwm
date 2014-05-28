@@ -45,6 +45,7 @@ static int grav_matrix[3][3] =
 
 static Bool already_initialised;
 static Display *disp;
+static int no_of_screens;
 
 static int FScreenParseScreenBit(char *arg, char default_screen);
 static struct monitor	*FindScreenOfXY(int x, int y);
@@ -112,13 +113,16 @@ void FScreenInit(Display *dpy)
 	struct monitor		*m;
 	int			 i;
 	int			 err_base = 0, event = 0;
+	int			 is_randr_present = 0;
 
 	disp = dpy;
 
 	if (already_initialised)
 		return;
 
-	if (FScreenIsEnabled() && !XRRQueryExtension(dpy, &event, &err_base)) {
+	is_randr_present = XRRQueryExtension(dpy, &event, &err_base);
+
+	if (FScreenIsEnabled() && !is_randr_present) {
 		/* Something went wrong. */
 		fprintf(stderr, "Couldn't initialise XRandR: %s\n",
 			strerror(errno));
@@ -128,10 +132,21 @@ void FScreenInit(Display *dpy)
 
 	TAILQ_INIT(&monitor_q);
 
+	m = monitor_new();
+	m->coord.x = 0;
+	m->coord.y = 0;
+	m->coord.w = DisplayWidth(disp, DefaultScreen(disp));
+	m->coord.h = DisplayHeight(disp, DefaultScreen(disp));
+	m->name = xstrdup("global");
+
+	if (!is_randr_present)
+		goto done;
+
 	/* XRandR is present, so query the screens we have. */
 	res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	if (res != NULL) {
 		crtc = NULL;
+		no_of_screens = res->noutput;
 		for (i = 0; i < res->noutput; i++) {
 			oinfo = XRRGetOutputInfo(dpy, res, res->outputs[i]);
 
@@ -155,8 +170,9 @@ void FScreenInit(Display *dpy)
 			else
 				TAILQ_INSERT_TAIL(&monitor_q, m, entry);
 		}
-		already_initialised = 1;
 	}
+done:
+	already_initialised = 1;
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
@@ -230,7 +246,7 @@ FindScreenOfXY(int x, int y)
 }
 
 static struct monitor *
-FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
+FindScreen(fscreen_scr_arg *arg)
 {
 	fscreen_scr_arg tmp;
 
@@ -325,7 +341,7 @@ void FScreenTranslateCoordinates(
 
 /* Arguments work exactly like for FScreenGetScrRect() */
 int FScreenClipToScreen(
-	fscreen_scr_arg *arg, fscreen_scr_t screen, int *x, int *y, int w,
+	fscreen_scr_arg *arg, int *x, int *y, int w,
 	int h)
 {
 	int sx;
@@ -337,7 +353,7 @@ int FScreenClipToScreen(
 	int x_grav = GRAV_POS;
 	int y_grav = GRAV_POS;
 
-	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
+	FScreenGetScrRect(arg, &sx, &sy, &sw, &sh);
 	if (lx + w > sx + sw)
 	{
 		lx = sx + sw  - w;
@@ -372,7 +388,7 @@ int FScreenClipToScreen(
 
 /* Arguments work exactly like for FScreenGetScrRect() */
 void FScreenCenterOnScreen(
-	fscreen_scr_arg *arg, fscreen_scr_t screen, int *x, int *y, int w,
+	fscreen_scr_arg *arg, int *x, int *y, int w,
 	int h)
 {
 	int sx;
@@ -382,7 +398,7 @@ void FScreenCenterOnScreen(
 	int lx;
 	int ly;
 
-	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
+	FScreenGetScrRect(arg, &sx, &sy, &sw, &sh);
 	lx = (sw  - w) / 2;
 	ly = (sh - h) / 2;
 	if (lx < 0)
