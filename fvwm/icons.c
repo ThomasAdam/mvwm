@@ -1807,7 +1807,7 @@ void AutoPlaceIcon(
 	break;
       }
       /* get the screen dimensions for the icon box */
-      FScreenGetScrRect(&fscr, FSCREEN_CURRENT,
+      FScreenGetScrRect(&fscr, FSCREEN_XYPOS,
 		        &ref.x, &ref.y, &ref.width, &ref.height);
       dim[1].screen_offset = ref.y;
       dim[1].screen_dimension = ref.height;
