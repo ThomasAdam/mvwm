@@ -2,7 +2,10 @@
 #ifndef FVWMLIB_FSCRREN_H
 #define FVWMLIB_FSCRREN_H
 
-/* needs X11/Xlib.h and X11/Xutil.h */
+#include "fvwm/fvwm.h"
+#include "fvwm/execcontext.h"
+#include "fvwm/misc.h"
+#include "fvwm/screen.h"
 
 typedef union
 {
@@ -32,6 +35,8 @@ struct monitor {
 		int w;
 		int h;
 	} coord;
+
+	ScreenInfo	*Scr;
 
 	TAILQ_ENTRY(monitor) entry;
 };

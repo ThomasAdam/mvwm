@@ -3,7 +3,7 @@
 #include "libs/vpacket.h"
 #include "libs/Flocale.h"
 
-typedef struct ScreenInfo
+typedef struct FvwmPagerScreenInfo
 {
   unsigned long screen;
   int MyDisplayWidth;   /* my copy of DisplayWidth(dpy, screen) */
@@ -43,7 +43,7 @@ typedef struct ScreenInfo
   Pixmap light_gray_pixmap;
   Pixmap gray_pixmap;
   Pixel black;
-} ScreenInfo;
+} FvwmPagerScreenInfo;
 
 typedef struct pager_window
 {

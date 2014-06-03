@@ -1075,7 +1075,7 @@ static NameType parse_format_dependencies(char *format)
 static void handle_button_config(int manager, int context, char *option)
 {
 	char *p;
-	ButtonState state;
+	FvwmIconManButtonState state;
 
 	p = read_next_cmd(READ_ARG);
 	if (!p)

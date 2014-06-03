@@ -79,7 +79,7 @@ typedef enum {
 	BUTTON_DOWN,
 	BUTTON_EDGEUP,
 	BUTTON_EDGEDOWN,
-} ButtonState;
+} FvwmIconManButtonState;
 
 /* The clicks must be the first three elements in this type, X callbacks
 	depend on it! */
@@ -290,7 +290,7 @@ typedef struct win_manager {
 	Pixmap pixmap[NUM_CONTEXTS];
 	char *backColorName[NUM_CONTEXTS];
 	char *foreColorName[NUM_CONTEXTS];
-	ButtonState buttonState[NUM_CONTEXTS];
+	FvwmIconManButtonState buttonState[NUM_CONTEXTS];
 	char *geometry_str, *button_geometry_str;
 	int max_button_width;
 	int max_button_width_columns;
@@ -362,7 +362,7 @@ typedef struct {
 
 typedef struct {
 	char *name;
-	ButtonState state;
+	FvwmIconManButtonState state;
 	char *forecolor[2]; /* 0 is mono, 1 is color */
 	char *backcolor[2]; /* 0 is mono, 1 is color */
 } ContextDefaults;
