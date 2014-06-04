@@ -122,10 +122,10 @@ void FScreenInit(Display *dpy)
 	is_randr_present = XRRQueryExtension(dpy, &event, &err_base);
 
 	if (FScreenIsEnabled() && !is_randr_present) {
-		/* Something went wrong. */
+		/* Something went wrong.   Shouldn't we try Xinerama here? */
 		fprintf(stderr, "Couldn't initialise XRandR: %s\n",
 			strerror(errno));
-		exit(1);
+		fprintf(stderr, "Falling back to single screen...\n");
 	}
 
 
