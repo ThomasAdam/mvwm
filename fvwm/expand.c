@@ -343,6 +343,7 @@ static signed int expand_vars_extended(
 	Window context_w = Scr.Root;
 	FvwmWindow *fw = exc->w.fw;
 	signed int len = -1;
+	struct monitor	*m = monitor_get_current();
 
 	/* allow partial matches for *.cs, gt, ... etc. variables */
 	switch ((i = GetTokenIndex(var_name, partial_function_vars, -1, &rest)))
@@ -417,7 +418,7 @@ static signed int expand_vars_extended(
 			/* trailing characters */
 			return -1;
 		}
-		string = GetDesktopName(cs);
+		string = GetDesktopName(fw->m, cs);
 		if (string == NULL)
 		{
 			const char *ddn = _("Desk");
@@ -436,47 +437,47 @@ static signed int expand_vars_extended(
 	{
 	case VAR_DESK_N:
 		is_numeric = True;
-		val = Scr.CurrentDesk;
+		val = m->virtual_scr.CurrentDesk;
 		break;
 	case VAR_DESK_WIDTH:
 		is_numeric = True;
-		val = Scr.VxMax + Scr.MyDisplayWidth;
+		val = m->virtual_scr.VxMax + m->coord.w;
 		break;
 	case VAR_DESK_HEIGHT:
 		is_numeric = True;
-		val = Scr.VyMax + Scr.MyDisplayHeight;
+		val = m->virtual_scr.VyMax + m->coord.h;
 		break;
 	case VAR_DESK_PAGESX:
 		is_numeric = True;
-		val = (int)(Scr.VxMax / Scr.MyDisplayWidth) + 1;
+		val = (int)(m->virtual_scr.VxMax / m->coord.w) + 1;
 		break;
 	case VAR_DESK_PAGESY:
 		is_numeric = True;
-		val = (int)(Scr.VyMax / Scr.MyDisplayHeight) + 1;
+		val = (int)(m->virtual_scr.VyMax / m->coord.h) + 1;
 		break;
 	case VAR_VP_X:
 		is_numeric = True;
-		val = Scr.Vx;
+		val = m->virtual_scr.Vx;
 		break;
 	case VAR_VP_Y:
 		is_numeric = True;
-		val = Scr.Vy;
+		val = m->virtual_scr.Vy;
 		break;
 	case VAR_VP_WIDTH:
 		is_numeric = True;
-		val = Scr.MyDisplayWidth;
+		val = m->coord.w;
 		break;
 	case VAR_VP_HEIGHT:
 		is_numeric = True;
-		val = Scr.MyDisplayHeight;
+		val = m->coord.h;
 		break;
 	case VAR_PAGE_NX:
 		is_numeric = True;
-		val = (int)(Scr.Vx / Scr.MyDisplayWidth);
+		val = (int)(m->virtual_scr.Vx / m->coord.w);
 		break;
 	case VAR_PAGE_NY:
 		is_numeric = True;
-		val = (int)(Scr.Vy / Scr.MyDisplayHeight);
+		val = (int)(m->virtual_scr.Vy / m->coord.h);
 		break;
 	case VAR_W_ID:
 		if (fw && !IS_EWMH_DESKTOP(FW_W(fw)))
@@ -722,7 +723,7 @@ static signed int expand_vars_extended(
 		is_numeric = True;
 		if (is_window_sticky_across_desks(fw))
 		{
-			val = Scr.CurrentDesk;
+			val = fw->m->virtual_scr.CurrentDesk;
 		}
 		else
 		{
@@ -912,6 +913,7 @@ char *expand_vars(
 	const char *string = NULL;
 	Bool is_string = False;
 	FvwmWindow *fw = exc->w.fw;
+	struct monitor	*mon = monitor_get_current();
 
 	l = strlen(input);
 	l2 = l;
@@ -1250,21 +1252,21 @@ char *expand_vars(
 			case 'd':
 				fvwm_msg(OLD, "expand_vars",
 					"Use $[desk.n] instead of $d");
-				sprintf(&out[j], "%d", Scr.CurrentDesk);
+				sprintf(&out[j], "%d", mon->virtual_scr.CurrentDesk);
 				j += strlen(&out[j]);
 				i++;
 				break;
 			case 'x':
 				fvwm_msg(OLD, "expand_vars",
 					"Use $[vp.x] instead of $x");
-				sprintf(&out[j], "%d", Scr.Vx);
+				sprintf(&out[j], "%d", mon->virtual_scr.Vx);
 				j += strlen(&out[j]);
 				i++;
 				break;
 			case 'y':
 				fvwm_msg(OLD, "expand_vars",
 					"Use $[vp.y] instead of $y");
-				sprintf(&out[j], "%d", Scr.Vy);
+				sprintf(&out[j], "%d", mon->virtual_scr.Vy);
 				j += strlen(&out[j]);
 				i++;
 				break;

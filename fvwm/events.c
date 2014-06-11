@@ -579,6 +579,7 @@ static inline void __cr_detect_icccm_move(
 	int h;
 	int has_x;
 	int has_y;
+	struct monitor	*mon = fw->m;
 
 	if (CR_MOTION_METHOD(fw) != CR_MOTION_METHOD_AUTO)
 	{
@@ -686,8 +687,8 @@ static inline void __cr_detect_icccm_move(
 	/* check full screen */
 	if ((cre->value_mask & (CWX | CWY)) == (CWX | CWY) &&
 	    (has_x || has_y) &&
-	    cre->width == Scr.MyDisplayWidth &&
-	    cre->height == Scr.MyDisplayHeight)
+	    cre->width == mon->coord.w &&
+	    cre->height == mon->coord.h)
 	{
 		if (grav_g.x == -b->top_left.width &&
 		    grav_g.y == -b->top_left.height)
@@ -759,11 +760,11 @@ static inline void __cr_detect_icccm_move(
 	{
 		mx = CR_MOTION_METHOD_AUTO;
 	}
-	else if (static_g.x == 0 || static_g.x + w == Scr.MyDisplayWidth)
+	else if (static_g.x == 0 || static_g.x + w == mon->coord.w)
 	{
 		mx = CR_MOTION_METHOD_STATIC_GRAV;
 	}
-	else if (grav_g.x == 0 || grav_g.x + w == Scr.MyDisplayWidth)
+	else if (grav_g.x == 0 || grav_g.x + w == mon->coord.w)
 	{
 		mx = CR_MOTION_METHOD_USE_GRAV;
 	}
@@ -775,11 +776,11 @@ static inline void __cr_detect_icccm_move(
 	{
 		my = CR_MOTION_METHOD_AUTO;
 	}
-	else if (static_g.y == 0 || static_g.y + h == Scr.MyDisplayHeight)
+	else if (static_g.y == 0 || static_g.y + h == mon->coord.h)
 	{
 		my = CR_MOTION_METHOD_STATIC_GRAV;
 	}
-	else if (grav_g.y == 0 || grav_g.y + h == Scr.MyDisplayHeight)
+	else if (grav_g.y == 0 || grav_g.y + h == mon->coord.h)
 	{
 		my = CR_MOTION_METHOD_USE_GRAV;
 	}
@@ -2156,12 +2157,14 @@ ENTER_DBG((stderr, "en: exit: found LeaveNotify\n"));
 			int delta_x = 0;
 			int delta_y = 0;
 			XEvent e;
+			struct monitor	*m = monitor_get_current();
 
 			/* this was in the HandleMotionNotify before, HEDU */
 			scr_flags.is_pointer_on_this_screen = 1;
 			e = *te;
 			HandlePaging(
-				&e, Scr.EdgeScrollX, Scr.EdgeScrollY, &JunkX,
+				&e, m->virtual_scr.EdgeScrollX,
+				m->virtual_scr.EdgeScrollY, &JunkX,
 				&JunkY, &delta_x, &delta_y, True, True, False,
 				Scr.ScrollDelay);
 			return;
@@ -2760,6 +2763,9 @@ void HandleMapNotify(const evh_args_t *ea)
 	const XEvent *te = ea->exc->x.etrigger;
 	FvwmWindow * const fw = ea->exc->w.fw;
 
+	if (fw && fw->m == NULL)
+		fw->m = monitor_get_current();
+
 	DBUG("HandleMapNotify", "Routine Entered");
 
 	if (!fw)
@@ -2796,7 +2802,7 @@ void HandleMapNotify(const evh_args_t *ea)
 
 	/* Make sure at least part of window is on this page before giving it
 	 * focus... */
-	is_on_this_page = IsRectangleOnThisPage(&(fw->g.frame), fw->Desk);
+	is_on_this_page = IsRectangleOnThisPage(fw->m, &(fw->g.frame), fw->Desk);
 
 	/*
 	 * Need to do the grab to avoid race condition of having server send
@@ -2814,7 +2820,7 @@ void HandleMapNotify(const evh_args_t *ea)
 		XUnmapWindow(dpy, FW_W_ICON_PIXMAP(fw));
 	}
 	XMapSubwindows(dpy, FW_W_FRAME(fw));
-	if (fw->Desk == Scr.CurrentDesk)
+	if (fw->Desk == fw->m->virtual_scr.CurrentDesk)
 	{
 		XMapWindow(dpy, FW_W_FRAME(fw));
 	}
@@ -3008,7 +3014,7 @@ void HandleMapRequestKeepRaised(
 	 * Make sure at least part of window is on this page
 	 * before giving it focus...
 	 */
-	is_on_this_page = IsRectangleOnThisPage(&(fw->g.frame), fw->Desk);
+	is_on_this_page = IsRectangleOnThisPage(fw->m, &(fw->g.frame), fw->Desk);
 	if (KeepRaised != None)
 	{
 		XRaiseWindow(dpy, KeepRaised);
@@ -3028,6 +3034,7 @@ void HandleMapRequestKeepRaised(
 	else
 	{
 		int state;
+		struct monitor	*mon = monitor_get_current();
 
 		if (fw->wmhints && (fw->wmhints->flags & StateHint))
 		{
@@ -3049,7 +3056,7 @@ void HandleMapRequestKeepRaised(
 		case InactiveState:
 		default:
 			MyXGrabServer(dpy);
-			if (fw->Desk == Scr.CurrentDesk)
+			if (fw->Desk == mon->virtual_scr.CurrentDesk)
 			{
 				Bool do_grab_focus;
 
@@ -3129,6 +3136,7 @@ void HandleMapRequestKeepRaised(
 					NULL, ea->exc,
 					(char *)initial_map_command, 0, fw);
 			}
+			fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
 			MyXUngrabServer(dpy);
 			break;
 
@@ -3178,8 +3186,10 @@ void HandleMapRequestKeepRaised(
 		SET_MAPPED(fw, 1);
 		SET_MAP_PENDING(fw, 0);
 	}
-	EWMH_SetClientList();
-	EWMH_SetClientListStacking();
+
+	fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
+	EWMH_SetClientList(fw->m);
+	EWMH_SetClientListStacking(fw->m);
 
 	return;
 }
@@ -3315,7 +3325,7 @@ void HandlePropertyNotify(const evh_args_t *ea)
 	 * Make sure at least part of window is on this page
 	 * before giving it focus...
 	 */
-	OnThisPage = IsRectangleOnThisPage(&(fw->g.frame), fw->Desk);
+	OnThisPage = IsRectangleOnThisPage(fw->m, &(fw->g.frame), fw->Desk);
 
 	switch (te->xproperty.atom)
 	{

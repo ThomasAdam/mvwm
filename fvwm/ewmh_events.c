@@ -74,9 +74,10 @@ int ewmh_DesktopGeometry(EWMH_CMD_ARGS)
 	char action[256];
 	long width = ev->xclient.data.l[0];
 	long height = ev->xclient.data.l[1];
+	struct monitor	*m = monitor_get_current();
 
-	width = width / Scr.MyDisplayWidth;
-	height = height / Scr.MyDisplayHeight;
+	width = width / m->coord.w;
+	height = height / m->coord.h;
 
 	if (width <= 0 || height <= 0)
 	{
@@ -127,12 +128,17 @@ int ewmh_DesktopViewPort(EWMH_CMD_ARGS)
 int ewmh_NumberOfDesktops(EWMH_CMD_ARGS)
 {
 	int d = ev->xclient.data.l[0];
+	struct monitor	*m;
 
 	/* not a lot of sinification for fvwm */
 	if (d > 0 && (d <= ewmhc.MaxDesktops || ewmhc.MaxDesktops == 0))
 	{
 		ewmhc.NumberOfDesktops = d;
-		EWMH_SetNumberOfDesktops();
+		TAILQ_FOREACH(m, &monitor_q, entry) {
+			if (monitor_should_ignore_global(m))
+				continue;
+			EWMH_SetNumberOfDesktops(m);
+		}
 	}
 	else
 	{
@@ -1532,7 +1538,7 @@ int ewmh_WMStrut(EWMH_CMD_ARGS)
 		fw->strut.right  = val[1];
 		fw->strut.top    = val[2];
 		fw->strut.bottom = val[3];
-		ewmh_ComputeAndSetWorkArea();
+		ewmh_ComputeAndSetWorkArea(monitor_get_current());
 	}
 	if (val[0] !=  fw->dyn_strut.left ||
 	    val[1] != fw->dyn_strut.right ||
@@ -1543,7 +1549,7 @@ int ewmh_WMStrut(EWMH_CMD_ARGS)
 		fw->dyn_strut.right  = val[1];
 		fw->dyn_strut.top    = val[2];
 		fw->dyn_strut.bottom = val[3];
-		ewmh_HandleDynamicWorkArea();
+		ewmh_HandleDynamicWorkArea(monitor_get_current());
 	}
 	free(val);
 

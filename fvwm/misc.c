@@ -36,6 +36,7 @@
 #endif
 #include "libs/Parse.h"
 #include "libs/Target.h"
+#include "libs/FScreen.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
@@ -88,8 +89,9 @@ static void change_grab_cursor(int cursor)
 int GetTwoArguments(
 	char *action, int *val1, int *val2, int *val1_unit, int *val2_unit)
 {
-	*val1_unit = Scr.MyDisplayWidth;
-	*val2_unit = Scr.MyDisplayHeight;
+	struct monitor	*m = monitor_get_current();
+	*val1_unit = m->coord.w;
+	*val2_unit = m->coord.h;
 
 	return GetTwoPercentArguments(action, val1, val2, val1_unit, val2_unit);
 }
@@ -518,13 +520,16 @@ int truncate_to_multiple (int x, int m)
 	return (x < 0) ? (m * (((x + 1) / m) - 1)) : (m * (x / m));
 }
 
-Bool IsRectangleOnThisPage(const rectangle *rec, int desk)
+Bool IsRectangleOnThisPage(struct monitor *m, const rectangle *rec, int desk)
 {
-	return (desk == Scr.CurrentDesk &&
+	if (m == NULL)
+		m = monitor_get_current();
+
+	return (desk == m->virtual_scr.CurrentDesk &&
 		rec->x + (signed int)rec->width > 0 &&
-		(rec->x < 0 || rec->x < Scr.MyDisplayWidth) &&
+		(rec->x < 0 || rec->x < m->coord.w) &&
 		rec->y + (signed int)rec->height > 0 &&
-		(rec->y < 0 || rec->y < Scr.MyDisplayHeight)) ?
+		(rec->y < 0 || rec->y < m->coord.h)) ?
 		True : False;
 }
 

@@ -441,6 +441,7 @@ int GetMoveArguments(
 	char **paction, int w, int h, int *pFinalX, int *pFinalY,
 	Bool *fWarp, Bool *fPointer, Bool fKeep)
 {
+	struct monitor	*m = monitor_get_current();
 	char *s1 = NULL;
 	char *s2 = NULL;
 	char *token = NULL;
@@ -448,8 +449,8 @@ int GetMoveArguments(
 	char *naction;
 	int scr_x = 0;
 	int scr_y = 0;
-	int scr_w = Scr.MyDisplayWidth;
-	int scr_h = Scr.MyDisplayHeight;
+	int scr_w = m->coord.w;
+	int scr_h = m->coord.h;
 	Bool use_working_area = True;
 	Bool global_flag_parsed = False;
 	int retval = 0;
@@ -552,11 +553,11 @@ int GetMoveArguments(
 		/* not enough arguments, switch to current page. */
 		while (*pFinalX < 0)
 		{
-			*pFinalX = Scr.MyDisplayWidth + *pFinalX;
+			*pFinalX = m->coord.w + *pFinalX;
 		}
 		while (*pFinalY < 0)
 		{
-			*pFinalY = Scr.MyDisplayHeight + *pFinalY;
+			*pFinalY = m->coord.h + *pFinalY;
 		}
 	}
 
@@ -683,6 +684,7 @@ static int GetResizeArguments(
 	int w_add;
 	int h_add;
 	int has_frame_option;
+	struct monitor	*m = monitor_get_current();
 
 	*ret_dir = DIR_NONE;
 	*is_direction_fixed = False;
@@ -796,9 +798,9 @@ static int GetResizeArguments(
 
 	n = 0;
 	n += ParseOneResizeArgument(
-		s1, Scr.MyDisplayWidth, w_base, w_inc, w_add, pFinalW);
+		s1, m->coord.w, w_base, w_inc, w_add, pFinalW);
 	n += ParseOneResizeArgument(
-		s2, Scr.MyDisplayHeight, h_base, h_inc, h_add, pFinalH);
+		s2, m->coord.h, h_base, h_inc, h_add, pFinalH);
 	if (s1 != NULL)
 	{
 		free(s1);
@@ -1160,6 +1162,8 @@ static Bool resize_move_window(F_CMD_ARGS)
 	maximize_adjust_offset(fw);
 	XFlush(dpy);
 
+	fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
+
 	return True;
 }
 
@@ -1185,6 +1189,7 @@ static void InteractiveMove(
 	int origDragX,origDragY,DragX, DragY, DragWidth, DragHeight;
 	int XOffset, YOffset;
 	Window w;
+	FvwmWindow *fw = exc->w.fw;
 	Bool do_move_opaque = False;
 
 	w = *win;
@@ -1245,10 +1250,11 @@ static void InteractiveMove(
 	else if (IS_MAPPED(exc->w.fw))
 	{
 		float areapct;
+		struct monitor	*m = exc->w.fw->m;
 
 		areapct = 100.0;
-		areapct *= ((float)DragWidth / (float)Scr.MyDisplayWidth);
-		areapct *= ((float)DragHeight / (float)Scr.MyDisplayHeight);
+		areapct *= ((float)DragWidth / (float)m->coord.w);
+		areapct *= ((float)DragHeight / (float)m->coord.h);
 		/* round up */
 		areapct += 0.1;
 		if (Scr.OpaqueSize < 0 ||
@@ -1302,6 +1308,8 @@ static void InteractiveMove(
 		MyXUngrabServer(dpy);
 	}
 	MyXUngrabKeyboard(dpy);
+
+	fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
 
 	return;
 }
@@ -1670,6 +1678,7 @@ void __move_icon(
 	Window tw;
 	int tx;
 	int ty;
+	struct monitor	*m = fw && fw->m ? fw->m : monitor_get_current();
 
 	set_icon_position(fw, x, y);
 	broadcast_icon_geometry(fw, False);
@@ -1704,7 +1713,7 @@ void __move_icon(
 	if (has_icon_picture)
 	{
 		XMoveWindow(dpy, FW_W_ICON_PIXMAP(fw), gp.x, gp.y);
-		if (fw->Desk == Scr.CurrentDesk)
+		if (fw->Desk == m->virtual_scr.CurrentDesk)
 		{
 			XMapWindow(dpy, FW_W_ICON_PIXMAP(fw));
 			if (has_icon_title)
@@ -1736,11 +1745,16 @@ static void __move_window(F_CMD_ARGS, Bool do_animate, int mode)
 	int dy;
 	FvwmWindow *fw = exc->w.fw;
 	Window w;
+	struct monitor	*m = fw && fw->m ? fw->m : monitor_get_current();
 
 	if (!is_function_allowed(F_MOVE, NULL, fw, RQORIG_PROGRAM_US, False))
 	{
 		return;
 	}
+
+	if (fw->m == NULL)
+		fw->m = m;
+
 	/* gotta have a window */
 	w = FW_W_FRAME(fw);
 	if (IS_ICONIFIED(fw))
@@ -1782,17 +1796,17 @@ static void __move_window(F_CMD_ARGS, Bool do_animate, int mode)
 		r.y = y;
 		r.width = width;
 		r.height = height;
-		get_absolute_geometry(&t, &r);
+		get_absolute_geometry(fw->m, &t, &r);
 		get_page_offset_rectangle(&page_x, &page_y, &t);
-		if (!get_page_arguments(action, &page_x, &page_y))
+		if (!get_page_arguments(m, action, &page_x, &page_y))
 		{
-			page_x = Scr.Vx;
-			page_y = Scr.Vy;
+			page_x = m->virtual_scr.Vx;
+			page_y = m->virtual_scr.Vy;
 		}
-		s.x = page_x - Scr.Vx;
-		s.y = page_y - Scr.Vy;
-		s.width = Scr.MyDisplayWidth;
-		s.height = Scr.MyDisplayHeight;
+		s.x = page_x - m->virtual_scr.Vx;
+		s.y = page_y - m->virtual_scr.Vy;
+		s.width = m->coord.w;
+		s.height = m->coord.h;
 		fvwmrect_move_into_rectangle(&r, &s);
 		FinalX = r.x;
 		FinalY = r.y;
@@ -1806,22 +1820,24 @@ static void __move_window(F_CMD_ARGS, Bool do_animate, int mode)
 		do_animate = False;
 		FScreenGetScrRect(
 			NULL, FSCREEN_CURRENT, &s.x, &s.y, &s.width, &s.height);
-		page_x = Scr.Vx;
-		page_y = Scr.Vy;
+		page_x = m->virtual_scr.Vx;
+		page_y = m->virtual_scr.Vy;
 		r.x = x;
 		r.y = y;
 		r.width = width;
 		r.height = height;
-		p.x = page_x - Scr.Vx;
-		p.y = page_y - Scr.Vy;
-		p.width = Scr.MyDisplayWidth;
-		p.height = Scr.MyDisplayHeight;
+		p.x = page_x - m->virtual_scr.Vx;
+		p.y = page_y - m->virtual_scr.Vy;
+		p.width = m->coord.w;
+		p.height = m->coord.h;
 		/* move to page first */
 		fvwmrect_move_into_rectangle(&r, &p);
 		/* then move to screen */
 		fvwmrect_move_into_rectangle(&r, &s);
 		FinalX = r.x;
 		FinalY = r.y;
+
+		fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
 	}
 	else
 	{
@@ -1870,6 +1886,11 @@ static void __move_window(F_CMD_ARGS, Bool do_animate, int mode)
 			fw->g.normal.x += dx;
 			fw->g.normal.y += dy;
 		}
+
+		fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
+		if (fw->m == NULL)
+			fw->m = monitor_get_current();
+
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
 		XFlush(dpy);
@@ -1936,6 +1957,7 @@ static void DoSnapAttract(
 	rectangle self;
 	int score_x;
 	int score_y;
+	struct monitor	*m = fw->m;
 
 	nxl = -99999;
 	nyt = -99999;
@@ -2024,9 +2046,9 @@ static void DoSnapAttract(
 			}
 			/* get other window dimensions */
 			get_visible_window_or_icon_geometry(tmp, &other);
-			if (other.x >= Scr.MyDisplayWidth ||
+			if (other.x >= m->coord.w ||
 			    other.x + other.width <= 0 ||
-			    other.y >= Scr.MyDisplayHeight ||
+			    other.y >= m->coord.y ||
 			    other.y + other.height <= 0)
 			{
 				/* do not snap to windows that are not currently
@@ -2128,25 +2150,25 @@ static void DoSnapAttract(
 			fw->snap_attraction.mode & SNAP_SCREEN_ALL ))
 	{
 		/* vertically */
-		if (!(Scr.MyDisplayWidth < (*px) ||
+		if (!(m->coord.w < (*px) ||
 		      (*px + self.width) < 0))
 		{
 			if (*py + self.height >=
-			    Scr.MyDisplayHeight &&
+			    m->coord.h &&
 			    *py + self.height <
-			    Scr.MyDisplayHeight + fw->snap_attraction.proximity)
+			    m->coord.h + fw->snap_attraction.proximity)
 			{
 				update_pos(
 					&score_y, &nyt, *py,
-					Scr.MyDisplayHeight - self.height);
+					m->coord.h - self.height);
 			}
 			if (*py + self.height >=
-			    Scr.MyDisplayHeight - fw->snap_attraction.proximity &&
-			    *py + self.height < Scr.MyDisplayHeight)
+			    m->coord.h - fw->snap_attraction.proximity &&
+			    *py + self.height < m->coord.h)
 			{
 				update_pos(
 					&score_y, &nyt, *py,
-					Scr.MyDisplayHeight - self.height);
+					m->coord.h - self.height);
 			}
 			if ((*py <= 0)&&(*py > - fw->snap_attraction.proximity))
 			{
@@ -2158,24 +2180,24 @@ static void DoSnapAttract(
 			}
 		} /* vertically */
 		/* horizontally */
-		if (!(Scr.MyDisplayHeight < (*py) ||
+		if (!(m->coord.h < (*py) ||
 		      (*py + self.height) < 0))
 		{
-			if (*px + self.width >= Scr.MyDisplayWidth &&
+			if (*px + self.width >= m->coord.h &&
 			    *px + self.width <
-			    Scr.MyDisplayWidth + fw->snap_attraction.proximity)
+			    m->coord.w + fw->snap_attraction.proximity)
 			{
 				update_pos(
 					&score_x, &nxl, *px,
-					Scr.MyDisplayWidth - self.width);
+					m->coord.w - self.width);
 			}
 			if (*px + self.width >=
-			    Scr.MyDisplayWidth - fw->snap_attraction.proximity &&
-			    *px + self.width < Scr.MyDisplayWidth)
+			    m->coord.w - fw->snap_attraction.proximity &&
+			    *px + self.width < m->coord.w)
 			{
 				update_pos(
 					&score_x, &nxl, *px,
-					Scr.MyDisplayWidth - self.width);
+					m->coord.w - self.width);
 			}
 			if ((*px <= 0) &&
 			    (*px > - fw->snap_attraction.proximity))
@@ -2206,11 +2228,11 @@ static void DoSnapAttract(
 	{
 		/* snap to right edge */
 		if (
-			*px + Width > Scr.MyDisplayWidth &&
-			*px + Width < Scr.MyDisplayWidth +
+			*px + Width > m->coord.w &&
+			*px + Width < m->coord.w +
 			fw->edge_resistance_move)
 		{
-			*px = Scr.MyDisplayWidth - Width;
+			*px = m->coord.w - Width;
 		}
 		/* snap to left edge */
 		else if ((*px < 0) && (*px > -fw->edge_resistance_move))
@@ -2219,11 +2241,11 @@ static void DoSnapAttract(
 		}
 		/* snap to bottom edge */
 		if (
-			*py + Height > Scr.MyDisplayHeight &&
-			*py + Height < Scr.MyDisplayHeight +
+			*py + Height > m->coord.h &&
+			*py + Height < m->coord.h +
 			fw->edge_resistance_move)
 		{
-			*py = Scr.MyDisplayHeight - Height;
+			*py = m->coord.h - Height;
 		}
 		/* snap to top edge */
 		else if (*py < 0 && *py > -fw->edge_resistance_move)
@@ -2243,7 +2265,7 @@ static void DoSnapAttract(
 			&scr_y1);
 
 		/* snap to right edge */
-		if (scr_x1 < Scr.MyDisplayWidth &&
+		if (scr_x1 < m->coord.w &&
 		    *px + Width >= scr_x1 && *px + Width <
 		    scr_x1 + fw->edge_resistance_xinerama_move)
 		{
@@ -2269,7 +2291,7 @@ static void DoSnapAttract(
 				&scr_x1, &scr_y1);
 		}
 		/* snap to bottom edge */
-		if (scr_y1 < Scr.MyDisplayHeight &&
+		if (scr_y1 < m->coord.h &&
 		    *py + Height >= scr_y1 && *py + Height <
 		    scr_y1 + fw->edge_resistance_xinerama_move)
 		{
@@ -2305,10 +2327,12 @@ Bool __move_loop(
 	int xl,xl2,yt,yt2,delta_x,delta_y,paged;
 	unsigned int button_mask = 0;
 	FvwmWindow fw_copy;
-	int dx = Scr.EdgeScrollX ? Scr.EdgeScrollX : Scr.MyDisplayWidth;
-	int dy = Scr.EdgeScrollY ? Scr.EdgeScrollY : Scr.MyDisplayHeight;
-	const int vx = Scr.Vx;
-	const int vy = Scr.Vy;
+	FvwmWindow *fw = exc->w.fw;
+	struct monitor	*m = fw->m;
+	int dx = m->virtual_scr.EdgeScrollX ? m->virtual_scr.EdgeScrollX : m->coord.w;
+	int dy = m->virtual_scr.EdgeScrollY ? m->virtual_scr.EdgeScrollY : m->coord.h;
+	const int vx = m->virtual_scr.Vx;
+	const int vy = m->virtual_scr.Vy;
 	int xl_orig = 0;
 	int yt_orig = 0;
 	int cnx = 0;
@@ -2329,7 +2353,6 @@ Bool __move_loop(
 	Bool nosnap_enabled = False;
 	/* Must not set placed by button if the event is a modified KeyEvent */
 	Bool is_fake_event;
-	FvwmWindow *fw = exc->w.fw;
 	unsigned int draw_parts = PART_NONE;
 	XEvent e;
 
@@ -2678,14 +2701,14 @@ Bool __move_loop(
 			       (xl >= 0 && xl2 <  0) ||
 			       (yt <  0 && yt2 >= 0) ||
 			       (yt >= 0 && yt2 <  0)) &&
-			      (abs(xl - xl2) > Scr.MyDisplayWidth / 2 ||
-			       abs(yt - yt2) > Scr.MyDisplayHeight / 2)))
+			      (abs(xl - xl2) > fw->m->coord.w / 2 ||
+			       abs(yt - yt2) > fw->m->coord.h / 2)))
 			{
 				xl = xl2;
 				yt = yt2;
 			}
-			if (xl != xl_orig || yt != yt_orig || vx != Scr.Vx ||
-			    vy != Scr.Vy || was_snapped)
+			if (xl != xl_orig || yt != yt_orig || vx != fw->m->virtual_scr.Vx ||
+			    vy != fw->m->virtual_scr.Vy || was_snapped)
 			{
 				/* only snap if the window actually moved! */
 				if (do_snap)
@@ -2715,14 +2738,14 @@ Bool __move_loop(
 				(e.xmotion.state & Mod1Mask) ? False : True;
 			xl = e.xmotion.x_root;
 			yt = e.xmotion.y_root;
-			if (xl > 0 && xl < Scr.MyDisplayWidth - 1)
+			if (xl > 0 && xl < fw->m->coord.w - 1)
 			{
 				/* pointer was moved away from the left/right
 				 * border with the mouse, reset the virtual x
 				 * offset */
 				x_virtual_offset = 0;
 			}
-			if (yt > 0 && yt < Scr.MyDisplayHeight - 1)
+			if (yt > 0 && yt < fw->m->coord.h - 1)
 			{
 				/* pointer was moved away from the top/bottom
 				 * border with the mouse, reset the virtual y
@@ -2890,7 +2913,7 @@ Bool __move_loop(
 	}
 	if (is_aborted || bad_window == FW_W(fw))
 	{
-		if (vx != Scr.Vx || vy != Scr.Vy)
+		if (vx != fw->m->virtual_scr.Vx || vy != fw->m->virtual_scr.Vy)
 		{
 			MoveViewport(vx, vy, False);
 		}
@@ -3585,6 +3608,7 @@ static Bool __resize_window(F_CMD_ARGS)
 {
 	extern Window bad_window;
 	FvwmWindow *fw = exc->w.fw;
+	struct monitor	*m = fw->m;
 	Bool is_finished = False, is_done = False, is_aborted = False;
 	Bool do_send_cn = False;
 	Bool do_resize_opaque;
@@ -3597,10 +3621,10 @@ static Bool __resize_window(F_CMD_ARGS)
 	Bool called_from_title = False;
 	int x,y,delta_x,delta_y,stashed_x,stashed_y;
 	Window ResizeWindow;
-	int dx = Scr.EdgeScrollX ? Scr.EdgeScrollX : Scr.MyDisplayWidth;
-	int dy = Scr.EdgeScrollY ? Scr.EdgeScrollY : Scr.MyDisplayHeight;
-	const int vx = Scr.Vx;
-	const int vy = Scr.Vy;
+	int dx = m->virtual_scr.EdgeScrollX ? m->virtual_scr.EdgeScrollX : m->coord.w;
+	int dy = m->virtual_scr.EdgeScrollY ? m->virtual_scr.EdgeScrollY : m->coord.h;
+	const int vx = m->virtual_scr.Vx;
+	const int vy = m->virtual_scr.Vy;
 	int n;
 	unsigned int button_mask = 0;
 	rectangle sdrag;
@@ -4237,7 +4261,7 @@ static Bool __resize_window(F_CMD_ARGS)
 				exc, sorig.x, sorig.y, &xo, &yo, &g, orig,
 				&xmotion, &ymotion, do_resize_opaque, True);
 		}
-		if (vx != Scr.Vx || vy != Scr.Vy)
+		if (vx != m->virtual_scr.Vx || vy != m->virtual_scr.Vy)
 		{
 			MoveViewport(vx, vy, False);
 		}
@@ -4382,7 +4406,7 @@ Bool is_window_sticky_across_desks(FvwmWindow *fw)
 	}
 }
 
-static void move_sticky_window_to_same_page(
+static void move_sticky_window_to_same_page(struct monitor *m,
 	int *x11, int *x12, int *y11, int *y12,
 	int x21, int x22, int y21, int y22)
 {
@@ -4392,16 +4416,16 @@ static void move_sticky_window_to_same_page(
 	{
 		while (*x11 >= x22)
 		{
-			*x11 -= Scr.MyDisplayWidth;
-			*x12 -= Scr.MyDisplayWidth;
+			*x11 -= m->coord.w;
+			*x12 -= m->coord.w;
 		}
 	}
 	else if (*x12 <= x21)
 	{
 		while (*x12 <= x21)
 		{
-			*x11 += Scr.MyDisplayWidth;
-			*x12 += Scr.MyDisplayWidth;
+			*x11 += m->coord.w;
+			*x12 += m->coord.w;
 		}
 	}
 	/* make sure the y coordinate is on the same page as the reference
@@ -4410,16 +4434,16 @@ static void move_sticky_window_to_same_page(
 	{
 		while (*y11 >= y22)
 		{
-			*y11 -= Scr.MyDisplayHeight;
-			*y12 -= Scr.MyDisplayHeight;
+			*y11 -= m->coord.h;
+			*y12 -= m->coord.h;
 		}
 	}
 	else if (*y12 <= y21)
 	{
 		while (*y12 <= y21)
 		{
-			*y11 += Scr.MyDisplayHeight;
-			*y12 += Scr.MyDisplayHeight;
+			*y11 += m->coord.h;
+			*y12 += m->coord.h;
 		}
 	}
 
@@ -4432,6 +4456,7 @@ static void MaximizeHeight(
 	int bottom_border, int *layers)
 {
 	FvwmWindow *cwin;
+	struct monitor	*m;
 	int x11, x12, x21, x22;
 	int y11, y12, y21, y22;
 	int new_y1, new_y2;
@@ -4445,59 +4470,64 @@ static void MaximizeHeight(
 	new_y1 = top_border;
 	new_y2 = bottom_border;
 
-	for (cwin = Scr.FvwmRoot.next; cwin; cwin = cwin->next)
-	{
-		if (cwin == win ||
-		    (cwin->Desk != win->Desk &&
-		     !is_window_sticky_across_desks(cwin)))
-		{
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
 			continue;
-		}
-		if ((layers[0] >= 0 && cwin->layer < layers[0]) ||
-		    (layers[1] >= 0 && cwin->layer > layers[1]))
+		for (cwin = Scr.FvwmRoot.next; cwin; cwin = cwin->next)
 		{
-			continue;
-		}
-		rc = get_visible_window_or_icon_geometry(cwin, &g);
-		if (rc == False)
-		{
-			continue;
-		}
-		x21 = g.x;
-		y21 = g.y;
-		x22 = x21 + g.width;
-		y22 = y21 + g.height;
-		if (is_window_sticky_across_pages(cwin))
-		{
-			move_sticky_window_to_same_page(
-				&x21, &x22, &new_y1, &new_y2, x11, x12, y11,
-				y12);
-		}
-
-		/* Are they in the same X space? */
-		if (!((x22 <= x11) || (x21 >= x12)))
-		{
-			if ((y22 <= y11) && (y22 >= new_y1))
+			if (win->m != m)
+				continue;
+			if (cwin == win ||
+			    (cwin->Desk != win->Desk &&
+			     !is_window_sticky_across_desks(cwin)))
 			{
-				new_y1 = y22;
+				continue;
 			}
-			else if ((y12 <= y21) && (new_y2 >= y21))
+			if ((layers[0] >= 0 && cwin->layer < layers[0]) ||
+			    (layers[1] >= 0 && cwin->layer > layers[1]))
 			{
-				new_y2 = y21;
+				continue;
+			}
+			rc = get_visible_window_or_icon_geometry(cwin, &g);
+			if (rc == False)
+			{
+				continue;
+			}
+			x21 = g.x;
+			y21 = g.y;
+			x22 = x21 + g.width;
+			y22 = y21 + g.height;
+			if (is_window_sticky_across_pages(cwin))
+			{
+				move_sticky_window_to_same_page(m,
+					&x21, &x22, &new_y1, &new_y2, x11, x12, y11,
+					y12);
+			}
+
+			/* Are they in the same X space? */
+			if (!((x22 <= x11) || (x21 >= x12)))
+			{
+				if ((y22 <= y11) && (y22 >= new_y1))
+				{
+					new_y1 = y22;
+				}
+				else if ((y12 <= y21) && (new_y2 >= y21))
+				{
+					new_y2 = y21;
+				}
 			}
 		}
+		if (!grow_up)
+		{
+			new_y1 = y11;
+		}
+		if (!grow_down)
+		{
+			new_y2 = y12;
+		}
+		*win_height = new_y2 - new_y1;
+		*win_y = new_y1;
 	}
-	if (!grow_up)
-	{
-		new_y1 = y11;
-	}
-	if (!grow_down)
-	{
-		new_y2 = y12;
-	}
-	*win_height = new_y2 - new_y1;
-	*win_y = new_y1;
-
 	return;
 }
 
@@ -4512,6 +4542,7 @@ static void MaximizeWidth(
 	int new_x1, new_x2;
 	rectangle g;
 	Bool rc;
+	struct monitor	*m;
 
 	x11 = *win_x;            /* Start x */
 	y11 = win_y;             /* Start y */
@@ -4520,58 +4551,65 @@ static void MaximizeWidth(
 	new_x1 = left_border;
 	new_x2 = right_border;
 
-	for (cwin = Scr.FvwmRoot.next; cwin; cwin = cwin->next)
-	{
-		if (cwin == win ||
-		    (cwin->Desk != win->Desk &&
-		     !is_window_sticky_across_desks(cwin)))
-		{
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
 			continue;
-		}
-		if ((layers[0] >= 0 && cwin->layer < layers[0]) ||
-		    (layers[1] >= 0 && cwin->layer > layers[1]))
-		{
-			continue;
-		}
-		rc = get_visible_window_or_icon_geometry(cwin, &g);
-		if (rc == False)
-		{
-			continue;
-		}
-		x21 = g.x;
-		y21 = g.y;
-		x22 = x21 + g.width;
-		y22 = y21 + g.height;
-		if (is_window_sticky_across_pages(cwin))
-		{
-			move_sticky_window_to_same_page(
-				&new_x1, &new_x2, &y21, &y22, x11, x12, y11,
-				y12);
-		}
 
-		/* Are they in the same Y space? */
-		if (!((y22 <= y11) || (y21 >= y12)))
+		for (cwin = Scr.FvwmRoot.next; cwin; cwin = cwin->next)
 		{
-			if ((x22 <= x11) && (x22 >= new_x1))
+			if (m != cwin->m)
+				continue;
+			if (cwin == win ||
+			    (cwin->Desk != win->Desk &&
+			     !is_window_sticky_across_desks(cwin)))
 			{
-				new_x1 = x22;
+				continue;
 			}
-			else if ((x12 <= x21) && (new_x2 >= x21))
+			if ((layers[0] >= 0 && cwin->layer < layers[0]) ||
+			    (layers[1] >= 0 && cwin->layer > layers[1]))
 			{
-				new_x2 = x21;
+				continue;
+			}
+			rc = get_visible_window_or_icon_geometry(cwin, &g);
+			if (rc == False)
+			{
+				continue;
+			}
+			x21 = g.x;
+			y21 = g.y;
+			x22 = x21 + g.width;
+			y22 = y21 + g.height;
+			if (is_window_sticky_across_pages(cwin))
+			{
+				move_sticky_window_to_same_page(m,
+					&new_x1, &new_x2, &y21, &y22, x11, x12, y11,
+					y12);
+			}
+
+			/* Are they in the same Y space? */
+			if (!((y22 <= y11) || (y21 >= y12)))
+			{
+				if ((x22 <= x11) && (x22 >= new_x1))
+				{
+					new_x1 = x22;
+				}
+				else if ((x12 <= x21) && (new_x2 >= x21))
+				{
+					new_x2 = x21;
+				}
 			}
 		}
+		if (!grow_left)
+		{
+			new_x1 = x11;
+		}
+		if (!grow_right)
+		{
+			new_x2 = x12;
+		}
+		*win_width  = new_x2 - new_x1;
+		*win_x = new_x1;
 	}
-	if (!grow_left)
-	{
-		new_x1 = x11;
-	}
-	if (!grow_right)
-	{
-		new_x2 = x12;
-	}
-	*win_width  = new_x2 - new_x1;
-	*win_x = new_x1;
 
 	return;
 }
@@ -4594,7 +4632,7 @@ static void unmaximize_fvwm_window(
 	 * If the window was not maximized, then we use the window's normal
 	 * geometry.
 	 */
-	get_relative_geometry(&new_g, fw->fullscreen.was_maximized ?
+	get_relative_geometry(fw->m, &new_g, fw->fullscreen.was_maximized ?
 			&fw->fullscreen.g.max : &fw->g.normal);
 
 	if (fw->fullscreen.was_maximized)
@@ -4987,8 +5025,8 @@ void CMD_ResizeMaximize(F_CMD_ARGS)
 		/* set the new geometry as the maximized geometry and restore
 		 * the old normal geometry */
 		max_g = fw->g.normal;
-		max_g.x -= Scr.Vx;
-		max_g.y -= Scr.Vy;
+		max_g.x -= fw->m->virtual_scr.Vx;
+		max_g.y -= fw->m->virtual_scr.Vy;
 		fw->g.normal = normal_g;
 		/* and mark it as maximized */
 		maximize_fvwm_window(fw, &max_g);
@@ -5014,8 +5052,8 @@ void CMD_ResizeMoveMaximize(F_CMD_ARGS)
 		/* set the new geometry as the maximized geometry and restore
 		 * the old normal geometry */
 		max_g = fw->g.normal;
-		max_g.x -= Scr.Vx;
-		max_g.y -= Scr.Vy;
+		max_g.x -= fw->m->virtual_scr.Vx;
+		max_g.y -= fw->m->virtual_scr.Vy;
 		fw->g.normal = normal_g;
 		/* and mark it as maximized */
 		maximize_fvwm_window(fw, &max_g);
@@ -5042,7 +5080,7 @@ int stick_across_pages(F_CMD_ARGS, int toggle)
 	}
 	else
 	{
-		if (!IsRectangleOnThisPage(&fw->g.frame, Scr.CurrentDesk))
+		if (!IsRectangleOnThisPage(fw->m, &fw->g.frame, fw->m->virtual_scr.CurrentDesk))
 		{
 			action = "";
 			__move_window(F_PASS_ARGS, False, MOVE_PAGE);
@@ -5066,13 +5104,13 @@ int stick_across_desks(F_CMD_ARGS, int toggle)
 	if (IS_STICKY_ACROSS_DESKS(fw))
 	{
 		SET_STICKY_ACROSS_DESKS(fw, 0);
-		fw->Desk = Scr.CurrentDesk;
+		fw->Desk = fw->m->virtual_scr.CurrentDesk;
 	}
 	else
 	{
-		if (fw->Desk != Scr.CurrentDesk)
+		if (fw->Desk != fw->m->virtual_scr.CurrentDesk)
 		{
-			do_move_window_to_desk(fw, Scr.CurrentDesk);
+			do_move_window_to_desk(fw, fw->m->virtual_scr.CurrentDesk);
 		}
 		SET_STICKY_ACROSS_DESKS(fw, 1);
 	}

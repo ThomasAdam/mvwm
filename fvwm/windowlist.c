@@ -78,12 +78,13 @@
 #define SHOW_DEFAULT (SHOW_GEOMETRY | SHOW_ALLDESKS | SHOW_NORMAL | \
 	SHOW_ICONIC | SHOW_STICKY_ACROSS_PAGES | SHOW_STICKY_ACROSS_DESKS)
 
-static char *get_desk_title(int desk, unsigned long flags, Bool is_top_title)
+static char *get_desk_title(struct monitor *m, int desk, unsigned long flags,
+	Bool is_top_title)
 {
 	char *desk_name;
 	char *tlabel;
 
-	desk_name = GetDesktopName(desk);
+	desk_name = GetDesktopName(m, desk);
 	if (desk_name != NULL)
 	{
 		tlabel = xmalloc(strlen(desk_name)+50);
@@ -224,7 +225,7 @@ void CMD_WindowList(F_CMD_ARGS)
 	char scut = '0';              /* Current short cut key */
 	char *opts=NULL;
 	char *tok=NULL;
-	int desk = Scr.CurrentDesk;
+	int desk;
 	unsigned long flags = SHOW_DEFAULT;
 	char *func = NULL;
 	char *ffunc = NULL;
@@ -254,6 +255,9 @@ void CMD_WindowList(F_CMD_ARGS)
 	FvwmWindow * const fw = exc->w.fw;
 	const Window w = exc->w.w;
 	const exec_context_t *exc2;
+	struct monitor	*m = monitor_get_current();
+
+	desk = m->virtual_scr.CurrentDesk;
 
 	memset(&mops, 0, sizeof(mops));
 	memset(&mret, 0, sizeof(MenuReturn));
@@ -310,7 +314,7 @@ void CMD_WindowList(F_CMD_ARGS)
 			}
 			else if (StrEquals(tok,"CurrentDesk"))
 			{
-				desk = Scr.CurrentDesk;
+				desk = m->virtual_scr.CurrentDesk;
 				flags &= ~SHOW_ALLDESKS;
 			}
 			else if (StrEquals(tok,"NotAlphabetic"))
@@ -582,7 +586,7 @@ void CMD_WindowList(F_CMD_ARGS)
 			action, w, fw, NULL, NULL, NULL, &mops);
 	}
 
-	tlabel = get_desk_title(desk, flags, True);
+	tlabel = get_desk_title(m, desk, flags, True);
 	mr = NewMenuRoot(tlabel);
 	if (!(flags & NO_CURRENT_DESK_TITLE))
 	{
@@ -821,7 +825,7 @@ void CMD_WindowList(F_CMD_ARGS)
 					}
 					if (flags & TITLE_FOR_ALL_DESKS)
 					{
-						tlabel = get_desk_title(
+						tlabel = get_desk_title(m,
 							t->Desk, flags, False);
 						AddToMenu(
 							mr, tlabel, "TITLE",
@@ -833,7 +837,7 @@ void CMD_WindowList(F_CMD_ARGS)
 			}
 			if (first_desk && flags & TITLE_FOR_ALL_DESKS)
 			{
-				tlabel = get_desk_title(t->Desk, flags, False);
+				tlabel = get_desk_title(m, t->Desk, flags, False);
 				AddToMenu(
 					mr, tlabel, "TITLE", False, False,
 					False);
@@ -940,17 +944,17 @@ void CMD_WindowList(F_CMD_ARGS)
 				if (flags & SHOW_PAGE_X)
 				{
 					sprintf(loc, "+%d",
-						(Scr.Vx + t->g.frame.x +
+						(m->virtual_scr.Vx + t->g.frame.x +
 						 t->g.frame.width / 2) /
-						Scr.MyDisplayWidth);
+						 m->coord.w);
 					strcat(tname, loc);
 				}
 				if (flags & SHOW_PAGE_Y)
 				{
 					sprintf(loc, "+%d",
-						(Scr.Vy + t->g.frame.y +
+						(m->virtual_scr.Vy + t->g.frame.y +
 						 t->g.frame.height/2) /
-						Scr.MyDisplayHeight);
+						 m->coord.h);
 					strcat(tname, loc);
 				}
 				if (!(flags & NO_LAYER))
@@ -1041,7 +1045,7 @@ void CMD_WindowList(F_CMD_ARGS)
 	if (empty_menu)
 	{
 		/* force current desk title */
-		tlabel = get_desk_title(desk, flags, True);
+		tlabel = get_desk_title(m, desk, flags, True);
 		AddToMenu(mr, tlabel, "TITLE", False, False, False);
 		free(tlabel);
 	}

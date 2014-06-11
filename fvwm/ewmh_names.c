@@ -277,7 +277,7 @@ int EWMH_WMName(EWMH_CMD_ARGS)
 /*
  * set the desktop name
  */
-void EWMH_SetDesktopNames(void)
+void EWMH_SetDesktopNames(struct monitor *m)
 {
 	int nbr = 0;
 	int len = 0;
@@ -292,7 +292,7 @@ void EWMH_SetDesktopNames(void)
 		return;
 	}
 
-	d = Scr.Desktops->next;
+	d = m->Desktops->next;
 	/* skip negative desk */
 	while (d != NULL && d->desk < 0)
 	{

@@ -250,10 +250,15 @@ static void send_xinerama_state(fmodule *module)
 
 static void send_desktop_names(fmodule *module)
 {
+	struct monitor	*m = monitor_get_current();
 	DesktopsInfo *d;
 	char *name;
 
-	for (d = Scr.Desktops->next; d != NULL; d = d->next)
+	/* TA:  Currently, the names of desktops are the same for each monitor,
+	 * so pick the current monitor and send those names.
+	 */
+
+	for (d = m->Desktops->next; d != NULL; d = d->next)
 	{
 		if (d->name != NULL)
 		{
@@ -271,9 +276,10 @@ static void send_desktop_names(fmodule *module)
 static void send_desktop_geometry(fmodule *module)
 {
 	char msg[64];
+	struct monitor	*m = monitor_get_current();
 
-	sprintf(msg, "DesktopSize %d %d\n", Scr.VxMax / Scr.MyDisplayWidth + 1,
-		Scr.VyMax / Scr.MyDisplayHeight + 1);
+	sprintf(msg, "DesktopSize %d %d\n", m->virtual_scr.VxMax / m->coord.w + 1,
+		m->virtual_scr.VyMax / m->coord.h + 1);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
 
 	return;
