@@ -147,11 +147,15 @@ static void CaptureOneWindow(
 	evh_args_t ea;
 	exec_context_changes_t ecc;
 	XEvent e;
+	struct monitor *m;
 
 	if (fw == NULL)
 	{
 		return;
 	}
+
+	m = fw && fw->m ? fw->m : monitor_get_current();
+
 	if (IS_SCHEDULED_FOR_DESTROY(fw))
 	{
 		/* Fvwm might crash in complex functions if we really try to
@@ -192,7 +196,7 @@ static void CaptureOneWindow(
 		{
 			win_opts.initial_state = NormalState;
 			win_opts.flags.is_iconified_by_parent = 0;
-			if (Scr.CurrentDesk != fw->Desk)
+			if (m->virtual_scr.CurrentDesk != fw->Desk)
 			{
 				SetMapStateProp(fw, NormalState);
 			}
@@ -236,6 +240,7 @@ static void CaptureOneWindow(
 				SET_MAP_PENDING(fw, 0);
 				SET_MAPPED(fw, is_mapped);
 			}
+			fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
 		}
 	}
 	MyXUngrabServer(dpy);
@@ -252,6 +257,7 @@ static void hide_screen(
 	static Window parent_win = None;
 	XSetWindowAttributes xswa;
 	unsigned long valuemask;
+	struct monitor	*m = monitor_get_current();
 
 	if (do_hide == is_hidden)
 	{
@@ -278,9 +284,8 @@ static void hide_screen(
 		valuemask = CWOverrideRedirect | CWCursor | CWSaveUnder |
 			CWBackingStore | CWBackPixmap;
 		hide_win = XCreateWindow(
-			dpy, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-			Scr.MyDisplayHeight, 0, Pdepth, InputOutput,
-			Pvisual, valuemask, &xswa);
+			dpy, Scr.Root, 0, 0, m->coord.w, m->coord.h, 0,
+			Pdepth, InputOutput, Pvisual, valuemask, &xswa);
 		if (hide_win)
 		{
 			/* When recapturing, all windows are reparented to this
@@ -289,8 +294,8 @@ static void hide_screen(
 			 * reparent them to an unmapped window that looks like
 			 * the root window. */
 			parent_win = XCreateWindow(
-				dpy, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-				Scr.MyDisplayHeight, 0, CopyFromParent,
+				dpy, Scr.Root, 0, 0, m->coord.w,
+				m->coord.h, 0, CopyFromParent,
 				InputOutput, CopyFromParent, valuemask, &xswa);
 			if (!parent_win)
 			{
@@ -2210,6 +2215,7 @@ FvwmWindow *AddWindow(
 	Window w = exc->w.w;
 	const exec_context_t *exc2;
 	exec_context_changes_t ecc;
+	struct monitor	*mon = monitor_get_current();
 
 	/****** init window structure ******/
 	setup_window_structure(&tmp, w, ReuseWin);
@@ -2286,6 +2292,8 @@ FvwmWindow *AddWindow(
 	/****** fonts ******/
 	setup_window_font(fw, &style, False);
 	setup_icon_font(fw, &style, False);
+
+	fw->m = mon;
 
 	/***** visible window name ****/
 	setup_visible_name(fw, False);
@@ -2370,8 +2378,8 @@ FvwmWindow *AddWindow(
 			fw->hints.win_gravity, &fw->g.normal,
 			b.total_size.width, b.total_size.height);
 		fw->g.frame = fw->g.normal;
-		fw->g.frame.x -= Scr.Vx;
-		fw->g.frame.y -= Scr.Vy;
+		fw->g.frame.x -= mon->virtual_scr.Vx;
+		fw->g.frame.y -= mon->virtual_scr.Vy;
 
 		/****** calculate frame size ******/
 		setup_frame_size_limits(fw, &style);
@@ -2386,11 +2394,11 @@ FvwmWindow *AddWindow(
 			constrain_size(
 				fw, NULL, &fw->g.max.width, &fw->g.max.height,
 				0, 0, CS_UPDATE_MAX_DEFECT);
-			get_relative_geometry(&fw->g.frame, &fw->g.max);
+			get_relative_geometry(mon, &fw->g.frame, &fw->g.max);
 		}
 		else
 		{
-			get_relative_geometry(&fw->g.frame, &fw->g.normal);
+			get_relative_geometry(mon, &fw->g.frame, &fw->g.normal);
 		}
 	}
 	else
@@ -2535,8 +2543,8 @@ FvwmWindow *AddWindow(
 		stick_page = is_window_sticky_across_pages(fw);
 		stick_desk = is_window_sticky_across_desks(fw);
 		if ((stick_page &&
-		     !IsRectangleOnThisPage(&fw->g.frame, Scr.CurrentDesk)) ||
-		    (stick_desk && fw->Desk != Scr.CurrentDesk))
+		     !IsRectangleOnThisPage(mon, &fw->g.frame, mon->virtual_scr.CurrentDesk)) ||
+		    (stick_desk && fw->Desk != mon->virtual_scr.CurrentDesk))
 		{
 			/* If it's sticky and the user didn't ask for an
 			 * explicit position, force it on screen now.  Don't do
@@ -2564,8 +2572,8 @@ FvwmWindow *AddWindow(
 
 		memset(&e, 0, sizeof(e));
 		FWarpPointer(
-			dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-			Scr.MyDisplayHeight,
+			dpy, Scr.Root, Scr.Root, 0, 0, mon->coord.w,
+			mon->coord.h,
 			fw->g.frame.x + (fw->g.frame.width>>1),
 			fw->g.frame.y + (fw->g.frame.height>>1));
 		e.xany.type = ButtonPress;
@@ -3424,25 +3432,25 @@ void RestoreWithdrawnLocation(
 	{
 		/* Don't mess with it if its partially on the screen now */
 		if (unshaded_g.x < 0 || unshaded_g.y < 0 ||
-		    unshaded_g.x >= Scr.MyDisplayWidth ||
-		    unshaded_g.y >= Scr.MyDisplayHeight)
+		    unshaded_g.x >= fw->m->coord.w ||
+		    unshaded_g.y >= fw->m->coord.h)
 		{
 			w2 = (unshaded_g.width >> 1);
 			h2 = (unshaded_g.height >> 1);
-			if ( xwc.x < -w2 || xwc.x > Scr.MyDisplayWidth - w2)
+			if ( xwc.x < -w2 || xwc.x > fw->m->coord.w - w2)
 			{
-				xwc.x = xwc.x % Scr.MyDisplayWidth;
+				xwc.x = xwc.x % fw->m->coord.w;
 				if (xwc.x < -w2)
 				{
-					xwc.x += Scr.MyDisplayWidth;
+					xwc.x += fw->m->coord.w;
 				}
 			}
-			if (xwc.y < -h2 || xwc.y > Scr.MyDisplayHeight - h2)
+			if (xwc.y < -h2 || xwc.y > fw->m->coord.h - h2)
 			{
-				xwc.y = xwc.y % Scr.MyDisplayHeight;
+				xwc.y = xwc.y % fw->m->coord.h;
 				if (xwc.y < -h2)
 				{
-					xwc.y += Scr.MyDisplayHeight;
+					xwc.y += fw->m->coord.h;
 				}
 			}
 		}
@@ -3501,7 +3509,7 @@ void Reborder(void)
 	for (fw = get_prev_window_in_stack_ring(&Scr.FvwmRoot);
 	     fw != &Scr.FvwmRoot; fw = get_prev_window_in_stack_ring(fw))
 	{
-		if (!IS_ICONIFIED(fw) && Scr.CurrentDesk != fw->Desk)
+		if (!IS_ICONIFIED(fw) && fw->m->virtual_scr.CurrentDesk != fw->Desk)
 		{
 			XMapWindow(dpy, FW_W(fw));
 			SetMapStateProp(fw, NormalState);

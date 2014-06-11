@@ -1276,6 +1276,7 @@ void refresh_window(Window w, Bool window_update)
 {
 	XSetWindowAttributes attributes;
 	unsigned long valuemask;
+	struct monitor	*m = monitor_get_current();
 
 	valuemask = CWOverrideRedirect | CWBackingStore | CWSaveUnder |
 		CWBackPixmap;
@@ -1284,7 +1285,7 @@ void refresh_window(Window w, Bool window_update)
 	attributes.background_pixmap = None;
 	attributes.backing_store = NotUseful;
 	w = XCreateWindow(
-		dpy, w, 0, 0, Scr.MyDisplayWidth, Scr.MyDisplayHeight, 0,
+		dpy, w, 0, 0, m->coord.w, m->coord.h, 0,
 		CopyFromParent, CopyFromParent, CopyFromParent, valuemask,
 		&attributes);
 	XMapWindow(dpy, w);
@@ -2161,6 +2162,7 @@ void CMD_CursorMove(F_CMD_ARGS)
 	int x_unit, y_unit;
 	int virtual_x, virtual_y;
 	int x_pages, y_pages;
+	struct monitor	*m = monitor_get_current();
 
 	if (GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit) != 2)
 	{
@@ -2180,57 +2182,57 @@ void CMD_CursorMove(F_CMD_ARGS)
 	x += x_unit;
 	y += y_unit;
 
-	virtual_x = Scr.Vx;
-	virtual_y = Scr.Vy;
+	virtual_x = m->virtual_scr.Vx;
+	virtual_y = m->virtual_scr.Vy;
 	if (x >= 0)
 	{
-		x_pages = x / Scr.MyDisplayWidth;
+		x_pages = x / m->coord.w;
 	}
 	else
 	{
-		x_pages = ((x + 1) / Scr.MyDisplayWidth) - 1;
+		x_pages = ((x + 1) / m->coord.h) - 1;
 	}
-	virtual_x += x_pages * Scr.MyDisplayWidth;
-	x -= x_pages * Scr.MyDisplayWidth;
+	virtual_x += x_pages * m->coord.w;
+	x -= x_pages * m->coord.w;
 	if (virtual_x < 0)
 	{
 		x += virtual_x;
 		virtual_x = 0;
 	}
-	else if (virtual_x > Scr.VxMax)
+	else if (virtual_x > m->virtual_scr.VxMax)
 	{
-		x += virtual_x - Scr.VxMax;
-		virtual_x = Scr.VxMax;
+		x += virtual_x - m->virtual_scr.VxMax;
+		virtual_x = m->virtual_scr.VxMax;
 	}
 
 	if (y >= 0)
 	{
-		y_pages = y / Scr.MyDisplayHeight;
+		y_pages = y / m->coord.h;
 	}
 	else
 	{
-		y_pages = ((y + 1) / Scr.MyDisplayHeight) - 1;
+		y_pages = ((y + 1) / m->coord.h) - 1;
 	}
-	virtual_y += y_pages * Scr.MyDisplayHeight;
-	y -= y_pages * Scr.MyDisplayHeight;
+	virtual_y += y_pages * m->coord.h;
+	y -= y_pages * m->coord.h;
 
 	if (virtual_y < 0)
 	{
 		y += virtual_y;
 		virtual_y = 0;
 	}
-	else if (virtual_y > Scr.VyMax)
+	else if (virtual_y > m->virtual_scr.VyMax)
 	{
-		y += virtual_y - Scr.VyMax;
-		virtual_y = Scr.VyMax;
+		y += virtual_y - m->virtual_scr.VyMax;
+		virtual_y = m->virtual_scr.VyMax;
 	}
 
 	/* TA:  (2010/12/19):  Only move to the new page if scrolling is
 	 * enabled and the viewport is able to change based on where the
 	 * pointer is.
 	 */
-	if ((virtual_x != Scr.Vx && Scr.EdgeScrollX != 0) ||
-	    (virtual_y != Scr.Vy && Scr.EdgeScrollY != 0))
+	if ((virtual_x != m->virtual_scr.Vx && m->virtual_scr.EdgeScrollX != 0) ||
+	    (virtual_y != m->virtual_scr.Vy && m->virtual_scr.EdgeScrollY != 0))
 	{
 		MoveViewport(virtual_x, virtual_y, True);
 	}
@@ -2243,17 +2245,17 @@ void CMD_CursorMove(F_CMD_ARGS)
 	 * Whilst this stops the cursor short of the edge of the screen in a
 	 * given direction, this is the desired behaviour.
 	 */
-	if (Scr.EdgeScrollX == 0 && (x >= Scr.MyDisplayWidth ||
-	    x + x_unit >= Scr.MyDisplayWidth))
+	if (m->virtual_scr.EdgeScrollX == 0 && (x >= m->coord.w ||
+	    x + x_unit >= m->coord.w))
 		return;
 
-	if (Scr.EdgeScrollY == 0 && (y >= Scr.MyDisplayHeight ||
-	    y + y_unit >= Scr.MyDisplayHeight))
+	if (m->virtual_scr.EdgeScrollY == 0 && (y >= m->coord.h ||
+	    y + y_unit >= m->coord.h))
 		return;
 
 	FWarpPointerUpdateEvpos(
-		exc->x.elast, dpy, None, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-		Scr.MyDisplayHeight, x, y);
+		exc->x.elast, dpy, None, Scr.Root, 0, 0, m->coord.w,
+		m->coord.h, x, y);
 
 	return;
 }

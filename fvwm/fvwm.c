@@ -225,6 +225,9 @@ static void SaveDesktopState(void)
 	FvwmWindow *t;
 	unsigned long data[1];
 
+	/* TA: XXX - FIXME */
+	struct monitor	*m = monitor_get_current();
+
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
 	{
 		data[0] = (unsigned long) t->Desk;
@@ -232,7 +235,7 @@ static void SaveDesktopState(void)
 			dpy, FW_W(t), _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
 			PropModeReplace, (unsigned char *)data, 1);
 	}
-	data[0] = (unsigned long) Scr.CurrentDesk;
+	data[0] = (unsigned long) m->virtual_scr.CurrentDesk;
 	XChangeProperty(
 		dpy, Scr.Root, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
 		PropModeReplace, (unsigned char *) data, 1);
@@ -1171,23 +1174,14 @@ static void init_scr(void)
 	Scr.FvwmRoot.number_cmap_windows = 0;
 	Scr.FvwmRoot.attr_backup.colormap = Pcmap;
 
-	Scr.MyDisplayWidth = DisplayWidth(dpy, Scr.screen);
-	Scr.MyDisplayHeight = DisplayHeight(dpy, Scr.screen);
 	Scr.BusyCursor = BUSY_NONE;
 	Scr.Hilite = NULL;
 	Scr.DefaultFont = NULL;
-	Scr.VxMax = 2*Scr.MyDisplayWidth;
-	Scr.VyMax = 2*Scr.MyDisplayHeight;
-	Scr.Vx = 0;
-	Scr.Vy = 0;
 	Scr.SizeWindow = None;
 
 	/* Sets the current desktop number to zero */
 	/* Multiple desks are available even in non-virtual
 	 * compilations */
-	Scr.CurrentDesk = 0;
-	Scr.EdgeScrollX = DEFAULT_EDGE_SCROLL * Scr.MyDisplayWidth / 100;
-	Scr.EdgeScrollY = DEFAULT_EDGE_SCROLL * Scr.MyDisplayHeight / 100;
 	Scr.ScrollDelay = DEFAULT_SCROLL_DELAY;
 	Scr.OpaqueSize = DEFAULT_OPAQUE_MOVE_SIZE;
 	Scr.MoveThreshold = DEFAULT_MOVE_THRESHOLD;
@@ -1204,19 +1198,6 @@ static void init_scr(void)
 	 * initially */
 	Scr.cascade_window = &Scr.FvwmRoot;
 	Scr.buttons2grab = 0;
-	/* initialisation of the head of the desktops info */
-	Scr.Desktops = xmalloc(sizeof(DesktopsInfo));
-	Scr.Desktops->name = NULL;
-	Scr.Desktops->desk = 0; /* not desk 0 */
-	Scr.Desktops->ewmh_dyn_working_area.x =
-		Scr.Desktops->ewmh_working_area.x = 0;
-	Scr.Desktops->ewmh_dyn_working_area.y =
-		Scr.Desktops->ewmh_working_area.y = 0;
-	Scr.Desktops->ewmh_dyn_working_area.width =
-		Scr.Desktops->ewmh_working_area.width = Scr.MyDisplayWidth;
-	Scr.Desktops->ewmh_dyn_working_area.height =
-		Scr.Desktops->ewmh_working_area.height = Scr.MyDisplayHeight;
-	Scr.Desktops->next = NULL;
 	/* ewmh desktop */
 	Scr.EwmhDesktop = NULL;
 	InitFvwmDecor(&Scr.DefaultDecor);
@@ -2177,6 +2158,7 @@ int main(int argc, char **argv)
 		g_argv[argc] = NULL;
 	}
 	FScreenInit(dpy);
+
 	x_fd = XConnectionNumber(dpy);
 
 #ifdef HAVE_X11_FD
@@ -2459,8 +2441,12 @@ int main(int argc, char **argv)
 	Scr.gray_bitmap =
 		XCreateBitmapFromData(dpy,Scr.Root,g_bits, g_width,g_height);
 
-	EWMH_Init();
-
+	struct monitor	*mon;
+	TAILQ_FOREACH(mon, &monitor_q, entry) {
+		if (monitor_should_ignore_global(mon))
+			continue;
+		EWMH_Init(mon);
+	}
 	DBUG("main", "Setting up rc file defaults...");
 	SetRCDefaults();
 	flush_window_updates();

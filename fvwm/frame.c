@@ -1250,7 +1250,7 @@ void frame_reshape_border(FvwmWindow *fw)
 	}
 	else
 	{
-		get_relative_geometry(new_g, new_g);
+		get_relative_geometry(fw->m, new_g, new_g);
 		frame_force_setup_window(
 			fw, new_g->x, new_g->y, new_g->width, new_g->height,
 			True);

@@ -596,6 +596,7 @@ static pl_penalty_t __pl_manual_get_pos_simple(
 static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 {
 	FvwmWindow *other_fw;
+	struct monitor	*m = NULL;
 	int xnew;
 	int xtest;
 	int stickyx;
@@ -609,6 +610,9 @@ static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 
 	x = arg->place_g.x;
 	y = arg->place_g.y;
+
+	m = monitor_by_xy(x, y); 
+
 	if (arg->flags.use_percent == 1)
 	{
 		start = 0;
@@ -626,14 +630,14 @@ static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 		xnew = xtest;
 	}
 	/* test the borders of the working area */
-	xtest = arg->page_p1.x + Scr.Desktops->ewmh_working_area.x;
+	xtest = arg->page_p1.x + m->Desktops->ewmh_working_area.x;
 	if (xtest > x)
 	{
 		xnew = MIN(xnew, xtest);
 	}
 	xtest = arg->page_p1.x +
-		(Scr.Desktops->ewmh_working_area.x +
-		 Scr.Desktops->ewmh_working_area.width) -
+		(m->Desktops->ewmh_working_area.x +
+		 m->Desktops->ewmh_working_area.width) -
 		arg->place_g.width;
 	if (xtest > x)
 	{
@@ -644,6 +648,9 @@ static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 		other_fw = Scr.FvwmRoot.next; other_fw != NULL;
 		other_fw = other_fw->next)
 	{
+		if (other_fw->m != m)
+			continue;
+
 		if (
 			other_fw == arg->place_fw ||
 			(other_fw->Desk != arg->place_fw->Desk &&
@@ -733,6 +740,7 @@ static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 {
 	FvwmWindow *other_fw;
+	struct monitor	*m = NULL;
 	int ynew;
 	int ytest;
 	int stickyy;
@@ -740,9 +748,12 @@ static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 	int start;
 	int i;
 	rectangle g;
-	int y;
+	int x, y;
 
+	x = arg->place_g.x;
 	y = arg->place_g.y;
+	m = monitor_by_xy(x, y); 
+
 	if (arg->flags.use_percent == 1)
 	{
 		start = 0;
@@ -760,14 +771,14 @@ static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 		ynew = ytest;
 	}
 	/* test the borders of the working area */
-	ytest = arg->page_p1.y + Scr.Desktops->ewmh_working_area.y;
+	ytest = arg->page_p1.y + m->Desktops->ewmh_working_area.y;
 	if (ytest > y)
 	{
 		ynew = MIN(ynew, ytest);
 	}
 	ytest = arg->screen_g.y +
-		(Scr.Desktops->ewmh_working_area.y +
-		 Scr.Desktops->ewmh_working_area.height) -
+		(m->Desktops->ewmh_working_area.y +
+		 m->Desktops->ewmh_working_area.height) -
 		arg->place_g.height;
 	if (ytest > y)
 	{
@@ -778,6 +789,8 @@ static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 		other_fw = Scr.FvwmRoot.next; other_fw != NULL;
 		other_fw = other_fw->next)
 	{
+		if (other_fw->m != m)
+			continue;
 		if (
 			other_fw == arg->place_fw ||
 			(
@@ -1002,6 +1015,7 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 	FvwmWindow *other_fw;
 	pl_penalty_t penalty;
 	size_borders b;
+	struct monitor	*m = monitor_get_current();
 
 	penalty = 0;
 	for (
@@ -1009,6 +1023,9 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 		other_fw = other_fw->next)
 	{
 		rectangle other_g;
+
+		if (m != other_fw->m)
+			continue;
 
 		get_window_borders(other_fw, &b);
 		if (
@@ -1080,7 +1097,7 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 		if (arg->flags.use_ewmh_dynamic_working_areapercent == 1)
 		{
 			penalty += EWMH_STRUT_PLACEMENT_PENALTY(mypp) *
-				EWMH_GetStrutIntersection(
+				EWMH_GetStrutIntersection(m,
 					arg->place_g.x, arg->place_g.y,
 					arg->place_p2.x, arg->place_p2.y,
 					arg->flags.use_percent);
@@ -1091,7 +1108,7 @@ static pl_penalty_t __pl_minoverlap_get_pos_penalty(
 			 */
 			penalty +=
 				EWMH_STRUT_PLACEMENT_PENALTY(mypp) *
-				EWMH_GetBaseStrutIntersection(
+				EWMH_GetBaseStrutIntersection(m,
 					arg->place_g.x, arg->place_g.y,
 					arg->place_p2.x, arg->place_p2.y,
 					arg->flags.use_percent);
@@ -1405,6 +1422,7 @@ static int __place_get_nowm_pos(
 	int pdeltax, int pdeltay)
 {
 	FvwmWindow *fw = exc->w.fw;
+	struct monitor	*mon = fw->m;
 	size_borders b;
 
 	if (!win_opts->flags.do_override_ppos)
@@ -1494,9 +1512,9 @@ static int __place_get_nowm_pos(
 		 * then 2) readjust relative to the current page. */
 		if (attr_g->x < 0)
 		{
-			attr_g->x += Scr.MyDisplayWidth;
+			attr_g->x += mon->coord.w;
 		}
-		attr_g->x %= Scr.MyDisplayWidth;
+		attr_g->x %= mon->coord.h;
 		attr_g->x -= pdeltax;
 		/* Noticed a quirk here. With some apps (e.g., xman), we find
 		 * the placement has moved 1 pixel away from where we
@@ -1505,9 +1523,9 @@ static int __place_get_nowm_pos(
 		 * -borderwidth 100 */
 		if (attr_g->y < 0)
 		{
-			attr_g->y += Scr.MyDisplayHeight;
+			attr_g->y += mon->coord.h;
 		}
-		attr_g->y %= Scr.MyDisplayHeight;
+		attr_g->y %= mon->coord.h;
 		attr_g->y -= pdeltay;
 		if (attr_g->x != old_x || attr_g->y != old_y)
 		{
@@ -1574,6 +1592,7 @@ static int __place_window(
 	pl_flags_t flags;
 	extern Bool Restarting;
 	FvwmWindow *fw = exc->w.fw;
+	struct monitor	*mon = fw->m;
 
 	memset(&flags, 0, sizeof(flags));
 
@@ -1696,6 +1715,7 @@ static int __place_window(
 		 * will have already modified this for us -- so don't do it
 		 * for this placement policy.
 		 */
+		fw->m = monitor_get_current();
 		EWMH_GetWorkAreaIntersection(
 			fw, &screen_g.x, &screen_g.y, &screen_g.width,
 			&screen_g.height,
@@ -1706,7 +1726,7 @@ static int __place_window(
 	/* Don't alter the existing desk location during Capture/Recapture.  */
 	if (!win_opts->flags.do_override_ppos)
 	{
-		fw->Desk = Scr.CurrentDesk;
+		fw->Desk = mon->virtual_scr.CurrentDesk;
 		reason->desk.reason = PR_DESK_CURRENT;
 	}
 	else
@@ -1715,7 +1735,7 @@ static int __place_window(
 	}
 	if (S_IS_STICKY_ACROSS_DESKS(SFC(pstyle->flags)))
 	{
-		fw->Desk = Scr.CurrentDesk;
+		fw->Desk = mon->virtual_scr.CurrentDesk;
 		reason->desk.reason = PR_DESK_STICKY;
 	}
 	else if (SUSE_START_ON_DESK(&pstyle->flags) && start_style.desk &&
@@ -1806,7 +1826,7 @@ static int __place_window(
 	/*  RBW - 11/02/1998  --  I dont. */
 	if (!win_opts->flags.do_override_ppos && !DO_NOT_SHOW_ON_MAP(fw))
 	{
-		if (Scr.CurrentDesk != fw->Desk)
+		if (mon->virtual_scr.CurrentDesk != fw->Desk)
 		{
 			reason->desk.do_switch_desk = 1;
 		}
@@ -1826,8 +1846,8 @@ static int __place_window(
 			px = start_style.page_x - 1;
 			py = start_style.page_y - 1;
 			reason->page.reason = PR_PAGE_STYLE;
-			px *= Scr.MyDisplayWidth;
-			py *= Scr.MyDisplayHeight;
+			px *= mon->coord.w; 
+			py *= mon->coord.h;
 			if (!win_opts->flags.do_override_ppos &&
 			    !DO_NOT_SHOW_ON_MAP(fw))
 			{
@@ -1837,8 +1857,8 @@ static int __place_window(
 			else if (flags.do_honor_starts_on_page)
 			{
 				/*  Save the delta from current page */
-				pdeltax = Scr.Vx - px;
-				pdeltay = Scr.Vy - py;
+				pdeltax = mon->virtual_scr.Vx - px;
+				pdeltay = mon->virtual_scr.Vy - py;
 				reason->page.do_honor_starts_on_page = 1;
 			}
 		}
@@ -2230,6 +2250,7 @@ static void __explain_placement(FvwmWindow *fw, pl_reason_t *reason)
 		sprintf(s, "    (adjusted to force window on page)\n");
 		s += strlen(s);
 	}
+	sprintf(s, "MONITOR: %s\n", fw->m ? fw->m->name : "(UNKNOWN)");
 	fvwm_msg(
 		INFO, "__explain_placement", explanation, (int)FW_W(fw),
 		fw->name.name);
@@ -2328,7 +2349,7 @@ void CMD_PlaceAgain(F_CMD_ARGS)
 		{
 			return;
 		}
-		fw->Desk = Scr.CurrentDesk;
+		fw->Desk = fw->m->virtual_scr.CurrentDesk;
 		get_icon_geometry(fw, &old_g);
 		SET_ICON_MOVED(fw, 0);
 		AutoPlaceIcon(fw, NULL, False);

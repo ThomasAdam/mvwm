@@ -177,7 +177,7 @@ static Bool __check_allow_focus(
 	sf = get_focus_window();
 	if (!FP_IS_LENIENT(FW_FOCUS_POLICY(fw)) &&
 	    !focus_does_accept_input_focus(fw) &&
-	    sf != NULL && sf->Desk == Scr.CurrentDesk)
+	    sf != NULL && sf->Desk == sf->m->virtual_scr.CurrentDesk)
 	{
 		/* window does not want focus */
 		return False;
@@ -379,7 +379,7 @@ static void __set_focus_to_fwin(
 		}
 		Scr.UnknownWinFocused = None;
 	}
-	else if (sf && sf->Desk == Scr.CurrentDesk)
+	else if (sf && sf->Desk == sf->m->virtual_scr.CurrentDesk)
 	{
 		/* Window doesn't want focus. Leave focus alone */
 	}
@@ -444,13 +444,14 @@ static void warp_to_fvwm_window(
 	int cx,cy;
 	int x,y;
 	FvwmWindow *t = exc->w.fw;
+	struct monitor	*m = t->m;
 
 	if (t == (FvwmWindow *)0 ||
 	    (IS_ICONIFIED(t) && FW_W_ICON_TITLE(t) == None))
 	{
 		return;
 	}
-	if (t->Desk != Scr.CurrentDesk)
+	if (t->Desk != m->virtual_scr.CurrentDesk)
 	{
 		goto_desk(t->Desk);
 	}
@@ -472,9 +473,9 @@ static void warp_to_fvwm_window(
 		cx = t->g.frame.x + t->g.frame.width/2;
 		cy = t->g.frame.y + t->g.frame.height/2;
 	}
-	dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
-	dy = (cy + Scr.Vy) / Scr.MyDisplayHeight * Scr.MyDisplayHeight;
-	if (dx != Scr.Vx || dy != Scr.Vy)
+	dx = (cx + m->virtual_scr.Vx) / m->coord.w * m->coord.w;
+	dy = (cy + m->virtual_scr.Vy) / m->coord.h * m->coord.h;
+	if (dx != m->virtual_scr.Vx || dy != m->virtual_scr.Vy)
 	{
 		MoveViewport(dx, dy, True);
 	}
@@ -493,11 +494,11 @@ static void warp_to_fvwm_window(
 	}
 	else
 	{
-		if (x_unit != Scr.MyDisplayWidth && warp_x >= 0)
+		if (x_unit != m->coord.w && warp_x >= 0)
 		{
 			x = t->g.frame.x + warp_x;
 		}
-		else if (x_unit != Scr.MyDisplayWidth)
+		else if (x_unit != m->coord.w)
 		{
 			x = t->g.frame.x + t->g.frame.width + warp_x;
 		}
@@ -512,11 +513,11 @@ static void warp_to_fvwm_window(
 				(t->g.frame.width - 1) * (100 + warp_x) / 100;
 		}
 
-		if (y_unit != Scr.MyDisplayHeight && warp_y >= 0)
+		if (y_unit != m->coord.h && warp_y >= 0)
 		{
 			y = t->g.frame.y + warp_y;
 		}
-		else if (y_unit != Scr.MyDisplayHeight)
+		else if (y_unit != m->coord.h)
 		{
 			y = t->g.frame.y + t->g.frame.height + warp_y;
 		}
@@ -537,8 +538,8 @@ static void warp_to_fvwm_window(
 	/* If the window is still not visible, make it visible! */
 	if (t->g.frame.x + t->g.frame.width  < 0 ||
 	    t->g.frame.y + t->g.frame.height < 0 ||
-	    t->g.frame.x >= Scr.MyDisplayWidth ||
-	    t->g.frame.y >= Scr.MyDisplayHeight)
+	    t->g.frame.x >= m->coord.w ||
+	    t->g.frame.y >= m->coord.h)
 	{
 		frame_setup_window(
 			t, 0, 0, t->g.frame.width, t->g.frame.height, False);
@@ -551,10 +552,11 @@ static void warp_to_fvwm_window(
 
 static Bool focus_query_grab_buttons(FvwmWindow *fw, Bool client_entered)
 {
+	struct monitor	*m = fw->m;
 	Bool flag;
 	Bool is_focused;
 
-	if (fw->Desk != Scr.CurrentDesk || IS_ICONIFIED(fw))
+	if (fw->Desk != m->virtual_scr.CurrentDesk || IS_ICONIFIED(fw))
 	{
 		return False;
 	}
@@ -640,6 +642,7 @@ static void __activate_window_by_command(
 	Bool do_not_warp;
 	sftfwin_args_t sf_args;
 	FvwmWindow * const fw = exc->w.fw;
+	struct monitor	*m = fw->m;
 
 	memset(&sf_args, 0, sizeof(sf_args));
 	sf_args.do_allow_force_broadcast = 1;
@@ -662,7 +665,7 @@ static void __activate_window_by_command(
 	do_not_warp = StrEquals(PeekToken(action, NULL), "NoWarp");
 	if (!do_not_warp)
 	{
-		if (fw->Desk != Scr.CurrentDesk)
+		if (fw->Desk != m->virtual_scr.CurrentDesk)
 		{
 			goto_desk(fw->Desk);
 		}
@@ -685,24 +688,24 @@ static void __activate_window_by_command(
 			cy = fw->g.frame.y + fw->g.frame.height/2;
 		}
 		if (
-			cx < 0 || cx >= Scr.MyDisplayWidth ||
-			cy < 0 || cy >= Scr.MyDisplayHeight)
+			cx < 0 || cx >= m->coord.w ||
+			cy < 0 || cy >= m->coord.h)
 		{
 			int dx;
 			int dy;
 
-			dx = ((cx + Scr.Vx) / Scr.MyDisplayWidth) *
-				Scr.MyDisplayWidth;
-			dy = ((cy + Scr.Vy) / Scr.MyDisplayHeight) *
-				Scr.MyDisplayHeight;
+			dx = ((cx + m->virtual_scr.Vx) / m->coord.w) *
+				m->coord.w;
+			dy = ((cy + m->virtual_scr.Vy) / m->coord.h) *
+				m->coord.h;
 			MoveViewport(dx, dy, True);
 		}
 #if 0 /* can not happen */
 		/* If the window is still not visible, make it visible! */
 		if (fw->g.frame.x + fw->g.frame.width < 0 ||
 		    fw->g.frame.y + fw->g.frame.height < 0 ||
-		    fw->g.frame.x >= Scr.MyDisplayWidth ||
-		    fw->g.frame.y >= Scr.MyDisplayHeight)
+		    fw->g.frame.x >= m->coord.w ||
+		    fw->g.frame.y >= m->coord.h)
 		{
 			frame_setup_window(
 				fw, 0, 0, fw->g.frame.width,
@@ -720,7 +723,7 @@ static void __activate_window_by_command(
 	}
 	UngrabEm(GRAB_NORMAL);
 
-	if (fw->Desk == Scr.CurrentDesk)
+	if (fw->Desk == m->virtual_scr.CurrentDesk)
 	{
 		FvwmWindow *sf;
 
@@ -1208,6 +1211,8 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 {
 	int val1_unit, val2_unit, n;
 	int val1, val2;
+	FvwmWindow * const fw = exc->w.fw;
+	struct monitor	*m = fw->m;
 
 	n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
 	if (exc->w.wcontext != C_UNMANAGED)
@@ -1242,7 +1247,7 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 			{
 				return;
 			}
-			if (val1_unit != Scr.MyDisplayWidth)
+			if (val1_unit != m->coord.w)
 			{
 				x = val1;
 			}
@@ -1250,7 +1255,7 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 			{
 				x = (ww - 1) * val1 / 100;
 			}
-			if (val2_unit != Scr.MyDisplayHeight)
+			if (val2_unit != m->coord.h)
 			{
 				y = val2;
 			}

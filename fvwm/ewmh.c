@@ -493,11 +493,11 @@ int check_desk(void)
 	return d;
 }
 
-void EWMH_SetCurrentDesktop(void)
+void EWMH_SetCurrentDesktop(struct monitor *m)
 {
 	long val;
 
-	val = Scr.CurrentDesk;
+	val = m->virtual_scr.CurrentDesk;
 
 	if (val < 0 || (val >= ewmhc.MaxDesktops && ewmhc.MaxDesktops != 0))
 	{
@@ -508,17 +508,15 @@ void EWMH_SetCurrentDesktop(void)
 	    (ewmhc.NumberOfDesktops != ewmhc.CurrentNumberOfDesktops &&
 	     val < ewmhc.CurrentNumberOfDesktops))
 	{
-		EWMH_SetNumberOfDesktops();
+		EWMH_SetNumberOfDesktops(m);
 	}
 
 	ewmh_ChangeProperty(Scr.Root,"_NET_CURRENT_DESKTOP",
 			    EWMH_ATOM_LIST_CLIENT_ROOT,
 			    (unsigned char *)&val, 1);
-
-	return;
 }
 
-void EWMH_SetNumberOfDesktops(void)
+void EWMH_SetNumberOfDesktops(struct monitor *m)
 {
 	long val;
 
@@ -539,10 +537,10 @@ void EWMH_SetNumberOfDesktops(void)
 			max(ewmhc.NumberOfDesktops, d+1);
 	}
 
-	if (Scr.CurrentDesk >= ewmhc.CurrentNumberOfDesktops &&
-	    (Scr.CurrentDesk < ewmhc.MaxDesktops || ewmhc.MaxDesktops == 0))
+	if (m->virtual_scr.CurrentDesk >= ewmhc.CurrentNumberOfDesktops &&
+	    (m->virtual_scr.CurrentDesk < ewmhc.MaxDesktops || ewmhc.MaxDesktops == 0))
 	{
-		ewmhc.CurrentNumberOfDesktops = Scr.CurrentDesk + 1;
+		ewmhc.CurrentNumberOfDesktops = m->virtual_scr.CurrentDesk + 1;
 	}
 
 	val = (long)ewmhc.CurrentNumberOfDesktops;
@@ -554,35 +552,32 @@ void EWMH_SetNumberOfDesktops(void)
 	return;
 }
 
-void EWMH_SetDesktopViewPort(void)
+void EWMH_SetDesktopViewPort(struct monitor *m)
 {
 	long val[256][2]; /* no more than 256 desktops */
 	int i = 0;
 
 	while(i < ewmhc.NumberOfDesktops && i < 256)
 	{
-		val[i][0] = Scr.Vx;
-		val[i][1] = Scr.Vy;
+		val[i][0] = m->virtual_scr.Vx;
+		val[i][1] = m->virtual_scr.Vy;
 		i++;
 	}
 	ewmh_ChangeProperty(
-		Scr.Root, "_NET_DESKTOP_VIEWPORT", EWMH_ATOM_LIST_CLIENT_ROOT,
+		Scr.Root, "_NET_DESKTOP_VIEWPORT",
+		EWMH_ATOM_LIST_CLIENT_ROOT,
 		(unsigned char *)&val, i*2);
-
-	return;
 }
 
-void EWMH_SetDesktopGeometry(void)
+void EWMH_SetDesktopGeometry(struct monitor *m)
 {
 	long val[2];
 
-	val[0] = Scr.VxMax + Scr.MyDisplayWidth;
-	val[1] = Scr.VyMax + Scr.MyDisplayHeight;
+	val[0] = m->virtual_scr.VxMax + m->coord.w;
+	val[1] = m->virtual_scr.VyMax + m->coord.h;
 	ewmh_ChangeProperty(
 		Scr.Root,"_NET_DESKTOP_GEOMETRY", EWMH_ATOM_LIST_CLIENT_ROOT,
 		(unsigned char *)&val, 2);
-
-	return;
 }
 
 /*
@@ -608,7 +603,7 @@ void EWMH_SetWMDesktop(FvwmWindow *fw)
 	else if (desk >= ewmhc.CurrentNumberOfDesktops)
 	{
 		ewmhc.NeedsToCheckDesk = True;
-		EWMH_SetNumberOfDesktops();
+		EWMH_SetNumberOfDesktops(fw->m);
 	}
 	ewmh_ChangeProperty(
 		FW_W(fw), "_NET_WM_DESKTOP", EWMH_ATOM_LIST_CLIENT_WIN,
@@ -869,7 +864,7 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 
 /**** Client lists ****/
 
-void EWMH_SetClientList(void)
+void EWMH_SetClientList(struct monitor *m)
 {
 	Window *wl = NULL;
 	FvwmWindow *fw;
@@ -899,7 +894,7 @@ void EWMH_SetClientList(void)
 	return;
 }
 
-void EWMH_SetClientListStacking(void)
+void EWMH_SetClientListStacking(struct monitor *m)
 {
 	Window *wl = NULL;
 	FvwmWindow *fw;
@@ -939,25 +934,34 @@ void EWMH_SetClientListStacking(void)
 
 void ewmh_SetWorkArea(void)
 {
+	struct monitor	*m;
 	long val[256][4]; /* no more than 256 desktops */
 	int i = 0;
 
-	while(i < ewmhc.NumberOfDesktops && i < 256)
-	{
-		val[i][0] = Scr.Desktops->ewmh_working_area.x;
-		val[i][1] = Scr.Desktops->ewmh_working_area.y;
-		val[i][2] = Scr.Desktops->ewmh_working_area.width;
-		val[i][3] = Scr.Desktops->ewmh_working_area.height;
-		i++;
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
+			continue;
+
+		if (m->Desktops == NULL)
+			continue;
+
+		while(i < ewmhc.NumberOfDesktops && i < 256)
+		{
+			val[i][0] = m->Desktops->ewmh_working_area.x;
+			val[i][1] = m->Desktops->ewmh_working_area.y;
+			val[i][2] = m->Desktops->ewmh_working_area.width;
+			val[i][3] = m->Desktops->ewmh_working_area.height;
+			i++;
+		}
+		ewmh_ChangeProperty(
+			Scr.Root, "_NET_WORKAREA", EWMH_ATOM_LIST_FVWM_ROOT,
+			(unsigned char *)&val, i*4);
 	}
-	ewmh_ChangeProperty(
-		Scr.Root, "_NET_WORKAREA", EWMH_ATOM_LIST_FVWM_ROOT,
-		(unsigned char *)&val, i*4);
 
 	return;
 }
 
-void ewmh_ComputeAndSetWorkArea(void)
+void ewmh_ComputeAndSetWorkArea(struct monitor *m)
 {
 	int left = ewmhc.BaseStrut.left;
 	int right = ewmhc.BaseStrut.right;
@@ -968,6 +972,9 @@ void ewmh_ComputeAndSetWorkArea(void)
 
 	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
 	{
+		if (m != fw->m)
+			continue;
+
 		if (
 			DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
 			!IS_STICKY_ACROSS_PAGES(fw))
@@ -982,26 +989,24 @@ void ewmh_ComputeAndSetWorkArea(void)
 
 	x = left;
 	y = top;
-	width = Scr.MyDisplayWidth - (left + right);
-	height = Scr.MyDisplayHeight - (top + bottom);
+	width = m->coord.w - (left + right);
+	height = m->coord.h - (top + bottom);
 
 	if (
-		Scr.Desktops->ewmh_working_area.x != x ||
-		Scr.Desktops->ewmh_working_area.y != y ||
-		Scr.Desktops->ewmh_working_area.width != width ||
-		Scr.Desktops->ewmh_working_area.height != height)
+		m->Desktops->ewmh_working_area.x != x ||
+		m->Desktops->ewmh_working_area.y != y ||
+		m->Desktops->ewmh_working_area.width != width ||
+		m->Desktops->ewmh_working_area.height != height)
 	{
-		Scr.Desktops->ewmh_working_area.x = x;
-		Scr.Desktops->ewmh_working_area.y = y;
-		Scr.Desktops->ewmh_working_area.width = width;
-		Scr.Desktops->ewmh_working_area.height = height;
+		m->Desktops->ewmh_working_area.x = x;
+		m->Desktops->ewmh_working_area.y = y;
+		m->Desktops->ewmh_working_area.width = width;
+		m->Desktops->ewmh_working_area.height = height;
 		ewmh_SetWorkArea();
 	}
-
-	return;
 }
 
-void ewmh_HandleDynamicWorkArea(void)
+void ewmh_HandleDynamicWorkArea(struct monitor *m)
 {
 	int dyn_left = ewmhc.BaseStrut.left;
 	int dyn_right = ewmhc.BaseStrut.right;
@@ -1012,6 +1017,8 @@ void ewmh_HandleDynamicWorkArea(void)
 
 	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
 	{
+		if (m != fw->m)
+			continue;
 		if (
 			DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
 			!IS_STICKY_ACROSS_PAGES(fw))
@@ -1026,41 +1033,45 @@ void ewmh_HandleDynamicWorkArea(void)
 
 	x = dyn_left;
 	y = dyn_top;
-	width = Scr.MyDisplayWidth - (dyn_left + dyn_right);
-	height = Scr.MyDisplayHeight - (dyn_top + dyn_bottom);
+	width = m->coord.w - (dyn_left + dyn_right);
+	height = m->coord.h - (dyn_top + dyn_bottom);
 
 	if (
-		Scr.Desktops->ewmh_dyn_working_area.x != x ||
-		Scr.Desktops->ewmh_dyn_working_area.y != y ||
-		Scr.Desktops->ewmh_dyn_working_area.width != width ||
-		Scr.Desktops->ewmh_dyn_working_area.height != height)
+		m->Desktops->ewmh_dyn_working_area.x != x ||
+		m->Desktops->ewmh_dyn_working_area.y != y ||
+		m->Desktops->ewmh_dyn_working_area.width != width ||
+		m->Desktops->ewmh_dyn_working_area.height != height)
 	{
-		Scr.Desktops->ewmh_dyn_working_area.x = x;
-		Scr.Desktops->ewmh_dyn_working_area.y = y;
-		Scr.Desktops->ewmh_dyn_working_area.width = width;
-		Scr.Desktops->ewmh_dyn_working_area.height = height;
+		m->Desktops->ewmh_dyn_working_area.x = x;
+		m->Desktops->ewmh_dyn_working_area.y = y;
+		m->Desktops->ewmh_dyn_working_area.width = width;
+		m->Desktops->ewmh_dyn_working_area.height = height;
 		/* here we may update the maximized window ...etc */
 	}
-
-	return;
 }
 
 void EWMH_UpdateWorkArea(void)
 {
-	ewmh_ComputeAndSetWorkArea();
-	ewmh_HandleDynamicWorkArea();
+	struct monitor	*m;
 
-	return;
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
+			continue;
+
+		ewmh_ComputeAndSetWorkArea(m);
+		ewmh_HandleDynamicWorkArea(m);
+	}
 }
 
 void EWMH_GetWorkAreaIntersection(
 	FvwmWindow *fw, int *x, int *y, int *w, int *h, int type)
 {
+	struct monitor	*m = (fw && fw->m) ? fw->m : monitor_get_current();
 	int nx,ny,nw,nh;
-	int area_x = Scr.Desktops->ewmh_working_area.x;
-	int area_y = Scr.Desktops->ewmh_working_area.y;
-	int area_w = Scr.Desktops->ewmh_working_area.width;
-	int area_h = Scr.Desktops->ewmh_working_area.height;
+	int area_x = m->Desktops->ewmh_working_area.x;
+	int area_y = m->Desktops->ewmh_working_area.y;
+	int area_w = m->Desktops->ewmh_working_area.width;
+	int area_h = m->Desktops->ewmh_working_area.height;
 	Bool is_dynamic = False;
 
 	switch(type)
@@ -1077,10 +1088,10 @@ void EWMH_GetWorkAreaIntersection(
 	}
 	if (is_dynamic)
 	{
-		area_x = Scr.Desktops->ewmh_dyn_working_area.x;
-		area_y = Scr.Desktops->ewmh_dyn_working_area.y;
-		area_w = Scr.Desktops->ewmh_dyn_working_area.width;
-		area_h = Scr.Desktops->ewmh_dyn_working_area.height;
+		area_x = m->Desktops->ewmh_dyn_working_area.x;
+		area_y = m->Desktops->ewmh_dyn_working_area.y;
+		area_w = m->Desktops->ewmh_dyn_working_area.width;
+		area_h = m->Desktops->ewmh_dyn_working_area.height;
 	}
 	nx = max(*x, area_x);
 	ny = max(*y, area_y);
@@ -1121,7 +1132,7 @@ float get_intersection(
 }
 
 static
-float ewmh_GetStrutIntersection(
+float ewmh_GetStrutIntersection(struct monitor *m,
 	int x11, int y11, int x12, int y12,
 	int left, int right, int top, int bottom,
 	Bool use_percent)
@@ -1133,58 +1144,58 @@ float ewmh_GetStrutIntersection(
 	x21 = 0;
 	y21 = 0;
 	x22 = left;
-	y22 = Scr.MyDisplayHeight;
+	y22 = m->coord.h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* right */
-	x21 = Scr.MyDisplayWidth - right;
+	x21 = m->coord.w - right;
 	y21 = 0;
-	x22 = Scr.MyDisplayWidth;
-	y22 = Scr.MyDisplayHeight;
+	x22 = m->coord.w;
+	y22 = m->coord.h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* top */
 	x21 = 0;
 	y21 = 0;
-	x22 = Scr.MyDisplayWidth;
+	x22 = m->coord.w;
 	y22 = top;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* bottom */
 	x21 = 0;
-	y21 = Scr.MyDisplayHeight - bottom;
-	x22 = Scr.MyDisplayWidth;
-	y22 = Scr.MyDisplayHeight;
+	y21 = m->coord.h - bottom;
+	x22 = m->coord.w;
+	y22 = m->coord.h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 
 	return ret;
 }
 
-float EWMH_GetBaseStrutIntersection(
+float EWMH_GetBaseStrutIntersection(struct monitor *m,
 	int x11, int y11, int x12, int y12, Bool use_percent)
 {
-	return ewmh_GetStrutIntersection(
+	return ewmh_GetStrutIntersection(m,
 		x11, y11, x12, y12, ewmhc.BaseStrut.left,
 		ewmhc.BaseStrut.right, ewmhc.BaseStrut.top,
 		ewmhc.BaseStrut.bottom, use_percent);
 }
 
-float EWMH_GetStrutIntersection(
+float EWMH_GetStrutIntersection(struct monitor *m,
 	int x11, int y11, int x12, int y12, Bool use_percent)
 {
 	int left, right, top, bottom;
 
-	left = Scr.Desktops->ewmh_working_area.x;
-	right = Scr.MyDisplayWidth -
-		(Scr.Desktops->ewmh_working_area.x
-		 + Scr.Desktops->ewmh_working_area.width);
-	top = Scr.Desktops->ewmh_working_area.y;
-	bottom = Scr.MyDisplayHeight -
-		(Scr.Desktops->ewmh_working_area.y
-		 + Scr.Desktops->ewmh_working_area.height);
+	left = m->Desktops->ewmh_working_area.x;
+	right = m->coord.w -
+		(m->Desktops->ewmh_working_area.x
+		 + m->Desktops->ewmh_working_area.width);
+	top = m->Desktops->ewmh_working_area.y;
+	bottom = m->coord.h -
+		(m->Desktops->ewmh_working_area.y
+		 + m->Desktops->ewmh_working_area.height);
 
-	return ewmh_GetStrutIntersection(
+	return ewmh_GetStrutIntersection(m,
 		x11, y11, x12, y12, left, right, top, bottom, use_percent);
 }
 
@@ -1738,14 +1749,15 @@ void EWMH_DestroyWindow(FvwmWindow *fw)
 /* a window has been destroyed (unmap/reparent/destroy) */
 void EWMH_WindowDestroyed(void)
 {
-	EWMH_SetClientList();
-	EWMH_SetClientListStacking();
+	struct monitor	*m = monitor_get_current();
+	EWMH_SetClientList(m);
+	EWMH_SetClientListStacking(m);
 	if (ewmhc.NeedsToCheckDesk)
 	{
-		EWMH_SetNumberOfDesktops();
+		EWMH_SetNumberOfDesktops(m);
 	}
-	ewmh_ComputeAndSetWorkArea();
-	ewmh_HandleDynamicWorkArea();
+	ewmh_ComputeAndSetWorkArea(m);
+	ewmh_HandleDynamicWorkArea(m);
 
 	return;
 }
@@ -1807,7 +1819,7 @@ void clean_up(void)
 	return;
 }
 
-void EWMH_Init(void)
+void EWMH_Init(struct monitor *m)
 {
 	int i;
 	int supported_count = 0;
@@ -1859,14 +1871,14 @@ void EWMH_Init(void)
 
 	clean_up();
 
-	EWMH_SetDesktopNames();
-	EWMH_SetCurrentDesktop();
-	EWMH_SetNumberOfDesktops();
-	EWMH_SetDesktopViewPort();
-	EWMH_SetDesktopGeometry();
-	EWMH_SetClientList();
-	EWMH_SetClientListStacking();
-	ewmh_ComputeAndSetWorkArea();
+	EWMH_SetDesktopNames(m);
+	EWMH_SetCurrentDesktop(m);
+	EWMH_SetNumberOfDesktops(m);
+	EWMH_SetDesktopViewPort(m);
+	EWMH_SetDesktopGeometry(m);
+	EWMH_SetClientList(m);
+	EWMH_SetClientListStacking(m);
+	ewmh_ComputeAndSetWorkArea(m);
 
 	return;
 }

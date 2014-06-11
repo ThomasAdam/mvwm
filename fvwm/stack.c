@@ -578,7 +578,7 @@ static void __restack_window_list(
 		XRestackWindows(dpy, wins, count);
 	}
 	free(wins);
-	EWMH_SetClientListStacking();
+	EWMH_SetClientListStacking(r->m ? r->m : monitor_get_current());
 	if (do_broadcast_all)
 	{
 		/* send out M_RESTACK for all windows, to make sure we don't
@@ -1458,7 +1458,7 @@ static Bool is_above_unmanaged(FvwmWindow *fw, Window *umtop)
 	Window OR_Above = None;
 	XWindowAttributes wa;
 
-	if (fw->Desk != Scr.CurrentDesk)
+	if (fw->Desk != fw->m->virtual_scr.CurrentDesk)
 	{
 		return True;
 	}

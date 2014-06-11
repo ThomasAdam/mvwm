@@ -36,7 +36,28 @@ struct monitor {
 		int h;
 	} coord;
 
-	ScreenInfo	*Scr;
+	/* info for some desktops; the first entries should be generic info
+	 * correct for any desktop not in the list
+	 */
+	DesktopsInfo	*Desktops;
+
+	struct {
+		int VxMax;
+		int VyMax;
+		int Vx;
+		int Vy;
+
+		int EdgeScrollX;
+		int EdgeScrollY;
+
+		int CurrentDesk;
+		int prev_page_x;
+		int prev_page_y;
+		int prev_desk;
+		int prev_desk_and_page_desk;
+		int prev_desk_and_page_page_x;
+		int prev_desk_and_page_page_y;
+	} virtual_scr;
 
 	TAILQ_ENTRY(monitor) entry;
 };
@@ -44,7 +65,10 @@ TAILQ_HEAD(monitors, monitor);
 
 struct monitors		monitor_q;
 
+struct monitor	*monitor_get_current(void);
 struct monitor	*monitor_by_name(const char *);
+struct monitor	*monitor_by_xy(int, int);
+int		 monitor_should_ignore_global(struct monitor *);
 
 #define FSCREEN_MANGLE_USPOS_HINTS_MAGIC ((short)-32109)
 

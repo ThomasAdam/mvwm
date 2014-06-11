@@ -50,7 +50,7 @@ void set_state_workaround(void)
 
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
 	{
-		if ((t->Desk != Scr.CurrentDesk) &&
+		if ((t->Desk != t->m->virtual_scr.CurrentDesk) &&
 		    (!is_window_sticky_across_desks(t) &&
 		     !IS_ICON_UNMAPPED(t)))
 		{
@@ -97,6 +97,7 @@ Bool EWMH_BugOpts(char *opt, Bool toggle)
 
 void CMD_EwmhNumberOfDesktops(F_CMD_ARGS)
 {
+	struct monitor	*m;
 	int val[2];
 	int num;
 
@@ -129,7 +130,11 @@ void CMD_EwmhNumberOfDesktops(F_CMD_ARGS)
 	if (num == 3)
 	{
 		ewmhc.NeedsToCheckDesk = True;
-		EWMH_SetNumberOfDesktops();
+		TAILQ_FOREACH(m, &monitor_q, entry) {
+			if (monitor_should_ignore_global(m))
+				continue;
+			EWMH_SetNumberOfDesktops(m);
+		}
 	}
 }
 

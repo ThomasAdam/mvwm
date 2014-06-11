@@ -1175,6 +1175,7 @@ static void size_menu_horizontally(MenuSizingParameters *msp)
 	int gap_left;
 	int gap_right;
 	int chars;
+	struct monitor	*mon = monitor_get_current();
 
 	memset(item_order, 0, sizeof(item_order));
 	for (i = 0; i < MAX_MENU_ITEM_LABELS; i++)
@@ -1194,7 +1195,7 @@ static void size_menu_horizontally(MenuSizingParameters *msp)
 	 * set in the format string. */
 	for (i = 0; i < MAX_MENU_ITEM_LABELS; i++)
 	{
-		label_offset[i] = 2 * Scr.MyDisplayWidth;
+		label_offset[i] = 2 * mon->coord.w;
 	}
 
 	x = MST_BORDER_WIDTH(msp->menu);
@@ -5898,6 +5899,7 @@ void do_menu(MenuParameters *pmp, MenuReturn *pmret)
 	static int y_start;
 	int scr_x, scr_y;
 	int scr_w, scr_h;
+	struct monitor	*mon = monitor_get_current();
 
 	pmret->rc = MENU_NOP;
 	if (pmp->flags.is_sticky && !pmp->flags.is_submenu)
@@ -6155,8 +6157,8 @@ void do_menu(MenuParameters *pmp, MenuReturn *pmret)
 			 * a top level menu, and a button release event didn't
 			 * end it */
 			FWarpPointer(
-				dpy, 0, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-				Scr.MyDisplayHeight, x_start, y_start);
+				dpy, 0, Scr.Root, 0, 0, mon->coord.w,
+				mon->coord.h, x_start, y_start);
 			if ((*pmp->pexc)->x.elast->type == KeyPress)
 			{
 				XEvent e = *(*pmp->pexc)->x.elast;

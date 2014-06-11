@@ -87,20 +87,20 @@ void gravity_add_decoration(
 	return;
 }
 
-void get_relative_geometry(rectangle *rel_g, rectangle *abs_g)
+void get_relative_geometry(struct monitor *m, rectangle *rel_g, rectangle *abs_g)
 {
-	rel_g->x = abs_g->x - Scr.Vx;
-	rel_g->y = abs_g->y - Scr.Vy;
+	rel_g->x = abs_g->x - m->virtual_scr.Vx;
+	rel_g->y = abs_g->y - m->virtual_scr.Vy;
 	rel_g->width = abs_g->width;
 	rel_g->height = abs_g->height;
 
 	return;
 }
 
-void get_absolute_geometry(rectangle *abs_g, rectangle *rel_g)
+void get_absolute_geometry(struct monitor *m, rectangle *abs_g, rectangle *rel_g)
 {
-	abs_g->x = rel_g->x + Scr.Vx;
-	abs_g->y = rel_g->y + Scr.Vy;
+	abs_g->x = rel_g->x + m->virtual_scr.Vx;
+	abs_g->y = rel_g->y + m->virtual_scr.Vy;
 	abs_g->width = rel_g->width;
 	abs_g->height = rel_g->height;
 
@@ -421,6 +421,8 @@ void get_shaded_geometry_with_dir(
 void get_unshaded_geometry(
 	FvwmWindow *fw, rectangle *ret_g)
 {
+	struct monitor	*m = fw->m;
+
 	if (IS_SHADED(fw))
 	{
 		if (IS_MAXIMIZED(fw))
@@ -431,7 +433,7 @@ void get_unshaded_geometry(
 		{
 			*ret_g = fw->g.normal;
 		}
-		get_relative_geometry(ret_g, ret_g);
+		get_relative_geometry(m, ret_g, ret_g);
 	}
 	else
 	{
@@ -446,10 +448,11 @@ void get_shaded_client_window_pos(
 {
 	rectangle big_g;
 	size_borders b;
+	struct monitor	*m = fw->m;
 
 	get_window_borders(fw, &b);
 	big_g = (IS_MAXIMIZED(fw)) ? fw->g.max : fw->g.normal;
-	get_relative_geometry(&big_g, &big_g);
+	get_relative_geometry(m, &big_g, &big_g);
 	switch (SHADED_DIR(fw))
 	{
 	case DIR_S:
@@ -578,7 +581,8 @@ void get_client_geometry(
  * state */
 void update_relative_geometry(FvwmWindow *fw)
 {
-	get_relative_geometry(
+	struct monitor	*m = fw->m;
+	get_relative_geometry(m,
 		&fw->g.frame,
 		(IS_MAXIMIZED(fw)) ? &fw->g.max : &fw->g.normal);
 	if (IS_SHADED(fw))
@@ -595,12 +599,16 @@ void update_absolute_geometry(FvwmWindow *fw)
 {
 	rectangle *dest_g;
 	rectangle frame_g;
+	struct monitor	*m = fw->m;
+
+	if (m == NULL)
+		m = monitor_get_current();
 
 	/* store orig values in absolute coords */
 	dest_g = (IS_MAXIMIZED(fw)) ? &fw->g.max : &fw->g.normal;
 	frame_g = *dest_g;
-	dest_g->x = fw->g.frame.x + Scr.Vx;
-	dest_g->y = fw->g.frame.y + Scr.Vy;
+	dest_g->x = fw->g.frame.x + m->virtual_scr.Vx;
+	dest_g->y = fw->g.frame.y + m->virtual_scr.Vy;
 	dest_g->width = fw->g.frame.width;
 	dest_g->height = fw->g.frame.height;
 	if (IS_SHADED(fw))
@@ -644,6 +652,7 @@ void maximize_adjust_offset(FvwmWindow *fw)
 	int off_y;
 	int dh;
 	int dw;
+	struct monitor	*m = fw->m;
 
 	if (!IS_MAXIMIZED(fw))
 	{
@@ -652,8 +661,8 @@ void maximize_adjust_offset(FvwmWindow *fw)
 	}
 	off_x = fw->g.normal.x - fw->g.max.x - fw->g.max_offset.x;
 	off_y = fw->g.normal.y - fw->g.max.y - fw->g.max_offset.y;
-	dw = Scr.MyDisplayWidth;
-	dh = Scr.MyDisplayHeight;
+	dw = m->coord.w;
+	dh = m->coord.h;
 	if (off_x >= dw)
 	{
 		fw->g.normal.x -= (off_x / dw) * dw;
@@ -819,6 +828,7 @@ void constrain_size(
 	size_rect d;
 	size_rect old;
 	size_borders b;
+	struct monitor	*m = fw->m;
 
 	if (DO_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw) == 1)
 	{
@@ -941,7 +951,7 @@ void constrain_size(
 		}
 		else if (
 			xmotion < 0 && e->xmotion.x_root >=
-			Scr.MyDisplayWidth - round_up.width)
+			m->coord.w - round_up.width)
 		{
 			d.width -= inc.width;
 		}
@@ -951,7 +961,7 @@ void constrain_size(
 		}
 		else if (
 			ymotion < 0 && e->xmotion.y_root >=
-			Scr.MyDisplayHeight - round_up.height)
+			m->coord.h - round_up.height)
 		{
 			d.height -= inc.height;
 		}
@@ -1348,14 +1358,15 @@ void resize_icon_title_height(FvwmWindow *fw, int dh)
 void get_page_offset_rectangle(
 	int *ret_page_x, int *ret_page_y, rectangle *r)
 {
-	int xoff = Scr.Vx % Scr.MyDisplayWidth;
-	int yoff = Scr.Vy % Scr.MyDisplayHeight;
+	struct monitor	*m = monitor_get_current();
+	int xoff = m->virtual_scr.Vx % m->coord.w;
+	int yoff = m->virtual_scr.Vy % m->coord.h;
 
 	/* maximize on the page where the center of the window is */
 	*ret_page_x = truncate_to_multiple(
-		r->x + r->width / 2 + xoff, Scr.MyDisplayWidth) - xoff;
+		r->x + r->width / 2 + xoff, m->coord.w) - xoff;
 	*ret_page_y = truncate_to_multiple(
-		r->y + r->height / 2 + yoff, Scr.MyDisplayHeight) - yoff;
+		r->y + r->height / 2 + yoff, m->coord.h) - yoff;
 
 	return;
 }
@@ -1377,7 +1388,7 @@ void get_page_offset(
 void get_page_offset_check_visible(
 	int *ret_page_x, int *ret_page_y, FvwmWindow *fw)
 {
-	if (IsRectangleOnThisPage(&fw->g.frame, fw->Desk))
+	if (IsRectangleOnThisPage(fw->m, &fw->g.frame, fw->Desk))
 	{
 		/* maximize on visible page if any part of the window is
 		 * visible */

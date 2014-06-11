@@ -378,9 +378,6 @@ typedef struct ScreenInfo
 	/* number of screens on display */
 	int NumberOfScreens;
 	/* my copy of DisplayWidth(dpy, screen) */
-	int MyDisplayWidth;
-	/* my copy of DisplayHeight(dpy, screen) */
-	int MyDisplayHeight;
 
 	/* the head of the fvwm window list */
 	FvwmWindow FvwmRoot;
@@ -480,23 +477,12 @@ typedef struct ScreenInfo
 	FvwmWindow *StolenFocusFvwmWin;
 	FvwmWindow *focus_in_pending_window;
 	FvwmWindow *focus_in_requested_window;
-	/* #pixels to scroll on screen edge */
-	int EdgeScrollX;
-	/* #pixels to scroll on screen edge */
-	int EdgeScrollY;
-	/* buttons to grab in click to focus mode */
 	unsigned short buttons2grab;
 	int NumBoxes;
 	/* values used for CascadePlacement */
 	int cascade_x;
 	int cascade_y;
 	FvwmWindow *cascade_window;
-	/* Max location for top left of virt desk*/
-	int VxMax;
-	int VyMax;
-	/* Current loc for top left of virt desk */
-	int Vx;
-	int Vy;
 
 	/*Max button-click delay for Function built-in*/
 	int ClickTime;
@@ -504,8 +490,6 @@ typedef struct ScreenInfo
 	int ScrollDelay;
 	int MoveThreshold;
 	int OpaqueSize;
-	/* The current desktop number */
-	int CurrentDesk;
 	/* colormap focus style */
 	int ColormapFocus;
 	/* Limit on colors used in pixmaps */
@@ -515,9 +499,6 @@ typedef struct ScreenInfo
 
 	int use_backing_store;
 
-	/* info for some desktops; the first entries should be generic info
-	 * correct for any desktop not in the list */
-	DesktopsInfo *Desktops;
 	/* the window of desktop type if any */
 	FvwmWindow *EwmhDesktop;
 	struct

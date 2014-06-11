@@ -3,6 +3,8 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include "libs/FScreen.h"
+
 #define CS_ROUND_UP          0x01
 #define CS_UPDATE_MAX_DEFECT 0x02
 
@@ -10,8 +12,8 @@ void gravity_get_naked_geometry(
 	int gravity, FvwmWindow *t, rectangle *dest_g, rectangle *orig_g);
 void gravity_add_decoration(
 	int gravity, FvwmWindow *t, rectangle *dest_g, rectangle *orig_g);
-void get_relative_geometry(rectangle *rel_g, rectangle *abs_g);
-void get_absolute_geometry(rectangle *abs_g, rectangle *rel_g);
+void get_relative_geometry(struct monitor *, rectangle *rel_g, rectangle *abs_g);
+void get_absolute_geometry(struct monitor *, rectangle *abs_g, rectangle *rel_g);
 void gravity_translate_to_northwest_geometry(
 	int gravity, FvwmWindow *t, rectangle *dest_g, rectangle *orig_g);
 void gravity_translate_to_northwest_geometry_no_bw(

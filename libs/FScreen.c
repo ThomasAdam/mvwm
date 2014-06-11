@@ -48,8 +48,8 @@ static Display *disp;
 static int no_of_screens;
 
 static struct monitor	*FindScreenOfXY(int x, int y);
-static struct monitor	*monitor_get_current(void);
 static struct monitor	*monitor_new(void);
+static void		 init_monitor_contents(void);
 
 static void GetMouseXY(XEvent *eventp, int *x, int *y)
 {
@@ -92,6 +92,18 @@ monitor_get_current(void)
 	return (FindScreenOfXY(x, y));
 }
 
+int
+monitor_should_ignore_global(struct monitor *m)
+{
+	/* If we have more than one screen configured, then don't match
+	 * on the global screen, as that's separate to XY positioning
+	 * which is only concerned with the *specific* screen.
+	 */
+	if (no_of_screens > 0 && strcmp(m->name, "global") == 0)
+		return 1;
+	return 0;
+}
+
 struct monitor *
 monitor_by_name(const char *name)
 {
@@ -102,6 +114,12 @@ monitor_by_name(const char *name)
 			return (m);
 	}
 	return (NULL);
+}
+
+struct monitor *
+monitor_by_xy(int x, int y)
+{
+	return (FindScreenOfXY(x, y));
 }
 
 void FScreenInit(Display *dpy)
@@ -173,6 +191,49 @@ void FScreenInit(Display *dpy)
 	}
 done:
 	already_initialised = 1;
+	init_monitor_contents();
+}
+
+static void
+init_monitor_contents(void)
+{
+	struct monitor	*m = NULL;
+
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
+			continue;
+
+		m->Desktops = xcalloc(1, sizeof(DesktopsInfo));
+		m->Desktops->name = NULL;
+		m->Desktops->desk = 0; /* not desk 0 */
+		m->Desktops->ewmh_dyn_working_area.x =
+		    m->Desktops->ewmh_working_area.x = 0;
+		m->Desktops->ewmh_dyn_working_area.y =
+		    m->Desktops->ewmh_working_area.y = 0;
+		m->Desktops->ewmh_dyn_working_area.width =
+		    m->Desktops->ewmh_working_area.width = m->coord.w;
+		m->Desktops->ewmh_dyn_working_area.height =
+		    m->Desktops->ewmh_working_area.height = m->coord.h;
+		m->Desktops->next = NULL;
+
+		m->virtual_scr.CurrentDesk = 0;
+		m->virtual_scr.Vx = 0;
+		m->virtual_scr.Vy = 0;
+		m->virtual_scr.VxMax = 2 * m->coord.w;
+		m->virtual_scr.VyMax = 2 * m->coord.h;
+
+		m->virtual_scr.prev_page_x = 0;
+		m->virtual_scr.prev_page_y = 0;
+		m->virtual_scr.prev_desk = 0;
+		m->virtual_scr.prev_desk_and_page_desk = 0;
+		m->virtual_scr.prev_desk_and_page_page_x = 0;
+		m->virtual_scr.prev_desk_and_page_page_y = 0;
+
+		m->virtual_scr.EdgeScrollX =
+			DEFAULT_EDGE_SCROLL * m->coord.w / 100;
+		m->virtual_scr.EdgeScrollY =
+			DEFAULT_EDGE_SCROLL * m->coord.h / 100;
+	}
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
@@ -238,11 +299,7 @@ FindScreenOfXY(int x, int y)
 	struct monitor	*m;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		/* If we have more than one screen configured, then don't match
-		 * on the global screen, as that's separate to XY positioning
-		 * which is only concerned with the *specific* screen.
-		 */
-		if (no_of_screens > 0 && strcmp(m->name, "global") == 0)
+		if (monitor_should_ignore_global(m))
 			continue;
 		if (x >= m->coord.x && x < m->coord.x + m->coord.w &&
 		    y >= m->coord.y && y < m->coord.y + m->coord.h)
