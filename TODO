@@ -37,6 +37,10 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
         - Just go with pages, which can be named.
         - Only allow a linear arrangement; 3x3 for example makes no sense
           with multi-monitor setups.
+	- PanWindows per-monitor inhibit moving windows across screen
+	  boundaries.  Have a key-binding to stop panning?
+	- fw->m assignment needs updating when moving windows across screen
+	  boundaries.
 
 * Clients:
     - Have an "undo" list of geometries which can be reverted to.
