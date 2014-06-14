@@ -318,11 +318,6 @@ static void __set_focus_to_fwin(
 				w = Scr.NoFocusWin;
 			}
 		}
-		else if (!IsRectangleOnThisPage(&(fw->g.frame), fw->Desk))
-		{
-			fw = NULL;
-			w = Scr.NoFocusWin;
-		}
 	}
 
 	sf = get_focus_window();
