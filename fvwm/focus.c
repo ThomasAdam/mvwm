@@ -312,7 +312,7 @@ static void __set_focus_to_fwin(
 			Bool rc;
 
 			rc = get_visible_icon_geometry(fw, &r);
-			if (!rc || !IsRectangleOnThisPage(&r, fw->Desk))
+			if (!rc)
 			{
 				fw = NULL;
 				w = Scr.NoFocusWin;
