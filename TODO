@@ -32,15 +32,12 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
     - It would stop every command doing its own string parsing!
 
 * Separate desktops per monitor:
-    - XRandR support, with Xinerama as a fallback???
     - Does having pages *and* desks make sense anymore?
         - Just go with pages, which can be named.
         - Only allow a linear arrangement; 3x3 for example makes no sense
           with multi-monitor setups.
 	- PanWindows per-monitor inhibit moving windows across screen
 	  boundaries.  Have a key-binding to stop panning?
-	- fw->m assignment needs updating when moving windows across screen
-	  boundaries.
 
 * Clients:
     - Have an "undo" list of geometries which can be reverted to.
@@ -73,3 +70,5 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
       imsg?
     - What about third-party scripting languages?  How do we handle that
       without requiring linking against the specific language in question?
+    - FvwmPager with per-monitor broken:  the module needs to be
+      screen-aware.
