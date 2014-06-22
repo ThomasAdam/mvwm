@@ -18,7 +18,7 @@ man_MANS = \
 LDADD = -L$(top_builddir)/libs $(X_LIBS) -lfvwm $(Xcursor_LIBS) \
 	$(X_PRE_LIBS) -lXext -lX11 -lm $(X_EXTRA_LIBS) $(Xrender_LIBS) \
 	$(Xcursor_LIBS) $(png_LIBS)
-INCLUDES = -I$(top_srcdir) $(X_CFLAGS) $(png_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) $(X_CFLAGS) $(png_CFLAGS)
 
 configdir = @FVWM_DATADIR@
 config_DATA = fvwm-menu-desktop-config.fpl
