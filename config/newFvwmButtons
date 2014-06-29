@@ -1,0 +1,94 @@
+Style stalonetray !Unmanaged
+Style FB-np Borders, BorderWidth 1, BorderColorset 1
+Style Gnome-panel FixedPosition
+ImagePath +:/usr/local/share/icons/wm-icons/16x16-general
+#KillModule FvwmButtons FB-np
+#DestroyModuleConfig FB-np:*
+#*FB-np: Columns 48
+#*FB-np: Rows 1
+#*FB-np: Padding 0 0
+#*FB-np: Frame 0
+#*FB-np: Font -*-terminus-*-*-*-*-12-*-*-*-*-*-iso8859
+#*FB-np: Back grey
+#PipeRead `for i in $(seq 0 $(($[desk.pagesx] - 1))); do echo "*FB-np: (1x1, Id \"A-$i\", Back #D8C9FF, Title (Center) '$i', Action (Mouse 1) GotoPage $i 0)"; done`
+#*FB-np: (5x1, Swallow (UseOld) `cpumon` `Exec exec xosview -name cpumon -captions +labels +usedlabels +cpu -load -mem -swap -battery -gfx -net -page -disk -int -ints -irqrate -lmstemp -xrm 'cpumon*background:  #F3C9CB'`)
+#*FB-np: (5x1, Swallow (UseOld) `memmon` `Exec exec xosview -name memmon -captions +labels +usedlabels -cpu -load +mem -swap -battery -gfx -net -page -disk -int -ints -irqrate -lmstemp -xrm 'memmon*background: #ECF0A8'`)
+#*FB-np: (5x1, Swallow (UseOld) `loadmon` `Exec exec xosview -name loadmon -captions +labels +usedlabels -cpu +load -mem -swap -battery -gfx -net -page -disk -int -ints -irqrate -lmstemp -xrm 'loadmon*background: #F1BFF8'`)
+#*FB-np: (5x1, Swallow (UseOld) `netmon` `Exec exec xosview -name netmon -captions +labels +usedlabels -cpu -load -mem -swap -battery -gfx +net -page -disk -int -ints -irqrate -lmstemp -xrm 'netmon*background: #B4F0E1'`)
+#*FB-np: (16x1, Swallow (UseOld,Respawn,Close,Kill) `trayer` `Exec exec trayer --width 16 --align left --expand false`)
+#*FB-np: (16x1, Swallow (UseOld,Close,Kill) `stalonetray` `Exec exec /usr/bin/stalonetray --geometry 16x1 --no-shrink --kludges force_icons_size -i 16`)
+#*FB-np: (8x1, Swallow (UseOld,Respawn) `trayer` `Exec exec trayer --height 16 --align left --edge left --expand false --padding 0 --margin 0 --widthtype pixel --heighttype pixel `)
+#*FB-np: (10x1, Swallow (UseOld) `FvwmIconMan-Icons` `Module FvwmIconMan FvwmIconMan-Icons`)
+###*FB-np: (8x1, Swallow (NoKill, Respawn, UseOld) "xclock" "Exec exec xclock -bg grey -fg black -digital -twentyfour -padding 2 -render -update 1")
+#Module FvwmButtons FB-np -g 1270x20+0+0 
+
+KillModule FvwmButtons Buttons-Slid
+DestroyModuleConfig Buttons-Slid: *
+*Buttons-Slid: Back #DA9F3E
+*Buttons-Slid: Rows 1
+*Buttons-Slid: Frame 1
+*Buttons-Slid: Padding 0 0
+*Buttons-Slid: (Panel(NoBorder, Smooth, Hints, down, position left, indicator 10, delay 7, steps 26) "FvwmButtons-Compact" \
+                  'Module /home/n6tadam/projects/mvwm/modules/FvwmButtons/FvwmButtons FvwmButtons-Compact -g 100x339+0+3')
+
+KillModule FvwmButtons Buttons-Slid-2
+DestroyModuleConfig Buttons-Slid-2:*
+*Buttons-Slid-2: Back #FF9696
+*Buttons-Slid-2: Rows 1
+*Buttons-Slid-2: Frame 1
+*Buttons-Slid-2: Padding 0 0
+*Buttons-Slid-2: (Panel(NoBorder, Smooth, Hints, down, position left, indicator 10, delay 0, steps 0) "FvwmButtons-Console" \
+                  'Module FvwmButtons FvwmButtons-Console -g 1146x337+101+3')
+
+KillModule FvwmButtons Buttons-Slid-3
+DestroyModuleConfig Buttons-Slid-3: *
+*Buttons-Slid-3: Back #F1BFF8
+*Buttons-Slid-3: Rows 1
+*Buttons-Slid-3: Frame 1
+*Buttons-Slid-3: Padding 0 0
+*Buttons-Slid-3: (Panel(NoBorder, Smooth, Hints, down, position left, indicator 10, delay 0, steps 0) "FvwmButtons-Console-2" \
+        'Module /home/n6tadam/projects/mvwm/modules/FvwmButtons/FvwmButtons FvwmButtons-Console-2 -g 676x338+1244+3')
+Style Buttons-Slid* !Borders, StartsOnScreen HDMI1, Sticky
+
+Module /home/n6tadam/projects/mvwm/modules/FvwmButtons/FvwmButtons Buttons-Slid -g 99x3+0+0@HDMI1
+Module /home/n6tadam/projects/mvwm/modules/FvwmButtons/FvwmButtons Buttons-Slid-2 -g 1145x3+99+0@HDMI1
+Module /home/n6tadam/projects/mvwm/modules/FvwmButtons/FvwmButtons Buttons-Slid-3 -g 676x3+1244+0@HDMI1
+
+DestroyModuleConfig FvwmButtons-Console-2:*
+*FvwmButtons-Console-2: Geometry -0+0
+*FvwmButtons-Console-2: Columns 1
+*FvwmButtons-Console-2: Padding 1 1
+*FvwmButtons-Console-2: (1x1, Back black, Swallow (NoClose,NoKill,Respawn,UseOld) "FvwmConsole" \
+        "Module FvwmConsole -terminal xterm -bg black -fg green")
+
+DestroyModuleConfig FvwmButtons-Console:*
+*FvwmButtons-Console: Geometry -0+0
+*FvwmButtons-Console: Columns 1
+*FvwmButtons-Console: Padding 1 1
+*FvwmButtons-Console: (1x1, Back black, Swallow (NoClose,NoKill,Respawn) "SpecialTerminal" \
+        "Exec exec $[RXVT] -name SpecialTerminal -e sh -c 'TERM=xterm-256color tmux -2 -u a -tspecial'")
+
+DestroyModuleConfig FvwmButtons-Compact: *
+*FvwmButtons-Compact: Geometry -0+0
+*FvwmButtons-Compact: Columns 4
+*FvwmButtons-Compact: Padding 1 1
+PipeRead `for i in $(seq 0 3); do echo "*FvwmButtons-Compact: (1x1, Id \"A-$i\", Back darkgreen,  Fore white, Title (Center) '$i', Action (Mouse 1) SendToModule FvwmDX GotoDesk 0 $i)"; done`
+#*FvwmButtons-Compact: (4x1, Swallow "FvwmPager" 'Module FvwmPager')
+*FvwmButtons-Compact: (4x4, Back $[bg.cs7], Padding 0 0, Frame 1, \
+Swallow "xclock" \
+`Exec exec xclock -analog -bg $[bg.cs8] -fg $[fg.cs7] -hd $[shadow.cs9] -hl \
+$[hilight.cs7] -padding 2 -norender -geometry 86x86-0+0`)
+*FvwmButtons-Compact: (4x2, Back firebrick3, Padding 0 0, Frame 2,\
+Swallow "xload" \
+`Exec exec xload -hl white -nolabel -update 1 -geometry 86x43-0+99 -bg firebrick3`)
+*FvwmButtons-Compact: (4x2, Back darkgrey, Padding 0 0, Frame 2, \
+Swallow "xmem" \
+"Exec exec xmem -nolabel -jumpscroll 1 -update 1 -bg darkgrey")
+*FvwmButtons-Compact: (4x2, Back darkgrey, Padding 0 0, Frame 2, \
+Swallow "xcpustate" \
+"Exec exec ~/bin/xcpustate -shorten -1")
+*FvwmButtons-Compact: (4x1, Back darkgrey, Swallow (UseOld,Close,Kill) `stalonetray` \
+    `Exec exec /usr/bin/stalonetray --geometry 5x1 --no-shrink --kludges force_icons_size -i 16`)
+
+Style FvwmButtons-Compact* !Borders, SloppyFocus
+Style FvwmButtons-Console* !Borders, SloppyFocus
