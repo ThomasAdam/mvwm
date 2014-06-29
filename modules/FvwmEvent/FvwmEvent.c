@@ -219,6 +219,10 @@ int main(int argc, char **argv)
 		/* no slash */
 		s = argv[0];
 	}
+	if (argc == 7) {
+		/* use an alias */
+		s = argv[6];
+	}
 
 	/* account for '*' */
 	MyNameLen=strlen(s)+1;
