@@ -537,9 +537,7 @@ static void warp_to_fvwm_window(
 	RaiseWindow(t, False);
 	/* If the window is still not visible, make it visible! */
 	if (t->g.frame.x + t->g.frame.width  < 0 ||
-	    t->g.frame.y + t->g.frame.height < 0 ||
-	    t->g.frame.x >= m->coord.w ||
-	    t->g.frame.y >= m->coord.h)
+	    t->g.frame.y + t->g.frame.height < 0)
 	{
 		frame_setup_window(
 			t, 0, 0, t->g.frame.width, t->g.frame.height, False);
