@@ -50,6 +50,8 @@ extern ewmh_atom ewmh_atom_wm_state[];
  */
 int ewmh_CurrentDesktop(EWMH_CMD_ARGS)
 {
+	struct monitor *m = (fw && fw->m) ? fw->m : monitor_get_current();
+
 	if (ev->xclient.data.l[0] < 0 || ev->xclient.data.l[0] > 0x7fffffff)
 	{
 		fvwm_msg(
@@ -64,7 +66,7 @@ int ewmh_CurrentDesktop(EWMH_CMD_ARGS)
 
 		return -1;
 	}
-	goto_desk(ev->xclient.data.l[0]);
+	goto_desk(ev->xclient.data.l[0], m);
 
 	return -1;
 }
@@ -102,6 +104,7 @@ int ewmh_DesktopGeometry(EWMH_CMD_ARGS)
 
 int ewmh_DesktopViewPort(EWMH_CMD_ARGS)
 {
+	struct monitor *m = (fw && fw->m) ? fw->m : monitor_get_current();
 	if (
 		ev->xclient.data.l[0] < 0 ||
 		ev->xclient.data.l[0] > 0x7fffffff ||
@@ -121,7 +124,7 @@ int ewmh_DesktopViewPort(EWMH_CMD_ARGS)
 
 		return -1;
 	}
-	MoveViewport(ev->xclient.data.l[0], ev->xclient.data.l[1], 1);
+	MoveViewport(m, ev->xclient.data.l[0], ev->xclient.data.l[1], 1);
 	return -1;
 }
 

@@ -2234,7 +2234,7 @@ void CMD_CursorMove(F_CMD_ARGS)
 	if ((virtual_x != m->virtual_scr.Vx && m->virtual_scr.EdgeScrollX != 0) ||
 	    (virtual_y != m->virtual_scr.Vy && m->virtual_scr.EdgeScrollY != 0))
 	{
-		MoveViewport(virtual_x, virtual_y, True);
+		MoveViewport(m, virtual_x, virtual_y, True);
 	}
 
 	/* TA:  (2010/12/19):  If the cursor is about to enter a pan-window, or

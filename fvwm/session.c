@@ -649,6 +649,9 @@ LoadGlobalState(char *filename)
 	/* char s2[256]; */
 	int i1, i2, i3, i4;
 
+	/* TA:  20140630:  FIXME:  Honour monitor! */
+	struct monitor *mon = monitor_get_current();
+
 	if (!does_file_version_match)
 	{
 		return;
@@ -672,7 +675,7 @@ LoadGlobalState(char *filename)
 		if (!strcmp(s1, "[DESKTOP]"))
 		{
 			sscanf(s, "%*s %i", &i1);
-			goto_desk(i1);
+			goto_desk(i1, mon);
 		}
 		else if (!strcmp(s1, "[VIEWPORT]"))
 		{
@@ -684,7 +687,7 @@ LoadGlobalState(char *filename)
 			 Scr.VxMax = i3;
 			 Scr.VyMax = i4;
 			*/
-			MoveViewport(i1, i2, True);
+			MoveViewport(mon, i1, i2, True);
 		}
 	}
 	fclose(f);

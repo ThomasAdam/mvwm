@@ -453,7 +453,7 @@ static void warp_to_fvwm_window(
 	}
 	if (t->Desk != m->virtual_scr.CurrentDesk)
 	{
-		goto_desk(t->Desk);
+		goto_desk(t->Desk, t->m);
 	}
 	if (IS_ICONIFIED(t))
 	{
@@ -477,7 +477,7 @@ static void warp_to_fvwm_window(
 	dy = (cy + m->virtual_scr.Vy) / m->coord.h * m->coord.h;
 	if (dx != m->virtual_scr.Vx || dy != m->virtual_scr.Vy)
 	{
-		MoveViewport(dx, dy, True);
+		MoveViewport(m, dx, dy, True);
 	}
 	if (IS_ICONIFIED(t))
 	{
@@ -667,7 +667,7 @@ static void __activate_window_by_command(
 	{
 		if (fw->Desk != m->virtual_scr.CurrentDesk)
 		{
-			goto_desk(fw->Desk);
+			goto_desk(fw->Desk, fw->m);
 		}
 		if (IS_ICONIFIED(fw))
 		{
@@ -698,7 +698,7 @@ static void __activate_window_by_command(
 				m->coord.w;
 			dy = ((cy + m->virtual_scr.Vy) / m->coord.h) *
 				m->coord.h;
-			MoveViewport(dx, dy, True);
+			MoveViewport(m, dx, dy, True);
 		}
 #if 0 /* can not happen */
 		/* If the window is still not visible, make it visible! */

@@ -549,10 +549,11 @@ char *get_display_name(char *display_name, int screen_num)
 void Done(int restart, char *command)
 {
 	const char *exit_func_name;
+	struct monitor *m = monitor_get_current();
 
 	if (!restart)
 	{
-		MoveViewport(0,0,False);
+		MoveViewport(m, 0, 0, False);
 	}
 	/* migo (03/Jul/1999): execute [Session]ExitFunction */
 	exit_func_name = get_init_function_name(2);
@@ -604,7 +605,7 @@ void Done(int restart, char *command)
 		 * window position information out of sync. There may be a
 		 * better way to do this (i.e., adjust the Restart code), but
 		 * this works for now. */
-		MoveViewport(0,0,False);
+		MoveViewport(m, 0, 0, False);
 		Reborder();
 
 		/* Really make sure that the connection is closed and cleared!

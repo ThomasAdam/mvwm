@@ -223,7 +223,7 @@ static void __drag_viewport(const exec_context_t *exc, int scroll_speed)
 		} /* switch */
 		if (x != old_x || y != old_y)
 		{
-			MoveViewport(
+			MoveViewport(m,
 				m->virtual_scr.Vx + scroll_speed * (x - old_x),
 				m->virtual_scr.Vy + scroll_speed * (y - old_y), False);
 			FlushAllMessageQueues();
@@ -478,11 +478,10 @@ static void map_window(FvwmWindow *t)
  *   - unmaps from the bottom of the stack up
  *
  */
-static void UnmapDesk(int desk, Bool grab)
+static void UnmapDesk(struct monitor *m, int desk, Bool grab)
 {
 	FvwmWindow *t;
 	FvwmWindow *sf = get_focus_window();
-	struct monitor	*m = monitor_get_current();
 
 	if (grab)
 	{
@@ -535,13 +534,12 @@ static void UnmapDesk(int desk, Bool grab)
  *   - maps from the top of the stack down
  *
  */
-static void MapDesk(int desk, Bool grab)
+static void MapDesk(struct monitor *m, int desk, Bool grab)
 {
 	FvwmWindow *t;
 	FvwmWindow *FocusWin = NULL;
 	FvwmWindow *StickyWin = NULL;
 	FvwmWindow *sf = get_focus_window();
-	struct monitor	*m = monitor_get_current();
 
 	scr_flags.is_map_desk_in_progress = 1;
 	if (grab)
@@ -900,7 +898,8 @@ int HandlePaging(
 	/* Turn off the rubberband if its on */
 	switch_move_resize_grid(False);
 	FWarpPointer(dpy,None,Scr.Root,0,0,0,0,*xl,*yt);
-	MoveViewport(mon->virtual_scr.Vx + *delta_x, mon->virtual_scr.Vy + *delta_y,False);
+	MoveViewport(mon, mon->virtual_scr.Vx + *delta_x,
+			mon->virtual_scr.Vy + *delta_y,False);
 	if (FQueryPointer(
 		    dpy, Scr.Root, &JunkRoot, &JunkChild, xl, yt, &JunkX,
 		    &JunkY, &JunkMask) == False)
@@ -1223,14 +1222,13 @@ Bool is_pan_frame(Window w)
  *  Moves the viewport within the virtual desktop
  *
  */
-void MoveViewport(int newx, int newy, Bool grab)
+void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 {
 	FvwmWindow *t, *t1;
 	int deltax,deltay;
 	int PageTop, PageLeft;
 	int PageBottom, PageRight;
 	int txl, txr, tyt, tyb;
-	struct monitor	*m = monitor_get_current();
 
 	if (grab)
 	{
@@ -1445,9 +1443,8 @@ void MoveViewport(int newx, int newy, Bool grab)
 	return;
 }
 
-void goto_desk(int desk)
+void goto_desk(int desk, struct monitor *m)
 {
-	struct monitor	*m = monitor_get_current();
 	/* RBW - the unmapping operations are now removed to their own
 	 * functions so they can also be used by the new GoToDeskAndPage
 	 * command. */
@@ -1457,9 +1454,9 @@ void goto_desk(int desk)
 		m->virtual_scr.prev_desk_and_page_desk = m->virtual_scr.CurrentDesk;
 		m->virtual_scr.prev_desk_and_page_page_x = m->virtual_scr.Vx;
 		m->virtual_scr.prev_desk_and_page_page_y = m->virtual_scr.Vy;
-		UnmapDesk(m->virtual_scr.CurrentDesk, True);
+		UnmapDesk(m, m->virtual_scr.CurrentDesk, True);
 		m->virtual_scr.CurrentDesk = desk;
-		MapDesk(desk, True);
+		MapDesk(m, desk, True);
 		focus_grab_buttons_all();
 		BroadcastPacket(M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
 		/* FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
@@ -2141,7 +2138,7 @@ void CMD_GotoDesk(F_CMD_ARGS)
 
 	m = (fw != NULL) ? fw->m : monitor_get_current();
 
-	goto_desk(GetDeskNumber(m, action, m->virtual_scr.CurrentDesk));
+	goto_desk(GetDeskNumber(m, action, m->virtual_scr.CurrentDesk), m);
 
 	return;
 }
@@ -2187,17 +2184,17 @@ void CMD_GotoDeskAndPage(F_CMD_ARGS)
 	is_new_desk = (m->virtual_scr.CurrentDesk != val[0]);
 	if (is_new_desk)
 	{
-		UnmapDesk(m->virtual_scr.CurrentDesk, True);
+		UnmapDesk(m, m->virtual_scr.CurrentDesk, True);
 	}
 	m->virtual_scr.prev_desk_and_page_page_x = m->virtual_scr.Vx;
 	m->virtual_scr.prev_desk_and_page_page_y = m->virtual_scr.Vy;
-	MoveViewport(val[1], val[2], True);
+	MoveViewport(m, val[1], val[2], True);
 	if (is_new_desk)
 	{
 		m->virtual_scr.prev_desk = m->virtual_scr.CurrentDesk;
 		m->virtual_scr.prev_desk_and_page_desk = m->virtual_scr.CurrentDesk;
 		m->virtual_scr.CurrentDesk = val[0];
-		MapDesk(val[0], True);
+		MapDesk(m, val[0], True);
 		focus_grab_buttons_all();
 		BroadcastPacket(M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
 		/* FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
@@ -2251,7 +2248,7 @@ void CMD_GotoPage(F_CMD_ARGS)
 	{
 		y = m->virtual_scr.VyMax;
 	}
-	MoveViewport(x,y,True);
+	MoveViewport(m, x,y,True);
 
 	return;
 }
@@ -2357,7 +2354,7 @@ void CMD_Scroll(F_CMD_ARGS)
 			x = m->virtual_scr.VxMax;
 		}
 	}
-	MoveViewport(x,y,True);
+	MoveViewport(m, x,y,True);
 
 	return;
 }

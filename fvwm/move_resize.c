@@ -2915,7 +2915,7 @@ Bool __move_loop(
 	{
 		if (vx != fw->m->virtual_scr.Vx || vy != fw->m->virtual_scr.Vy)
 		{
-			MoveViewport(vx, vy, False);
+			MoveViewport(m, vx, vy, False);
 		}
 		if (is_aborted && do_move_opaque)
 		{
@@ -4263,7 +4263,7 @@ static Bool __resize_window(F_CMD_ARGS)
 		}
 		if (vx != m->virtual_scr.Vx || vy != m->virtual_scr.Vy)
 		{
-			MoveViewport(vx, vy, False);
+			MoveViewport(m, vx, vy, False);
 		}
 		/* restore all geometry-related info */
 		fw->g = g_backup;

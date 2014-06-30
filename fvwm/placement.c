@@ -1830,7 +1830,7 @@ static int __place_window(
 		{
 			reason->desk.do_switch_desk = 1;
 		}
-		goto_desk(fw->Desk);
+		goto_desk(fw->Desk, fw->m);
 	}
 	/* Don't move viewport if SkipMapping, or if recapturing the window,
 	 * adjust the coordinates later. Otherwise, just switch to the target
@@ -1851,7 +1851,7 @@ static int __place_window(
 			if (!win_opts->flags.do_override_ppos &&
 			    !DO_NOT_SHOW_ON_MAP(fw))
 			{
-				MoveViewport(px,py,True);
+				MoveViewport(fw->m, px, py, True);
 				reason->page.do_switch_page = 1;
 			}
 			else if (flags.do_honor_starts_on_page)
