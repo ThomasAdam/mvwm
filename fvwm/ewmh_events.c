@@ -173,6 +173,9 @@ int ewmh_ActiveWindow(EWMH_CMD_ARGS)
 	execute_function_override_window(
 		NULL, NULL, "EWMHActivateWindowFunc", 0, fw);
 
+	/* TA:  20140630: Force goto_desk on specific monitor. */
+	goto_desk(fw->Desk, fw->m);
+
 	return 0;
 }
 
@@ -1564,6 +1567,7 @@ Bool EWMH_ProcessClientMessage(const exec_context_t *exc)
 	ewmh_atom *ewmh_a = NULL;
 	FvwmWindow *fw = exc->w.fw;
 	XEvent *ev = exc->x.elast;
+
 
 	if ((ewmh_a = (ewmh_atom *)ewmh_GetEwmhAtomByAtom(
 		     ev->xclient.message_type, EWMH_ATOM_LIST_CLIENT_ROOT)) !=
