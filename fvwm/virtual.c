@@ -1253,9 +1253,6 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	deltay = m->virtual_scr.Vy - newy;
 	deltax = m->virtual_scr.Vx - newx;
 
-	fprintf(stderr, "m: %s, deltax: %d, deltay: %d, Vx: %d, Vy: %d\n",
-		m->name, deltax, deltay, m->virtual_scr.Vx, m->virtual_scr.Vy);
-
 	/*
 	  Identify the bounding rectangle that will be moved into
 	  the viewport.
@@ -1264,9 +1261,6 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	PageRight     =  m->coord.w  - deltax - 1;
 	PageTop       =  0 - deltay;
 	PageLeft      =  0 - deltax;
-
-	fprintf(stderr, "PageTop: %d, PageBottom: %d, PageLeft: %d, PageRight %d\n",
-		PageTop, PageBottom, PageLeft, PageRight);
 
 	if (deltax || deltay)
 	{
