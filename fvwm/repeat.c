@@ -27,16 +27,15 @@
 #include "repeat.h"
 #include "libs/Parse.h"
 
-
 /* If non-zero we are already repeating a function, so don't record the
  * command again. */
-static int repeat_depth = 0;
+static int      repeat_depth = 0;
 
 #if 0
 typedef struct
 {
-	char *start;
-	char *end;
+	char           *start;
+	char           *end;
 } double_ended_string;
 
 static struct
@@ -50,30 +49,28 @@ static struct
 	double_ended_string menu;
 	double_ended_string popup;
 	double_ended_string menu_or_popup;
-	int page_x;
-	int page_y;
-	int desk;
-	FvwmWindow *fvwm_window;
+	int             page_x;
+	int             page_y;
+	int             desk;
+	FvwmWindow     *fvwm_window;
 } last;
 #endif
 
 static struct
 {
-	char *command_line;
-	char *menu_name;
+	char           *command_line;
+	char           *menu_name;
 } last = {
-	NULL,
-	NULL
-};
+NULL, NULL};
 
 #if 0
-char *repeat_last_function = NULL;
-char *repeat_last_complex_function = NULL;
-char *repeat_last_builtin_function = NULL;
-char *repeat_last_module = NULL;
-char *repeat_last_top_function = NULL;
-char *repeat_last_menu = NULL;
-FvwmWindow *repeat_last_fvwm_window = NULL;
+char           *repeat_last_function = NULL;
+char           *repeat_last_complex_function = NULL;
+char           *repeat_last_builtin_function = NULL;
+char           *repeat_last_module = NULL;
+char           *repeat_last_top_function = NULL;
+char           *repeat_last_menu = NULL;
+FvwmWindow     *repeat_last_fvwm_window = NULL;
 #endif
 
 /* Stores the contents of the data pointer internally for the repeat command.
@@ -88,50 +85,58 @@ FvwmWindow *repeat_last_fvwm_window = NULL;
  *
  * TODO: [finish and update description]
  */
-Bool set_repeat_data(void *data, repeat_t type, const func_t *builtin)
+Bool
+set_repeat_data(void *data, repeat_t type, const func_t * builtin)
 {
-	/* No history recording during startup. */
-	if (fFvwmInStartup)
-	{
+	/*
+	 * No history recording during startup.
+	 */
+	if (fFvwmInStartup) {
 		return True;
 	}
 
-	switch(type)
-	{
+	switch (type) {
 	case REPEAT_COMMAND:
-		if (last.command_line == (char *)data)
-		{
-			/* Already stored, no need to free the data pointer. */
+		if (last.command_line == (char *) data) {
+			/*
+			 * Already stored, no need to free the data pointer.
+			 */
 			return False;
 		}
-		if (data == NULL || repeat_depth != 0)
-		{
-			/* Ignoring the data, must free it outside of this
-			 * call. */
+		if (data == NULL || repeat_depth != 0) {
+			/*
+			 * Ignoring the data, must free it outside of this
+			 * * call.
+			 */
 			return True;
 		}
-		if (builtin && (builtin->flags & FUNC_DONT_REPEAT))
-		{
-			/* Dont' record functions that have the
-			 * FUNC_DONT_REPEAT flag set. */
+		if (builtin && (builtin->flags & FUNC_DONT_REPEAT)) {
+			/*
+			 * Dont' record functions that have the
+			 * * FUNC_DONT_REPEAT flag set.
+			 */
 			return True;
 		}
-		if (last.command_line)
-		{
+		if (last.command_line) {
 			free(last.command_line);
 		}
-		/* Store a backup. */
-		last.command_line = (char *)data;
-		/* Since we stored the pointer the caller must not free it. */
+		/*
+		 * Store a backup.
+		 */
+		last.command_line = (char *) data;
+		/*
+		 * Since we stored the pointer the caller must not free it.
+		 */
 		return False;
 	case REPEAT_MENU:
 	case REPEAT_POPUP:
-		if (last.menu_name)
-		{
+		if (last.menu_name) {
 			free(last.menu_name);
 		}
-		last.menu_name = (char *)data;
-		/* Since we stored the pointer the caller must not free it. */
+		last.menu_name = (char *) data;
+		/*
+		 * Since we stored the pointer the caller must not free it.
+		 */
 		return False;
 	case REPEAT_PAGE:
 	case REPEAT_DESK:
@@ -145,24 +150,26 @@ Bool set_repeat_data(void *data, repeat_t type, const func_t *builtin)
 	}
 }
 
-void CMD_Repeat(F_CMD_ARGS)
+void
+CMD_Repeat(F_CMD_ARGS)
 {
-	int index;
-	char *optlist[] = {
+	int             index;
+	char           *optlist[] = {
 		"command",
 		NULL
 	};
 
 	repeat_depth++;
-	/* Replay the backup, we don't want the repeat command recorded. */
+	/*
+	 * Replay the backup, we don't want the repeat command recorded.
+	 */
 	GetNextTokenIndex(action, optlist, 0, &index);
-	switch (index)
-	{
-	case 0: /* command */
+	switch (index) {
+	case 0:	/* command */
 	default:
 		action = last.command_line;
-		execute_function(
-			cond_rc, exc, action, FUNC_DONT_EXPAND_COMMAND);
+		execute_function(cond_rc, exc, action,
+		    FUNC_DONT_EXPAND_COMMAND);
 		break;
 	}
 	repeat_depth--;

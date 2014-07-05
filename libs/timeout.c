@@ -42,13 +42,12 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
-timeout_t *timeout_create(
-	int n_timeouts)
+timeout_t      *
+timeout_create(int n_timeouts)
 {
-	timeout_t *to;
+	timeout_t      *to;
 
-	if (n_timeouts < 0 || n_timeouts > TIMEOUT_MAX_TIMEOUTS)
-	{
+	if (n_timeouts < 0 || n_timeouts > TIMEOUT_MAX_TIMEOUTS) {
 		return NULL;
 	}
 	to = xcalloc(1, sizeof(timeout_t));
@@ -58,15 +57,13 @@ timeout_t *timeout_create(
 	return to;
 }
 
-void timeout_destroy(
-	timeout_t *to)
+void
+timeout_destroy(timeout_t *to)
 {
-	if (to == NULL)
-	{
+	if (to == NULL) {
 		return;
 	}
-	if (to->timeouts != NULL)
-	{
+	if (to->timeouts != NULL) {
 		free(to->timeouts);
 	}
 	free(to);
@@ -74,24 +71,19 @@ void timeout_destroy(
 	return;
 }
 
-timeout_mask_t timeout_tick(
-	timeout_t *to, timeout_time_t n_ticks)
+timeout_mask_t
+timeout_tick(timeout_t *to, timeout_time_t n_ticks)
 {
-	timeout_mask_t mask;
-	int i;
+	timeout_mask_t  mask;
+	int             i;
 
-	if (n_ticks <= 0)
-	{
+	if (n_ticks <= 0) {
 		return 0;
 	}
-	for (i = 0, mask = 0; i < to->n_timeouts; i++)
-	{
-		if (to->timeouts[i] > n_ticks)
-		{
+	for (i = 0, mask = 0; i < to->n_timeouts; i++) {
+		if (to->timeouts[i] > n_ticks) {
 			to->timeouts[i] -= n_ticks;
-		}
-		else if (to->timeouts[i] > 0)
-		{
+		} else if (to->timeouts[i] > 0) {
 			to->timeouts[i] = 0;
 			mask |= 1 << i;
 		}
@@ -100,19 +92,17 @@ timeout_mask_t timeout_tick(
 	return mask;
 }
 
-void timeout_rewind(
-	timeout_t *to, timeout_mask_t mask, timeout_time_t ticks_before_alarm)
+void
+timeout_rewind(timeout_t *to, timeout_mask_t mask,
+    timeout_time_t ticks_before_alarm)
 {
-	int i;
+	int             i;
 
-	if (ticks_before_alarm < 0)
-	{
+	if (ticks_before_alarm < 0) {
 		return;
 	}
-	for (i = 0; i < to->n_timeouts; i++)
-	{
-		if (mask & (1 << i))
-		{
+	for (i = 0; i < to->n_timeouts; i++) {
+		if (mask & (1 << i)) {
 			to->timeouts[i] = ticks_before_alarm;
 		}
 	}

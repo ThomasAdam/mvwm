@@ -23,9 +23,10 @@
 #include <sys/select.h>
 #endif
 
-int usleep (unsigned long usec)
+int
+usleep(unsigned long usec)
 {
-	struct timeval timeout;
+	struct timeval  timeout;
 	timeout.tv_usec = usec % (unsigned long) 1000000;
 	timeout.tv_sec = usec / (unsigned long) 1000000;
 	select(0, NULL, NULL, NULL, &timeout);

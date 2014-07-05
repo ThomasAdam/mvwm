@@ -184,13 +184,17 @@
 
 typedef enum
 {
-	/* menu types */
+	/*
+	 * menu types
+	 */
 	SimpleMenu = 0,
 	GradientMenu,
 	PixmapMenu,
 	TiledPixmapMenu,
 	SolidMenu
-	/* max button is 8 (0x8) */
+	    /*
+	     * max button is 8 (0x8)
+	     */
 } MenuFaceType;
 
 typedef enum
@@ -213,124 +217,124 @@ typedef struct MenuFeel
 {
 	struct
 	{
-		unsigned is_animated : 1;
-		unsigned do_popdown_immediately : 1;
-		unsigned do_popup_immediately : 1;
-		unsigned do_popup_as : 2;
-		unsigned do_warp_to_title : 1;
-		unsigned do_unmap_submenu_on_popdown : 1;
-		unsigned use_left_submenus : 1;
-		unsigned use_automatic_hotkeys : 1;
-		unsigned mouse_wheel : 2;
-		unsigned scroll_off_page : 1;
-		unsigned hotkey_activates_immediate : 1;
+		unsigned        is_animated:1;
+		unsigned        do_popdown_immediately:1;
+		unsigned        do_popup_immediately:1;
+		unsigned        do_popup_as:2;
+		unsigned        do_warp_to_title:1;
+		unsigned        do_unmap_submenu_on_popdown:1;
+		unsigned        use_left_submenus:1;
+		unsigned        use_automatic_hotkeys:1;
+		unsigned        mouse_wheel:2;
+		unsigned        scroll_off_page:1;
+		unsigned        hotkey_activates_immediate:1;
 	} flags;
-	int PopdownDelay10ms;
-	int PopupOffsetPercent;
-	int ActiveAreaPercent;
-	int PopupOffsetAdd;
-	int PopupDelay10ms;
-	int DoubleClickTime;
-	char *item_format;
-	KeyCode select_on_release_key;
+	int             PopdownDelay10ms;
+	int             PopupOffsetPercent;
+	int             ActiveAreaPercent;
+	int             PopupOffsetAdd;
+	int             PopupDelay10ms;
+	int             DoubleClickTime;
+	char           *item_format;
+	KeyCode         select_on_release_key;
 } MenuFeel;
 
 typedef struct MenuFace
 {
 	union
 	{
-		FvwmPicture *p;
-		Pixel back;
+		FvwmPicture    *p;
+		Pixel           back;
 		struct
 		{
-			int npixels;
-			XColor *xcs;
-			Bool do_dither;
+			int             npixels;
+			XColor         *xcs;
+			Bool            do_dither;
 		} grad;
 	} u;
-	MenuFaceType type;
-	char gradient_type;
+	MenuFaceType    type;
+	char            gradient_type;
 } MenuFace;
 
 typedef struct
 {
-	GC fore_gc;
-	GC back_gc;
-	GC hilight_gc;
-	GC shadow_gc;
+	GC              fore_gc;
+	GC              back_gc;
+	GC              hilight_gc;
+	GC              shadow_gc;
 } gc_quad_t;
 
 typedef struct MenuLook
 {
-	MenuFace face;
+	MenuFace        face;
 	struct
 	{
-		unsigned do_hilight_back : 1;
-		unsigned do_hilight_fore : 1;
-		unsigned has_active_fore : 1;
-		unsigned has_active_back : 1;
-		unsigned has_stipple_fore : 1;
-		unsigned has_long_separators : 1;
-		unsigned has_triangle_relief : 1;
-		unsigned has_side_color : 1;
-		unsigned has_menu_cset : 1;
-		unsigned has_active_cset : 1;
-		unsigned has_greyed_cset : 1;
-		unsigned is_item_relief_reversed : 1;
-		unsigned using_default_font : 1;
-		unsigned triangles_use_fore : 1;
-		unsigned has_title_cset : 1;
-		unsigned do_hilight_title_back : 1;
-		unsigned using_default_titlefont : 1;
+		unsigned        do_hilight_back:1;
+		unsigned        do_hilight_fore:1;
+		unsigned        has_active_fore:1;
+		unsigned        has_active_back:1;
+		unsigned        has_stipple_fore:1;
+		unsigned        has_long_separators:1;
+		unsigned        has_triangle_relief:1;
+		unsigned        has_side_color:1;
+		unsigned        has_menu_cset:1;
+		unsigned        has_active_cset:1;
+		unsigned        has_greyed_cset:1;
+		unsigned        is_item_relief_reversed:1;
+		unsigned        using_default_font:1;
+		unsigned        triangles_use_fore:1;
+		unsigned        has_title_cset:1;
+		unsigned        do_hilight_title_back:1;
+		unsigned        using_default_titlefont:1;
 	} flags;
-	unsigned char ReliefThickness;
-	unsigned char TitleUnderlines;
-	unsigned char BorderWidth;
+	unsigned char   ReliefThickness;
+	unsigned char   TitleUnderlines;
+	unsigned char   BorderWidth;
 	struct
 	{
-		signed char item_above;
-		signed char item_below;
-		signed char title_above;
-		signed char title_below;
-		signed char separator_above;
-		signed char separator_below;
+		signed char     item_above;
+		signed char     item_below;
+		signed char     title_above;
+		signed char     title_below;
+		signed char     separator_above;
+		signed char     separator_below;
 	} vertical_spacing;
 	struct
 	{
-		unsigned char top;
-		unsigned char bottom;
+		unsigned char   top;
+		unsigned char   bottom;
 	} vertical_margins;
 	struct
 	{
-		int menu;
-		int active;
-		int greyed;
-		int title;
+		int             menu;
+		int             active;
+		int             greyed;
+		int             title;
 	} cset;
-	FvwmPicture *side_picture;
-	Pixel side_color;
-	gc_quad_t inactive_gcs;
-	gc_quad_t active_gcs;
-	gc_quad_t stipple_gcs;
-	gc_quad_t title_gcs;
-	ColorPair MenuColors;
-	ColorPair MenuActiveColors;
-	ColorPair MenuStippleColors;
-	FlocaleFont *pStdFont;
-	FlocaleFont *pTitleFont;
-	int FontHeight;
+	FvwmPicture    *side_picture;
+	Pixel           side_color;
+	gc_quad_t       inactive_gcs;
+	gc_quad_t       active_gcs;
+	gc_quad_t       stipple_gcs;
+	gc_quad_t       title_gcs;
+	ColorPair       MenuColors;
+	ColorPair       MenuActiveColors;
+	ColorPair       MenuStippleColors;
+	FlocaleFont    *pStdFont;
+	FlocaleFont    *pTitleFont;
+	int             FontHeight;
 } MenuLook;
 
 typedef struct MenuStyle
 {
-	char *name;
+	char           *name;
 	struct MenuStyle *next_style;
-	int usage_count;
-	MenuLook look;
-	MenuFeel feel;
+	int             usage_count;
+	MenuLook        look;
+	MenuFeel        feel;
 	struct
 	{
-		unsigned is_updated : 1;
+		unsigned        is_updated:1;
 	} flags;
 } MenuStyle;
 
@@ -338,11 +342,11 @@ typedef struct MenuStyle
 
 /* ---------------------------- interface functions ------------------------ */
 
-void menustyle_free(MenuStyle *ms);
-MenuStyle *menustyle_find(char *name);
-void menustyle_update(MenuStyle *ms);
-MenuStyle *menustyle_parse_style(F_CMD_ARGS);
-MenuStyle *menustyle_get_default_style(void);
-void menustyle_copy(MenuStyle *origms, MenuStyle *destms);
+void            menustyle_free(MenuStyle *ms);
+MenuStyle      *menustyle_find(char *name);
+void            menustyle_update(MenuStyle *ms);
+MenuStyle      *menustyle_parse_style(F_CMD_ARGS);
+MenuStyle      *menustyle_get_default_style(void);
+void            menustyle_copy(MenuStyle *origms, MenuStyle *destms);
 
 #endif /* MENUSTYLE_H */

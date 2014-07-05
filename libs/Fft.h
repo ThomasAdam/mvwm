@@ -58,21 +58,21 @@
 /* Fc (fontconfig) stuff */
 #if FftSupportUseXft2
 
-typedef FcChar8     FftChar8;
-typedef FcChar16    FftChar16;
-typedef FcChar32    FftChar32;
-typedef FcBool      FftBool;
-typedef FcType      FftType;
-typedef FcMatrix    FftMatrix;
-typedef FcValue     FftValue;
-typedef FcPattern   FftPattern;
-typedef FcFontSet   FftFontSet;
+typedef FcChar8 FftChar8;
+typedef FcChar16 FftChar16;
+typedef FcChar32 FftChar32;
+typedef FcBool  FftBool;
+typedef FcType  FftType;
+typedef FcMatrix FftMatrix;
+typedef FcValue FftValue;
+typedef FcPattern FftPattern;
+typedef FcFontSet FftFontSet;
 typedef FcObjectSet FftObjectSet;
 #if 1
 /* FftResult must be FcResult for gcc 3.4 not to warn of incompatible
  * pointer type
  */
-typedef FcResult    FftResult;
+typedef FcResult FftResult;
 
 #define FftResultMatch        FcResultMatch
 #define FftResultNoMatch      FcResultNoMatch
@@ -82,22 +82,23 @@ typedef FcResult    FftResult;
 #else
 typedef enum _FftResult
 {
-	FftResultMatch        = FcResultMatch,
-	FftResultNoMatch      = FcResultNoMatch,
+	FftResultMatch = FcResultMatch,
+	FftResultNoMatch = FcResultNoMatch,
 	FftResultTypeMismatch = FcResultTypeMismatch,
-	FftFftResultNoId	    = FcResultNoId
+	FftFftResultNoId = FcResultNoId
 } FftResult;
 #endif
 /* XftValue and are different in Xft+Fc and Xft 1 */
 typedef struct _Xft1Value
 {
-	FftType     type;
-	union {
-		char    *s;
-		int     i;
-		Bool    b;
-		double  d;
-		FftMatrix *m;
+	FftType         type;
+	union
+	{
+		char           *s;
+		int             i;
+		Bool            b;
+		double          d;
+		FftMatrix      *m;
 	} u;
 } Xft1Value;
 typedef Xft1Value Fft1Value;
@@ -105,14 +106,14 @@ typedef Xft1Value Fft1Value;
 typedef struct _XftValueList
 {
 	struct _XftValueList *next;
-	Fft1Value value;
+	Fft1Value       value;
 } XftValueList;
 typedef XftValueList FftValueList;
 /* no  XftPatternElt in Xft+Fc */
 typedef struct
 {
-	const char *object;
-	FftValueList *values;
+	const char     *object;
+	FftValueList   *values;
 } XftPatternElt;
 typedef XftPatternElt FftPatternElt;
 /* XftPattern and FcPattern are different */
@@ -120,30 +121,30 @@ typedef struct _Xft1Pattern
 {
 	int             num;
 	int             size;
-	FftPatternElt   *elts;
+	FftPatternElt  *elts;
 } Fft1Pattern;
 
 #else /* !FftSupportUseXft2 */
 
-typedef XftChar8     FftChar8;
-typedef XftChar16    FftChar16;
-typedef XftChar32    FftChar32;
-typedef XftType      FftType;
-typedef XftMatrix    FftMatrix;
+typedef XftChar8 FftChar8;
+typedef XftChar16 FftChar16;
+typedef XftChar32 FftChar32;
+typedef XftType FftType;
+typedef XftMatrix FftMatrix;
 typedef XftPatternElt FftPatternElt;
-typedef XftFontSet   FftFontSet;
+typedef XftFontSet FftFontSet;
 typedef XftObjectSet FftObjectSet;
-typedef XftValue     FftValue;
-typedef XftPattern   FftPattern;
-typedef XftValue     Fft1Value;
-typedef XftPattern   Fft1Pattern;
+typedef XftValue FftValue;
+typedef XftPattern FftPattern;
+typedef XftValue Fft1Value;
+typedef XftPattern Fft1Pattern;
 
 typedef enum _FftResult
 {
-	FftResultMatch        = XftResultMatch,
-	FftResultNoMatch      = XftResultNoMatch,
+	FftResultMatch = XftResultMatch,
+	FftResultNoMatch = XftResultNoMatch,
 	FftResultTypeMismatch = XftResultTypeMismatch,
-	FftFftResultNoId	    = XftResultNoId
+	FftFftResultNoId = XftResultNoId
 } FftResult;
 
 #endif /* FftSupportUseXft2 */
@@ -157,18 +158,21 @@ typedef XftColor FftColor;
 /* XftFont are != in Xft+Fc and Xft */
 typedef struct _Fft1Font
 {
-	int         ascent;
-	int         descent;
-	int         height;
-	int         max_advance_width;
-	Bool        core;
-	Fft1Pattern *pattern;
-	union {
-		struct {
-			XFontStruct     *font;
+	int             ascent;
+	int             descent;
+	int             height;
+	int             max_advance_width;
+	Bool            core;
+	Fft1Pattern    *pattern;
+	union
+	{
+		struct
+		{
+			XFontStruct    *font;
 		} core;
-		struct {
-			void *font;
+		struct
+		{
+			void           *font;
 		} ft;
 	} u;
 } Fft1Font;
@@ -181,90 +185,91 @@ typedef XftFont Fft1Font;
 typedef unsigned char FftChar8;
 typedef unsigned short FftChar16;
 typedef unsigned int FftChar32;
-typedef int FftType;
+typedef int     FftType;
 typedef struct
 {
-	double xx, xy, yx, yy;
+	double          xx, xy, yx, yy;
 } FftMatrix;
-typedef enum _FftResult {
-	FftResultMatch        = 0,
-	FftResultNoMatch      = 1,
+typedef enum _FftResult
+{
+	FftResultMatch = 0,
+	FftResultNoMatch = 1,
 	FftResultTypeMismatch = 2,
-	FftFftResultNoId	    = 3
+	FftFftResultNoId = 3
 } FftResult;
 typedef struct
 {
-	FftType type;
+	FftType         type;
 	union
 	{
-		char *s;
-		int i;
-		Bool b;
-		double d;
+		char           *s;
+		int             i;
+		Bool            b;
+		double          d;
 	} u;
 } XftValue;
 typedef XftValue FftValue;
 typedef struct _XftValueList
 {
 	struct _XftValueList *next;
-	FftValue value;
+	FftValue        value;
 } XftValueList;
 typedef XftValueList FftValueList;
 typedef struct
 {
-	const char *object;
-	FftValueList *values;
+	const char     *object;
+	FftValueList   *values;
 } XftPatternElt;
 typedef XftPatternElt FftPatternElt;
 typedef struct
 {
-	int num;
-	int size;
-	FftPatternElt *elts;
+	int             num;
+	int             size;
+	FftPatternElt  *elts;
 } XftPattern;
 typedef XftPattern FftPattern;
-typedef void FftFontSet;
-typedef void FftFontVoid;
-typedef void FftDraw;
+typedef void    FftFontSet;
+typedef void    FftFontVoid;
+typedef void    FftDraw;
 typedef struct
 {
-	int ascent;
-	int descent;
-	int height;
-	int max_advance_width;
-	Bool core;
-	FftPattern *pattern;
+	int             ascent;
+	int             descent;
+	int             height;
+	int             max_advance_width;
+	Bool            core;
+	FftPattern     *pattern;
 	union
 	{
 		struct
 		{
-			XFontStruct *font;
+			XFontStruct    *font;
 		} core;
 		struct
 		{
-			void *font;
+			void           *font;
 		} ft;
 	} u;
 } XftFont;
 typedef XftFont FftFont;
 typedef struct
 {
-	unsigned long pixel;
-	FRenderColor color;
+	unsigned long   pixel;
+	FRenderColor    color;
 } XftColor;
 typedef XftColor FftColor;
-typedef void FftObjectSet;
+typedef void    FftObjectSet;
 /* XftValue are different in Xft+Fc and Xft 1 */
 typedef struct _Xft1Value
 {
-	FftType     type;
+	FftType         type;
 	union
 	{
-		char    *s;
-		int     i;
-		Bool    b;
-		double  d;
-		FftMatrix *m;
+		char           *s;
+		int             i;
+		Bool            b;
+		double          d;
+		FftMatrix      *m;
 	} u;
 } Xft1Value;
 typedef Xft1Value Fft1Value;
@@ -273,31 +278,30 @@ typedef struct _Xft1Pattern
 {
 	int             num;
 	int             size;
-	FftPatternElt   *elts;
+	FftPatternElt  *elts;
 } Fft1Pattern;
 
 typedef struct _Fft1Font
 {
-	int         ascent;
-	int         descent;
-	int         height;
-	int         max_advance_width;
-	Bool        core;
-	Fft1Pattern *pattern;
+	int             ascent;
+	int             descent;
+	int             height;
+	int             max_advance_width;
+	Bool            core;
+	Fft1Pattern    *pattern;
 	union
 	{
 		struct
 		{
-			XFontStruct     *font;
+			XFontStruct    *font;
 		} core;
 		struct
 		{
-			void *font;
+			void           *font;
 		} ft;
 	} u;
 } Fft1Font;
 #endif
-
 
 /*
  * Fvwm Xft font structure
@@ -305,19 +309,19 @@ typedef struct _Fft1Font
 
 typedef struct
 {
-	FftFont *fftfont;
-	FftFont *fftfont_rotated_90;
-	FftFont *fftfont_rotated_180;
-	FftFont *fftfont_rotated_270;
-	char *encoding;
-	char *str_encoding;
+	FftFont        *fftfont;
+	FftFont        *fftfont_rotated_90;
+	FftFont        *fftfont_rotated_180;
+	FftFont        *fftfont_rotated_270;
+	char           *encoding;
+	char           *str_encoding;
 } FftFontType;
 
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- interface functions ------------------------ */
 
-void FftPDumyFunc(void);
+void            FftPDumyFunc(void);
 
 /* ---------------------------- global definitions ------------------------- */
 

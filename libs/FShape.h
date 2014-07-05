@@ -37,13 +37,13 @@
 #define FShapeGetRectangles(dpy, w, kind, count, ordering) \
 	XShapeGetRectangles(dpy, w, kind, count, ordering)
 
-extern int FShapeEventBase;
-extern int FShapeErrorBase;
+extern int      FShapeEventBase;
+extern int      FShapeErrorBase;
 /* Shapes compiled in? */
-extern Bool FShapesSupported;
+extern Bool     FShapesSupported;
 /* Shapes supported by server? */
 #define FHaveShapeExtension 1
-void FShapeInit(Display *dpy);
+void            FShapeInit(Display *dpy);
 
 #else
 /* drop in replacements if shape support is not compiled in */
@@ -68,16 +68,16 @@ void FShapeInit(Display *dpy);
 #define ShapeNumberEvents               (FShapeNotify + 1)
 typedef struct
 {
-	int   type;               /* of event */
-	unsigned long serial;   /* # of last request processed by server */
-	Bool send_event;          /* true if this came frome a SendEvent request */
-	Display *display;         /* Display the event was read from */
-	Window window;            /* window of event */
-	int kind;                 /* ShapeBounding or ShapeClip */
-	int x, y;                 /* extents of new region */
-	unsigned width, height;
-	Time time;                /* server timestamp when region changed */
-	Bool shaped;      /* true if the region exists */
+	int             type;	/* of event */
+	unsigned long   serial;	/* # of last request processed by server */
+	Bool            send_event;	/* true if this came frome a SendEvent request */
+	Display        *display;	/* Display the event was read from */
+	Window          window;	/* window of event */
+	int             kind;	/* ShapeBounding or ShapeClip */
+	int             x, y;	/* extents of new region */
+	unsigned        width, height;
+	Time            time;	/* server timestamp when region changed */
+	Bool            shaped;	/* true if the region exists */
 } XShapeEvent;
 #define FShapeQueryExtension(dpy, evbase, errbase) ((Bool)False)
 #define FShapeQueryVersion(dpy, vmajor, vminor) ((Status)0)
@@ -124,6 +124,5 @@ typedef struct
 #define FShapeNotify                    ShapeNotify
 #define FShapeNumberEvents              ShapeNumberEvents
 typedef XShapeEvent FShapeEvent;
-
 
 #endif /* FVWMLIB_FSHAPE_H */

@@ -19,9 +19,8 @@
  * ImagePath.. If ImagePath is NULL the default image path is used.
  * </description>
  */
-FvwmPicture* PGetFvwmPicture(
-	Display* dpy, Window win, char* ImagePath, const char* pictureName,
-	FvwmPictureAttributes fpa);
+FvwmPicture    *PGetFvwmPicture(Display *dpy, Window win, char *ImagePath,
+    const char *pictureName, FvwmPictureAttributes fpa);
 
 /* <pubfunc>PFreeFvwmPictureData
  * <description>
@@ -29,7 +28,7 @@ FvwmPicture* PGetFvwmPicture(
  * Free the pixmaps for example.
  * </description>
  */
-void PFreeFvwmPictureData(FvwmPicture *p);
+void            PFreeFvwmPictureData(FvwmPicture *p);
 
 /* <pubfunc>PCacheFvwmPicture
  * <description>
@@ -41,19 +40,17 @@ void PFreeFvwmPictureData(FvwmPicture *p);
  * If ImagePath is NULL the default image path is used.
  * </description>
  */
-FvwmPicture* PCacheFvwmPicture(
-	Display *dpy, Window win, char* ImagePath, const char* pictureName,
-	FvwmPictureAttributes fpa);
+FvwmPicture    *PCacheFvwmPicture(Display *dpy, Window win, char *ImagePath,
+    const char *pictureName, FvwmPictureAttributes fpa);
 
 /* <pubfunc>PLoadFvwmPictureFromPixmap
  * <description>
  * Return a FvwmPicture from the given data.
  * </description>
  */
-FvwmPicture *PLoadFvwmPictureFromPixmap(
-	Display *dpy, Window win, char *name, Pixmap pixmap, Pixmap mask,
-	Pixmap alpha, int width, int height, int nalloc_pixels,
-	Pixel *alloc_pixels, int no_limit);
+FvwmPicture    *PLoadFvwmPictureFromPixmap(Display *dpy, Window win,
+    char *name, Pixmap pixmap, Pixmap mask, Pixmap alpha, int width,
+    int height, int nalloc_pixels, Pixel *alloc_pixels, int no_limit);
 
 /* <pubfunc>PDestroyFvwmPicture
  * <description>
@@ -62,10 +59,9 @@ FvwmPicture *PLoadFvwmPictureFromPixmap(
  * to really cache a picture from the given data.
  * </description>
  */
-FvwmPicture *PCacheFvwmPictureFromPixmap(
-	Display *dpy, Window win, char *name, Pixmap pixmap,
-	Pixmap mask, Pixmap alpha, int width, int height, int nalloc_pixels,
-	Pixel *alloc_pixels, int no_limit);
+FvwmPicture    *PCacheFvwmPictureFromPixmap(Display *dpy, Window win,
+    char *name, Pixmap pixmap, Pixmap mask, Pixmap alpha, int width,
+    int height, int nalloc_pixels, Pixel *alloc_pixels, int no_limit);
 
 /* <pubfunc>PDestroyFvwmPicture
  * <description>
@@ -73,7 +69,7 @@ FvwmPicture *PCacheFvwmPictureFromPixmap(
  * If the weight is zero the allocated datas from p are freed
  * </description>
  */
-void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p);
+void            PDestroyFvwmPicture(Display *dpy, FvwmPicture *p);
 
 /* <pubfunc>PCloneFvwmPicture
  * <description>
@@ -81,9 +77,8 @@ void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p);
  * (a weight is added to the picture).
  * </description>
  */
-FvwmPicture *PCloneFvwmPicture(FvwmPicture *pic);
+FvwmPicture    *PCloneFvwmPicture(FvwmPicture *pic);
 
-
-void PicturePrintImageCache(int verbose);
+void            PicturePrintImageCache(int verbose);
 
 #endif

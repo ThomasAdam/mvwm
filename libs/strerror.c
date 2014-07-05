@@ -16,15 +16,14 @@
 
 #include "config.h"
 
-char *strerror(int num)
+char           *
+strerror(int num)
 {
-	extern int sys_nerr;
-	extern char *sys_errlist[];
+	extern int      sys_nerr;
+	extern char    *sys_errlist[];
 
 	if (num >= 0 && num < sys_nerr)
-		return(sys_errlist[num]);
+		return (sys_errlist[num]);
 	else
 		return "Unknown error number";
 }
-
-

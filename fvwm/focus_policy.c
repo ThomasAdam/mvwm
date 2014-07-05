@@ -46,7 +46,8 @@
 /* ---------------------------- interface functions ------------------------ */
 
 /* Initialise focus policy to the system defaults */
-void fpol_init_default_fp(focus_policy_t *fp)
+void
+fpol_init_default_fp(focus_policy_t *fp)
 {
 	memset(fp, 0, sizeof(focus_policy_t));
 	FPS_FOCUS_ENTER(*fp, DEF_FP_FOCUS_ENTER);
@@ -55,19 +56,19 @@ void fpol_init_default_fp(focus_policy_t *fp)
 	FPS_FOCUS_CLICK_DECOR(*fp, DEF_FP_FOCUS_CLICK_DECOR);
 	FPS_FOCUS_BY_PROGRAM(*fp, DEF_FP_FOCUS_BY_PROGRAM);
 	FPS_FOCUS_BY_FUNCTION(*fp, DEF_FP_FOCUS_BY_FUNCTION);
-	FPS_WARP_POINTER_ON_FOCUS_FUNC(*fp, DEF_FP_WARP_POINTER_ON_FOCUS_FUNC);
+	FPS_WARP_POINTER_ON_FOCUS_FUNC(*fp,
+	    DEF_FP_WARP_POINTER_ON_FOCUS_FUNC);
 	FPS_LENIENT(*fp, DEF_FP_LENIENT);
-	FPS_RAISE_FOCUSED_CLIENT_CLICK(*fp, DEF_FP_RAISE_FOCUSED_CLIENT_CLICK);
-	FPS_RAISE_UNFOCUSED_CLIENT_CLICK(
-		*fp, DEF_FP_RAISE_UNFOCUSED_CLIENT_CLICK);
-	FPS_RAISE_FOCUSED_DECOR_CLICK(
-		*fp, DEF_FP_RAISE_FOCUSED_DECOR_CLICK);
-	FPS_RAISE_UNFOCUSED_DECOR_CLICK(
-		*fp, DEF_FP_RAISE_UNFOCUSED_DECOR_CLICK);
-	FPS_RAISE_FOCUSED_ICON_CLICK(
-		*fp, DEF_FP_RAISE_FOCUSED_ICON_CLICK);
-	FPS_RAISE_UNFOCUSED_ICON_CLICK(
-		*fp, DEF_FP_RAISE_UNFOCUSED_ICON_CLICK);
+	FPS_RAISE_FOCUSED_CLIENT_CLICK(*fp,
+	    DEF_FP_RAISE_FOCUSED_CLIENT_CLICK);
+	FPS_RAISE_UNFOCUSED_CLIENT_CLICK(*fp,
+	    DEF_FP_RAISE_UNFOCUSED_CLIENT_CLICK);
+	FPS_RAISE_FOCUSED_DECOR_CLICK(*fp, DEF_FP_RAISE_FOCUSED_DECOR_CLICK);
+	FPS_RAISE_UNFOCUSED_DECOR_CLICK(*fp,
+	    DEF_FP_RAISE_UNFOCUSED_DECOR_CLICK);
+	FPS_RAISE_FOCUSED_ICON_CLICK(*fp, DEF_FP_RAISE_FOCUSED_ICON_CLICK);
+	FPS_RAISE_UNFOCUSED_ICON_CLICK(*fp,
+	    DEF_FP_RAISE_UNFOCUSED_ICON_CLICK);
 	FPS_MOUSE_BUTTONS(*fp, DEF_FP_MOUSE_BUTTONS);
 	FPS_MODIFIERS(*fp, DEF_FP_MODIFIERS);
 	FPS_PASS_FOCUS_CLICK(*fp, DEF_FP_PASS_FOCUS_CLICK);
@@ -87,11 +88,11 @@ void fpol_init_default_fp(focus_policy_t *fp)
 	return;
 }
 
-int fpol_query_allow_set_focus(
-	focus_policy_t *fpol, fpol_set_focus_by_t set_by_mode)
+int
+fpol_query_allow_set_focus(focus_policy_t *fpol,
+    fpol_set_focus_by_t set_by_mode)
 {
-	switch (set_by_mode)
-	{
+	switch (set_by_mode) {
 	case FOCUS_SET_BY_ENTER:
 		return FP_DO_FOCUS_ENTER(*fpol);
 	case FOCUS_SET_BY_CLICK_CLIENT:
@@ -111,72 +112,59 @@ int fpol_query_allow_set_focus(
 	return 0;
 }
 
-int fpol_query_allow_user_focus(
-	focus_policy_t *fpol)
+int
+fpol_query_allow_user_focus(focus_policy_t *fpol)
 {
-	int flag = 0;
+	int             flag = 0;
 
 	flag |= FP_DO_FOCUS_ENTER(*fpol);
 	flag |= FP_DO_FOCUS_CLICK_CLIENT(*fpol);
 	flag |= FP_DO_FOCUS_CLICK_DECOR(*fpol);
 	flag |= FP_DO_FOCUS_BY_FUNCTION(*fpol);
 
-	return !!flag;
+	return ! !flag;
 }
 
-int fpol_is_policy_changed(
-	focus_policy_t *fpol)
+int
+fpol_is_policy_changed(focus_policy_t *fpol)
 {
-	if (FP_DO_FOCUS_ENTER(*fpol))
-	{
+	if (FP_DO_FOCUS_ENTER(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_UNFOCUS_LEAVE(*fpol))
-	{
+	if (FP_DO_UNFOCUS_LEAVE(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_FOCUS_CLICK_CLIENT(*fpol))
-	{
+	if (FP_DO_FOCUS_CLICK_CLIENT(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_FOCUS_CLICK_DECOR(*fpol))
-	{
+	if (FP_DO_FOCUS_CLICK_DECOR(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_FOCUS_BY_PROGRAM(*fpol))
-	{
+	if (FP_DO_FOCUS_BY_PROGRAM(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_FOCUS_BY_FUNCTION(*fpol))
-	{
+	if (FP_DO_FOCUS_BY_FUNCTION(*fpol)) {
 		return 1;
 	}
-	if (FP_IS_LENIENT(*fpol))
-	{
+	if (FP_IS_LENIENT(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_RAISE_FOCUSED_CLIENT_CLICK(*fpol))
-	{
+	if (FP_DO_RAISE_FOCUSED_CLIENT_CLICK(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(*fpol))
-	{
+	if (FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_RAISE_FOCUSED_DECOR_CLICK(*fpol))
-	{
+	if (FP_DO_RAISE_FOCUSED_DECOR_CLICK(*fpol)) {
 		return 1;
 	}
-	if (FP_DO_RAISE_UNFOCUSED_DECOR_CLICK(*fpol))
-	{
+	if (FP_DO_RAISE_UNFOCUSED_DECOR_CLICK(*fpol)) {
 		return 1;
 	}
-	if (FP_USE_MOUSE_BUTTONS(*fpol))
-	{
+	if (FP_USE_MOUSE_BUTTONS(*fpol)) {
 		return 1;
 	}
-	if (FP_USE_MODIFIERS(*fpol))
-	{
+	if (FP_USE_MODIFIERS(*fpol)) {
 		return 1;
 	}
 

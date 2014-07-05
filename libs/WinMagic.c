@@ -40,62 +40,60 @@
  * allowed too. The do_flush flag determines of all requests are sent to the
  * X server immediately (True) or not (False). The use_hints detrmines if the
  * min size and resize hints are used */
-void SlideWindow(
-	Display *dpy, Window win,
-	int s_x, int s_y, int s_w, int s_h,
-	int e_x, int e_y, int e_w, int e_h,
-	int steps, int delay_ms, float *ppctMovement,
-	Bool do_sync, Bool use_hints)
+void
+SlideWindow(Display *dpy, Window win,
+    int s_x, int s_y, int s_w, int s_h,
+    int e_x, int e_y, int e_w, int e_h,
+    int steps, int delay_ms, float *ppctMovement,
+    Bool do_sync, Bool use_hints)
 {
-	int x = 0;
-	int y = 0;
-	int w = 0;
-	int h = 0;
-	int g_w = 0;
-	int g_h = 0;  /* -Wall fixes :o( */
-	int min_w = 1;
-	int min_h = 1;
-	int inc_w = 1;
-	int inc_h = 1;
-	int i;
-	unsigned int us;
-	Bool is_mapped;
-	Bool keep_x1 = False;
-	Bool keep_x2 = False;
-	Bool keep_y1 = False;
-	Bool keep_y2 = False;
-	XSizeHints hints;
-	long dummy;
+	int             x = 0;
+	int             y = 0;
+	int             w = 0;
+	int             h = 0;
+	int             g_w = 0;
+	int             g_h = 0;	/* -Wall fixes :o( */
+	int             min_w = 1;
+	int             min_h = 1;
+	int             inc_w = 1;
+	int             inc_h = 1;
+	int             i;
+	unsigned int    us;
+	Bool            is_mapped;
+	Bool            keep_x1 = False;
+	Bool            keep_x2 = False;
+	Bool            keep_y1 = False;
+	Bool            keep_y2 = False;
+	XSizeHints      hints;
+	long            dummy;
 
-	/* check limits */
-	if (delay_ms > 10000)
-	{
-		/* max. 10 seconds per step */
+	/*
+	 * check limits
+	 */
+	if (delay_ms > 10000) {
+		/*
+		 * max. 10 seconds per step
+		 */
 		us = 10000000;
-	}
-	else if (delay_ms < 0)
-	{
+	} else if (delay_ms < 0) {
 		us = 0;
-	}
-	else
-	{
+	} else {
 		us = 1000 * delay_ms;
 	}
 
-	if (steps > 10000)
-	{
-		/* max. 10000 steps */
+	if (steps > 10000) {
+		/*
+		 * max. 10000 steps
+		 */
 		steps = 10000;
 	}
-	if (steps <= 0)
-	{
-		/* no steps, no animation */
-		if (e_w == 0 || e_h == 0)
-		{
+	if (steps <= 0) {
+		/*
+		 * no steps, no animation
+		 */
+		if (e_w == 0 || e_h == 0) {
 			XUnmapWindow(dpy, win);
-		}
-		else
-		{
+		} else {
 			XMoveResizeWindow(dpy, win, e_x, e_y, e_w, e_h);
 			XMapWindow(dpy, win);
 			XMapSubwindows(dpy, win);
@@ -107,25 +105,24 @@ void SlideWindow(
 
 	is_mapped = False;
 
-	/* Get the mini (re)size hints and do some check consistency */
-	if (use_hints && XGetWMNormalHints(dpy, win, &hints, &dummy))
-	{
-		if (hints.flags & PMinSize)
-		{
+	/*
+	 * Get the mini (re)size hints and do some check consistency
+	 */
+	if (use_hints && XGetWMNormalHints(dpy, win, &hints, &dummy)) {
+		if (hints.flags & PMinSize) {
 			if (hints.min_width >= 1 && hints.min_width <=
-			    max(e_w,s_w))
+			    max(e_w, s_w))
 				min_w = hints.min_width;
 			if (hints.min_height >= 1 && hints.min_height <=
-			    max(e_h,s_h))
+			    max(e_h, s_h))
 				min_h = hints.min_height;
 		}
-		if (hints.flags & PResizeInc)
-		{
+		if (hints.flags & PResizeInc) {
 			if (hints.width_inc >= 1 && hints.width_inc <=
-			    max(e_w,s_w))
+			    max(e_w, s_w))
 				inc_w = hints.width_inc;
 			if (hints.height_inc >= 1 && hints.width_inc <=
-			    max(e_h,s_h))
+			    max(e_h, s_h))
 				inc_h = hints.height_inc;
 		}
 	}
@@ -139,39 +136,38 @@ void SlideWindow(
 	if (s_y + s_h == e_y + e_h)
 		keep_y2 = True;
 
-	/* animate the window */
-	for (i = 0; i <= steps; i++)
-	{
-		if (i == steps)
-		{
+	/*
+	 * animate the window
+	 */
+	for (i = 0; i <= steps; i++) {
+		if (i == steps) {
 			x = e_x;
 			y = e_y;
-		}
-		else
-		{
-			float f;
+		} else {
+			float           f;
 
-			if (ppctMovement == NULL)
-			{
-				f = (float)i / (float)steps;
+			if (ppctMovement == NULL) {
+				f = (float) i / (float) steps;
+			} else {
+				f = ppctMovement[i] / (float) steps;
 			}
-			else
-			{
-				f = ppctMovement[i] / (float)steps;
-			}
-			x = (int)((float)s_x + (float)(e_x - s_x) * f);
-			y = (int)((float)s_y + (float)(e_y - s_y) * f);
+			x = (int) ((float) s_x + (float) (e_x - s_x) * f);
+			y = (int) ((float) s_y + (float) (e_y - s_y) * f);
 		}
-		w = s_w + (int)(e_w - s_w) * i / steps;
-		h = s_h + (int)(e_h - s_h) * i / steps;
+		w = s_w + (int) (e_w - s_w) * i / steps;
+		h = s_h + (int) (e_h - s_h) * i / steps;
 
-		/* take the resize inc in account */
+		/*
+		 * take the resize inc in account
+		 */
 		g_w = w - ((w - min_w) % inc_w);
-		x += w-g_w;
+		x += w - g_w;
 		g_h = h - ((h - min_h) % inc_h);
-		y += h-g_h;
+		y += h - g_h;
 
-		/* prevent annoying flickering */
+		/*
+		 * prevent annoying flickering
+		 */
 		if (keep_x1)
 			x = s_x;
 		if (keep_y1)
@@ -181,41 +177,41 @@ void SlideWindow(
 		if (keep_y2)
 			g_h = s_y + s_h - y;
 
-		if (g_w < min_w || g_h < min_h)
-		{
-			/* don't show zero width/height windows */
-			if (is_mapped)
-			{
+		if (g_w < min_w || g_h < min_h) {
+			/*
+			 * don't show zero width/height windows
+			 */
+			if (is_mapped) {
 				XUnmapWindow(dpy, win);
 				is_mapped = False;
 			}
-		}
-		else
-		{
+		} else {
 			XMoveResizeWindow(dpy, win, x, y, g_w, g_h);
-			if (!is_mapped)
-			{
+			if (!is_mapped) {
 				XMapWindow(dpy, win);
 				XMapSubwindows(dpy, win);
 				is_mapped = True;
 			}
 		}
-		/* make sure everything is updated */
+		/*
+		 * make sure everything is updated
+		 */
 		if (do_sync)
 			XSync(dpy, 0);
-		if (us && i < steps && is_mapped)
-		{
-			/* don't sleep after the last step */
+		if (us && i < steps && is_mapped) {
+			/*
+			 * don't sleep after the last step
+			 */
 			usleep(us);
 		}
-	} /* for */
+	}	/* for */
 
-	/* if hints and asked size do not agree try to respect the caller */
-	if (e_w > 0 && e_h > 0 && (!is_mapped || g_w != w || g_h != w))
-	{
+	/*
+	 * if hints and asked size do not agree try to respect the caller
+	 */
+	if (e_w > 0 && e_h > 0 && (!is_mapped || g_w != w || g_h != w)) {
 		XMoveResizeWindow(dpy, win, x, y, w, h);
-		if (!is_mapped)
-		{
+		if (!is_mapped) {
 			XMapWindow(dpy, win);
 			XMapSubwindows(dpy, win);
 		}
@@ -227,30 +223,26 @@ void SlideWindow(
 
 /* This function returns the top level ancestor of the window 'child'. It
  * returns None if an error occurs or if the window is a top level window. */
-Window GetTopAncestorWindow(Display *dpy, Window child)
+Window
+GetTopAncestorWindow(Display *dpy, Window child)
 {
-	Window root = None;
-	Window ancestor = child;
-	Window last_child = child;
-	Window *children;
-	unsigned int nchildren;
+	Window          root = None;
+	Window          ancestor = child;
+	Window          last_child = child;
+	Window         *children;
+	unsigned int    nchildren;
 
 	if (child == None)
 		return None;
 
-	while (ancestor != root)
-	{
+	while (ancestor != root) {
 		last_child = ancestor;
 		children = NULL;
-		if (
-			!XQueryTree(
-				dpy, last_child, &root, &ancestor, &children,
-				&nchildren))
-		{
+		if (!XQueryTree(dpy, last_child, &root, &ancestor, &children,
+			&nchildren)) {
 			return None;
 		}
-		if (children)
-		{
+		if (children) {
 			XFree(children);
 		}
 	}
@@ -267,17 +259,17 @@ Window GetTopAncestorWindow(Display *dpy, Window child)
  * list is non-NULL, it must be free'd with XFree. If an error occurs or the
  * parent window does not match the required depth, colormap or visualid, the
  * function returns -1 and NULL in *children. */
-int GetEqualSizeChildren(
-	Display *dpy, Window parent, int depth, VisualID visualid,
-	Colormap colormap, Window **ret_children)
+int
+GetEqualSizeChildren(Display *dpy, Window parent, int depth,
+    VisualID visualid, Colormap colormap, Window **ret_children)
 {
 	XWindowAttributes pxwa;
 	XWindowAttributes cxwa;
-	Window JunkW;
-	Window *children;
-	unsigned int nchildren;
-	int i;
-	int j;
+	Window          JunkW;
+	Window         *children;
+	unsigned int    nchildren;
+	int             i;
+	int             j;
 
 	if (!XGetWindowAttributes(dpy, parent, &pxwa))
 		return -1;
@@ -290,28 +282,23 @@ int GetEqualSizeChildren(
 	if (colormap && pxwa.colormap != colormap)
 		return -1;
 
-	for (i = 0, j = 0; i < nchildren; i++)
-	{
+	for (i = 0, j = 0; i < nchildren; i++) {
 		if (XGetWindowAttributes(dpy, children[i], &cxwa) &&
 		    cxwa.x == 0 &&
 		    cxwa.y == 0 &&
 		    cxwa.width == pxwa.width &&
 		    cxwa.height == pxwa.height &&
 		    (!depth || cxwa.depth == depth) &&
-		    (
-			    !visualid ||
-			    XVisualIDFromVisual(cxwa.visual) == visualid) &&
+		    (!visualid ||
+			XVisualIDFromVisual(cxwa.visual) == visualid) &&
 		    cxwa.class == InputOutput &&
-		    (!colormap || cxwa.colormap == colormap))
-		{
+		    (!colormap || cxwa.colormap == colormap)) {
 			children[j++] = children[i];
 		}
-	} /* for */
+	}	/* for */
 
-	if (j == 0)
-	{
-		if (children)
-		{
+	if (j == 0) {
+		if (children) {
 			XFree(children);
 			children = NULL;
 		}

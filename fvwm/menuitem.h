@@ -48,78 +48,104 @@ struct MenuStyle;
  * menu is visible! This will wreak havoc on recursive menus. */
 typedef struct MenuItem
 {
-	/* next and prev menu items */
+	/*
+	 * next and prev menu items
+	 */
 	struct MenuItem *next;
 	struct MenuItem *prev;
 
-	/* the strings displayed in the item */
-	char *label[MAX_MENU_ITEM_LABELS];
-	/* witdh of label[i] */
-	int label_offset[MAX_MENU_ITEM_LABELS];
-	/* strlen(label[i]) */
-	int label_strlen[MAX_MENU_ITEM_LABELS];
+	/*
+	 * the strings displayed in the item
+	 */
+	char           *label[MAX_MENU_ITEM_LABELS];
+	/*
+	 * witdh of label[i]
+	 */
+	int             label_offset[MAX_MENU_ITEM_LABELS];
+	/*
+	 * strlen(label[i])
+	 */
+	int             label_strlen[MAX_MENU_ITEM_LABELS];
 
-	/* Pixmap to show above label*/
-	FvwmPicture *picture;
-	/* Pics to show left/right of label */
-	FvwmPicture *lpicture[MAX_MENU_ITEM_MINI_ICONS];
+	/*
+	 * Pixmap to show above label
+	 */
+	FvwmPicture    *picture;
+	/*
+	 * Pics to show left/right of label
+	 */
+	FvwmPicture    *lpicture[MAX_MENU_ITEM_MINI_ICONS];
 
-	/* y offset and height for item */
-	int y_offset;
-	int height;
+	/*
+	 * y offset and height for item
+	 */
+	int             y_offset;
+	int             height;
 
-	/* action to be performed */
-	char *action;
-	/* type of built in function */
-	short func_type;
-	/* Hot key offset (pete@tecc.co.uk). */
-	int hotkey_coffset;
-	/* The column number the hotkey is defined in*/
-	char hotkey_column;
+	/*
+	 * action to be performed
+	 */
+	char           *action;
+	/*
+	 * type of built in function
+	 */
+	short           func_type;
+	/*
+	 * Hot key offset (pete@tecc.co.uk).
+	 */
+	int             hotkey_coffset;
+	/*
+	 * The column number the hotkey is defined in
+	 */
+	char            hotkey_column;
 	struct
 	{
-		unsigned is_continuation : 1;
-		unsigned is_separator : 1;
-		unsigned is_tear_off_bar : 1;
-		unsigned is_title : 1;
-		unsigned is_title_centered : 1;
-		unsigned is_popup : 1;
-		unsigned is_menu : 1;
-		unsigned has_text : 1;
-		unsigned has_picture : 1;
-		unsigned has_hotkey : 1;
-		unsigned is_hotkey_automatic : 1;
-		unsigned is_selectable : 1;
-		/* temporary flags */
-		unsigned was_deselected : 1;
+		unsigned        is_continuation:1;
+		unsigned        is_separator:1;
+		unsigned        is_tear_off_bar:1;
+		unsigned        is_title:1;
+		unsigned        is_title_centered:1;
+		unsigned        is_popup:1;
+		unsigned        is_menu:1;
+		unsigned        has_text:1;
+		unsigned        has_picture:1;
+		unsigned        has_hotkey:1;
+		unsigned        is_hotkey_automatic:1;
+		unsigned        is_selectable:1;
+		/*
+		 * temporary flags
+		 */
+		unsigned        was_deselected:1;
 	} flags;
 } MenuItem;
 
 typedef struct MenuItemPartSizesT
 {
-	int label_width[MAX_MENU_ITEM_LABELS];
-	int icon_width[MAX_MENU_ITEM_MINI_ICONS];
-	int picture_width;
-	int triangle_width;
-	int title_width;
+	int             label_width[MAX_MENU_ITEM_LABELS];
+	int             icon_width[MAX_MENU_ITEM_MINI_ICONS];
+	int             picture_width;
+	int             triangle_width;
+	int             title_width;
 } MenuItemPartSizesT;
 
 typedef struct MenuPaintItemParameters
 {
 	struct MenuStyle *ms;
-	Window w;
+	Window          w;
 	struct MenuItem *selected_item;
 	struct MenuDimensions *dim;
-	FvwmWindow *fw;
-	XEvent *ev;
-	int used_mini_icons;
+	FvwmWindow     *fw;
+	XEvent         *ev;
+	int             used_mini_icons;
 	struct MenuRoot *cb_mr;
-	/* number of item labels present in the item format */
-	Bool (*cb_reset_bg)(struct MenuRoot *mr, XEvent *pevent);
+	/*
+	 * number of item labels present in the item format
+	 */
+	Bool            (*cb_reset_bg) (struct MenuRoot *mr, XEvent *pevent);
 	struct
 	{
-		unsigned is_first_item : 1;
-		unsigned is_left_triangle : 1;
+		unsigned        is_first_item:1;
+		unsigned        is_left_triangle:1;
 	} flags;
 } MenuPaintItemParameters;
 
@@ -129,12 +155,13 @@ typedef struct MenuPaintItemParameters
 
 struct MenuItem *menuitem_clone(struct MenuItem *mi);
 struct MenuItem *menuitem_create(void);
-void menuitem_free(struct MenuItem *mi);
-void menuitem_get_size(
-	struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
-	FlocaleFont *font, Bool do_reverse_icon_order);
-void menuitem_paint(
-	struct MenuItem *mi, struct MenuPaintItemParameters *mpip);
-int menuitem_middle_y_offset(struct MenuItem *mi, struct MenuStyle *ms);
+void            menuitem_free(struct MenuItem *mi);
+void            menuitem_get_size(struct MenuItem *mi,
+    struct MenuItemPartSizesT *mipst, FlocaleFont *font,
+    Bool do_reverse_icon_order);
+void            menuitem_paint(struct MenuItem *mi,
+    struct MenuPaintItemParameters *mpip);
+int             menuitem_middle_y_offset(struct MenuItem *mi,
+    struct MenuStyle *ms);
 
 #endif /* MENUITEM_H */

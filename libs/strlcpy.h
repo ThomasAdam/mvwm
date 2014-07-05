@@ -16,4 +16,4 @@
 
 /* OPENBSD ORIGINAL: lib/libc/string/strlcpy.c */
 
-size_t	strlcpy(char *, const char *, size_t);
+size_t          strlcpy(char *, const char *, size_t);

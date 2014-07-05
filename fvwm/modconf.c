@@ -51,7 +51,7 @@
 #include "colorset.h"
 #include "libs/FScreen.h"
 
-extern int nColorsets;  /* in libs/Colorset.c */
+extern int      nColorsets;	/* in libs/Colorset.c */
 
 /* do not send ColorLimit, it is not used anymore but maybe by non
  * "official" modules */
@@ -61,18 +61,16 @@ extern int nColorsets;  /* in libs/Colorset.c */
 
 struct moduleInfoList
 {
-	char *data;
-	unsigned char alias_len;
+	char           *data;
+	unsigned char   alias_len;
 	struct moduleInfoList *next;
 };
 
 struct moduleInfoList *modlistroot = NULL;
 
 static struct moduleInfoList *AddToModList(char *tline);
-static void SendConfigToModule(
-	fmodule *module, const struct moduleInfoList *entry, char *match,
-	int match_len);
-
+static void     SendConfigToModule(fmodule *module,
+    const struct moduleInfoList *entry, char *match, int match_len);
 
 /*
  * ModuleConfig handles commands starting with "*".
@@ -83,50 +81,56 @@ static void SendConfigToModule(
  * Some modules request that module config commands be sent to them
  * as the commands are entered.  Send to modules that want it.
  */
-void ModuleConfig(char *action)
+void
+ModuleConfig(char *action)
 {
-	int end;
+	int             end;
 	fmodule_list_itr moditr;
-	fmodule *module;
+	fmodule        *module;
 	struct moduleInfoList *new_entry;
 
 	end = strlen(action) - 1;
 	if (action[end] == '\n')
 		action[end] = '\0';
-	/* save for config request */
+	/*
+	 * save for config request
+	 */
 	new_entry = AddToModList(action);
-	/* look at all possible pipes */
+	/*
+	 * look at all possible pipes
+	 */
 	module_list_itr_init(&moditr);
-	while ( (module = module_list_itr_next(&moditr)) != NULL)
-	{
-		if (IS_MESSAGE_SELECTED(module, M_SENDCONFIG))
-		{
-			/* module wants config cmds */
-			char *name = MOD_NAME(module);
-			if (MOD_ALIAS(module))
-			{
+	while ((module = module_list_itr_next(&moditr)) != NULL) {
+		if (IS_MESSAGE_SELECTED(module, M_SENDCONFIG)) {
+			/*
+			 * module wants config cmds
+			 */
+			char           *name = MOD_NAME(module);
+			if (MOD_ALIAS(module)) {
 				name = MOD_ALIAS(module);
 			}
-			SendConfigToModule(
-				module, new_entry, CatString2("*", name), 0);
+			SendConfigToModule(module, new_entry, CatString2("*",
+				name), 0);
 		}
 	}
 
 	return;
 }
 
-static struct moduleInfoList *AddToModList(char *tline)
+static struct moduleInfoList *
+AddToModList(char *tline)
 {
 	struct moduleInfoList *t, *prev, *this;
-	char *rline = tline;
-	char *alias_end = skipModuleAliasToken(tline + 1);
+	char           *rline = tline;
+	char           *alias_end = skipModuleAliasToken(tline + 1);
 
-	/* Find end of list */
+	/*
+	 * Find end of list
+	 */
 	t = modlistroot;
 	prev = NULL;
 
-	while(t != NULL)
-	{
+	while (t != NULL) {
 		prev = t;
 		t = t->next;
 	}
@@ -134,27 +138,26 @@ static struct moduleInfoList *AddToModList(char *tline)
 	this = xmalloc(sizeof(struct moduleInfoList));
 
 	this->alias_len = 0;
-	if (alias_end && alias_end[0] == MODULE_CONFIG_DELIM)
-	{
-		/* migo (01-Sep-2000): construct an old-style config line */
-		char *conf_start = alias_end + 1;
-		while (isspace(*conf_start)) conf_start++;
+	if (alias_end && alias_end[0] == MODULE_CONFIG_DELIM) {
+		/*
+		 * migo (01-Sep-2000): construct an old-style config line
+		 */
+		char           *conf_start = alias_end + 1;
+		while (isspace(*conf_start))
+			conf_start++;
 		*alias_end = '\0';
 		rline = CatString2(tline, conf_start);
 		*alias_end = MODULE_CONFIG_DELIM;
 		this->alias_len = alias_end - tline;
 	}
 
-	this->data = xmalloc(strlen(rline)+1);
+	this->data = xmalloc(strlen(rline) + 1);
 	strcpy(this->data, rline);
 
 	this->next = NULL;
-	if(prev == NULL)
-	{
+	if (prev == NULL) {
 		modlistroot = this;
-	}
-	else
-	{
+	} else {
 		prev->next = this;
 	}
 
@@ -164,42 +167,42 @@ static struct moduleInfoList *AddToModList(char *tline)
 /*
  * delete from module configuration
  */
-void CMD_DestroyModuleConfig(F_CMD_ARGS)
+void
+CMD_DestroyModuleConfig(F_CMD_ARGS)
 {
 	struct moduleInfoList *current, *next, *prev;
-	char *info;   /* info to be deleted - may contain wildcards */
-	char *mi;
-	char *alias_end;
-	int alias_len = 0;
+	char           *info;	/* info to be deleted - may contain wildcards */
+	char           *mi;
+	char           *alias_end;
+	int             alias_len = 0;
 
-	while (isspace(*action))
-	{
+	while (isspace(*action)) {
 		action++;
 	}
 	alias_end = skipModuleAliasToken(action);
 
-	if (alias_end && alias_end[0] == MODULE_CONFIG_DELIM)
-	{
-		/* migo: construct an old-style config line */
-		char *conf_start = alias_end + 1;
-		while (isspace(*conf_start)) conf_start++;
+	if (alias_end && alias_end[0] == MODULE_CONFIG_DELIM) {
+		/*
+		 * migo: construct an old-style config line
+		 */
+		char           *conf_start = alias_end + 1;
+		while (isspace(*conf_start))
+			conf_start++;
 		*alias_end = '\0';
 		GetNextToken(conf_start, &conf_start);
-		if (conf_start == NULL)
-		{
+		if (conf_start == NULL) {
 			return;
 		}
 		info = stripcpy(CatString2(action, conf_start));
 		*alias_end = MODULE_CONFIG_DELIM;
-		/* +1 for a leading '*' */
+		/*
+		 * +1 for a leading '*'
+		 */
 		alias_len = alias_end - action + 1;
 		free(conf_start);
-	}
-	else
-	{
+	} else {
 		GetNextToken(action, &info);
-		if (info == NULL)
-		{
+		if (info == NULL) {
 			return;
 		}
 	}
@@ -207,32 +210,24 @@ void CMD_DestroyModuleConfig(F_CMD_ARGS)
 	current = modlistroot;
 	prev = NULL;
 
-	while (current != NULL)
-	{
+	while (current != NULL) {
 		GetNextToken(current->data, &mi);
 		next = current->next;
 		if ((!alias_len || !current->alias_len ||
-		     alias_len == current->alias_len) &&
-		    matchWildcards(info, mi+1))
-		{
+			alias_len == current->alias_len) &&
+		    matchWildcards(info, mi + 1)) {
 			free(current->data);
 			free(current);
-			if( prev )
-			{
+			if (prev) {
 				prev->next = next;
-			}
-			else
-			{
+			} else {
 				modlistroot = next;
 			}
-		}
-		else
-		{
+		} else {
 			prev = current;
 		}
 		current = next;
-		if (mi)
-		{
+		if (mi) {
 			free(mi);
 		}
 	}
@@ -241,30 +236,33 @@ void CMD_DestroyModuleConfig(F_CMD_ARGS)
 	return;
 }
 
-static void send_xinerama_state(fmodule *module)
+static void
+send_xinerama_state(fmodule *module)
 {
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, FScreenGetConfiguration());
 
 	return;
 }
 
-static void send_desktop_names(fmodule *module)
+static void
+send_desktop_names(fmodule *module)
 {
-	struct monitor	*m = monitor_get_current();
-	DesktopsInfo *d;
-	char *name;
+	struct monitor *m = monitor_get_current();
+	DesktopsInfo   *d;
+	char           *name;
 
-	/* TA:  Currently, the names of desktops are the same for each monitor,
-	 * so pick the current monitor and send those names.
+	/*
+	 * TA:  Currently, the names of desktops are the same for each monitor,
+	 * * so pick the current monitor and send those names.
 	 */
 
-	for (d = m->Desktops->next; d != NULL; d = d->next)
-	{
-		if (d->name != NULL)
-		{
-			/* TA:  FIXME!  xasprintf() */
+	for (d = m->Desktops->next; d != NULL; d = d->next) {
+		if (d->name != NULL) {
+			/*
+			 * TA:  FIXME!  xasprintf()
+			 */
 			name = xmalloc(strlen(d->name) + 44);
-			sprintf(name,"DesktopName %d %s", d->desk, d->name);
+			sprintf(name, "DesktopName %d %s", d->desk, d->name);
 			SendName(module, M_CONFIG_INFO, 0, 0, 0, name);
 			free(name);
 		}
@@ -273,26 +271,30 @@ static void send_desktop_names(fmodule *module)
 	return;
 }
 
-static void send_desktop_geometry(fmodule *module)
+static void
+send_desktop_geometry(fmodule *module)
 {
-	char msg[64];
-	struct monitor	*m = monitor_get_current();
+	char            msg[64];
+	struct monitor *m = monitor_get_current();
 
-	sprintf(msg, "DesktopSize %d %d\n", m->virtual_scr.VxMax / m->coord.w + 1,
-		m->virtual_scr.VyMax / m->coord.h + 1);
+	sprintf(msg, "DesktopSize %d %d\n",
+	    m->virtual_scr.VxMax / m->coord.w + 1,
+	    m->virtual_scr.VyMax / m->coord.h + 1);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
 
 	return;
 }
 
-static void send_image_path(fmodule *module)
+static void
+send_image_path(fmodule *module)
 {
-	char *msg;
-	char *ImagePath = PictureGetImagePath();
+	char           *msg;
+	char           *ImagePath = PictureGetImagePath();
 
-	if (ImagePath && *ImagePath != 0)
-	{
-		/* TA:  FIXME!  xasprintf() */
+	if (ImagePath && *ImagePath != 0) {
+		/*
+		 * TA:  FIXME!  xasprintf()
+		 */
 		msg = xmalloc(strlen(ImagePath) + 12);
 		sprintf(msg, "ImagePath %s\n", ImagePath);
 		SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
@@ -302,10 +304,11 @@ static void send_image_path(fmodule *module)
 	return;
 }
 
-static void send_color_limit(fmodule *module)
+static void
+send_color_limit(fmodule *module)
 {
 #ifndef DISABLE_COLORLIMIT_CONFIG_INFO
-	char msg[64];
+	char            msg[64];
 
 	sprintf(msg, "ColorLimit %d\n", Scr.ColorLimit);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
@@ -313,37 +316,42 @@ static void send_color_limit(fmodule *module)
 	return;
 }
 
-static void send_colorsets(fmodule *module)
+static void
+send_colorsets(fmodule *module)
 {
-	int n;
+	int             n;
 
-	/* dump the colorsets (0 first as others copy it) */
-	for (n = 0; n < nColorsets; n++)
-	{
-		SendName(
-			module, M_CONFIG_INFO, 0, 0, 0,
-			DumpColorset(n, &Colorset[n]));
+	/*
+	 * dump the colorsets (0 first as others copy it)
+	 */
+	for (n = 0; n < nColorsets; n++) {
+		SendName(module, M_CONFIG_INFO, 0, 0, 0,
+		    DumpColorset(n, &Colorset[n]));
 	}
 
 	return;
 }
 
-static void send_click_time(fmodule *module)
+static void
+send_click_time(fmodule *module)
 {
-	char msg[64];
+	char            msg[64];
 
-	/* Dominik Vogt (8-Nov-1998): Scr.ClickTime patch to set ClickTime to
-	 * 'not at all' during InitFunction and RestartFunction. */
-	sprintf(msg,"ClickTime %d\n", (Scr.ClickTime < 0) ?
-		-Scr.ClickTime : Scr.ClickTime);
+	/*
+	 * Dominik Vogt (8-Nov-1998): Scr.ClickTime patch to set ClickTime to
+	 * * 'not at all' during InitFunction and RestartFunction.
+	 */
+	sprintf(msg, "ClickTime %d\n", (Scr.ClickTime < 0) ?
+	    -Scr.ClickTime : Scr.ClickTime);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
 
 	return;
 }
 
-static void send_move_threshold(fmodule *module)
+static void
+send_move_threshold(fmodule *module)
 {
-	char msg[64];
+	char            msg[64];
 
 	sprintf(msg, "MoveThreshold %d\n", Scr.MoveThreshold);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
@@ -351,9 +359,10 @@ static void send_move_threshold(fmodule *module)
 	return;
 }
 
-void send_ignore_modifiers(fmodule *module)
+void
+send_ignore_modifiers(fmodule *module)
 {
-	char msg[64];
+	char            msg[64];
 
 	sprintf(msg, "IgnoreModifiers %d\n", GetUnusedModifiers());
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
@@ -361,17 +370,24 @@ void send_ignore_modifiers(fmodule *module)
 	return;
 }
 
-void CMD_Send_ConfigInfo(F_CMD_ARGS)
+void
+CMD_Send_ConfigInfo(F_CMD_ARGS)
 {
 	struct moduleInfoList *t;
-	/* matching criteria for module cmds */
-	char *match;
-	/* get length once for efficiency */
-	int match_len = 0;
-	fmodule *mod = exc->m.module;
+	/*
+	 * matching criteria for module cmds
+	 */
+	char           *match;
+	/*
+	 * get length once for efficiency
+	 */
+	int             match_len = 0;
+	fmodule        *mod = exc->m.module;
 
 	send_desktop_geometry(mod);
-	/* send ImagePath and ColorLimit first */
+	/*
+	 * send ImagePath and ColorLimit first
+	 */
 	send_image_path(mod);
 	send_color_limit(mod);
 	send_xinerama_state(mod);
@@ -379,40 +395,35 @@ void CMD_Send_ConfigInfo(F_CMD_ARGS)
 	send_click_time(mod);
 	send_move_threshold(mod);
 	match = PeekToken(action, &action);
-	if (match)
-	{
+	if (match) {
 		match_len = strlen(match);
 	}
-	for (t = modlistroot; t != NULL; t = t->next)
-	{
+	for (t = modlistroot; t != NULL; t = t->next) {
 		SendConfigToModule(mod, t, match, match_len);
 	}
 	send_desktop_names(mod);
 	send_ignore_modifiers(mod);
-	SendPacket(
-		mod, M_END_CONFIG_INFO, (long)0, (long)0, (long)0, (long)0,
-		(long)0, (long)0, (long)0, (long)0);
+	SendPacket(mod, M_END_CONFIG_INFO, (long) 0, (long) 0, (long) 0,
+	    (long) 0, (long) 0, (long) 0, (long) 0, (long) 0);
 
 	return;
 }
 
-static void SendConfigToModule(
-	fmodule *module, const struct moduleInfoList *entry, char *match,
-	int match_len)
+static void
+SendConfigToModule(fmodule *module, const struct moduleInfoList *entry,
+    char *match, int match_len)
 {
-	if (match)
-	{
-		if (match_len == 0)
-		{
+	if (match) {
+		if (match_len == 0) {
 			match_len = strlen(match);
 		}
-		if (entry->alias_len > 0 && entry->alias_len != match_len)
-		{
+		if (entry->alias_len > 0 && entry->alias_len != match_len) {
 			return;
 		}
-		/* migo: this should be strncmp not strncasecmp probably. */
-		if (strncasecmp(entry->data, match, match_len) != 0)
-		{
+		/*
+		 * migo: this should be strncmp not strncasecmp probably.
+		 */
+		if (strncasecmp(entry->data, match, match_len) != 0) {
 			return;
 		}
 	}

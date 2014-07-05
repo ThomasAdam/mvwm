@@ -64,45 +64,41 @@
 
 /* ---------------------------- local functions ---------------------------- */
 
-static void menu_func(F_CMD_ARGS, Bool fStaysUp)
+static void
+menu_func(F_CMD_ARGS, Bool fStaysUp)
 {
 	struct MenuRoot *menu;
-	char *ret_action = NULL;
+	char           *ret_action = NULL;
 	struct MenuOptions mops;
-	char *menu_name = NULL;
+	char           *menu_name = NULL;
 	struct MenuParameters mp;
 	struct MenuReturn mret;
-	FvwmWindow * const fw = exc->w.fw;
-	const Window w = exc->w.w;
+	FvwmWindow     *const fw = exc->w.fw;
+	const Window    w = exc->w.w;
 	const exec_context_t *exc2;
 
 	memset(&mops, 0, sizeof(mops));
 	memset(&mret, 0, sizeof(MenuReturn));
-	action = GetNextToken(action,&menu_name);
-	action = get_menu_options(
-		action, w, fw, NULL, NULL, NULL, &mops);
-	while (action && *action && isspace((unsigned char)*action))
-	{
+	action = GetNextToken(action, &menu_name);
+	action = get_menu_options(action, w, fw, NULL, NULL, NULL, &mops);
+	while (action && *action && isspace((unsigned char) *action)) {
 		action++;
 	}
-	if (action && *action == 0)
-	{
+	if (action && *action == 0) {
 		action = NULL;
 	}
 	menu = menus_find_menu(menu_name);
-	if (menu == NULL)
-	{
-		if (menu_name)
-		{
-			fvwm_msg(ERR,"menu_func","No such menu %s",menu_name);
+	if (menu == NULL) {
+		if (menu_name) {
+			fvwm_msg(ERR, "menu_func", "No such menu %s",
+			    menu_name);
 			free(menu_name);
 		}
 		return;
 	}
 	if (menu_name &&
-	    set_repeat_data(
-		    menu_name, (fStaysUp) ? REPEAT_MENU : REPEAT_POPUP,NULL))
-	{
+	    set_repeat_data(menu_name,
+		(fStaysUp) ? REPEAT_MENU : REPEAT_POPUP, NULL)) {
 		free(menu_name);
 	}
 
@@ -116,16 +112,14 @@ static void menu_func(F_CMD_ARGS, Bool fStaysUp)
 	mp.flags.is_submenu = False;
 	mp.flags.is_already_mapped = False;
 	mp.flags.is_triggered_by_keypress =
-		(exc->x.etrigger->type == KeyPress);
+	    (exc->x.etrigger->type == KeyPress);
 	mp.pops = &mops;
 	mp.ret_paction = &ret_action;
 	do_menu(&mp, &mret);
-	if (mret.rc == MENU_DOUBLE_CLICKED && action)
-	{
+	if (mret.rc == MENU_DOUBLE_CLICKED && action) {
 		execute_function(cond_rc, exc2, action, 0);
 	}
-	if (ret_action != NULL)
-	{
+	if (ret_action != NULL) {
 		free(ret_action);
 	}
 	exc_destroy_context(exc2);
@@ -138,7 +132,8 @@ static void menu_func(F_CMD_ARGS, Bool fStaysUp)
 /* ---------------------------- builtin commands --------------------------- */
 
 /* the function for the "Popup" command */
-void CMD_Popup(F_CMD_ARGS)
+void
+CMD_Popup(F_CMD_ARGS)
 {
 	menu_func(F_PASS_ARGS, False);
 
@@ -146,80 +141,80 @@ void CMD_Popup(F_CMD_ARGS)
 }
 
 /* the function for the "Menu" command */
-void CMD_Menu(F_CMD_ARGS)
+void
+CMD_Menu(F_CMD_ARGS)
 {
 	menu_func(F_PASS_ARGS, True);
 
 	return;
 }
 
-void CMD_AddToMenu(F_CMD_ARGS)
+void
+CMD_AddToMenu(F_CMD_ARGS)
 {
-	MenuRoot *mr;
-	MenuRoot *mrPrior;
-	char *token, *rest,*item;
+	MenuRoot       *mr;
+	MenuRoot       *mrPrior;
+	char           *token, *rest, *item;
 
 	token = PeekToken(action, &rest);
-	if (!token)
-	{
+	if (!token) {
 		return;
 	}
 	mr = menus_find_menu(token);
-	if (mr && MR_MAPPED_COPIES(mr) != 0)
-	{
-		fvwm_msg(ERR,"add_item_to_menu", "menu %s is in use", token);
+	if (mr && MR_MAPPED_COPIES(mr) != 0) {
+		fvwm_msg(ERR, "add_item_to_menu", "menu %s is in use", token);
 		return;
 	}
 	mr = FollowMenuContinuations(menus_find_menu(token), &mrPrior);
-	if (mr == NULL)
-	{
+	if (mr == NULL) {
 		mr = NewMenuRoot(token);
 	}
 
-	/* Set + state to last menu */
+	/*
+	 * Set + state to last menu
+	 */
 	set_last_added_item(ADDED_MENU, mr);
 
 	rest = GetNextToken(rest, &item);
-	AddToMenu(mr, item, rest, True /* pixmap scan */, True, False);
-	if (item)
-	{
+	AddToMenu(mr, item, rest, True /* pixmap scan */ , True, False);
+	if (item) {
 		free(item);
 	}
 
 	return;
 }
 
-void CMD_DestroyMenu(F_CMD_ARGS)
+void
+CMD_DestroyMenu(F_CMD_ARGS)
 {
-	MenuRoot *mr;
-	MenuRoot *mrContinuation;
-	Bool do_recreate = False;
-	char *token;
+	MenuRoot       *mr;
+	MenuRoot       *mrContinuation;
+	Bool            do_recreate = False;
+	char           *token;
 
 	token = PeekToken(action, &action);
-	if (!token)
-	{
+	if (!token) {
 		return;
 	}
-	if (StrEquals(token, "recreate"))
-	{
+	if (StrEquals(token, "recreate")) {
 		do_recreate = True;
 		token = PeekToken(action, NULL);
 	}
 	mr = menus_find_menu(token);
-	if (Scr.last_added_item.type == ADDED_MENU)
-	{
+	if (Scr.last_added_item.type == ADDED_MENU) {
 		set_last_added_item(ADDED_NONE, NULL);
 	}
-	while (mr)
-	{
-		/* save continuation before destroy */
+	while (mr) {
+		/*
+		 * save continuation before destroy
+		 */
 		mrContinuation = MR_CONTINUATION_MENU(mr);
-		if (!DestroyMenu(mr, do_recreate, True))
-		{
+		if (!DestroyMenu(mr, do_recreate, True)) {
 			return;
 		}
-		/* Don't recreate the continuations */
+		/*
+		 * Don't recreate the continuations
+		 */
 		do_recreate = False;
 		mr = mrContinuation;
 	}
@@ -227,39 +222,32 @@ void CMD_DestroyMenu(F_CMD_ARGS)
 	return;
 }
 
-void CMD_DestroyMenuStyle(F_CMD_ARGS)
+void
+CMD_DestroyMenuStyle(F_CMD_ARGS)
 {
-	MenuStyle *ms = NULL;
-	char *name = NULL;
+	MenuStyle      *ms = NULL;
+	char           *name = NULL;
 
 	name = PeekToken(action, NULL);
-	if (name == NULL)
-	{
-		fvwm_msg(ERR,"DestroyMenuStyle", "needs one parameter");
+	if (name == NULL) {
+		fvwm_msg(ERR, "DestroyMenuStyle", "needs one parameter");
 		return;
 	}
 
 	ms = menustyle_find(name);
-	if (ms == NULL)
-	{
+	if (ms == NULL) {
 		return;
-	}
-	else if (ms == menustyle_get_default_style())
-	{
-		fvwm_msg(ERR,"DestroyMenuStyle",
-			 "cannot destroy default menu style. "
-			 "To reset the default menu style use\n  %s",
-			 DEFAULT_MENU_STYLE);
+	} else if (ms == menustyle_get_default_style()) {
+		fvwm_msg(ERR, "DestroyMenuStyle",
+		    "cannot destroy default menu style. "
+		    "To reset the default menu style use\n  %s",
+		    DEFAULT_MENU_STYLE);
 		return;
-	}
-	else if (ST_USAGE_COUNT(ms) != 0)
-	{
+	} else if (ST_USAGE_COUNT(ms) != 0) {
 		fvwm_msg(ERR, "DestroyMenuStyle", "menu style %s is in use",
-			 name);
+		    name);
 		return;
-	}
-	else
-	{
+	} else {
 		menustyle_free(ms);
 	}
 	menus_remove_style_from_menus(ms);
@@ -267,45 +255,40 @@ void CMD_DestroyMenuStyle(F_CMD_ARGS)
 	return;
 }
 
-void CMD_ChangeMenuStyle(F_CMD_ARGS)
+void
+CMD_ChangeMenuStyle(F_CMD_ARGS)
 {
-	char *name = NULL;
-	char *menuname = NULL;
-	MenuStyle *ms = NULL;
-	MenuRoot *mr = NULL;
+	char           *name = NULL;
+	char           *menuname = NULL;
+	MenuStyle      *ms = NULL;
+	MenuRoot       *mr = NULL;
 
 	name = PeekToken(action, &action);
-	if (name == NULL)
-	{
-		fvwm_msg(ERR,"ChangeMenuStyle",
-			 "needs at least two parameters");
+	if (name == NULL) {
+		fvwm_msg(ERR, "ChangeMenuStyle",
+		    "needs at least two parameters");
 		return;
 	}
 
 	ms = menustyle_find(name);
-	if (ms == NULL)
-	{
-		fvwm_msg(ERR,"ChangeMenuStyle", "cannot find style %s", name);
+	if (ms == NULL) {
+		fvwm_msg(ERR, "ChangeMenuStyle", "cannot find style %s",
+		    name);
 		return;
 	}
 
 	menuname = PeekToken(action, &action);
-	while (menuname && *menuname)
-	{
+	while (menuname && *menuname) {
 		mr = menus_find_menu(menuname);
-		if (mr == NULL)
-		{
-			fvwm_msg(ERR, "ChangeMenuStyle", "cannot find menu %s",
-				 menuname);
+		if (mr == NULL) {
+			fvwm_msg(ERR, "ChangeMenuStyle",
+			    "cannot find menu %s", menuname);
 			break;
 		}
-		if (MR_MAPPED_COPIES(mr) != 0)
-		{
+		if (MR_MAPPED_COPIES(mr) != 0) {
 			fvwm_msg(ERR, "ChangeMenuStyle", "menu %s is in use",
-				 menuname);
-		}
-		else
-		{
+			    menuname);
+		} else {
 			MR_STYLE(mr) = ms;
 			MR_IS_UPDATED(mr) = 1;
 		}

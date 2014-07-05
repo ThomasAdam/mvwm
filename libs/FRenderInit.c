@@ -41,46 +41,42 @@
 
 /* ---------------------------- local variables ---------------------------- */
 
-Bool FRenderExtensionSupported = False;
-int FRenderErrorBase = -10000;
-int FRenderMajorOpCode = -10000;
-int FRenderAlphaDepth = 0;
+Bool            FRenderExtensionSupported = False;
+int             FRenderErrorBase = -10000;
+int             FRenderMajorOpCode = -10000;
+int             FRenderAlphaDepth = 0;
 
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- local functions ---------------------------- */
 
-void FRenderInit(Display *dpy)
+void
+FRenderInit(Display *dpy)
 {
-	int event_basep;
+	int             event_basep;
 
 	FRenderAlphaDepth = 8;
-	if (!XRenderSupport || !(FRenderExtensionSupported = XQueryExtension(
-		dpy, "RENDER", &FRenderMajorOpCode, &event_basep,
-		&FRenderErrorBase)))
-	{
-		int *pmf = NULL;
-		int i,n;
-		int alpha_depth = 0;
+	if (!XRenderSupport
+	    || !(FRenderExtensionSupported =
+		XQueryExtension(dpy, "RENDER", &FRenderMajorOpCode,
+		    &event_basep, &FRenderErrorBase))) {
+		int            *pmf = NULL;
+		int             i, n;
+		int             alpha_depth = 0;
 
 		FRenderErrorBase = -10000;
 		FRenderMajorOpCode = -10000;
 		FRenderExtensionSupported = 0;
 		pmf = XListDepths(dpy, DefaultScreen(dpy), &n);
-		if (pmf)
-		{
+		if (pmf) {
 			i = 0;
-			while(i < n)
-			{
-				if (pmf[i] == 8)
-				{
+			while (i < n) {
+				if (pmf[i] == 8) {
 					alpha_depth = 8;
-					i = n-1;
-				}
-				else if (pmf[i] >= 8 &&
-					 (pmf[i] < alpha_depth ||
-					  alpha_depth == 0))
-				{
+					i = n - 1;
+				} else if (pmf[i] >= 8 &&
+				    (pmf[i] < alpha_depth ||
+					alpha_depth == 0)) {
 					alpha_depth = pmf[i];
 				}
 				i++;
@@ -91,33 +87,36 @@ void FRenderInit(Display *dpy)
 	}
 }
 
-
-int FRenderGetErrorCodeBase(void)
+int
+FRenderGetErrorCodeBase(void)
 {
 	return FRenderErrorBase;
 }
 
-int FRenderGetMajorOpCode(void)
+int
+FRenderGetMajorOpCode(void)
 {
 	return FRenderMajorOpCode;
 }
 
-Bool FRenderGetExtensionSupported(void)
+Bool
+FRenderGetExtensionSupported(void)
 {
 	return FRenderExtensionSupported;
 }
 
-int FRenderGetAlphaDepth(void)
+int
+FRenderGetAlphaDepth(void)
 {
 	return FRenderAlphaDepth;
 }
 
-Bool FRenderGetErrorText(int code, char *msg)
+Bool
+FRenderGetErrorText(int code, char *msg)
 {
 
-	if (XRenderSupport)
-	{
-		static char *error_names[] = {
+	if (XRenderSupport) {
+		static char    *error_names[] = {
 			"BadPictFormat",
 			"BadPicture",
 			"BadPictOp",
@@ -127,9 +126,9 @@ Bool FRenderGetErrorText(int code, char *msg)
 
 		if (code >= FRenderErrorBase &&
 		    code <= FRenderErrorBase +
-		    (sizeof(error_names) / sizeof(char *)) -1)
-		{
-			sprintf(msg, "%s\n", error_names[code - FRenderErrorBase]);
+		    (sizeof(error_names) / sizeof(char *)) - 1) {
+			sprintf(msg, "%s\n",
+			    error_names[code - FRenderErrorBase]);
 			return 1;
 		}
 	}

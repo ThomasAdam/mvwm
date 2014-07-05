@@ -40,11 +40,11 @@
 typedef struct fqueue_record
 {
 	struct fqueue_record *next;
-	void *object;
+	void           *object;
 	struct
 	{
-		unsigned is_scheduled_for_deletion;
-		unsigned is_just_created;
+		unsigned        is_scheduled_for_deletion;
+		unsigned        is_just_created;
 	} flags;
 } fqueue_record;
 
@@ -55,37 +55,32 @@ typedef struct fqueue_record
 /* ---------------------------- interface functions ------------------------ */
 
 /* Make newly added items permanent and destroy items scheduled for deletion. */
-static void fqueue_cleanup_queue(
-	fqueue *fq, destroy_fqueue_object_t destroy_func)
+static void
+fqueue_cleanup_queue(fqueue * fq, destroy_fqueue_object_t destroy_func)
 {
-	fqueue_record *head;
-	fqueue_record *tail;
-	fqueue_record *prev;
-	fqueue_record *next;
-	fqueue_record *rec;
+	fqueue_record  *head;
+	fqueue_record  *tail;
+	fqueue_record  *prev;
+	fqueue_record  *next;
+	fqueue_record  *rec;
 
 	for (head = NULL, tail = NULL, prev = NULL, rec = fq->first;
-	     rec != NULL; rec = next)
-	{
-		if (rec->flags.is_scheduled_for_deletion)
-		{
-			/* destroy and skip it */
+	    rec != NULL; rec = next) {
+		if (rec->flags.is_scheduled_for_deletion) {
+			/*
+			 * destroy and skip it
+			 */
 			next = rec->next;
-			if (rec->object != NULL && destroy_func != NULL)
-			{
+			if (rec->object != NULL && destroy_func != NULL) {
 				destroy_func(rec->object);
 			}
-			if (prev != NULL)
-			{
+			if (prev != NULL) {
 				prev->next = next;
 			}
 			free(rec);
-		}
-		else
-		{
+		} else {
 			rec->flags.is_just_created = 0;
-			if (head == NULL)
-			{
+			if (head == NULL) {
 				head = rec;
 			}
 			tail = rec;
@@ -102,7 +97,8 @@ static void fqueue_cleanup_queue(
 /* Recursively lock the queue.  While locked, objects are not deleted from the
  * queue but marked for later deletion.  New objects are marked as such and are
  * skipped by the queue functions. */
-static void fqueue_lock_queue(fqueue *fq)
+static void
+fqueue_lock_queue(fqueue * fq)
 {
 	fq->lock_level++;
 
@@ -110,20 +106,22 @@ static void fqueue_lock_queue(fqueue *fq)
 }
 
 /* Remove one lock level */
-static void fqueue_unlock_queue(
-	fqueue *fq, destroy_fqueue_object_t destroy_func)
+static void
+fqueue_unlock_queue(fqueue * fq, destroy_fqueue_object_t destroy_func)
 {
-	switch (fq->lock_level)
-	{
+	switch (fq->lock_level) {
 	case 0:
-		/* bug */
+		/*
+		 * bug
+		 */
 		break;
 	case 1:
-		if (fq->flags.is_dirty)
-		{
+		if (fq->flags.is_dirty) {
 			fqueue_cleanup_queue(fq, destroy_func);
 		}
-		/* fall through */
+		/*
+		 * fall through
+		 */
 	default:
 		fq->lock_level--;
 		return;
@@ -134,20 +132,16 @@ static void fqueue_unlock_queue(
 
 /* Chack and possibly execute the action associated with a queue object.
  * Schedule the object for deletion if it was executed. */
-static void fqueue_operate(
-	fqueue *fq, fqueue_record *rec,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	void *operate_args)
+static void
+fqueue_operate(fqueue * fq, fqueue_record * rec,
+    check_fqueue_object_t check_func,
+    operate_fqueue_object_t operate_func, void *operate_args)
 {
-	if (rec == NULL || rec->flags.is_scheduled_for_deletion)
-	{
+	if (rec == NULL || rec->flags.is_scheduled_for_deletion) {
 		return;
 	}
-	if (check_func == NULL || check_func(rec->object, operate_args) == 1)
-	{
-		if (operate_func != NULL)
-		{
+	if (check_func == NULL || check_func(rec->object, operate_args) == 1) {
+		if (operate_func != NULL) {
 			operate_func(rec->object, operate_args);
 		}
 		rec->flags.is_scheduled_for_deletion = 1;
@@ -163,22 +157,22 @@ static void fqueue_operate(
  * Basic queue management
  */
 
-void fqueue_init(fqueue *fq)
+void
+fqueue_init(fqueue * fq)
 {
 	memset(fq, 0, sizeof(*fq));
 
 	return;
 }
 
-unsigned int fqueue_get_length(fqueue *fq)
+unsigned int
+fqueue_get_length(fqueue * fq)
 {
-	unsigned int len;
-	fqueue_record *t;
+	unsigned int    len;
+	fqueue_record  *t;
 
-	for (t = fq->first, len = 0; t != NULL; t = t->next)
-	{
-		if (!t->flags.is_scheduled_for_deletion)
-		{
+	for (t = fq->first, len = 0; t != NULL; t = t->next) {
+		if (!t->flags.is_scheduled_for_deletion) {
 			len++;
 		}
 	}
@@ -190,16 +184,15 @@ unsigned int fqueue_get_length(fqueue *fq)
  * Add record to queue
  */
 
-void fqueue_add_at_front(
-	fqueue *fq, void *object)
+void
+fqueue_add_at_front(fqueue * fq, void *object)
 {
-	fqueue_record *rec;
+	fqueue_record  *rec;
 
 	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
 	rec->next = fq->first;
-	if (fq->lock_level > 0)
-	{
+	if (fq->lock_level > 0) {
 		rec->flags.is_just_created = 1;
 		fq->flags.is_dirty = 1;
 	}
@@ -208,24 +201,20 @@ void fqueue_add_at_front(
 	return;
 }
 
-void fqueue_add_at_end(
-	fqueue *fq, void *object)
+void
+fqueue_add_at_end(fqueue * fq, void *object)
 {
-	fqueue_record *rec;
+	fqueue_record  *rec;
 
 	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
-	if (fq->lock_level > 0)
-	{
+	if (fq->lock_level > 0) {
 		rec->flags.is_just_created = 1;
 		fq->flags.is_dirty = 1;
 	}
-	if (fq->first == NULL)
-	{
+	if (fq->first == NULL) {
 		fq->first = rec;
-	}
-	else
-	{
+	} else {
 		fq->last->next = rec;
 	}
 	fq->last = rec;
@@ -234,43 +223,48 @@ void fqueue_add_at_end(
 	return;
 }
 
-void fqueue_add_inside(
-	fqueue *fq, void *object, cmp_objects_t cmp_objects, void *cmp_args)
+void
+fqueue_add_inside(fqueue * fq, void *object, cmp_objects_t cmp_objects,
+    void *cmp_args)
 {
-	fqueue_record *rec;
-	fqueue_record *p;
-	fqueue_record *t;
+	fqueue_record  *rec;
+	fqueue_record  *p;
+	fqueue_record  *t;
 
 	rec = xcalloc(1, sizeof *rec);
 	rec->object = object;
-	if (fq->lock_level > 0)
-	{
+	if (fq->lock_level > 0) {
 		rec->flags.is_just_created = 1;
 		fq->flags.is_dirty = 1;
 	}
 
-	/* search place to insert record */
+	/*
+	 * search place to insert record
+	 */
 	for (p = NULL, t = fq->first;
-	     t != NULL && cmp_objects(object, t->object, cmp_args) >= 0;
-	     p = t, t = t->next)
-	{
-		/* nothing to do here */
+	    t != NULL && cmp_objects(object, t->object, cmp_args) >= 0;
+	    p = t, t = t->next) {
+		/*
+		 * nothing to do here
+		 */
 	}
-	/* insert record */
-	if (p == NULL)
-	{
-		/* insert at start */
+	/*
+	 * insert record
+	 */
+	if (p == NULL) {
+		/*
+		 * insert at start
+		 */
 		rec->next = fq->first;
 		fq->first = rec;
-	}
-	else
-	{
-		/* insert after p */
+	} else {
+		/*
+		 * insert after p
+		 */
 		rec->next = p->next;
 		p->next = rec;
 	}
-	if (t == NULL)
-	{
+	if (t == NULL) {
 		fq->last = rec;
 	}
 
@@ -283,19 +277,19 @@ void fqueue_add_inside(
 
 /* Returns the object of the first queue record throuch *ret_object.  Returns
  * 0 if the queue is empty and 1 otherwise. */
-int fqueue_get_first(
-	fqueue *fq, void **ret_object)
+int
+fqueue_get_first(fqueue * fq, void **ret_object)
 {
-	fqueue_record *rec;
+	fqueue_record  *rec;
 
 	for (rec = fq->first;
-	     rec != NULL && rec->flags.is_scheduled_for_deletion;
-	     rec = rec->next)
-	{
-		/* nothing */
+	    rec != NULL && rec->flags.is_scheduled_for_deletion;
+	    rec = rec->next) {
+		/*
+		 * nothing
+		 */
 	}
-	if (rec == NULL)
-	{
+	if (rec == NULL) {
 		return 0;
 	}
 	*ret_object = rec->object;
@@ -310,12 +304,11 @@ int fqueue_get_first(
 /* Runs the operate_func on the first record in the queue.  If that function
  * is NULL or returns 1, the record is removed from the queue.  The object of
  * the queue record must have been freed in operate_func. */
-void fqueue_remove_or_operate_from_front(
-	fqueue *fq,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	destroy_fqueue_object_t destroy_func,
-	void *operate_args)
+void
+fqueue_remove_or_operate_from_front(fqueue * fq,
+    check_fqueue_object_t check_func,
+    operate_fqueue_object_t operate_func,
+    destroy_fqueue_object_t destroy_func, void *operate_args)
 {
 	fqueue_lock_queue(fq);
 	fqueue_operate(fq, fq->first, check_func, operate_func, operate_args);
@@ -325,42 +318,41 @@ void fqueue_remove_or_operate_from_front(
 }
 
 /* Same as above but operates on last record in queue */
-void fqueue_remove_or_operate_from_end(
-	fqueue *fq,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	destroy_fqueue_object_t destroy_func,
-	void *operate_args)
+void
+fqueue_remove_or_operate_from_end(fqueue * fq,
+    check_fqueue_object_t check_func,
+    operate_fqueue_object_t operate_func,
+    destroy_fqueue_object_t destroy_func, void *operate_args)
 {
 	fqueue_lock_queue(fq);
-	fqueue_operate( fq, fq->last, check_func, operate_func, operate_args);
+	fqueue_operate(fq, fq->last, check_func, operate_func, operate_args);
 	fqueue_unlock_queue(fq, destroy_func);
 
 	return;
 }
 
 /* Same as above but operates on all records in the queue. */
-void fqueue_remove_or_operate_all(
-	fqueue *fq,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	destroy_fqueue_object_t destroy_func,
-	void *operate_args)
+void
+fqueue_remove_or_operate_all(fqueue * fq,
+    check_fqueue_object_t check_func,
+    operate_fqueue_object_t operate_func,
+    destroy_fqueue_object_t destroy_func, void *operate_args)
 {
-	fqueue_record *t;
+	fqueue_record  *t;
 
-	if (fq->first == NULL)
-	{
+	if (fq->first == NULL) {
 		return;
 	}
 	fqueue_lock_queue(fq);
-	/* search record(s) to remove */
-	for (t = fq->first; t != NULL; t = t->next)
-	{
+	/*
+	 * search record(s) to remove
+	 */
+	for (t = fq->first; t != NULL; t = t->next) {
 		if (t->flags.is_just_created ||
-		    t->flags.is_scheduled_for_deletion)
-		{
-			/* skip */
+		    t->flags.is_scheduled_for_deletion) {
+			/*
+			 * skip
+			 */
 			continue;
 		}
 		fqueue_operate(fq, t, check_func, operate_func, operate_args);

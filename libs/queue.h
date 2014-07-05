@@ -95,15 +95,15 @@
 struct name {								\
 	struct type *slh_first;	/* first element */			\
 }
- 
+
 #define	SLIST_HEAD_INITIALIZER(head)					\
 	{ NULL }
- 
+
 #define SLIST_ENTRY(type)						\
 struct {								\
 	struct type *sle_next;	/* next element */			\
 }
- 
+
 /*
  * Singly-linked List access methods.
  */
@@ -359,7 +359,6 @@ struct {								\
 	    ((tvar) = TAILQ_NEXT(var, field), 1);			\
 	    (var) = (tvar))
 
-
 #define TAILQ_FOREACH_REVERSE(var, head, headname, field)		\
 	for((var) = TAILQ_LAST(head, headname);				\
 	    (var) != TAILQ_END(head);					\
@@ -565,4 +564,4 @@ struct {								\
 	_Q_INVALIDATE((elm)->field.cqe_next);				\
 } while (0)
 
-#endif	/* !_SYS_QUEUE_H_ */
+#endif /* !_SYS_QUEUE_H_ */

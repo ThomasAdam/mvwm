@@ -14,7 +14,7 @@
 /* Inernal types */
 typedef struct
 {
-	XEvent te;
+	XEvent          te;
 } exec_context_privileged_t;
 
 /* Interface types */
@@ -25,24 +25,24 @@ typedef enum
 	EXCT_RESTART = 'R',
 	EXCT_QUIT = 'Q',
 	EXCT_TORESTART = 'r',
-	EXCT_EVENT ='E',
-	EXCT_MODULE ='M',
-	EXCT_MENULOOP ='m',
+	EXCT_EVENT = 'E',
+	EXCT_MODULE = 'M',
+	EXCT_MENULOOP = 'm',
 	EXCT_PAGING = 'P',
 	EXCT_SCHEDULE = 'S'
 } exec_context_type_t;
 
 typedef struct
 {
-	XEvent *etrigger;
-	XEvent *elast;
+	XEvent         *etrigger;
+	XEvent         *elast;
 } x_context_t;
 
 typedef struct
 {
-	FvwmWindow *fw;
-	Window w;
-	unsigned long wcontext;
+	FvwmWindow     *fw;
+	Window          w;
+	unsigned long   wcontext;
 } window_context_t;
 
 struct fmodule;
@@ -54,10 +54,12 @@ typedef struct
 typedef struct
 {
 	exec_context_type_t type;
-	x_context_t x;
+	x_context_t     x;
 	window_context_t w;
 	module_context_t m;
-	/* for internal use *only*. *Never* acces this from outside! */
+	/*
+	 * for internal use *only*. *Never* acces this from outside!
+	 */
 	exec_context_privileged_t private_data;
 } exec_context_t;
 
@@ -74,7 +76,7 @@ typedef enum
 typedef struct
 {
 	exec_context_type_t type;
-	x_context_t x;
+	x_context_t     x;
 	window_context_t w;
 	module_context_t m;
 } exec_context_changes_t;
@@ -95,8 +97,8 @@ typedef struct
  *   mask
  *     The mask of members in ecc to use.
  */
-const exec_context_t *exc_create_context(
-	exec_context_changes_t *ecc, exec_context_change_mask_t mask);
+const exec_context_t *exc_create_context(exec_context_changes_t *ecc,
+    exec_context_change_mask_t mask);
 
 /* Similar to exc_create_context(), but the created context contains only dummy
  * information. */
@@ -104,12 +106,11 @@ const exec_context_t *exc_create_null_context(void);
 
 /* Works like exc_create_context(), but initialises all values with the data
  * from excin.  The ecc/mask pair overrides these values. */
-const exec_context_t *exc_clone_context(
-	const exec_context_t *excin, exec_context_changes_t *ecc,
-	exec_context_change_mask_t mask);
+const exec_context_t *exc_clone_context(const exec_context_t *excin,
+    exec_context_changes_t *ecc, exec_context_change_mask_t mask);
 
 /* Destroys an exec_context structure that was created with
  * exc_create_context(). */
-void exc_destroy_context(const exec_context_t *exc);
+void            exc_destroy_context(const exec_context_t *exc);
 
 #endif /* EXECCONTEXT_H */

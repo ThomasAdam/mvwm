@@ -26,38 +26,60 @@
 
 struct MenuDimensions
 {
-	/* width/height of the menu */
-	int width;
-	int height;
-	/* width of the actual menu item */
-	int item_width;
-	/* offset of the sidepic */
-	int sidepic_x_offset;
-	/* offsets of the mini icons */
-	int icon_x_offset[MAX_MENU_ITEM_MINI_ICONS];
-	/* offset of the submenu triangle col */
-	int triangle_x_offset;
-	/* offset of the actual menu item */
-	int item_text_x_offset;
-	/* y offset for item text. */
-	int item_text_y_offset;
-	/* start of the area to be hilighted */
-	int hilight_x_offset;
-	/* width of the area to be hilighted */
-	int hilight_width;
-	/* y coordinate for item */
-	int y_offset;
-	/* width and height of the last screen
-	 * the menu was mapped on */
-	int screen_width;
-	int screen_height;
+	/*
+	 * width/height of the menu
+	 */
+	int             width;
+	int             height;
+	/*
+	 * width of the actual menu item
+	 */
+	int             item_width;
+	/*
+	 * offset of the sidepic
+	 */
+	int             sidepic_x_offset;
+	/*
+	 * offsets of the mini icons
+	 */
+	int             icon_x_offset[MAX_MENU_ITEM_MINI_ICONS];
+	/*
+	 * offset of the submenu triangle col
+	 */
+	int             triangle_x_offset;
+	/*
+	 * offset of the actual menu item
+	 */
+	int             item_text_x_offset;
+	/*
+	 * y offset for item text.
+	 */
+	int             item_text_y_offset;
+	/*
+	 * start of the area to be hilighted
+	 */
+	int             hilight_x_offset;
+	/*
+	 * width of the area to be hilighted
+	 */
+	int             hilight_width;
+	/*
+	 * y coordinate for item
+	 */
+	int             y_offset;
+	/*
+	 * width and height of the last screen
+	 * * the menu was mapped on
+	 */
+	int             screen_width;
+	int             screen_height;
 };
 
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- interface functions ------------------------ */
 
-int menudim_middle_x_offset(struct MenuDimensions *mdim);
+int             menudim_middle_x_offset(struct MenuDimensions *mdim);
 
 /* ---------------------------- builtin commands --------------------------- */
 

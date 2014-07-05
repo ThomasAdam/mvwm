@@ -16,10 +16,10 @@
 
 #include "config.h"
 
-int strcasecmp(register char *s1,register char *s2)
+int
+strcasecmp(register char *s1, register char *s2)
 {
-	while (tolower(*s1) == tolower(*s2))
-	{
+	while (tolower(*s1) == tolower(*s2)) {
 		++s1;
 		++s2;
 		if (!*s1 || !*s2)
@@ -27,4 +27,3 @@ int strcasecmp(register char *s1,register char *s2)
 	}
 	return (tolower(*s1) - tolower(*s2));
 }
-

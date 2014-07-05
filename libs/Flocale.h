@@ -18,7 +18,6 @@
 
 /* FlocaleCharset.h and Ficonv.h should not be included */
 
-
 /* ---------------------------- global definitions ------------------------- */
 
 #define FWS_HAVE_LENGTH (1)
@@ -129,82 +128,84 @@
 
 typedef struct FlocaleCharset
 {
-	char *x;               /* X font charset */
-	char **locale;         /* list of possible charset names */
-	int iconv_index;       /* defines the iconv charset name */
-	char *bidi;            /* if not null a fribidi charset */
-	short encoding_type;   /* encoding: font, utf8 or usc2 */
-	char *translit_csname; /* iconv csname for transliteration */
+	char           *x;	/* X font charset */
+	char          **locale;	/* list of possible charset names */
+	int             iconv_index;	/* defines the iconv charset name */
+	char           *bidi;	/* if not null a fribidi charset */
+	short           encoding_type;	/* encoding: font, utf8 or usc2 */
+	char           *translit_csname;	/* iconv csname for transliteration */
 } FlocaleCharset;
 
 typedef struct _FlocaleFont
 {
 	struct _FlocaleFont *next;
-	char *name;
-	int count;
-	XFontStruct *font;      /* font structure */
-	XFontSet fontset;       /* font set */
-	FftFontType fftf;       /* fvwm xft font */
-	FlocaleCharset *fc;     /* fvwm charset of the font */
-	FlocaleCharset *str_fc; /* fvwm charset of the strings to be displayed */
-	int height;             /* height of the font: ascent + descent */
-	int ascent;
-	int descent;
-	int max_char_width;
-	int shadow_size;
-	int shadow_offset;
+	char           *name;
+	int             count;
+	XFontStruct    *font;	/* font structure */
+	XFontSet        fontset;	/* font set */
+	FftFontType     fftf;	/* fvwm xft font */
+	FlocaleCharset *fc;	/* fvwm charset of the font */
+	FlocaleCharset *str_fc;	/* fvwm charset of the strings to be displayed */
+	int             height;	/* height of the font: ascent + descent */
+	int             ascent;
+	int             descent;
+	int             max_char_width;
+	int             shadow_size;
+	int             shadow_offset;
 	struct
 	{
-		unsigned shadow_dir : (DIR_ALL_MASK + 1);
-		unsigned must_free_fc : 1;
-		/* is_mb are used only with a XFontStruct font, for XFontSet
-		 * everything is done in the good way automatically and this
-		 * parameters is not needed */
-		unsigned is_mb  : 1; /* if true the font is a 2 bytes font */
+		unsigned        shadow_dir:(DIR_ALL_MASK + 1);
+		unsigned        must_free_fc:1;
+		/*
+		 * is_mb are used only with a XFontStruct font, for XFontSet
+		 * * everything is done in the good way automatically and this
+		 * * parameters is not needed
+		 */
+		unsigned        is_mb:1;	/* if true the font is a 2 bytes font */
 	} flags;
 } FlocaleFont;
 
 typedef struct
 {
-	char *str;
-	char *e_str;    /* tmp */
-	XChar2b *str2b; /* tmp */
-	GC gc;
-	colorset_t *colorset;
-	Window win;
-	int x;
-	int y;
-	int len;
-	Region clip_region;
+	char           *str;
+	char           *e_str;	/* tmp */
+	XChar2b        *str2b;	/* tmp */
+	GC              gc;
+	colorset_t     *colorset;
+	Window          win;
+	int             x;
+	int             y;
+	int             len;
+	Region          clip_region;
 	struct
 	{
-		unsigned text_rotation : 2;
-		unsigned has_colorset : 1;
-		unsigned has_clip_region : 1;
+		unsigned        text_rotation:2;
+		unsigned        has_colorset:1;
+		unsigned        has_clip_region:1;
 	} flags;
 } FlocaleWinString;
 
 typedef struct
 {
-	char *name;
-	char **name_list;
+	char           *name;
+	char          **name_list;
 } FlocaleNameString;
 
 typedef struct
 {
-	int step;
-	int orig_x;
-	int orig_y;
-	int offset;
-	int outer_offset;
+	int             step;
+	int             orig_x;
+	int             orig_y;
+	int             offset;
+	int             outer_offset;
 	multi_direction_t direction;
-	int inter_step;
-	int num_inter_steps;
-	int x_sign;
-	int y_sign;
-	int size;
-	unsigned sdir : (DIR_ALL_MASK + 1);
-	rotation_t rot;
+	int             inter_step;
+	int             num_inter_steps;
+	int             x_sign;
+	int             y_sign;
+	int             size;
+	unsigned        sdir:(DIR_ALL_MASK + 1);
+	rotation_t      rot;
 } flocale_gstp_args;
 
 /* ---------------------------- exported variables (globals) --------------- */
@@ -223,9 +224,8 @@ typedef struct
  *
  * The function should be called as FlocaleInit(LC_CTYPE, "", "", "myname");
  */
-void FlocaleInit(
-	int category, const char *local, const char *modifier,
-	const char *module);
+void            FlocaleInit(int category, const char *local,
+    const char *modifier, const char *module);
 
 /*
  * font loading
@@ -261,12 +261,12 @@ void FlocaleInit(
  * gc member should be set only if font is not NULL).
  *
  */
-FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module);
+FlocaleFont    *FlocaleLoadFont(Display *dpy, char *fontname, char *module);
 
 /*
  * unload the flf FlocaleFont
  */
-void FlocaleUnloadFont(Display *dpy, FlocaleFont *flf);
+void            FlocaleUnloadFont(Display *dpy, FlocaleFont *flf);
 
 /*
  * Width and Drawing
@@ -281,25 +281,23 @@ void FlocaleUnloadFont(Display *dpy, FlocaleFont *flf);
  * the gc should not conatins a GCFont, as if ff->font != NULL the GCFont
  * value should be ff->font->fid
  */
-void FlocaleDrawString(
-	Display *dpy, FlocaleFont *ff, FlocaleWinString *fstring,
-	unsigned long flags);
+void            FlocaleDrawString(Display *dpy, FlocaleFont *ff,
+    FlocaleWinString *fstring, unsigned long flags);
 
 /*
  * Underline a character in a string (pete@tecc.co.uk) at coffest position
  */
-void FlocaleDrawUnderline(
-	Display *dpy, FlocaleFont *flf, FlocaleWinString *fws, int coffset);
+void            FlocaleDrawUnderline(Display *dpy, FlocaleFont *flf,
+    FlocaleWinString *fws, int coffset);
 
 /*
  * Get the position for shadow text
  */
-void FlocaleInitGstpArgs(
-	flocale_gstp_args *args, FlocaleFont *flf, FlocaleWinString *fws,
-	int start_x, int start_y);
+void            FlocaleInitGstpArgs(flocale_gstp_args * args,
+    FlocaleFont *flf, FlocaleWinString *fws, int start_x, int start_y);
 
-Bool FlocaleGetShadowTextPosition(
-	int *x, int *y, flocale_gstp_args *args);
+Bool            FlocaleGetShadowTextPosition(int *x, int *y,
+    flocale_gstp_args * args);
 
 /*
  * Call XmbTextEscapement(ff->fontset, str, sl) if ff->fontset is not None.
@@ -307,17 +305,17 @@ Bool FlocaleGetShadowTextPosition(
  * If sl is negative, the string is considered to be a vertival string and
  * the function returns the height of the text.
  */
-int FlocaleTextWidth(FlocaleFont *ff, char *str, int sl);
+int             FlocaleTextWidth(FlocaleFont *ff, char *str, int sl);
 
 /*
  * "y" (or "x" position if rotated and Xft font) of the text relatively to 0
  */
-int FlocaleGetMinOffset(FlocaleFont *flf, rotation_t rotation);
+int             FlocaleGetMinOffset(FlocaleFont *flf, rotation_t rotation);
 
 /*
  * Allocate memory for a FlocaleWinString intialized to 0
  */
-void FlocaleAllocateWinString(FlocaleWinString **pfws);
+void            FlocaleAllocateWinString(FlocaleWinString **pfws);
 
 /*
  * Text properties
@@ -331,28 +329,26 @@ void FlocaleAllocateWinString(FlocaleWinString **pfws);
  * ret_name_list: for
  * ret_name: the icon or the window name of the window
  */
-void FlocaleGetNameProperty(
-	Status (func)(Display *, Window, XTextProperty *), Display *dpy,
-	Window w, FlocaleNameString *ret_name);
+void            FlocaleGetNameProperty(Status(func) (Display *, Window,
+	XTextProperty *), Display *dpy, Window w,
+    FlocaleNameString * ret_name);
 
 /*
  * Free the name property allocated with FlocaleGetNameProperty
  */
-void FlocaleFreeNameProperty(
-	FlocaleNameString *ptext);
+void            FlocaleFreeNameProperty(FlocaleNameString * ptext);
 
 /*
  * Simple warper to XmbTextListToTextProperty (FlocaleMultibyteSupport and the
  * locale is supported by the xlib) or XStringListToTextProperty
  */
-Bool FlocaleTextListToTextProperty(
-	Display *dpy, char **list, int count, XICCEncodingStyle style,
-	XTextProperty *text_prop_return);
+Bool            FlocaleTextListToTextProperty(Display *dpy, char **list,
+    int count, XICCEncodingStyle style, XTextProperty * text_prop_return);
 
 /*
  * Info
  */
-void FlocalePrintLocaleInfo(Display *dpy, int verbose);
+void            FlocalePrintLocaleInfo(Display *dpy, int verbose);
 
 /*
  * Misc
@@ -360,21 +356,19 @@ void FlocalePrintLocaleInfo(Display *dpy, int verbose);
 
 /* return number of bytes of character at current position
    (pointed to by str) */
-int FlocaleStringNumberOfBytes(FlocaleFont *flf, const char *str);
+int             FlocaleStringNumberOfBytes(FlocaleFont *flf, const char *str);
 
 /* given a string, font specifying its locale and a byte offset gives
    character offset */
-int FlocaleStringByteToCharOffset(FlocaleFont *flf, const char *str,
-				  int offset);
+int             FlocaleStringByteToCharOffset(FlocaleFont *flf,
+    const char *str, int offset);
 
 /* like above but reversed, ie. return byte offset corresponding to given
    charater offset */
-int FlocaleStringCharToByteOffset(FlocaleFont *flf, const char *str,
-				  int coffset);
+int             FlocaleStringCharToByteOffset(FlocaleFont *flf,
+    const char *str, int coffset);
 
 /* return length of string in characters */
-int FlocaleStringCharLength(FlocaleFont *flf, const char *str);
-
+int             FlocaleStringCharLength(FlocaleFont *flf, const char *str);
 
 #endif /* FLOCALE_H */
-

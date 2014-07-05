@@ -15,29 +15,38 @@
 
 typedef struct
 {
-	/* always holds START_FLAG value */
-	unsigned long start_pattern;
-	/* one of the M_xxx values, below */
-	unsigned long type;
-	/* number of unsigned longs in entire packet, *including* header */
-	unsigned long size;
-	/* last time stamp received from the X server, in milliseconds */
-	unsigned long timestamp;
-	/* variable size -- use FvwmPacketBodySize to get size */
-	unsigned long body[1];
+	/*
+	 * always holds START_FLAG value
+	 */
+	unsigned long   start_pattern;
+	/*
+	 * one of the M_xxx values, below
+	 */
+	unsigned long   type;
+	/*
+	 * number of unsigned longs in entire packet, *including* header
+	 */
+	unsigned long   size;
+	/*
+	 * last time stamp received from the X server, in milliseconds
+	 */
+	unsigned long   timestamp;
+	/*
+	 * variable size -- use FvwmPacketBodySize to get size
+	 */
+	unsigned long   body[1];
 } FvwmPacket;
 
 typedef struct
 {
-	Window w;
-	Window frame;
-	void *fvwmwin;
+	Window          w;
+	Window          frame;
+	void           *fvwmwin;
 } FvwmWinPacketBodyHeader;
 
 /*
  * If you modify constants here, please regenerate Constants.pm in perllib.
  */
-
 
 /** All size values in units of "unsigned long" **/
 #define FvwmPacketHeaderSize        4
@@ -55,7 +64,6 @@ typedef struct
 	(FvwmPacketMaxSize * sizeof(unsigned long))
 #define FvwmPacketBodyMaxSize_byte \
 	(FvwmPacketBodyMaxSize * sizeof(unsigned long))
-
 
 /* Value of start_pattern */
 #define START_FLAG 0xffffffff
@@ -86,7 +94,7 @@ typedef struct
    I suspect that simply redefining this will lead to trouble;
    at some point, these should probably be renamed (FVWM_MSG_ERROR?). */
 #ifdef M_ERROR
-#  undef M_ERROR
+#undef M_ERROR
 #endif
 #define M_ERROR              (1<<17)
 
@@ -136,8 +144,7 @@ typedef struct
  * the next call to ReadFvwmPacket.  Callers, therefore, must copy
  * needed data before the next call to ReadFvwmPacket.
  **/
-FvwmPacket* ReadFvwmPacket( int fd );
-
+FvwmPacket     *ReadFvwmPacket(int fd);
 
 /*
  *
@@ -145,15 +152,14 @@ FvwmPacket* ReadFvwmPacket( int fd );
  * finished its startup procedures and is fully operational now.
  *
  */
-void SendFinishedStartupNotification(int *fd);
+void            SendFinishedStartupNotification(int *fd);
 
 /*
  *
  * SendText - Sends arbitrary text/command back to fvwm
  *
  */
-void SendText(int *fd, const char *message, unsigned long window);
-
+void            SendText(int *fd, const char *message, unsigned long window);
 
 /** Compatibility **/
 #define SendInfo SendText
@@ -164,7 +170,7 @@ void SendText(int *fd, const char *message, unsigned long window);
  * finished it's procedures and fvwm may proceed.
  *
  */
-void SendUnlockNotification(int *fd);
+void            SendUnlockNotification(int *fd);
 
 /*
  *
@@ -172,7 +178,7 @@ void SendUnlockNotification(int *fd);
  * finished and may be killed.
  *
  */
-void SendQuitNotification(int *fd);
+void            SendQuitNotification(int *fd);
 
 /*
  *
@@ -182,21 +188,22 @@ void SendQuitNotification(int *fd);
  * (Form FvwmIconMan)
  *
  */
-void SendFvwmPipe(int *fd, const char *message, unsigned long window);
+void            SendFvwmPipe(int *fd, const char *message,
+    unsigned long window);
 
 /*
  *
  * Sets the which-message-types-do-I-want mask for modules
  *
  */
-void SetMessageMask(int *fd, unsigned long mask);
+void            SetMessageMask(int *fd, unsigned long mask);
 
 /*
  *
  * Sets the which-message-types-do-I-want to be lock on send for modules
  *
  */
-void SetSyncMask(int *fd, unsigned long mask);
+void            SetSyncMask(int *fd, unsigned long mask);
 
 /*
  *
@@ -204,24 +211,23 @@ void SetSyncMask(int *fd, unsigned long mask);
  * and module transmission is locked at the same time.
  *
  */
-void SetNoGrabMask(int *fd, unsigned long mask);
+void            SetNoGrabMask(int *fd, unsigned long mask);
 
 /*
  * Used to ask for subset of module configuration lines.
  * Allows modules to get configuration lines more than once.
  */
-void InitGetConfigLine(int *fd, char *match);
+void            InitGetConfigLine(int *fd, char *match);
 
 /**
  * Gets a module configuration line from fvwm. Returns NULL if there are
  * no more lines to be had. "line" is a pointer to a char *.
  **/
-void GetConfigLine(int *fd, char **line);
+void            GetConfigLine(int *fd, char **line);
 
 /* expands certain variables in a command to be sent by a module */
-char *module_expand_action(
-	Display *dpy, int screen , char *in_action, rectangle *r,
-	char *forecolor, char *backcolor);
+char           *module_expand_action(Display *dpy, int screen,
+    char *in_action, rectangle *r, char *forecolor, char *backcolor);
 
 /**
  * Parse the command line arguments given to the module by fvwm.
@@ -234,24 +240,41 @@ char *module_expand_action(
 
 typedef struct
 {
-	/* module name */
-	char* name;
-	/* length of the module name */
-	int namelen;
-	/* file descriptor to send info back to fvwm */
-	int to_fvwm;
-	/* file descriptor to read packets from fvwm */
-	int from_fvwm;
-	/* window context of module */
-	Window window;
-	/* decoration context of module */
-	unsigned long decoration;
-	/* number of user-specified arguments */
-	int user_argc;
-	/* vector of user-specified arguments */
-	char** user_argv;
+	/*
+	 * module name
+	 */
+	char           *name;
+	/*
+	 * length of the module name
+	 */
+	int             namelen;
+	/*
+	 * file descriptor to send info back to fvwm
+	 */
+	int             to_fvwm;
+	/*
+	 * file descriptor to read packets from fvwm
+	 */
+	int             from_fvwm;
+	/*
+	 * window context of module
+	 */
+	Window          window;
+	/*
+	 * decoration context of module
+	 */
+	unsigned long   decoration;
+	/*
+	 * number of user-specified arguments
+	 */
+	int             user_argc;
+	/*
+	 * vector of user-specified arguments
+	 */
+	char          **user_argv;
 } ModuleArgs;
 
-ModuleArgs* ParseModuleArgs( int argc, char* argv[], int use_arg6_as_alias );
+ModuleArgs     *ParseModuleArgs(int argc, char *argv[],
+    int use_arg6_as_alias);
 
 #endif

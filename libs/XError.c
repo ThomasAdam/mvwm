@@ -30,69 +30,79 @@
 
 #define USE_GET_ERROR_TEXT 1
 #ifndef USE_GET_ERROR_TEXT
-static char *error_name(unsigned char code);
+static char    *error_name(unsigned char code);
 #endif
-static char *request_name(unsigned char code);
-static char unknown[32];
+static char    *request_name(unsigned char code);
+static char     unknown[32];
 
-void do_coredump(void)
+void
+do_coredump(void)
 {
 	fprintf(stderr, " Leaving a core dump now\n");
 	{
 		abort();
 	}
-	/* exit if this fails */
+	/*
+	 * exit if this fails
+	 */
 	exit(99);
 }
 
 #define USE_GET_ERROR_TEXT 1
-void PrintXErrorAndCoredump(Display *dpy, XErrorEvent *error, char *MyName)
+void
+PrintXErrorAndCoredump(Display *dpy, XErrorEvent * error, char *MyName)
 {
-	char msg[256];
-	Bool suc = False;
+	char            msg[256];
+	Bool            suc = False;
 
 	msg[255] = 0;
 #ifdef USE_GET_ERROR_TEXT
-	/* can't call this from within an error handler! */
-	/* DV (21-Nov-2000): Well, actually we *can* call it in an error
-	 * handler since it does not trigger a protocol request. */
-	if (error->error_code >= FirstExtensionError)
-	{
+	/*
+	 * can't call this from within an error handler!
+	 */
+	/*
+	 * DV (21-Nov-2000): Well, actually we *can* call it in an error
+	 * * handler since it does not trigger a protocol request.
+	 */
+	if (error->error_code >= FirstExtensionError) {
 		suc = FRenderGetErrorText(error->error_code, msg);
 	}
 	if (!suc)
 		XGetErrorText(dpy, error->error_code, msg, sizeof(msg));
-	fprintf(stderr,"%s: Cause of next X Error.\n", MyName);
+	fprintf(stderr, "%s: Cause of next X Error.\n", MyName);
 	fprintf(stderr, "   Error: %d (%s)\n", error->error_code, msg);
 #else
-	fprintf(stderr,"%s: Cause of next X Error.\n", MyName);
-	if (error->error_code >= FirstExtensionError)
-	{
+	fprintf(stderr, "%s: Cause of next X Error.\n", MyName);
+	if (error->error_code >= FirstExtensionError) {
 		suc = FRenderGetErrorText(error->error_code, msg);
 	}
 	if (suc)
 		fprintf(stderr, "   Error: %d (%s)\n",
-			error->error_code, msg);
+		    error->error_code, msg);
 	else
 		fprintf(stderr, "   Error: %d (%s)\n",
-			error->error_code, error_name(error->error_code));
+		    error->error_code, error_name(error->error_code));
 #endif
 	fprintf(stderr, "   Major opcode of failed request:  %d (%s)\n",
-		error->request_code, request_name(error->request_code));
+	    error->request_code, request_name(error->request_code));
 	fprintf(stderr, "   Minor opcode of failed request:  %d \n",
-		error->minor_code);
-	/* error->resourceid may be uninitialised. This is no proble since we
-	 * are dumping core anyway. */
+	    error->minor_code);
+	/*
+	 * error->resourceid may be uninitialised. This is no proble since we
+	 * * are dumping core anyway.
+	 */
 	fprintf(stderr, "   Resource id of failed request:  0x%lx \n",
-		error->resourceid);
+	    error->resourceid);
 
-	/* leave a coredump */
+	/*
+	 * leave a coredump
+	 */
 	do_coredump();
 }
 
 #ifndef USE_GET_ERROR_TEXT
 /* this comes out of X.h */
-static char *error_names[] = {
+static char    *error_names[] = {
 	"BadRequest",
 	"BadValue",
 	"BadWindow",
@@ -112,11 +122,11 @@ static char *error_names[] = {
 	"BadImplementation",
 };
 
-static char *error_name(unsigned char code)
+static char    *
+error_name(unsigned char code)
 {
-	if (code == 0 || code > (sizeof(error_names) / sizeof(char *)))
-	{
-		sprintf(unknown, "Unknown: %d", (int)code);
+	if (code == 0 || code > (sizeof(error_names) / sizeof(char *))) {
+		sprintf(unknown, "Unknown: %d", (int) code);
 		return unknown;
 	}
 	return error_names[code - 1];
@@ -124,7 +134,7 @@ static char *error_name(unsigned char code)
 #endif
 
 /* this comes out of Xproto.h */
-static char *code_names[] = {
+static char    *code_names[] = {
 	"CreateWindow",
 	"ChangeWindowAttributes",
 	"GetWindowAttributes",
@@ -246,17 +256,14 @@ static char *code_names[] = {
 	"GetModifierMapping",
 };
 
-static char *request_name(unsigned char code)
+static char    *
+request_name(unsigned char code)
 {
-	if (code == 0 || code > (sizeof(code_names) / sizeof(char *)))
-	{
-		if (code == FRenderGetMajorOpCode())
-		{
+	if (code == 0 || code > (sizeof(code_names) / sizeof(char *))) {
+		if (code == FRenderGetMajorOpCode()) {
 			sprintf(unknown, "XRender");
-		}
-		else
-		{
-			sprintf(unknown, "Unknown: %d", (int)code);
+		} else {
+			sprintf(unknown, "Unknown: %d", (int) code);
 		}
 		return unknown;
 	}
@@ -267,10 +274,10 @@ static char *request_name(unsigned char code)
 
 static ferror_handler_t old_handler = NULL;
 
-void ferror_set_temp_error_handler(ferror_handler_t new_handler)
+void
+ferror_set_temp_error_handler(ferror_handler_t new_handler)
 {
-	if (old_handler != NULL)
-	{
+	if (old_handler != NULL) {
 		do_coredump();
 	}
 	old_handler = XSetErrorHandler(old_handler);
@@ -278,10 +285,10 @@ void ferror_set_temp_error_handler(ferror_handler_t new_handler)
 	return;
 }
 
-void ferror_reset_temp_error_handler(void)
+void
+ferror_reset_temp_error_handler(void)
 {
-	if (old_handler == NULL)
-	{
+	if (old_handler == NULL) {
 		do_coredump();
 	}
 	XSetErrorHandler(old_handler);
@@ -290,12 +297,12 @@ void ferror_reset_temp_error_handler(void)
 	return;
 }
 
-int ferror_call_next_error_handler(Display *dpy, XErrorEvent *error)
+int
+ferror_call_next_error_handler(Display *dpy, XErrorEvent * error)
 {
-	int rc;
+	int             rc;
 
-	if (old_handler == NULL)
-	{
+	if (old_handler == NULL) {
 		do_coredump();
 	}
 	rc = old_handler(dpy, error);

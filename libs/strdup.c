@@ -16,22 +16,21 @@
 
 #include "config.h"
 
-char *strdup(const char *s)
+char           *
+strdup(const char *s)
 {
-	char   *d;
-	size_t l;
+	char           *d;
+	size_t          l;
 
-	if (s == NULL)
-	{
+	if (s == NULL) {
 		return NULL;
 	}
-	l = strlen (s) + 1;
+	l = strlen(s) + 1;
 
-	if ((d = (char *)malloc (l)) == NULL)
-	{
+	if ((d = (char *) malloc(l)) == NULL) {
 		return NULL;
 	}
-	memcpy (d, s, l);
+	memcpy(d, s, l);
 
 	return d;
 }

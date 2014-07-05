@@ -28,7 +28,7 @@
 #if XShmSupport
 
 /* XShm */
-typedef ShmSeg FShmSeg;
+typedef ShmSeg  FShmSeg;
 typedef XShmSegmentInfo FShmSegmentInfo;
 
 #define FShmAttach XShmAttach
@@ -48,11 +48,12 @@ typedef XShmSegmentInfo FShmSegmentInfo;
 
 /* XShm */
 typedef unsigned long FhmSeg;
-typedef struct {
-	FhmSeg shmseg;
-	int shmid;
-	char *shmaddr;
-	Bool readOnly;
+typedef struct
+{
+	FhmSeg          shmseg;
+	int             shmid;
+	char           *shmaddr;
+	Bool            readOnly;
 } FShmSegmentInfo;
 
 #define FShmAttach(a, b)                              0

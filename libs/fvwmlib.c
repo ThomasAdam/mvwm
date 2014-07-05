@@ -45,11 +45,14 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
-void flib_init_graphics(Display *dpy)
+void
+flib_init_graphics(Display *dpy)
 {
 	PictureInitCMap(dpy);
 	FScreenInit(dpy);
-	/* Initialise default colorset */
+	/*
+	 * Initialise default colorset
+	 */
 	AllocColorset(0);
 	FShapeInit(dpy);
 	FRenderInit(dpy);

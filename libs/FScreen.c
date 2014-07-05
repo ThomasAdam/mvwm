@@ -34,37 +34,38 @@
 #endif
 
 /* In fact, only corners matter -- there will never be GRAV_NONE */
-enum {GRAV_POS = 0, GRAV_NONE = 1, GRAV_NEG = 2};
-static int grav_matrix[3][3] =
-{
-	{ NorthWestGravity, NorthGravity,  NorthEastGravity },
-	{ WestGravity,      CenterGravity, EastGravity },
-	{ SouthWestGravity, SouthGravity,  SouthEastGravity }
+enum
+{ GRAV_POS = 0, GRAV_NONE = 1, GRAV_NEG = 2 };
+static int      grav_matrix[3][3] = {
+	{NorthWestGravity, NorthGravity, NorthEastGravity},
+	{WestGravity, CenterGravity, EastGravity},
+	{SouthWestGravity, SouthGravity, SouthEastGravity}
 };
+
 #define DEFAULT_GRAVITY NorthWestGravity
 
-static Bool already_initialised;
+static Bool     already_initialised;
 static Display *disp;
-static int no_of_screens;
+static int      no_of_screens;
 
-static struct monitor	*FindScreenOfXY(int x, int y);
-static struct monitor	*monitor_new(void);
-static void		 init_monitor_contents(void);
+static struct monitor *FindScreenOfXY(int x, int y);
+static struct monitor *monitor_new(void);
+static void     init_monitor_contents(void);
 
-static void GetMouseXY(XEvent *eventp, int *x, int *y)
+static void
+GetMouseXY(XEvent *eventp, int *x, int *y)
 {
-	XEvent e;
+	XEvent          e;
 
-	if (eventp == NULL)
-	{
+	if (eventp == NULL) {
 		eventp = &e;
 		e.type = 0;
 	}
-	fev_get_evpos_or_query(
-		disp, DefaultRootWindow(disp), eventp, x, y);
+	fev_get_evpos_or_query(disp, DefaultRootWindow(disp), eventp, x, y);
 }
 
-Bool FScreenIsEnabled(void)
+Bool
+FScreenIsEnabled(void)
 {
 	return (IS_RANDR_ENABLED);
 }
@@ -72,7 +73,7 @@ Bool FScreenIsEnabled(void)
 struct monitor *
 monitor_new(void)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	m = calloc(1, sizeof *m);
 
@@ -82,12 +83,12 @@ monitor_new(void)
 struct monitor *
 monitor_get_current(void)
 {
-	int		 JunkX = 0, JunkY = 0, x, y;
-	Window		 JunkRoot, JunkChild;
-	unsigned int	 JunkMask;
+	int             JunkX = 0, JunkY = 0, x, y;
+	Window          JunkRoot, JunkChild;
+	unsigned int    JunkMask;
 
 	FQueryPointer(disp, DefaultRootWindow(disp), &JunkRoot, &JunkChild,
-			&JunkX, &JunkY, &x, &y, &JunkMask);
+	    &JunkX, &JunkY, &x, &y, &JunkMask);
 
 	return (FindScreenOfXY(x, y));
 }
@@ -95,9 +96,10 @@ monitor_get_current(void)
 int
 monitor_should_ignore_global(struct monitor *m)
 {
-	/* If we have more than one screen configured, then don't match
-	 * on the global screen, as that's separate to XY positioning
-	 * which is only concerned with the *specific* screen.
+	/*
+	 * If we have more than one screen configured, then don't match
+	 * * on the global screen, as that's separate to XY positioning
+	 * * which is only concerned with the *specific* screen.
 	 */
 	if (no_of_screens > 0 && strcmp(m->name, "global") == 0)
 		return 1;
@@ -107,7 +109,7 @@ monitor_should_ignore_global(struct monitor *m)
 struct monitor *
 monitor_by_name(const char *name)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (strcmp(m->name, name) == 0)
@@ -122,15 +124,16 @@ monitor_by_xy(int x, int y)
 	return (FindScreenOfXY(x, y));
 }
 
-void FScreenInit(Display *dpy)
+void
+FScreenInit(Display *dpy)
 {
-	XRRScreenResources	*res = NULL;
-	XRROutputInfo		*oinfo = NULL;
-	XRRCrtcInfo		*crtc = NULL;
-	struct monitor		*m;
-	int			 i;
-	int			 err_base = 0, event = 0;
-	int			 is_randr_present = 0;
+	XRRScreenResources *res = NULL;
+	XRROutputInfo  *oinfo = NULL;
+	XRRCrtcInfo    *crtc = NULL;
+	struct monitor *m;
+	int             i;
+	int             err_base = 0, event = 0;
+	int             is_randr_present = 0;
 
 	disp = dpy;
 
@@ -140,12 +143,13 @@ void FScreenInit(Display *dpy)
 	is_randr_present = XRRQueryExtension(dpy, &event, &err_base);
 
 	if (FScreenIsEnabled() && !is_randr_present) {
-		/* Something went wrong.   Shouldn't we try Xinerama here? */
+		/*
+		 * Something went wrong.   Shouldn't we try Xinerama here?
+		 */
 		fprintf(stderr, "Couldn't initialise XRandR: %s\n",
-			strerror(errno));
+		    strerror(errno));
 		fprintf(stderr, "Falling back to single screen...\n");
 	}
-
 
 	TAILQ_INIT(&monitor_q);
 
@@ -160,7 +164,9 @@ void FScreenInit(Display *dpy)
 	if (!is_randr_present)
 		goto done;
 
-	/* XRandR is present, so query the screens we have. */
+	/*
+	 * XRandR is present, so query the screens we have.
+	 */
 	res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	if (res != NULL) {
 		crtc = NULL;
@@ -189,7 +195,7 @@ void FScreenInit(Display *dpy)
 		}
 		XRRFreeScreenResources(res);
 	}
-done:
+      done:
 	already_initialised = 1;
 	init_monitor_contents();
 }
@@ -197,7 +203,7 @@ done:
 static void
 init_monitor_contents(void)
 {
-	struct monitor	*m = NULL;
+	struct monitor *m = NULL;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (monitor_should_ignore_global(m))
@@ -205,7 +211,7 @@ init_monitor_contents(void)
 
 		m->Desktops = xcalloc(1, sizeof(DesktopsInfo));
 		m->Desktops->name = NULL;
-		m->Desktops->desk = 0; /* not desk 0 */
+		m->Desktops->desk = 0;	/* not desk 0 */
 		m->Desktops->ewmh_dyn_working_area.x =
 		    m->Desktops->ewmh_working_area.x = 0;
 		m->Desktops->ewmh_dyn_working_area.y =
@@ -230,35 +236,39 @@ init_monitor_contents(void)
 		m->virtual_scr.prev_desk_and_page_page_y = 0;
 
 		m->virtual_scr.EdgeScrollX =
-			DEFAULT_EDGE_SCROLL * m->coord.w / 100;
+		    DEFAULT_EDGE_SCROLL * m->coord.w / 100;
 		m->virtual_scr.EdgeScrollY =
-			DEFAULT_EDGE_SCROLL * m->coord.h / 100;
+		    DEFAULT_EDGE_SCROLL * m->coord.h / 100;
 	}
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
  * config string sent by fvwm. */
-void FScreenConfigureModule(char *args)
+void
+FScreenConfigureModule(char *args)
 {
 #if 0
-	int n;
-	char *next;
+	int             n;
+	char           *next;
 
 	n = GetIntegerArguments(args, &next, val, 4);
-	if (n != 4)
-	{
-		/* ignore broken line */
+	if (n != 4) {
+		/*
+		 * ignore broken line
+		 */
 		return;
 	}
 	FScreenSetPrimaryScreen(val[1]);
 
-	if (val[3])
-	{
-		/* SLS screen coordinates follow */
+	if (val[3]) {
+		/*
+		 * SLS screen coordinates follow
+		 */
 		n = GetIntegerArguments(next, &next, val + 4, 1);
-		if (n != 1)
-		{
-			/* ignore broken line */
+		if (n != 1) {
+			/*
+			 * ignore broken line
+			 */
 			return;
 		}
 	}
@@ -269,15 +279,14 @@ void FScreenConfigureModule(char *args)
 /* Here's the function used by fvwm to generate the string which
  * FScreenConfigureModule expects to receive back as its argument.
  */
-const char *FScreenGetConfiguration(void)
+const char     *
+FScreenGetConfiguration(void)
 {
-	int l;
-	static char msg[MAX_MODULE_INPUT_TEXT_LEN];
+	int             l;
+	static char     msg[MAX_MODULE_INPUT_TEXT_LEN];
 
-	sprintf(
-		msg, XINERAMA_CONFIG_STRING" %d %d %d %d",
-		FScreenIsEnabled(), 0,
-		0, 0);
+	sprintf(msg, XINERAMA_CONFIG_STRING " %d %d %d %d",
+	    FScreenIsEnabled(), 0, 0, 0);
 	l = strlen(msg);
 	sprintf(msg + l, " %d %d", 0, 0);
 
@@ -287,16 +296,16 @@ const char *FScreenGetConfiguration(void)
 /* Sets the default screen for ...ParseGeometry if no screen spec is given.
  * Usually this is FSCREEN_SPEC_PRIMARY, but this won't allow modules to appear
  * under the pointer. */
-void FScreenSetDefaultModuleScreen(char *scr_spec)
+void
+FScreenSetDefaultModuleScreen(char *scr_spec)
 {
 	return;
 }
 
-
 static struct monitor *
 FindScreenOfXY(int x, int y)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (monitor_should_ignore_global(m))
@@ -312,31 +321,34 @@ FindScreenOfXY(int x, int y)
 static struct monitor *
 FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 {
-	struct monitor	*m = NULL;
-	fscreen_scr_arg  tmp;
+	struct monitor *m = NULL;
+	fscreen_scr_arg tmp;
 
 	if (no_of_screens == 0)
 		return (monitor_by_name("global"));
 
-	switch (screen)
-	{
+	switch (screen) {
 	case FSCREEN_GLOBAL:
 		m = monitor_by_name("global");
 		break;
 	case FSCREEN_PRIMARY:
 	case FSCREEN_CURRENT:
-		/* translate to xypos format */
-		if (!arg)
-		{
+		/*
+		 * translate to xypos format
+		 */
+		if (!arg) {
 			tmp.mouse_ev = NULL;
 			arg = &tmp;
 		}
 		GetMouseXY(arg->mouse_ev, &arg->xypos.x, &arg->xypos.y);
-		/* fall through */
+		/*
+		 * fall through
+		 */
 	case FSCREEN_XYPOS:
-		/* translate to screen number */
-		if (!arg)
-		{
+		/*
+		 * translate to screen number
+		 */
+		if (!arg) {
 			tmp.xypos.x = 0;
 			tmp.xypos.y = 0;
 			arg = &tmp;
@@ -345,13 +357,17 @@ FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 		break;
 	case FSCREEN_BY_NAME:
 		if (arg == NULL || arg->name == NULL) {
-			/* XXX: Work out what to do. */
+			/*
+			 * XXX: Work out what to do.
+			 */
 			break;
 		}
 		m = monitor_by_name(arg->name);
 		break;
 	default:
-		/* XXX: Possible error condition here? */
+		/*
+		 * XXX: Possible error condition here?
+		 */
 		break;
 	}
 
@@ -365,10 +381,10 @@ FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
  *
  * Perhaps most useful with $[pointer.screen]
  */
-const char *
+const char     *
 FScreenOfPointerXY(int x, int y)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	m = FindScreenOfXY(x, y);
 
@@ -395,10 +411,11 @@ FScreenOfPointerXY(int x, int y)
  * The function returns False if the global screen was returned and more than
  * one screen is configured.  Otherwise it returns True.
  */
-Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			int *x, int *y, int *w, int *h)
+Bool
+FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
+    int *x, int *y, int *w, int *h)
 {
-	struct monitor	*m = FindScreen(arg, screen);
+	struct monitor *m = FindScreen(arg, screen);
 	if (m == NULL)
 		return (True);
 
@@ -417,25 +434,24 @@ Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
 /* Translates the coodinates *x *y from the screen specified by arg_src and
  * screen_src to coordinates on the screen specified by arg_dest and
  * screen_dest. (see FScreenGetScrRect for more details). */
-void FScreenTranslateCoordinates(
-	fscreen_scr_arg *arg_src, fscreen_scr_t screen_src,
-	fscreen_scr_arg *arg_dest, fscreen_scr_t screen_dest,
-	int *x, int *y)
+void
+FScreenTranslateCoordinates(fscreen_scr_arg *arg_src,
+    fscreen_scr_t screen_src, fscreen_scr_arg *arg_dest,
+    fscreen_scr_t screen_dest, int *x, int *y)
 {
-	int x_src;
-	int y_src;
-	int x_dest;
-	int y_dest;
+	int             x_src;
+	int             y_src;
+	int             x_dest;
+	int             y_dest;
 
 	FScreenGetScrRect(arg_src, screen_src, &x_src, &y_src, NULL, NULL);
-	FScreenGetScrRect(arg_dest, screen_dest, &x_dest, &y_dest, NULL, NULL);
+	FScreenGetScrRect(arg_dest, screen_dest, &x_dest, &y_dest, NULL,
+	    NULL);
 
-	if (x)
-	{
+	if (x) {
 		*x = *x + x_src - x_dest;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = *y + y_src - y_dest;
 	}
 
@@ -443,45 +459,40 @@ void FScreenTranslateCoordinates(
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-int FScreenClipToScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			int *x, int *y, int w, int h)
+int
+FScreenClipToScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
+    int *x, int *y, int w, int h)
 {
-	int sx;
-	int sy;
-	int sw;
-	int sh;
-	int lx = (x) ? *x : 0;
-	int ly = (y) ? *y : 0;
-	int x_grav = GRAV_POS;
-	int y_grav = GRAV_POS;
+	int             sx;
+	int             sy;
+	int             sw;
+	int             sh;
+	int             lx = (x) ? *x : 0;
+	int             ly = (y) ? *y : 0;
+	int             x_grav = GRAV_POS;
+	int             y_grav = GRAV_POS;
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
-	if (lx + w > sx + sw)
-	{
-		lx = sx + sw  - w;
+	if (lx + w > sx + sw) {
+		lx = sx + sw - w;
 		x_grav = GRAV_NEG;
 	}
-	if (ly + h > sy + sh)
-	{
+	if (ly + h > sy + sh) {
 		ly = sy + sh - h;
 		y_grav = GRAV_NEG;
 	}
-	if (lx < sx)
-	{
+	if (lx < sx) {
 		lx = sx;
 		x_grav = GRAV_POS;
 	}
-	if (ly < sy)
-	{
+	if (ly < sy) {
 		ly = sy;
 		y_grav = GRAV_POS;
 	}
-	if (x)
-	{
+	if (x) {
 		*x = lx;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = ly;
 	}
 
@@ -489,18 +500,19 @@ int FScreenClipToScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-void FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			   int *x, int *y, int w, int h)
+void
+FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
+    int *x, int *y, int w, int h)
 {
-	int sx;
-	int sy;
-	int sw;
-	int sh;
-	int lx;
-	int ly;
+	int             sx;
+	int             sy;
+	int             sw;
+	int             sh;
+	int             lx;
+	int             ly;
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
-	lx = (sw  - w) / 2;
+	lx = (sw - w) / 2;
 	ly = (sh - h) / 2;
 	if (lx < 0)
 		lx = 0;
@@ -508,19 +520,17 @@ void FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 		ly = 0;
 	lx += sx;
 	ly += sy;
-	if (x)
-	{
+	if (x) {
 		*x = lx;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = ly;
 	}
 }
 
-void FScreenGetResistanceRect(
-	int wx, int wy, unsigned int ww, unsigned int wh, int *x0, int *y0,
-	int *x1, int *y1)
+void
+FScreenGetResistanceRect(int wx, int wy, unsigned int ww, unsigned int wh,
+    int *x0, int *y0, int *x1, int *y1)
 {
 	fscreen_scr_arg arg;
 
@@ -532,18 +542,19 @@ void FScreenGetResistanceRect(
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-Bool FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-				rectangle *rec)
+Bool
+FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
+    rectangle *rec)
 {
-	int sx;
-	int sy;
-	int sw;
-	int sh;
+	int             sx;
+	int             sy;
+	int             sw;
+	int             sh;
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
 
 	return (rec->x + rec->width > sx && rec->x < sx + sw &&
-		rec->y + rec->height > sy && rec->y < sy + sh) ? True : False;
+	    rec->y + rec->height > sy && rec->y < sy + sh) ? True : False;
 }
 
 /*
@@ -555,21 +566,24 @@ Bool FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
  *     present in `parse_string' (set to default in that case).
  *
  */
-int FScreenParseGeometryWithScreen(
-	char *parsestring, int *x_return, int *y_return,
-	unsigned int *width_return, unsigned int *height_return,
-	char **screen_return)
+int
+FScreenParseGeometryWithScreen(char *parsestring, int *x_return,
+    int *y_return, unsigned int *width_return, unsigned int *height_return,
+    char **screen_return)
 {
-	char *copy, *geom_str = NULL;
-	int   ret;
+	char           *copy, *geom_str = NULL;
+	int             ret;
 
-	/* Safety net */
+	/*
+	 * Safety net
+	 */
 	if (parsestring == NULL || *parsestring == '\0')
 		return 0;
 
-	/* If the geometry specification contains an '@' symbol, assume the
-	 * screen is specified.  This must be the name of the monitor in
-	 * question!
+	/*
+	 * If the geometry specification contains an '@' symbol, assume the
+	 * * screen is specified.  This must be the name of the monitor in
+	 * * question!
 	 */
 	if (strchr(parsestring, '@') == NULL) {
 		copy = xstrdup(parsestring);
@@ -582,43 +596,45 @@ int FScreenParseGeometryWithScreen(
 	geom_str = strsep(&copy, "@");
 	copy = geom_str;
 
-parse_geometry:
-	/* Do the parsing */
-	ret = XParseGeometry(
-		copy, x_return, y_return, width_return, height_return);
+      parse_geometry:
+	/*
+	 * Do the parsing
+	 */
+	ret =
+	    XParseGeometry(copy, x_return, y_return, width_return,
+	    height_return);
 
 	return ret;
 }
 
 /* Same as above, but dump screen return value to keep compatible with the X
  * function. */
-int FScreenParseGeometry(
-	char *parsestring, int *x_return, int *y_return,
-	unsigned int *width_return, unsigned int *height_return)
+int
+FScreenParseGeometry(char *parsestring, int *x_return, int *y_return,
+    unsigned int *width_return, unsigned int *height_return)
 {
-	struct monitor	*m;
-	char		*scr = NULL;
-	int		 rc;
+	struct monitor *m;
+	char           *scr = NULL;
+	int             rc;
 
-	rc = FScreenParseGeometryWithScreen(
-		parsestring, x_return, y_return, width_return, height_return,
-		&scr);
+	rc = FScreenParseGeometryWithScreen(parsestring, x_return, y_return,
+	    width_return, height_return, &scr);
 
 	if (scr != NULL)
 		m = monitor_by_name(scr);
 	else
 		m = monitor_get_current();
 
-	/* adapt geometry to selected screen */
-	if (rc & XValue)
-	{
+	/*
+	 * adapt geometry to selected screen
+	 */
+	if (rc & XValue) {
 		if (rc & XNegative)
 			*x_return -= (m->coord.w - m->coord.x);
 		else
 			*x_return += m->coord.x;
 	}
-	if (rc & YValue)
-	{
+	if (rc & YValue) {
 		if (rc & YNegative)
 			*y_return -= (m->coord.h - m->coord.y);
 		else
@@ -626,7 +642,6 @@ int FScreenParseGeometry(
 	}
 	return rc;
 }
-
 
 /*  FScreenGetGeometry
  *      Parses the geometry in a form: XGeometry[@screen], i.e.
@@ -662,131 +677,132 @@ int FScreenParseGeometry(
  *          This option can be also useful in cases where dimensions are
  *      specified not in pixels but in some other units (e.g., charcells).
  */
-int FScreenGetGeometry(
-	char *parsestring, int *x_return, int *y_return,
-	int *width_return, int *height_return, XSizeHints *hints, int flags)
+int
+FScreenGetGeometry(char *parsestring, int *x_return, int *y_return,
+    int *width_return, int *height_return, XSizeHints * hints, int flags)
 {
-	fscreen_scr_arg	 arg;
-	char		*scr = NULL;
-	int		 ret;
-	int		 saved;
-	int		 x, y;
-	unsigned int	 w = 0, h = 0;
-	int		 grav, x_grav, y_grav;
-	int		 scr_x, scr_y;
-	int		 scr_w, scr_h;
+	fscreen_scr_arg arg;
+	char           *scr = NULL;
+	int             ret;
+	int             saved;
+	int             x, y;
+	unsigned int    w = 0, h = 0;
+	int             grav, x_grav, y_grav;
+	int             scr_x, scr_y;
+	int             scr_w, scr_h;
 
-	/* I. Do the parsing and strip off extra bits */
-	ret = FScreenParseGeometryWithScreen(parsestring, &x, &y, &w, &h, &scr);
+	/*
+	 * I. Do the parsing and strip off extra bits
+	 */
+	ret =
+	    FScreenParseGeometryWithScreen(parsestring, &x, &y, &w, &h, &scr);
 	saved = ret & (XNegative | YNegative);
-	ret  &= flags;
+	ret &= flags;
 
 	arg.mouse_ev = NULL;
 	arg.name = scr;
-	FScreenGetScrRect(&arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w, &scr_h);
+	FScreenGetScrRect(&arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w,
+	    &scr_h);
 
-	/* II. Interpret and fill in the values */
+	/*
+	 * II. Interpret and fill in the values
+	 */
 
-	/* Fill in dimensions for future negative calculations if
-	 * omitted/forbidden */
-	/* Maybe should use *x_return,*y_return if hints==NULL?
-	 * Unreliable... */
-	if (hints != NULL  &&  hints->flags & PSize)
-	{
-		if ((ret & WidthValue)  == 0)
-		{
+	/*
+	 * Fill in dimensions for future negative calculations if
+	 * * omitted/forbidden
+	 */
+	/*
+	 * Maybe should use *x_return,*y_return if hints==NULL?
+	 * * Unreliable...
+	 */
+	if (hints != NULL && hints->flags & PSize) {
+		if ((ret & WidthValue) == 0) {
 			w = hints->width;
 		}
-		if ((ret & HeightValue) == 0)
-		{
+		if ((ret & HeightValue) == 0) {
 			h = hints->height;
 		}
-	}
-	else
-	{
-		/* This branch is required for case when size *is* specified,
-		 * but masked off */
-		if ((ret & WidthValue)  == 0)
-		{
+	} else {
+		/*
+		 * This branch is required for case when size *is* specified,
+		 * * but masked off
+		 */
+		if ((ret & WidthValue) == 0) {
 			w = 0;
 		}
-		if ((ret & HeightValue) == 0)
-		{
+		if ((ret & HeightValue) == 0) {
 			h = 0;
 		}
 	}
 
-	/* Advance coords to the screen... */
+	/*
+	 * Advance coords to the screen...
+	 */
 	x += scr_x;
 	y += scr_y;
 
-	/* ...and process negative geometries */
-	if (saved & XNegative)
-	{
+	/*
+	 * ...and process negative geometries
+	 */
+	if (saved & XNegative) {
 		x += scr_w;
 	}
-	if (saved & YNegative)
-	{
+	if (saved & YNegative) {
 		y += scr_h;
 	}
-	if (ret & XNegative)
-	{
+	if (ret & XNegative) {
 		x -= w;
 	}
-	if (ret & YNegative)
-	{
+	if (ret & YNegative) {
 		y -= h;
 	}
 
-	/* Restore negative bits */
+	/*
+	 * Restore negative bits
+	 */
 	ret |= saved;
 
-	/* Guess orientation */
-	x_grav = (ret & XNegative)? GRAV_NEG : GRAV_POS;
-	y_grav = (ret & YNegative)? GRAV_NEG : GRAV_POS;
-	grav   = grav_matrix[y_grav][x_grav];
+	/*
+	 * Guess orientation
+	 */
+	x_grav = (ret & XNegative) ? GRAV_NEG : GRAV_POS;
+	y_grav = (ret & YNegative) ? GRAV_NEG : GRAV_POS;
+	grav = grav_matrix[y_grav][x_grav];
 
-	/* Return the values */
-	if (ret & XValue)
-	{
+	/*
+	 * Return the values
+	 */
+	if (ret & XValue) {
 		*x_return = x;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->x = x;
 		}
 	}
-	if (ret & YValue)
-	{
+	if (ret & YValue) {
 		*y_return = y;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->y = y;
 		}
 	}
-	if (ret & WidthValue)
-	{
+	if (ret & WidthValue) {
 		*width_return = w;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->width = w;
 		}
 	}
-	if (ret & HeightValue)
-	{
+	if (ret & HeightValue) {
 		*height_return = h;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->height = h;
 		}
 	}
-	if (1 /*flags & GravityValue*/  &&  grav != DEFAULT_GRAVITY)
-	{
-		if (hints != NULL  &&  hints->flags & PWinGravity)
-		{
+	if (1 /*flags & GravityValue */  && grav != DEFAULT_GRAVITY) {
+		if (hints != NULL && hints->flags & PWinGravity) {
 			hints->win_gravity = grav;
 		}
 	}
-	if (hints != NULL  &&  ret & XValue  &&  ret & YValue)
+	if (hints != NULL && ret & XValue && ret & YValue)
 		hints->flags |= USPosition;
 
 	return ret;
@@ -802,15 +818,13 @@ int FScreenGetGeometry(
  *  their windows and have the StartsOnScreen style set for them at the same
  *  time.  Do *not* rely on the mechanism described above.
  */
-void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
+void
+FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints * hints)
 {
-	if (hints->flags & USPosition)
-	{
+	if (hints->flags & USPosition) {
 		hints->x = FSCREEN_MANGLE_USPOS_HINTS_MAGIC;
-		hints->y = (short)screen;
-	}
-	else
-	{
+		hints->y = (short) screen;
+	} else {
 		hints->x = 0;
 		hints->y = 0;
 	}
@@ -828,13 +842,13 @@ void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
  *  their windows and have the StartsOnScreen style set for them at the same
  *  time.  Do *not* rely on the mechanism described above.
  */
-int FScreenFetchMangledScreenFromUSPosHints(XSizeHints *hints)
+int
+FScreenFetchMangledScreenFromUSPosHints(XSizeHints * hints)
 {
-	int screen;
+	int             screen;
 
 	if ((hints->flags & USPosition) &&
-	    hints->x == FSCREEN_MANGLE_USPOS_HINTS_MAGIC)
-	{
+	    hints->x == FSCREEN_MANGLE_USPOS_HINTS_MAGIC) {
 		screen = hints->y;
 	} else
 		screen = 0;

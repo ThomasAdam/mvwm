@@ -35,43 +35,39 @@
 #include "Grab.h"
 #include "Target.h"
 
-void fvwmlib_keyboard_shortcuts(
-	Display *dpy, int screen, XEvent *Event, int x_move_size,
-	int y_move_size, int *x_defect, int *y_defect, int ReturnEvent)
+void
+fvwmlib_keyboard_shortcuts(Display *dpy, int screen, XEvent *Event,
+    int x_move_size, int y_move_size, int *x_defect, int *y_defect,
+    int ReturnEvent)
 {
-	int x;
-	int y;
-	int x_root;
-	int y_root;
-	int x_move;
-	int y_move;
-	KeySym keysym;
-	Window JunkRoot;
-	unsigned int JunkMask;
+	int             x;
+	int             y;
+	int             x_root;
+	int             y_root;
+	int             x_move;
+	int             y_move;
+	KeySym          keysym;
+	Window          JunkRoot;
+	unsigned int    JunkMask;
 
-	if (y_move_size < DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE)
-	{
+	if (y_move_size < DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE) {
 		y_move_size = DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE;
 	}
-	if (x_move_size < DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE)
-	{
+	if (x_move_size < DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE) {
 		x_move_size = DEFAULT_KDB_SHORTCUT_MOVE_DISTANCE;
 	}
-	if (Event->xkey.state & ControlMask)
-	{
+	if (Event->xkey.state & ControlMask) {
 		x_move_size = y_move_size = KDB_SHORTCUT_MOVE_DISTANCE_SMALL;
 	}
-	if (Event->xkey.state & ShiftMask)
-	{
+	if (Event->xkey.state & ShiftMask) {
 		x_move_size = y_move_size = KDB_SHORTCUT_MOVE_DISTANCE_BIG;
 	}
 
-	keysym = XLookupKeysym(&Event->xkey,0);
+	keysym = XLookupKeysym(&Event->xkey, 0);
 
 	x_move = 0;
 	y_move = 0;
-	switch(keysym)
-	{
+	switch (keysym) {
 	case XK_Up:
 	case XK_KP_8:
 	case XK_k:
@@ -115,94 +111,90 @@ void fvwmlib_keyboard_shortcuts(
 	case XK_Return:
 	case XK_KP_Enter:
 	case XK_space:
-		/* beat up the event */
+		/*
+		 * beat up the event
+		 */
 		Event->type = ReturnEvent;
 		break;
 	case XK_Escape:
-		/* simple code to bag out of move - CKH */
-		/* return keypress event instead */
+		/*
+		 * simple code to bag out of move - CKH
+		 */
+		/*
+		 * return keypress event instead
+		 */
 		Event->type = KeyPress;
-		Event->xkey.keycode = XKeysymToKeycode(
-			Event->xkey.display,keysym);
+		Event->xkey.keycode =
+		    XKeysymToKeycode(Event->xkey.display, keysym);
 		break;
 	default:
 		break;
 	}
-	if (x_move || y_move)
-	{
-		int x_def_new = 0;
-		int y_def_new = 0;
+	if (x_move || y_move) {
+		int             x_def_new = 0;
+		int             y_def_new = 0;
 
-		if (FQueryPointer(
-			    dpy, RootWindow(dpy, screen), &JunkRoot,
-			    &Event->xany.window, &x_root, &y_root, &x, &y,
-			    &JunkMask) == False)
-		{
-			/* pointer is on a different screen - do nothing */
+		if (FQueryPointer(dpy, RootWindow(dpy, screen), &JunkRoot,
+			&Event->xany.window, &x_root, &y_root, &x, &y,
+			&JunkMask) == False) {
+			/*
+			 * pointer is on a different screen - do nothing
+			 */
 			return;
 		}
-		if (x + x_move < 0)
-		{
+		if (x + x_move < 0) {
 			x_def_new = x + x_move;
 			x_move = -x;
+		} else if (x + x_move >= DisplayWidth(dpy,
+			DefaultScreen(dpy))) {
+			x_def_new =
+			    x + x_move - DisplayWidth(dpy,
+			    DefaultScreen(dpy));
+			x_move =
+			    DisplayWidth(dpy, DefaultScreen(dpy)) - x - 1;
 		}
-		else if (x + x_move >= DisplayWidth(dpy, DefaultScreen(dpy)))
-		{
-			x_def_new = x + x_move - DisplayWidth(
-				dpy, DefaultScreen(dpy));
-			x_move = DisplayWidth(dpy, DefaultScreen(dpy)) - x - 1;
-		}
-		if (y + y_move < 0)
-		{
+		if (y + y_move < 0) {
 			y_def_new = y + y_move;
 			y_move = -y;
+		} else if (y + y_move >= DisplayHeight(dpy,
+			DefaultScreen(dpy))) {
+			y_def_new =
+			    y + y_move - DisplayHeight(dpy,
+			    DefaultScreen(dpy));
+			y_move =
+			    DisplayHeight(dpy, DefaultScreen(dpy)) - y - 1;
 		}
-		else if (y + y_move >= DisplayHeight(dpy, DefaultScreen(dpy)))
-		{
-			y_def_new = y + y_move - DisplayHeight(
-				dpy, DefaultScreen(dpy));
-			y_move = DisplayHeight(
-				dpy, DefaultScreen(dpy)) - y - 1;
-		}
-		if (x_defect)
-		{
-			int diff = 0;
+		if (x_defect) {
+			int             diff = 0;
 
 			*x_defect += x_def_new;
-			if (*x_defect > 0 && x_move < 0)
-			{
+			if (*x_defect > 0 && x_move < 0) {
 				diff = min(*x_defect, -x_move);
-			}
-			else if (*x_defect < 0 && x_move > 0)
-			{
+			} else if (*x_defect < 0 && x_move > 0) {
 				diff = max(*x_defect, -x_move);
 			}
 			*x_defect -= diff;
 			x_move += diff;
 		}
-		if (y_defect)
-		{
-			int diff = 0;
+		if (y_defect) {
+			int             diff = 0;
 
 			*y_defect += y_def_new;
-			if (*y_defect > 0 && y_move < 0)
-			{
+			if (*y_defect > 0 && y_move < 0) {
 				diff = min(*y_defect, -y_move);
-			}
-			else if (*y_defect < 0 && y_move > 0)
-			{
+			} else if (*y_defect < 0 && y_move > 0) {
 				diff = max(*y_defect, -y_move);
 			}
 			*y_defect -= diff;
 			y_move += diff;
 		}
-		if (x_move || y_move)
-		{
-			FWarpPointer(
-				dpy, None, RootWindow(dpy, screen), 0, 0, 0, 0,
-				x_root + x_move, y_root + y_move);
+		if (x_move || y_move) {
+			FWarpPointer(dpy, None, RootWindow(dpy, screen), 0, 0,
+			    0, 0, x_root + x_move, y_root + y_move);
 		}
-		/* beat up the event */
+		/*
+		 * beat up the event
+		 */
 		Event->type = MotionNotify;
 		Event->xkey.x += x_move;
 		Event->xkey.y += y_move;
@@ -211,32 +203,31 @@ void fvwmlib_keyboard_shortcuts(
 	}
 }
 
-void fvwmlib_get_target_window(
-	Display *dpy, int screen, char *MyName, Window *app_win,
-	Bool return_subwindow)
+void
+fvwmlib_get_target_window(Display *dpy, int screen, char *MyName,
+    Window *app_win, Bool return_subwindow)
 {
-	XEvent eventp;
-	int val = -10,trials;
-	Bool finished = False;
-	Bool canceled = False;
-	Window Root = RootWindow(dpy, screen);
-	int is_key_pressed = 0;
-	int is_button_pressed = 0;
-	KeySym keysym;
+	XEvent          eventp;
+	int             val = -10, trials;
+	Bool            finished = False;
+	Bool            canceled = False;
+	Window          Root = RootWindow(dpy, screen);
+	int             is_key_pressed = 0;
+	int             is_button_pressed = 0;
+	KeySym          keysym;
 
 	trials = 0;
-	while((trials <10)&&(val != GrabSuccess))
-	{
-		val=XGrabPointer(dpy, Root, True,
-				 ButtonPressMask | ButtonReleaseMask,
-				 GrabModeAsync, GrabModeAsync, Root,
-				 XCreateFontCursor(dpy,XC_crosshair),
-				 CurrentTime);
-		switch (val)
-		{
+	while ((trials < 10) && (val != GrabSuccess)) {
+		val = XGrabPointer(dpy, Root, True,
+		    ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, Root,
+		    XCreateFontCursor(dpy, XC_crosshair), CurrentTime);
+		switch (val) {
 		case GrabInvalidTime:
 		case GrabNotViewable:
-			/* give up */
+			/*
+			 * give up
+			 */
 			trials += 100000;
 			break;
 		case GrabSuccess:
@@ -249,27 +240,24 @@ void fvwmlib_get_target_window(
 			break;
 		}
 	}
-	if(val != GrabSuccess)
-	{
-		fprintf(stderr,"%s: Couldn't grab the cursor!\n",MyName);
+	if (val != GrabSuccess) {
+		fprintf(stderr, "%s: Couldn't grab the cursor!\n", MyName);
 		exit(1);
 	}
 	MyXGrabKeyboard(dpy);
 
-	while (!finished && !canceled)
-	{
+	while (!finished && !canceled) {
 		FMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-			   KeyPressMask | KeyReleaseMask, &eventp);
-		switch (eventp.type)
-		{
+		    KeyPressMask | KeyReleaseMask, &eventp);
+		switch (eventp.type) {
 		case KeyPress:
 			is_key_pressed++;
 			break;
 		case KeyRelease:
-			keysym = XLookupKeysym(&eventp.xkey,0);
-			if( !is_key_pressed ) break;
-			switch (keysym)
-			{
+			keysym = XLookupKeysym(&eventp.xkey, 0);
+			if (!is_key_pressed)
+				break;
+			switch (keysym) {
 			case XK_Escape:
 				canceled = True;
 				break;
@@ -279,9 +267,8 @@ void fvwmlib_get_target_window(
 				finished = True;
 				break;
 			default:
-				fvwmlib_keyboard_shortcuts(
-					dpy, screen, &eventp, 0, 0, NULL,
-					NULL, 0);
+				fvwmlib_keyboard_shortcuts(dpy, screen,
+				    &eventp, 0, 0, NULL, NULL, 0);
 				break;
 			}
 			break;
@@ -289,47 +276,44 @@ void fvwmlib_get_target_window(
 			is_button_pressed++;
 			break;
 		case ButtonRelease:
-			if( is_button_pressed ) finished = True;
+			if (is_button_pressed)
+				finished = True;
 			break;
 		}
 	}
 
 	MyXUngrabKeyboard(dpy);
 	XUngrabPointer(dpy, CurrentTime);
-	XSync(dpy,0);
-	if (canceled)
-	{
+	XSync(dpy, 0);
+	if (canceled) {
 		*app_win = None;
 		return;
 	}
 	*app_win = eventp.xany.window;
-	if(return_subwindow && eventp.xbutton.subwindow != None)
+	if (return_subwindow && eventp.xbutton.subwindow != None)
 		*app_win = eventp.xbutton.subwindow;
 
 	return;
 }
 
-Window fvwmlib_client_window(Display *dpy, Window input)
+Window
+fvwmlib_client_window(Display *dpy, Window input)
 {
-	Atom _XA_WM_STATE;
-	unsigned int nchildren;
-	Window root, parent, *children,target;
-	unsigned long nitems, bytesafter;
-	unsigned char *prop;
-	Atom atype;
-	int aformat;
-	int i;
+	Atom            _XA_WM_STATE;
+	unsigned int    nchildren;
+	Window          root, parent, *children, target;
+	unsigned long   nitems, bytesafter;
+	unsigned char  *prop;
+	Atom            atype;
+	int             aformat;
+	int             i;
 
-	_XA_WM_STATE = XInternAtom (dpy, "WM_STATE", False);
+	_XA_WM_STATE = XInternAtom(dpy, "WM_STATE", False);
 
-	if (
-		XGetWindowProperty(
-			dpy, input, _XA_WM_STATE , 0L, 3L , False,
-			_XA_WM_STATE, &atype, &aformat, &nitems, &bytesafter,
-			&prop) == Success)
-	{
-		if(prop != NULL)
-		{
+	if (XGetWindowProperty(dpy, input, _XA_WM_STATE, 0L, 3L, False,
+		_XA_WM_STATE, &atype, &aformat, &nitems, &bytesafter,
+		&prop) == Success) {
+		if (prop != NULL) {
 			XFree(prop);
 			return input;
 		}
@@ -338,16 +322,14 @@ Window fvwmlib_client_window(Display *dpy, Window input)
 	if (!XQueryTree(dpy, input, &root, &parent, &children, &nchildren))
 		return None;
 
-	for (i = 0; i < nchildren; i++)
-	{
+	for (i = 0; i < nchildren; i++) {
 		target = fvwmlib_client_window(dpy, children[i]);
-		if(target != None)
-		{
-			XFree((char *)children);
+		if (target != None) {
+			XFree((char *) children);
 			return target;
 		}
 	}
-	XFree((char *)children);
+	XFree((char *) children);
 
 	return None;
 }

@@ -23,36 +23,50 @@ struct MenuStyle;
  * copies of the menu */
 typedef struct MenuRootStatic
 {
-	/* first item in menu */
+	/*
+	 * first item in menu
+	 */
 	struct MenuItem *first;
-	/* last item in menu */
+	/*
+	 * last item in menu
+	 */
 	struct MenuItem *last;
 
-	/* # of copies, 0 if none except this one */
-	int copies;
-	/* # of mapped instances */
-	int usage_count;
-	/* name of root */
-	char *name;
+	/*
+	 * # of copies, 0 if none except this one
+	 */
+	int             copies;
+	/*
+	 * # of mapped instances
+	 */
+	int             usage_count;
+	/*
+	 * name of root
+	 */
+	char           *name;
 	struct MenuDimensions dim;
-	int items;
-	FvwmPicture *sidePic;
-	Pixel sideColor;
-	int used_mini_icons;
-	/* Menu Face */
+	int             items;
+	FvwmPicture    *sidePic;
+	Pixel           sideColor;
+	int             used_mini_icons;
+	/*
+	 * Menu Face
+	 */
 	struct MenuStyle *ms;
-	/* permanent flags */
+	/*
+	 * permanent flags
+	 */
 	struct
 	{
-		unsigned has_side_color : 1;
-		unsigned is_left_triangle : 1;
-		unsigned is_updated : 1;
+		unsigned        has_side_color:1;
+		unsigned        is_left_triangle:1;
+		unsigned        is_updated:1;
 	} flags;
 	struct
 	{
-		char *popup_action;
-		char *popdown_action;
-		char *missing_submenu_func;
+		char           *popup_action;
+		char           *popdown_action;
+		char           *missing_submenu_func;
 	} dynamic;
 } MenuRootStatic;
 
@@ -93,59 +107,89 @@ typedef struct MenuRootStatic
  * the menu */
 typedef struct MenuRootDynamic
 {
-	/* the first copy of the current menu */
+	/*
+	 * the first copy of the current menu
+	 */
 	struct MenuRoot *original_menu;
-	/* next in list of root menus */
+	/*
+	 * next in list of root menus
+	 */
 	struct MenuRoot *next_menu;
-	/* continuation of this menu (too tall for screen) */
+	/*
+	 * continuation of this menu (too tall for screen)
+	 */
 	struct MenuRoot *continuation_menu;
-	/* can get the menu that this popped up through selected_item->mr when
-	 * selected is a popup menu item */
-	/* the menu that popped this up, if any */
+	/*
+	 * can get the menu that this popped up through selected_item->mr when
+	 * * selected is a popup menu item
+	 */
+	/*
+	 * the menu that popped this up, if any
+	 */
 	struct MenuRoot *parent_menu;
-	/* the menu item that popped this up, if any */
+	/*
+	 * the menu item that popped this up, if any
+	 */
 	struct MenuItem *parent_item;
-	/* the display used to create the menu.  Can't use the normal display
-	 * because 'xkill' would kill the window manager if used on a tear off
-	 * menu. */
-	Display *create_dpy;
-	/* the window of the menu */
-	Window window;
-	/* the selected item in menu */
+	/*
+	 * the display used to create the menu.  Can't use the normal display
+	 * * because 'xkill' would kill the window manager if used on a tear off
+	 * * menu.
+	 */
+	Display        *create_dpy;
+	/*
+	 * the window of the menu
+	 */
+	Window          window;
+	/*
+	 * the selected item in menu
+	 */
 	struct MenuItem *selected_item;
-	/* item that has it's submenu mapped */
+	/*
+	 * item that has it's submenu mapped
+	 */
 	struct MenuItem *submenu_item;
-	/* x distance window was moved by animation */
-	int xanimation;
-	/* dynamic temp flags */
+	/*
+	 * x distance window was moved by animation
+	 */
+	int             xanimation;
+	/*
+	 * dynamic temp flags
+	 */
 	struct
 	{
-		/* is win background set? */
-		unsigned is_background_set : 1;
-		unsigned is_destroyed : 1;
-		/* menu direction relative to parent menu */
-		unsigned is_left : 1;
-		unsigned is_right : 1;
-		unsigned is_up : 1;
-		unsigned is_down : 1;
-		unsigned is_painted : 1;
-		unsigned is_tear_off_menu : 1;
-		unsigned has_popped_up_left : 1;
-		unsigned has_popped_up_right : 1;
+		/*
+		 * is win background set?
+		 */
+		unsigned        is_background_set:1;
+		unsigned        is_destroyed:1;
+		/*
+		 * menu direction relative to parent menu
+		 */
+		unsigned        is_left:1;
+		unsigned        is_right:1;
+		unsigned        is_up:1;
+		unsigned        is_down:1;
+		unsigned        is_painted:1;
+		unsigned        is_tear_off_menu:1;
+		unsigned        has_popped_up_left:1;
+		unsigned        has_popped_up_right:1;
 	} dflags;
 	struct
 	{
-		Pixmap stored;
-		int width;
-		int height;
-		int y;
+		Pixmap          stored;
+		int             width;
+		int             height;
+		int             y;
 	} stored_item;
 	struct
 	{
-		Pixel *d_pixels;
-		int d_npixels;
+		Pixel          *d_pixels;
+		int             d_npixels;
 	} stored_pixels;
-	/* alloc pixels when dithering is used for gradients */
+	/*
+	 * alloc pixels when dithering is used for gradients
+	 */
 } MenuRootDynamic;
 
 /* access macros to dynamic menu members */

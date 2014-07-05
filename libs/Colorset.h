@@ -10,47 +10,49 @@
 
 typedef struct
 {
-	Pixel fg;
-	Pixel bg;
-	Pixel hilite;
-	Pixel shadow;
-	Pixel fgsh;
-	Pixel tint;
-	Pixel icon_tint;
-	Pixmap pixmap;
-	Pixmap shape_mask;
-	unsigned int width : 12;
-	unsigned int height : 12;
-	unsigned int pixmap_type: 3;
-	unsigned int shape_width : 12;
-	unsigned int shape_height : 12;
-	unsigned int shape_type : 2;
-	unsigned int do_dither_icon : 1;
-	unsigned int fg_alpha_percent : 7;
-	unsigned int tint_percent : 7;
-	unsigned int icon_alpha_percent : 7;
-	unsigned int icon_tint_percent : 7;
+	Pixel           fg;
+	Pixel           bg;
+	Pixel           hilite;
+	Pixel           shadow;
+	Pixel           fgsh;
+	Pixel           tint;
+	Pixel           icon_tint;
+	Pixmap          pixmap;
+	Pixmap          shape_mask;
+	unsigned int    width:12;
+	unsigned int    height:12;
+	unsigned int    pixmap_type:3;
+	unsigned int    shape_width:12;
+	unsigned int    shape_height:12;
+	unsigned int    shape_type:2;
+	unsigned int    do_dither_icon:1;
+	unsigned int    fg_alpha_percent:7;
+	unsigned int    tint_percent:7;
+	unsigned int    icon_alpha_percent:7;
+	unsigned int    icon_tint_percent:7;
 #ifdef FVWM_COLORSET_PRIVATE
-	/* fvwm/colorset.c use only */
-	Pixel fg_tint;
-	Pixel fg_saved;
-	Pixel bg_tint;
-	Pixel bg_saved;
-	Pixmap mask;
-	Pixmap alpha_pixmap;
-	char *pixmap_args;
-	char *gradient_args;
-	char gradient_type;
-	unsigned int color_flags;
-	FvwmPicture *picture;
-	Pixel *pixels;
-	int nalloc_pixels;
-	int fg_tint_percent;
-	int bg_tint_percent;
-	short image_alpha_percent;
-	Bool dither;
-	Bool allows_buffered_transparency;
-	Bool is_maybe_root_transparent;
+	/*
+	 * fvwm/colorset.c use only
+	 */
+	Pixel           fg_tint;
+	Pixel           fg_saved;
+	Pixel           bg_tint;
+	Pixel           bg_saved;
+	Pixmap          mask;
+	Pixmap          alpha_pixmap;
+	char           *pixmap_args;
+	char           *gradient_args;
+	char            gradient_type;
+	unsigned int    color_flags;
+	FvwmPicture    *picture;
+	Pixel          *pixels;
+	int             nalloc_pixels;
+	int             fg_tint_percent;
+	int             bg_tint_percent;
+	short           image_alpha_percent;
+	Bool            dither;
+	Bool            allows_buffered_transparency;
+	Bool            is_maybe_root_transparent;
 #endif
 } colorset_t;
 
@@ -82,7 +84,6 @@ typedef struct
 
 /* colorsets are stored as an array of structs to permit fast dereferencing */
 extern colorset_t *Colorset;
-
 
 /* some macro for transparency */
 #define CSET_IS_TRANSPARENT(cset) \
@@ -156,42 +157,36 @@ extern colorset_t *Colorset;
 #ifndef FVWM_COLORSET_PRIVATE
 /* Create n new colorsets, fvwm/colorset.c does its own thing (different size)
  */
-void AllocColorset(int n);
+void            AllocColorset(int n);
 #endif
 
 /* dump one */
-char *DumpColorset(int n, colorset_t *colorset);
+char           *DumpColorset(int n, colorset_t *colorset);
 /* load one */
-int LoadColorset(char *line);
+int             LoadColorset(char *line);
 
-Pixmap CreateOffsetBackgroundPixmap(
-	Display *dpy, Window win, int x, int y, int width, int height,
-	colorset_t *colorset, unsigned int depth,
-	GC gc, Bool is_mask);
-Pixmap CreateBackgroundPixmap(
-	Display *dpy, Window win, int width, int height,
-	colorset_t *colorset, unsigned int depth,
-	GC gc, Bool is_mask);
-Pixmap ScrollPixmap(
-	Display *dpy, Pixmap p, GC gc, int x_off, int y_off, int width,
-	int height, unsigned int depth);
-void SetWindowBackgroundWithOffset(
-	Display *dpy, Window win, int x_off, int y_off, unsigned int width, unsigned int height,
-	colorset_t *colorset, unsigned int depth, GC gc, Bool clear_area);
-void SetWindowBackground(
-	Display *dpy, Window win, int width, int height,
-	colorset_t *colorset, unsigned int depth, GC gc,
-	Bool clear_area);
-void GetWindowBackgroundPixmapSize(
-	colorset_t *cs_t, int width, int height, int *w, int *h);
-Bool UpdateBackgroundTransparency(
-	Display *dpy, Window win, int width, int height,
-	colorset_t *colorset, unsigned int depth, GC gc, Bool clear_area);
-void SetRectangleBackground(
-	Display *dpy, Window win, int x, int y, int width, int height,
-	colorset_t *colorset, unsigned int depth, GC gc);
-void SetClippedRectangleBackground(
-	Display *dpy, Window win, int x, int y, int width, int height,
-	XRectangle *clip, colorset_t *colorset,
-	unsigned int depth, GC gc);
+Pixmap          CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x,
+    int y, int width, int height, colorset_t *colorset, unsigned int depth,
+    GC gc, Bool is_mask);
+Pixmap          CreateBackgroundPixmap(Display *dpy, Window win, int width,
+    int height, colorset_t *colorset, unsigned int depth, GC gc,
+    Bool is_mask);
+Pixmap          ScrollPixmap(Display *dpy, Pixmap p, GC gc, int x_off,
+    int y_off, int width, int height, unsigned int depth);
+void            SetWindowBackgroundWithOffset(Display *dpy, Window win,
+    int x_off, int y_off, unsigned int width, unsigned int height,
+    colorset_t *colorset, unsigned int depth, GC gc, Bool clear_area);
+void            SetWindowBackground(Display *dpy, Window win, int width,
+    int height, colorset_t *colorset, unsigned int depth, GC gc,
+    Bool clear_area);
+void            GetWindowBackgroundPixmapSize(colorset_t *cs_t, int width,
+    int height, int *w, int *h);
+Bool            UpdateBackgroundTransparency(Display *dpy, Window win,
+    int width, int height, colorset_t *colorset, unsigned int depth, GC gc,
+    Bool clear_area);
+void            SetRectangleBackground(Display *dpy, Window win, int x, int y,
+    int width, int height, colorset_t *colorset, unsigned int depth, GC gc);
+void            SetClippedRectangleBackground(Display *dpy, Window win, int x,
+    int y, int width, int height, XRectangle * clip, colorset_t *colorset,
+    unsigned int depth, GC gc);
 #endif

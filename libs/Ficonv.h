@@ -36,17 +36,14 @@
 
 /* ---------------------------- type definitions --------------------------- */
 
-typedef void* Ficonv_t;
+typedef void   *Ficonv_t;
 
 /* ---------------------------- interface functions ------------------------ */
-void FiconvSetTransliterateUtf8(int toggle);
-char *FiconvUtf8ToCharset(
-	Display *dpy, FlocaleCharset *fc, const char *in,
-	unsigned int in_size);
-char *FiconvCharsetToUtf8(
-	Display *dpy, FlocaleCharset *fc, const char *in,
-	unsigned int in_size);
-char *FiconvCharsetToCharset(
-	Display *dpy, FlocaleCharset *in_fc, FlocaleCharset *out_fc,
-	const char *in, unsigned int in_size);
+void            FiconvSetTransliterateUtf8(int toggle);
+char           *FiconvUtf8ToCharset(Display *dpy, FlocaleCharset * fc,
+    const char *in, unsigned int in_size);
+char           *FiconvCharsetToUtf8(Display *dpy, FlocaleCharset * fc,
+    const char *in, unsigned int in_size);
+char           *FiconvCharsetToCharset(Display *dpy, FlocaleCharset * in_fc,
+    FlocaleCharset * out_fc, const char *in, unsigned int in_size);
 #endif /* FICONV_H */

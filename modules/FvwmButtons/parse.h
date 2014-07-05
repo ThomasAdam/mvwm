@@ -13,6 +13,6 @@
  *
  */
 
-void ParseConfiguration(button_info *ub);
-void parse_window_geometry(char *geom, int is_button_geometry);
-char *expand_action(char *in_action, button_info *b);
+void            ParseConfiguration(button_info *ub);
+void            parse_window_geometry(char *geom, int is_button_geometry);
+char           *expand_action(char *in_action, button_info *b);

@@ -17,20 +17,20 @@
 #define PngSupport 0
 #endif
 
-extern Bool Pdefault;
-extern Visual *Pvisual;
+extern Bool     Pdefault;
+extern Visual  *Pvisual;
 extern Colormap Pcmap;
 extern unsigned int Pdepth;
-extern Display *Pdpy;     /* Save area for display pointer */
-extern Bool PUseDynamicColors;
+extern Display *Pdpy;		/* Save area for display pointer */
+extern Bool     PUseDynamicColors;
 
 typedef struct
 {
-	int color_limit;
-	int strict;
-	int allocate;
-	int not_dynamic;
-	int use_named_table;
+	int             color_limit;
+	int             strict;
+	int             allocate;
+	int             not_dynamic;
+	int             use_named_table;
 } PictureColorLimitOption;
 
 /**
@@ -48,7 +48,8 @@ typedef struct
  * '*p_path' upon entry will be freed if 'free_old_path' is true.
  *
  **/
-void setPath(char** p_path, const char* newpath, int free_old_path);
+void            setPath(char **p_path, const char *newpath,
+    int free_old_path);
 
 /**
  * Search along colon-separated path for filename, with optional suffix.
@@ -72,97 +73,94 @@ void setPath(char** p_path, const char* newpath, int free_old_path);
  *          points to allocated memory that the caller must free.
  *
  **/
-char* searchPath(
-	const char* path, const char* filename, const char* suffix, int type);
+char           *searchPath(const char *path, const char *filename,
+    const char *suffix, int type);
 
 /* This routine called during modules initialization. Fvwm has its own code
  * in fvwm.c */
-void PictureInitCMap(Display *dpy);
+void            PictureInitCMap(Display *dpy);
 
 /* as above but force to use the default visual. If use_my_color_limit is True
  * also enable color limitation (independent than the fvwm one). */
-void PictureInitCMapRoot(
-	Display *dpy, Bool init_color_limit, PictureColorLimitOption *opt,
-	Bool use_my_color_limit, Bool init_dither);
+void            PictureInitCMapRoot(Display *dpy, Bool init_color_limit,
+    PictureColorLimitOption *opt, Bool use_my_color_limit, Bool init_dither);
 
 /* Analogue of the Xlib WhitePixel and BlackPixel functions but use the
    Pvisual */
-Pixel PictureWhitePixel(void);
-Pixel PictureBlackPixel(void);
+Pixel           PictureWhitePixel(void);
+Pixel           PictureBlackPixel(void);
 
 /* for initialization of the white and black pixel (for fvwm as PictureInitCMap*
  * do this) */
-void PictureSetupWhiteAndBlack(void);
+void            PictureSetupWhiteAndBlack(void);
 
 /* Analogue of the Xlib DefaultGC function but take care of the Pdepth:
    - If Pdepth == DefaultDepth return the DefaultGC
    - If Pdepth != DefaultDepth and first call create a static gc with the win
    and return the gc
    -  If Pdepth != DefaultDepth and already called return the static gc */
-GC PictureDefaultGC(Display *dpy, Window win);
+GC              PictureDefaultGC(Display *dpy, Window win);
 
 /* these can be used to switch visuals before calling GetPicture */
 /* do NOT use with CachePicture */
-void PictureUseDefaultVisual(void);
-void PictureUseFvwmVisual(void);
-void PictureSaveFvwmVisual(void);
+void            PictureUseDefaultVisual(void);
+void            PictureUseFvwmVisual(void);
+void            PictureSaveFvwmVisual(void);
 
 /** Returns current setting of the image path **/
-char* PictureGetImagePath(void);
-
+char           *PictureGetImagePath(void);
 
 /** Sets image path to newpath.  Environment variables are expanded, and '+'
     is expanded to previous value of imagepath.  The new path is in
     newly-allocated memory, so newpath may be freed or re-used.  **/
-void PictureSetImagePath(const char* newpath);
-
+void            PictureSetImagePath(const char *newpath);
 
 /** Search for file along pathlist.  If pathlist is NULL, will use the current
     imagepath setting.  If filename is not found, but filename.gz is found,
     will return the latter.  Mode is typically R_OK.  See searchPath() for
     more details.  **/
-char* PictureFindImageFile(
-	const char* filename, const char* pathlist, int mode);
+char           *PictureFindImageFile(const char *filename,
+    const char *pathlist, int mode);
 
 typedef struct FvwmPictureThing
 {
 	struct FvwmPictureThing *next;
-	char *name;
-	unsigned long stamp;  /* should be FileStamp */
-	unsigned long fpa_mask;
-	Pixmap picture;
-	Pixmap mask;
-	Pixmap alpha;
-	unsigned int depth;
-	unsigned int width;
-	unsigned int height;
-	unsigned int count;
-	Pixel *alloc_pixels;
-	int nalloc_pixels;
-	Bool no_limit;
+	char           *name;
+	unsigned long   stamp;	/* should be FileStamp */
+	unsigned long   fpa_mask;
+	Pixmap          picture;
+	Pixmap          mask;
+	Pixmap          alpha;
+	unsigned int    depth;
+	unsigned int    width;
+	unsigned int    height;
+	unsigned int    count;
+	Pixel          *alloc_pixels;
+	int             nalloc_pixels;
+	Bool            no_limit;
 } FvwmPicture;
 
 typedef struct
 {
-	unsigned alpha : 1;
-	unsigned alloc_pixels : 1;
+	unsigned        alpha:1;
+	unsigned        alloc_pixels:1;
 } FvwmPictureFlags;
 
-#define FPAM_NO_ALLOC_PIXELS (1)       /* do not return the allocated pixels
-					* this is used only if PUseDynamicColors,
-					* if not the allocated pixels are never
-					* returned */
-#define FPAM_NO_COLOR_LIMIT  (1 << 1)  /* do not use color limitation */
-#define FPAM_NO_ALPHA        (1 << 2)  /* do not return the alpha channel */
-#define FPAM_DITHER          (1 << 3)  /* dither the image */
-#define FPAM_TINT            (1 << 4)  /* tint the image */
-#define FPAM_MONOCHROME      (1 << 5)  /* reduce the color depth to 1-bit */
+#define FPAM_NO_ALLOC_PIXELS (1)	/* do not return the allocated pixels
+					 * this is used only if PUseDynamicColors,
+					 * if not the allocated pixels are never
+					 * returned */
+#define FPAM_NO_COLOR_LIMIT  (1 << 1)	/* do not use color limitation */
+#define FPAM_NO_ALPHA        (1 << 2)	/* do not return the alpha channel */
+#define FPAM_DITHER          (1 << 3)	/* dither the image */
+#define FPAM_TINT            (1 << 4)	/* tint the image */
+#define FPAM_MONOCHROME      (1 << 5)	/* reduce the color depth to 1-bit */
 
 typedef struct
 {
-	unsigned mask : 6;
-	XColor tint;
-        int tint_percent;
+	unsigned        mask:6;
+	XColor          tint;
+	int             tint_percent;
 } FvwmPictureAttributes;
 
 /* tint no yet implemented */
@@ -178,12 +176,12 @@ typedef struct
 
 typedef struct
 {
-	unsigned mask : 5;
-	int added_alpha_percent;
-	Pixel tint;
-	int tint_percent;
-	Pixel uniform_pixel;
-	colorset_t *colorset;
+	unsigned        mask:5;
+	int             added_alpha_percent;
+	Pixel           tint;
+	int             tint_percent;
+	Pixel           uniform_pixel;
+	colorset_t     *colorset;
 } FvwmRenderAttributes;
 
 #define PICTURE_HAS_ALPHA(picture,cset) \
@@ -194,12 +192,12 @@ typedef struct
 
 typedef struct
 {
-	Colormap cmap;
-	int dither;
-	int no_limit;
-	Bool is_8;
-	unsigned long *pixels_table;
-	int pixels_table_size;
+	Colormap        cmap;
+	int             dither;
+	int             no_limit;
+	Bool            is_8;
+	unsigned long  *pixels_table;
+	int             pixels_table_size;
 } PictureImageColorAllocator;
 
 #endif /* Picture_Base_H */

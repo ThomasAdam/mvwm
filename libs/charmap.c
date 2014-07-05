@@ -47,35 +47,31 @@
 
 /* Turns a  string context of context or modifier values into an array of
  * true/false values (bits). */
-int charmap_string_to_mask(
-	int *ret, const char *string, charmap_t *table, char *errstring)
+int
+charmap_string_to_mask(int *ret, const char *string, charmap_t * table,
+    char *errstring)
 {
-	int len = strlen(string);
-	int error = 0;
-	int i;
+	int             len = strlen(string);
+	int             error = 0;
+	int             i;
 
 	*ret = 0;
-	for (i = 0; i < len; ++i)
-	{
-		int found_match;
-		int j;
-		char c;
+	for (i = 0; i < len; ++i) {
+		int             found_match;
+		int             j;
+		char            c;
 
 		c = tolower(string[i]);
-		for (j = 0, found_match = 0; table[j].key != 0; j++)
-		{
-			if (table[j].key == c)
-			{
+		for (j = 0, found_match = 0; table[j].key != 0; j++) {
+			if (table[j].key == c) {
 				*ret |= table[j].value;
 				found_match = 1;
 				break;
 			}
 		}
-		if (!found_match)
-		{
+		if (!found_match) {
 			fputs("charmap_string_to_mask: ", stderr);
-			if (errstring != NULL)
-			{
+			if (errstring != NULL) {
 				fputs(errstring, stderr);
 			}
 			fputc(' ', stderr);
@@ -90,14 +86,13 @@ int charmap_string_to_mask(
 
 /* Reverse function of above.  Returns zero if no matching mask is found in the
  * table. */
-char charmap_mask_to_char(int mask, charmap_t *table)
+char
+charmap_mask_to_char(int mask, charmap_t * table)
 {
-	char c;
+	char            c;
 
-	for (c = 0; table->key != 0; table++)
-	{
-		if (mask == table->value)
-		{
+	for (c = 0; table->key != 0; table++) {
+		if (mask == table->value) {
 			c = table->key;
 			break;
 		}
@@ -107,33 +102,35 @@ char charmap_mask_to_char(int mask, charmap_t *table)
 }
 
 /* Used from "PrintInfo Bindings". */
-char *charmap_table_to_string(int mask, charmap_t *table)
+char           *
+charmap_table_to_string(int mask, charmap_t * table)
 {
-	char *allmods;
-	int modmask;
-	char c[2];
+	char           *allmods;
+	int             modmask;
+	char            c[2];
 
 	c[1] = 0;
 	modmask = mask;
 	allmods = xmalloc(sizeof(table->value) * 8 + 1);
 	*allmods = 0;
-	for (; table->key !=0; table++)
-	{
+	for (; table->key != 0; table++) {
 		c[0] = toupper(table->key);
 
-		/* Don't explicitly match "A" for any context as doing so
-		 * means we never see the individual bindings.  Incremental
-		 * matching here for AnyContext is disasterous.*/
-		if ((modmask & table->value) &&
-			(table->value != C_ALL))
-		{
-			/* incremental match */
+		/*
+		 * Don't explicitly match "A" for any context as doing so
+		 * * means we never see the individual bindings.  Incremental
+		 * * matching here for AnyContext is disasterous.
+		 */
+		if ((modmask & table->value) && (table->value != C_ALL)) {
+			/*
+			 * incremental match
+			 */
 			strcat(allmods, c);
 			modmask &= ~table->value;
-		}
-		else if (mask == table->value)
-		{
-			/* exact match */
+		} else if (mask == table->value) {
+			/*
+			 * exact match
+			 */
 			strcpy(allmods, c);
 			break;
 		}

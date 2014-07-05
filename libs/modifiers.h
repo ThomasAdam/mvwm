@@ -23,6 +23,7 @@ extern unsigned int modifier_mapindex_to_mask[];
 
 /* ---------------------------- interface functions ------------------------ */
 
-int modifiers_string_to_modmask(char *in_modifiers, int *out_modifier_mask);
+int             modifiers_string_to_modmask(char *in_modifiers,
+    int *out_modifier_mask);
 
 #endif /* MODIFIERS_H */

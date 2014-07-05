@@ -158,49 +158,63 @@ typedef enum
 	FOCUS_SET_BY_ENTER,
 	FOCUS_SET_BY_PROGRAM,
 	FOCUS_SET_BY_FUNCTION,
-	/* used internally to restore the focus after certain actions */
+	/*
+	 * used internally to restore the focus after certain actions
+	 */
 	FOCUS_SET_FORCE
 } fpol_set_focus_by_t;
 
 typedef struct
 {
-	unsigned client : 1;
-	unsigned decor : 1;
-	unsigned icon : 1;
+	unsigned        client:1;
+	unsigned        decor:1;
+	unsigned        icon:1;
 } fpol_context_t;
 
 typedef struct
 {
-	/* raising the window */
-	fpol_context_t do_raise_focused_click;
-	fpol_context_t do_raise_unfocused_click;
-	/* focus transition */
-	fpol_context_t do_focus_click;
-	unsigned do_focus_enter : 1;
-	unsigned do_unfocus_leave : 1;
-	unsigned do_focus_by_program : 1;
-	unsigned do_focus_by_function : 1;
-	unsigned do_warp_pointer_on_focus_func : 1;
-	/* application focus model */
-	unsigned is_lenient : 1;
-	/* click configuration */
-	unsigned use_mouse_buttons : NUMBER_OF_EXTENDED_MOUSE_BUTTONS;
-	unsigned use_modifiers : 8;
-	/* recycling of focus and raise clicks */
-	unsigned do_pass_focus_click : 1;
-	unsigned do_pass_raise_click : 1;
-	unsigned do_ignore_focus_click_motion : 1;
-	unsigned do_ignore_raise_click_motion : 1;
-	unsigned do_allow_func_focus_click : 1;
-	unsigned do_allow_func_raise_click : 1;
-	/* keeping track of the focus */
-	unsigned do_open_grabs_focus : 1;
-	unsigned do_open_grabs_focus_transient : 1;
-	unsigned do_override_grab_focus : 1;
-	unsigned do_close_releases_focus : 1;
-	unsigned do_close_releases_focus_transient : 1;
-	unsigned do_override_release_focus : 1;
-	unsigned do_sort_windowlist_by : 1;
+	/*
+	 * raising the window
+	 */
+	fpol_context_t  do_raise_focused_click;
+	fpol_context_t  do_raise_unfocused_click;
+	/*
+	 * focus transition
+	 */
+	fpol_context_t  do_focus_click;
+	unsigned        do_focus_enter:1;
+	unsigned        do_unfocus_leave:1;
+	unsigned        do_focus_by_program:1;
+	unsigned        do_focus_by_function:1;
+	unsigned        do_warp_pointer_on_focus_func:1;
+	/*
+	 * application focus model
+	 */
+	unsigned        is_lenient:1;
+	/*
+	 * click configuration
+	 */
+	unsigned        use_mouse_buttons:NUMBER_OF_EXTENDED_MOUSE_BUTTONS;
+	unsigned        use_modifiers:8;
+	/*
+	 * recycling of focus and raise clicks
+	 */
+	unsigned        do_pass_focus_click:1;
+	unsigned        do_pass_raise_click:1;
+	unsigned        do_ignore_focus_click_motion:1;
+	unsigned        do_ignore_raise_click_motion:1;
+	unsigned        do_allow_func_focus_click:1;
+	unsigned        do_allow_func_raise_click:1;
+	/*
+	 * keeping track of the focus
+	 */
+	unsigned        do_open_grabs_focus:1;
+	unsigned        do_open_grabs_focus_transient:1;
+	unsigned        do_override_grab_focus:1;
+	unsigned        do_close_releases_focus:1;
+	unsigned        do_close_releases_focus_transient:1;
+	unsigned        do_override_release_focus:1;
+	unsigned        do_sort_windowlist_by:1;
 } focus_policy_t;
 
 /* ---------------------------- forward declarations ----------------------- */
@@ -209,13 +223,10 @@ typedef struct
 
 /* ---------------------------- interface functions ------------------------ */
 
-void fpol_init_default_fp(
-	focus_policy_t *fp);
-int fpol_query_allow_set_focus(
-	focus_policy_t *fpol, fpol_set_focus_by_t set_by_mode);
-int fpol_query_allow_user_focus(
-	focus_policy_t *fpol);
-int fpol_is_policy_changed(
-	focus_policy_t *fpol);
+void            fpol_init_default_fp(focus_policy_t *fp);
+int             fpol_query_allow_set_focus(focus_policy_t *fpol,
+    fpol_set_focus_by_t set_by_mode);
+int             fpol_query_allow_user_focus(focus_policy_t *fpol);
+int             fpol_is_policy_changed(focus_policy_t *fpol);
 
 #endif /* FOCUS_POLICY_H */

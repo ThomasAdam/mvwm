@@ -52,21 +52,20 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
-flist *flist_append_obj(flist *list, void *object)
+flist          *
+flist_append_obj(flist * list, void *object)
 {
-	flist *new = xmalloc(sizeof(flist));
-	flist *tl = list;
+	flist          *new = xmalloc(sizeof(flist));
+	flist          *tl = list;
 
 	new->object = object;
 	new->next = NULL;
 	new->prev = NULL;
 
-	if (list == NULL)
-	{
+	if (list == NULL) {
 		return new;
 	}
-	while(tl->next)
-	{
+	while (tl->next) {
 		tl = tl->next;
 	}
 	tl->next = new;
@@ -75,21 +74,20 @@ flist *flist_append_obj(flist *list, void *object)
 	return list;
 }
 
-flist *flist_prepend_obj(flist *list, void *object)
+flist          *
+flist_prepend_obj(flist * list, void *object)
 {
-	flist *new = xmalloc(sizeof(flist));
+	flist          *new = xmalloc(sizeof(flist));
 
 	new->object = object;
 	new->next = NULL;
 	new->prev = NULL;
 
-	if (list == NULL)
-	{
+	if (list == NULL) {
 		return new;
 	}
 
-	if (list->prev)
-	{
+	if (list->prev) {
 		list->prev->next = new;
 		new->prev = list->prev;
 	}
@@ -99,27 +97,24 @@ flist *flist_prepend_obj(flist *list, void *object)
 	return new;
 }
 
-flist *flist_insert_obj(flist *list, void *object, int position)
+flist          *
+flist_insert_obj(flist * list, void *object, int position)
 {
-	flist *new;
-	flist *tl;
+	flist          *new;
+	flist          *tl;
 
-	if (position < 0)
-	{
+	if (position < 0) {
 		return flist_append_obj(list, object);
 	}
-	if (position == 0)
-	{
+	if (position == 0) {
 		return flist_prepend_obj(list, object);
 	}
 	tl = list;
-	while(tl && position-- > 0)
-	{
+	while (tl && position-- > 0) {
 		tl = tl->next;
 	}
 
-	if (!tl)
-	{
+	if (!tl) {
 		return flist_append_obj(list, object);
 	}
 
@@ -127,46 +122,40 @@ flist *flist_insert_obj(flist *list, void *object, int position)
 	new->object = object;
 	new->prev = NULL;
 
-	if (tl->prev)
-	{
+	if (tl->prev) {
 		tl->prev->next = new;
 		new->prev = tl->prev;
 	}
 	new->next = tl;
 	tl->prev = new;
 
-	if (tl == list)
-	{
+	if (tl == list) {
 		return new;
 	}
 
 	return list;
 }
 
-flist *flist_remove_obj(flist *list, void *object)
+flist          *
+flist_remove_obj(flist * list, void *object)
 {
-	flist *tl = list;
+	flist          *tl = list;
 
-	while (tl && tl->object != object)
-	{
+	while (tl && tl->object != object) {
 		tl = tl->next;
 	}
 
-	if (tl == NULL)
-	{
+	if (tl == NULL) {
 		return NULL;
 	}
 
-	if (tl->prev)
-	{
+	if (tl->prev) {
 		tl->prev->next = tl->next;
 	}
-	if (tl->next)
-	{
+	if (tl->next) {
 		tl->next->prev = tl->prev;
 	}
-	if (list == tl)
-	{
+	if (list == tl) {
 		list = list->next;
 	}
 	free(tl);
@@ -174,12 +163,12 @@ flist *flist_remove_obj(flist *list, void *object)
 	return list;
 }
 
-flist *flist_free_list(flist *list)
+flist          *
+flist_free_list(flist * list)
 {
-	flist *tl;
+	flist          *tl;
 
-	while (list)
-	{
+	while (list) {
 		tl = list;
 		list = list->next;
 		free(tl);

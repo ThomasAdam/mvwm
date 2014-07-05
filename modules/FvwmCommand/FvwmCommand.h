@@ -18,10 +18,9 @@
 #include "libs/fvwm_sys_stat.h"
 
 #ifndef HAVE_STRERROR
-extern char *sys_errlist[];
+extern char    *sys_errlist[];
 #define strerror(_e)    (sys_errlist[_e])
 #endif
-
 
 #define F_NAME  "FvwmCommand-"
 
@@ -34,5 +33,4 @@ extern char *sys_errlist[];
 #define mkfifo(path, mode) ((errno = ENOSYS) - ENOSYS - 1)
 #endif
 
-
-char * fifos_get_default_name(void);
+char           *fifos_get_default_name(void);

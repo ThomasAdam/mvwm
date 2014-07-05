@@ -41,32 +41,33 @@
 
 typedef struct
 {
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg);
-	XPointer arg;
-	XEvent event;
-	Bool found;
+	Bool            (*predicate) (Display *display, XEvent *event,
+	    XPointer arg);
+	XPointer        arg;
+	XEvent          event;
+	Bool            found;
 } fev_check_peek_args;
 
 /* ---------------------------- forward declarations ----------------------- */
 
 /* ---------------------------- local variables ---------------------------- */
 
-static XEvent fev_event;
-static XEvent fev_event_old;
+static XEvent   fev_event;
+static XEvent   fev_event_old;
 /* until Xlib does this for us */
-Time fev_last_timestamp = CurrentTime;
+Time            fev_last_timestamp = CurrentTime;
 
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- local functions ---------------------------- */
 
 /* Records the time of the last processed event. */
-static void fev_update_last_timestamp(const XEvent *ev)
+static void
+fev_update_last_timestamp(const XEvent *ev)
 {
-	Time new_timestamp = CurrentTime;
+	Time            new_timestamp = CurrentTime;
 
-	switch (ev->type)
-	{
+	switch (ev->type) {
 	case KeyPress:
 	case KeyRelease:
 		new_timestamp = ev->xkey.time;
@@ -97,30 +98,29 @@ static void fev_update_last_timestamp(const XEvent *ev)
 	default:
 		return;
 	}
-	/* Only update if the new timestamp is later than the old one, or
-	 * if the new one is from a time at least 30 seconds earlier than the
-	 * old one (in which case the system clock may have changed) */
+	/*
+	 * Only update if the new timestamp is later than the old one, or
+	 * * if the new one is from a time at least 30 seconds earlier than the
+	 * * old one (in which case the system clock may have changed)
+	 */
 	if (new_timestamp > fev_last_timestamp ||
-	    fev_last_timestamp - new_timestamp > CLOCK_SKEW_MS)
-	{
+	    fev_last_timestamp - new_timestamp > CLOCK_SKEW_MS) {
 		fev_last_timestamp = new_timestamp;
 	}
 
 	return;
 }
 
-static Bool fev_check_peek_pred(
-	Display *display, XEvent *event, XPointer arg)
+static Bool
+fev_check_peek_pred(Display *display, XEvent *event, XPointer arg)
 {
-	fev_check_peek_args *cpa = (fev_check_peek_args *)arg;
+	fev_check_peek_args *cpa = (fev_check_peek_args *) arg;
 
-	if (cpa->found == True)
-	{
+	if (cpa->found == True) {
 		return False;
 	}
 	cpa->found = cpa->predicate(display, event, cpa->arg);
-	if (cpa->found == True)
-	{
+	if (cpa->found == True) {
 		cpa->event = *event;
 	}
 
@@ -129,37 +129,40 @@ static Bool fev_check_peek_pred(
 
 /* ---------------------------- interface functions (privileged access) ----- */
 
-void fev_copy_last_event(XEvent *dest)
+void
+fev_copy_last_event(XEvent *dest)
 {
 	*dest = fev_event;
 
 	return;
 }
 
-XEvent *fev_get_last_event_address(void)
+XEvent         *
+fev_get_last_event_address(void)
 {
 	return &fev_event;
 }
 
 /* ---------------------------- interface functions (normal_access) -------- */
 
-Time fev_get_evtime(void)
+Time
+fev_get_evtime(void)
 {
 	return fev_last_timestamp;
 }
 
-Bool fev_get_evpos_or_query(
-	Display *dpy, Window w, const XEvent *e, int *ret_x, int *ret_y)
+Bool
+fev_get_evpos_or_query(Display *dpy, Window w, const XEvent *e, int *ret_x,
+    int *ret_y)
 {
-	Window JunkW;
-	int JunkC;
-	unsigned int JunkM;
-	Bool rc;
-	int type;
+	Window          JunkW;
+	int             JunkC;
+	unsigned int    JunkM;
+	Bool            rc;
+	int             type;
 
 	type = (e != NULL) ? e->type : -1;
-	switch (type)
-	{
+	switch (type) {
 	case ButtonPress:
 	case ButtonRelease:
 		*ret_x = e->xbutton.x_root;
@@ -176,25 +179,24 @@ Bool fev_get_evpos_or_query(
 		*ret_y = e->xcrossing.y_root;
 		return True;
 	case MotionNotify:
-		if (e->xmotion.same_screen == True)
-		{
+		if (e->xmotion.same_screen == True) {
 			*ret_x = e->xmotion.x_root;
 			*ret_y = e->xmotion.y_root;
-		}
-		else
-		{
-			/* pointer is on different screen */
+		} else {
+			/*
+			 * pointer is on different screen
+			 */
 			*ret_x = 0;
 			*ret_y = 0;
 		}
 		return True;
 	default:
-		rc = FQueryPointer(
-			dpy, w, &JunkW, &JunkW, ret_x, ret_y, &JunkC, &JunkC,
-			&JunkM);
-		if (rc == False)
-		{
-			/* pointer is on a different screen */
+		rc = FQueryPointer(dpy, w, &JunkW, &JunkW, ret_x, ret_y,
+		    &JunkC, &JunkC, &JunkM);
+		if (rc == False) {
+			/*
+			 * pointer is on a different screen
+			 */
 			*ret_x = 0;
 			*ret_y = 0;
 		}
@@ -202,10 +204,10 @@ Bool fev_get_evpos_or_query(
 	}
 }
 
-Bool fev_set_evpos(XEvent *e, int x, int y)
+Bool
+fev_set_evpos(XEvent *e, int x, int y)
 {
-	switch (e->type)
-	{
+	switch (e->type) {
 	case ButtonPress:
 	case ButtonRelease:
 		e->xbutton.x_root = x;
@@ -217,8 +219,7 @@ Bool fev_set_evpos(XEvent *e, int x, int y)
 		e->xkey.y_root = y;
 		return True;
 	case MotionNotify:
-		if (e->xmotion.same_screen == True)
-		{
+		if (e->xmotion.same_screen == True) {
 			e->xmotion.x_root = x;
 			e->xmotion.y_root = y;
 			return True;
@@ -226,24 +227,28 @@ Bool fev_set_evpos(XEvent *e, int x, int y)
 		break;
 	default:
 		break;
-	} /* switch */
+	}	/* switch */
 
 	return False;
 }
 
-void fev_fake_event(XEvent *ev)
+void
+fev_fake_event(XEvent *ev)
 {
 	fev_event_old = fev_event;
 	fev_event = *ev;
-	/* don't update the last timestamp here; the triggering event has
-	 * already done this */
+	/*
+	 * don't update the last timestamp here; the triggering event has
+	 * * already done this
+	 */
 
 	return;
 }
 
-void *fev_save_event(void)
+void           *
+fev_save_event(void)
 {
-	XEvent *ev;
+	XEvent         *ev;
 
 	ev = xmalloc(sizeof(XEvent));
 	*ev = fev_event;
@@ -251,15 +256,17 @@ void *fev_save_event(void)
 	return ev;
 }
 
-void fev_restore_event(void *ev)
+void
+fev_restore_event(void *ev)
 {
-	fev_event = *(XEvent *)ev;
+	fev_event = *(XEvent *) ev;
 	free(ev);
 
 	return;
 }
 
-void fev_make_null_event(XEvent *ev, Display *dpy)
+void
+fev_make_null_event(XEvent *ev, Display *dpy)
 {
 	memset(ev, 0, sizeof(*ev));
 	ev->xany.serial = fev_event.xany.serial;
@@ -268,7 +275,8 @@ void fev_make_null_event(XEvent *ev, Display *dpy)
 	return;
 }
 
-void fev_get_last_event(XEvent *ev)
+void
+fev_get_last_event(XEvent *ev)
 {
 	*ev = fev_event;
 
@@ -277,37 +285,37 @@ void fev_get_last_event(XEvent *ev)
 
 /* ---------------------------- X event replacements ----------------------- */
 
-XTimeCoord *FGetMotionEvents(
-	Display *display, Window w, Time start, Time stop, int *nevents_return)
+XTimeCoord     *
+FGetMotionEvents(Display *display, Window w, Time start, Time stop,
+    int *nevents_return)
 {
-	XTimeCoord *rc;
+	XTimeCoord     *rc;
 
 	rc = XGetMotionEvents(display, w, start, stop, nevents_return);
 
 	return rc;
 }
 
-int FAllowEvents(
-	Display *display, int event_mode, Time time)
+int
+FAllowEvents(Display *display, int event_mode, Time time)
 {
-	int rc;
+	int             rc;
 
 	rc = XAllowEvents(display, event_mode, time);
 
 	return rc;
 }
 
-Bool FCheckIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
+Bool
+FCheckIfEvent(Display *display, XEvent *event_return,
+    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+    XPointer arg)
 {
-	Bool rc;
-	XEvent new_ev;
+	Bool            rc;
+	XEvent          new_ev;
 
 	rc = XCheckIfEvent(display, &new_ev, predicate, arg);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_event_old = fev_event;
 		fev_event = new_ev;
 		*event_return = fev_event;
@@ -317,15 +325,14 @@ Bool FCheckIfEvent(
 	return rc;
 }
 
-Bool FCheckMaskEvent(
-	Display *display, long event_mask, XEvent *event_return)
+Bool
+FCheckMaskEvent(Display *display, long event_mask, XEvent *event_return)
 {
-	Bool rc;
-	XEvent new_ev;
+	Bool            rc;
+	XEvent          new_ev;
 
 	rc = XCheckMaskEvent(display, event_mask, &new_ev);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_event_old = fev_event;
 		fev_event = new_ev;
 		*event_return = fev_event;
@@ -335,20 +342,19 @@ Bool FCheckMaskEvent(
 	return rc;
 }
 
-Bool FCheckPeekIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
+Bool
+FCheckPeekIfEvent(Display *display, XEvent *event_return,
+    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+    XPointer arg)
 {
-	XEvent dummy;
+	XEvent          dummy;
 	fev_check_peek_args cpa;
 
 	cpa.predicate = predicate;
 	cpa.arg = arg;
 	cpa.found = False;
-	XCheckIfEvent(display, &dummy, fev_check_peek_pred, (char *)&cpa);
-	if (cpa.found == True)
-	{
+	XCheckIfEvent(display, &dummy, fev_check_peek_pred, (char *) &cpa);
+	if (cpa.found == True) {
 		*event_return = cpa.event;
 		fev_update_last_timestamp(event_return);
 	}
@@ -356,15 +362,14 @@ Bool FCheckPeekIfEvent(
 	return cpa.found;
 }
 
-Bool FCheckTypedEvent(
-	Display *display, int event_type, XEvent *event_return)
+Bool
+FCheckTypedEvent(Display *display, int event_type, XEvent *event_return)
 {
-	Bool rc;
-	XEvent new_ev;
+	Bool            rc;
+	XEvent          new_ev;
 
 	rc = XCheckTypedEvent(display, event_type, &new_ev);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_event_old = fev_event;
 		fev_event = new_ev;
 		*event_return = fev_event;
@@ -374,15 +379,15 @@ Bool FCheckTypedEvent(
 	return rc;
 }
 
-Bool FCheckTypedWindowEvent(
-	Display *display, Window w, int event_type, XEvent *event_return)
+Bool
+FCheckTypedWindowEvent(Display *display, Window w, int event_type,
+    XEvent *event_return)
 {
-	Bool rc;
-	XEvent new_ev;
+	Bool            rc;
+	XEvent          new_ev;
 
 	rc = XCheckTypedWindowEvent(display, w, event_type, &new_ev);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_event_old = fev_event;
 		fev_event = new_ev;
 		*event_return = fev_event;
@@ -392,15 +397,15 @@ Bool FCheckTypedWindowEvent(
 	return rc;
 }
 
-Bool FCheckWindowEvent(
-	Display *display, Window w, long event_mask, XEvent *event_return)
+Bool
+FCheckWindowEvent(Display *display, Window w, long event_mask,
+    XEvent *event_return)
 {
-	Bool rc;
-	XEvent new_ev;
+	Bool            rc;
+	XEvent          new_ev;
 
 	rc = XCheckWindowEvent(display, w, event_mask, &new_ev);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_event_old = fev_event;
 		fev_event = new_ev;
 		*event_return = fev_event;
@@ -410,22 +415,22 @@ Bool FCheckWindowEvent(
 	return rc;
 }
 
-int FEventsQueued(
-	Display *display, int mode)
+int
+FEventsQueued(Display *display, int mode)
 {
-	int rc;
+	int             rc;
 
 	rc = XEventsQueued(display, mode);
 
 	return rc;
 }
 
-int FIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
+int
+FIfEvent(Display *display, XEvent *event_return,
+    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+    XPointer arg)
 {
-	int rc;
+	int             rc;
 
 	fev_event_old = fev_event;
 	rc = XIfEvent(display, &fev_event, predicate, arg);
@@ -435,10 +440,10 @@ int FIfEvent(
 	return rc;
 }
 
-int FMaskEvent(
-	Display *display, long event_mask, XEvent *event_return)
+int
+FMaskEvent(Display *display, long event_mask, XEvent *event_return)
 {
-	int rc;
+	int             rc;
 
 	fev_event_old = fev_event;
 	rc = XMaskEvent(display, event_mask, &fev_event);
@@ -448,10 +453,10 @@ int FMaskEvent(
 	return rc;
 }
 
-int FNextEvent(
-	Display *display, XEvent *event_return)
+int
+FNextEvent(Display *display, XEvent *event_return)
 {
-	int rc;
+	int             rc;
 
 	fev_event_old = fev_event;
 	rc = XNextEvent(display, &fev_event);
@@ -461,50 +466,48 @@ int FNextEvent(
 	return rc;
 }
 
-int FPeekEvent(
-	Display *display, XEvent *event_return)
+int
+FPeekEvent(Display *display, XEvent *event_return)
 {
-	int rc;
+	int             rc;
 
 	rc = XPeekEvent(display, event_return);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_update_last_timestamp(event_return);
 	}
 
 	return rc;
 }
 
-int FPeekIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
+int
+FPeekIfEvent(Display *display, XEvent *event_return,
+    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+    XPointer arg)
 {
-	int rc;
+	int             rc;
 
 	rc = XPeekIfEvent(display, event_return, predicate, arg);
-	if (rc == True)
-	{
+	if (rc == True) {
 		fev_update_last_timestamp(event_return);
 	}
 
 	return rc;
 }
 
-int FPending(
-	Display *display)
+int
+FPending(Display *display)
 {
-	int rc;
+	int             rc;
 
 	rc = XPending(display);
 
 	return rc;
 }
 
-int FPutBackEvent(
-	Display *display, XEvent *event)
+int
+FPutBackEvent(Display *display, XEvent *event)
 {
-	int rc;
+	int             rc;
 
 	rc = XPutBackEvent(display, event);
 	fev_event = fev_event_old;
@@ -512,76 +515,75 @@ int FPutBackEvent(
 	return rc;
 }
 
-int FQLength(
-	Display *display)
+int
+FQLength(Display *display)
 {
-	int rc;
+	int             rc;
 
 	rc = XQLength(display);
 
 	return rc;
 }
 
-Bool FQueryPointer(
-	Display *display, Window w, Window *root_return, Window *child_return,
-	int *root_x_return, int *root_y_return, int *win_x_return,
-	int *win_y_return, unsigned int *mask_return)
+Bool
+FQueryPointer(Display *display, Window w, Window *root_return,
+    Window *child_return, int *root_x_return, int *root_y_return,
+    int *win_x_return, int *win_y_return, unsigned int *mask_return)
 {
-	Bool rc;
+	Bool            rc;
 
-	rc = XQueryPointer(
-		display, w, root_return, child_return, root_x_return,
-		root_y_return, win_x_return, win_y_return, mask_return);
+	rc = XQueryPointer(display, w, root_return, child_return,
+	    root_x_return, root_y_return, win_x_return, win_y_return,
+	    mask_return);
 
 	return rc;
 }
 
-Status FSendEvent(
-	Display *display, Window w, Bool propagate, long event_mask,
-	XEvent *event_send)
+Status
+FSendEvent(Display *display, Window w, Bool propagate, long event_mask,
+    XEvent *event_send)
 {
-	Status rc;
+	Status          rc;
 
 	rc = XSendEvent(display, w, propagate, event_mask, event_send);
 
 	return rc;
 }
 
-int FWarpPointer(
-	Display *display, Window src_w, Window dest_w, int src_x, int src_y,
-	unsigned int src_width, unsigned int src_height, int dest_x, int dest_y)
+int
+FWarpPointer(Display *display, Window src_w, Window dest_w, int src_x,
+    int src_y, unsigned int src_width, unsigned int src_height, int dest_x,
+    int dest_y)
 {
-	int rc;
+	int             rc;
 
-	rc = XWarpPointer(
-		display, src_w, dest_w, src_x, src_y, src_width, src_height,
-		dest_x, dest_y);
+	rc = XWarpPointer(display, src_w, dest_w, src_x, src_y, src_width,
+	    src_height, dest_x, dest_y);
 
 	return rc;
 }
 
-int FWarpPointerUpdateEvpos(
-	XEvent *ev, Display *display, Window src_w, Window dest_w, int src_x,
-	int src_y, unsigned int src_width, unsigned int src_height,
-	int dest_x, int dest_y)
+int
+FWarpPointerUpdateEvpos(XEvent *ev, Display *display, Window src_w,
+    Window dest_w, int src_x, int src_y, unsigned int src_width,
+    unsigned int src_height, int dest_x, int dest_y)
 {
-	int rc;
+	int             rc;
 
-	rc = XWarpPointer(
-		display, src_w, dest_w, src_x, src_y, src_width, src_height,
-		dest_x, dest_y);
-	if (ev != NULL && dest_w == DefaultRootWindow(display))
-	{
+	rc = XWarpPointer(display, src_w, dest_w, src_x, src_y, src_width,
+	    src_height, dest_x, dest_y);
+	if (ev != NULL && dest_w == DefaultRootWindow(display)) {
 		fev_set_evpos(ev, dest_x, dest_y);
 	}
 
 	return rc;
 }
 
-int FWindowEvent(
-	Display *display, Window w, long event_mask, XEvent *event_return)
+int
+FWindowEvent(Display *display, Window w, long event_mask,
+    XEvent *event_return)
 {
-	int rc;
+	int             rc;
 
 	fev_event_old = fev_event;
 	rc = XWindowEvent(display, w, event_mask, &fev_event);

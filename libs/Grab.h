@@ -6,9 +6,9 @@
 
 #include <X11/Xlib.h>
 
-void MyXGrabServer(Display *disp);
-void MyXUngrabServer(Display *disp);
-void MyXUngrabKeyboard(Display *disp);
-void MyXGrabKeyboard(Display *disp);
-void MyXGrabKey(Display *disp);
-void MyXUngrabKey(Display *disp);
+void            MyXGrabServer(Display *disp);
+void            MyXUngrabServer(Display *disp);
+void            MyXUngrabKeyboard(Display *disp);
+void            MyXGrabKeyboard(Display *disp);
+void            MyXGrabKey(Display *disp);
+void            MyXUngrabKey(Display *disp);

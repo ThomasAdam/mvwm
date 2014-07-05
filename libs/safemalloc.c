@@ -23,10 +23,10 @@
 #include <stdint.h>
 #include "safemalloc.h"
 
-void *
+void           *
 xmalloc(size_t length)
 {
-	void	*ptr;
+	void           *ptr;
 
 	if (length == 0)
 		errx(1, "malloc: zero size.");
@@ -37,10 +37,10 @@ xmalloc(size_t length)
 	return (ptr);
 }
 
-void *
+void           *
 xcalloc(size_t num, size_t length)
 {
-	void	*ptr;
+	void           *ptr;
 
 	if (num == 0 || length == 0)
 		errx(1, "calloc:  zero size");
@@ -54,11 +54,11 @@ xcalloc(size_t num, size_t length)
 	return (ptr);
 }
 
-void *
+void           *
 xrealloc(void *oldptr, size_t nmemb, size_t size)
 {
-	size_t	 newsize = nmemb * size;
-	void	*newptr;
+	size_t          newsize = nmemb * size;
+	void           *newptr;
 
 	if (newsize == 0)
 		errx(1, "zero size");
@@ -70,11 +70,11 @@ xrealloc(void *oldptr, size_t nmemb, size_t size)
 	return (newptr);
 }
 
-char *
+char           *
 xstrdup(const char *s)
 {
-	char	*ptr;
-	size_t	 len;
+	char           *ptr;
+	size_t          len;
 
 	len = strlen(s) + 1;
 	ptr = xmalloc(len);

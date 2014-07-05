@@ -17,7 +17,7 @@
 #include "config.h"
 
 int
-atexit(void (*func)())
+atexit(void     (*func) ())
 {
 #if HAVE_ON_EXIT
 	return on_exit(func, 0);

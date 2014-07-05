@@ -13,10 +13,10 @@
 
 typedef struct MetaInfo
 {
-    char *key;
-    char *value;
+	char           *key;
+	char           *value;
 
-    struct MetaInfo *next;
+	struct MetaInfo *next;
 } MetaInfo;
 
 /* ---------------------------- forward declarations ----------------------- */
@@ -25,9 +25,9 @@ typedef struct MetaInfo
 
 /* ---------------------------- interface functions ------------------------ */
 
-MetaInfo *new_metainfo(void);
-void insert_metainfo(char *, char *);
-char *get_metainfo_value(const char *);
-void print_infostore(void);
+MetaInfo       *new_metainfo(void);
+void            insert_metainfo(char *, char *);
+char           *get_metainfo_value(const char *);
+void            print_infostore(void);
 
 #endif /* INFOSTORE_H */

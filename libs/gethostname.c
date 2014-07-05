@@ -20,30 +20,34 @@
 #include "config.h"
 
 #ifdef HAVE_UNAME
-# include <sys/utsname.h>
+#include <sys/utsname.h>
 #endif
 
 /* Put up to LEN chars of the host name into NAME.
    Null terminate it if the name is shorter than LEN.
    Return 0 if ok, -1 if error.  */
 
-int gethostname(char *name, int len)
+int
+gethostname(char *name, int len)
 {
 #ifdef HAVE_UNAME
-	struct utsname uts;
+	struct utsname  uts;
 
-	if (uname (&uts) == -1)
+	if (uname(&uts) == -1)
 		return -1;
-	if (len > sizeof (uts.nodename))
-	{
-		/* More space than we need is available.  */
-		name[sizeof (uts.nodename)] = '\0';
-		len = sizeof (uts.nodename);
+	if (len > sizeof(uts.nodename)) {
+		/*
+		 * More space than we need is available.
+		 */
+		name[sizeof(uts.nodename)] = '\0';
+		len = sizeof(uts.nodename);
 	}
-	strncpy (name, uts.nodename, len);
+	strncpy(name, uts.nodename, len);
 #else
-	/* Hardcode your system name if you want.  */
-	strcpy (name, "");
+	/*
+	 * Hardcode your system name if you want.
+	 */
+	strcpy(name, "");
 #endif
 	return 0;
 }

@@ -14,26 +14,26 @@
  * having to call a function. */
 typedef struct msg_masks_t
 {
-	unsigned long m1;
-	unsigned long m2;
+	unsigned long   m1;
+	unsigned long   m2;
 } msg_masks_t;
 
 /* module linked list record, only to be accessed by using the access macros
  * below */
 typedef struct fmodule
 {
-        struct
-        {
-		unsigned is_cmdline_module : 1;
-        } xflags;
-	int xreadPipe;
-	int xwritePipe;
-	fqueue xpipeQueue;
-	msg_masks_t xPipeMask;
-	msg_masks_t xNoGrabMask;
-	msg_masks_t xSyncMask;
-	char *xname;
-	char *xalias;
+	struct
+	{
+		unsigned        is_cmdline_module:1;
+	} xflags;
+	int             xreadPipe;
+	int             xwritePipe;
+	fqueue          xpipeQueue;
+	msg_masks_t     xPipeMask;
+	msg_masks_t     xNoGrabMask;
+	msg_masks_t     xSyncMask;
+	char           *xname;
+	char           *xalias;
 } fmodule;
 
 #define MOD_IS_CMDLINE(m) ((m)->xflags.is_cmdline_module)
@@ -41,15 +41,15 @@ typedef struct fmodule
 
 typedef struct fmodule_store
 {
-	fmodule *module;
+	fmodule        *module;
 	struct fmodule_store *next;
 } fmodule_store;
 
 /* This defines the module list object */
-typedef fmodule_store* fmodule_list;
+typedef fmodule_store *fmodule_list;
 
 /* this objects allows safe iteration over a module list */
-typedef fmodule_store* fmodule_list_itr;
+typedef fmodule_store *fmodule_list_itr;
 
 #define MOD_READFD(m) ((m)->xreadPipe)
 #define MOD_WRITEFD(m) ((m)->xwritePipe)
@@ -87,25 +87,23 @@ typedef fmodule_store* fmodule_list_itr;
 /* struct to store module input data */
 typedef struct fmodule_input
 {
-	Window window;
-	fmodule *module;
-	char *command;
+	Window          window;
+	fmodule        *module;
+	char           *command;
 } fmodule_input;
-
 
 /*
  *	Basic Module Handling Functions
  */
 
 /* kill all modules */
-void module_kill_all(void);
+void            module_kill_all(void);
 
 /* kill a module */
-void module_kill(fmodule *module);
+void            module_kill(fmodule *module);
 
 /* execute module wraper, desperate mode */
-fmodule *executeModuleDesperate(F_CMD_ARGS);
-
+fmodule        *executeModuleDesperate(F_CMD_ARGS);
 
 /*
  *	Basic Module Communication Functions
@@ -113,41 +111,37 @@ fmodule *executeModuleDesperate(F_CMD_ARGS);
 
 /* send "raw" data to the module */
 /* module_send(fmodule *module, unsigned long *ptr, int size); */
-void PositiveWrite(fmodule *module, unsigned long *ptr, int size);
+void            PositiveWrite(fmodule *module, unsigned long *ptr, int size);
 
 /* returns a dynamicaly allocated struct with the received data
  * or NULL on error */
-fmodule_input *module_receive(fmodule *module);
+fmodule_input  *module_receive(fmodule *module);
 
 /* frees an input data struct */
-void module_input_discard(fmodule_input *input);
+void            module_input_discard(fmodule_input *input);
 
 /* returns true if received the "expect" string, false otherwise */
-Bool module_input_expect(fmodule_input *input, char *expect);
-
+Bool            module_input_expect(fmodule_input *input, char *expect);
 
 /*
  *	Utility Functions
  */
 
 /* initializes the given iterator */
-void module_list_itr_init(fmodule_list_itr *itr);
+void            module_list_itr_init(fmodule_list_itr * itr);
 /* gets the next module on the list */
-fmodule *module_list_itr_next(fmodule_list_itr *itr);
+fmodule        *module_list_itr_next(fmodule_list_itr * itr);
 
 /* free modules in the deathrow */
-void module_cleanup(void);
-
-
+void            module_cleanup(void);
 
 /*
  *	Message Queue Handling Functions
  */
 
 /* message queues */
-void FlushAllMessageQueues(void);
-void FlushMessageQueue(fmodule *module);
-
+void            FlushAllMessageQueues(void);
+void            FlushMessageQueue(fmodule *module);
 
 /*
  *	Misc Functions (should they be here?)
@@ -156,10 +150,9 @@ void FlushMessageQueue(fmodule *module);
 /*
  * exposed to be used by modconf.c
  */
-char *skipModuleAliasToken(const char *string);
-
+char           *skipModuleAliasToken(const char *string);
 
 /* dead pipe signal handler - empty */
-RETSIGTYPE DeadPipe(int nonsense);
+RETSIGTYPE      DeadPipe(int nonsense);
 
 #endif /* MODULE_LIST_H */

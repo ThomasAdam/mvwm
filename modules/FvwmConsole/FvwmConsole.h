@@ -27,7 +27,7 @@
 #define PS1     ""
 #define PS2     ">"
 
-#define HISTSIZE 100    /* readline history file size */
+#define HISTSIZE 100	/* readline history file size */
 #define HISTFILE "/.FvwmConsole-History"
 
 /* #define M_PASS M_ERROR */

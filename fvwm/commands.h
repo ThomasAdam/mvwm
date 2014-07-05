@@ -15,7 +15,9 @@ enum
 {
 	F_UNDEFINED = -1,
 
-	/* functions that need no window */
+	/*
+	 * functions that need no window
+	 */
 	F_NOP = 0,
 	F_ADDFUNC,
 	F_ADDMENU,
@@ -147,7 +149,9 @@ enum
 	F_XSYNC,
 	F_XSYNCHRONIZE,
 
-	/* functions that need a window to operate on */
+	/*
+	 * functions that need a window to operate on
+	 */
 	F_ADD_BUTTON_STYLE,
 	F_ADD_DECOR,
 	F_ADD_TITLE_STYLE,
@@ -192,7 +196,9 @@ enum
 
 	F_END_OF_LIST = 999,
 
-	/* Functions for use by modules only! */
+	/*
+	 * Functions for use by modules only!
+	 */
 	F_SEND_WINDOW_LIST = 1000,
 	F_SEND_REPLY
 };

@@ -56,11 +56,11 @@
 
 typedef struct PImageLoader
 {
-  char *extension;
+	char           *extension;
 #ifdef __STDC__
-  int (*func)(FIMAGE_CMD_ARGS);
+	int             (*func) (FIMAGE_CMD_ARGS);
 #else
-  int (*func)();
+	int             (*func) ();
 #endif
 } PImageLoader;
 
@@ -74,40 +74,37 @@ typedef struct PImageLoader
 
 /* ---------------------------- forward declarations ----------------------- */
 
-static Bool PImageLoadPng(FIMAGE_CMD_ARGS);
+static Bool     PImageLoadPng(FIMAGE_CMD_ARGS);
 
 /* ---------------------------- local variables ---------------------------- */
 
-PImageLoader Loaders[] =
-{
-	{ "png", PImageLoadPng },
-	{NULL,0}
+PImageLoader    Loaders[] = {
+	{"png", PImageLoadPng},
+	{NULL, 0}
 };
 
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- local functions ---------------------------- */
 
-static
-Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
+static Bool
+PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
 {
-	int done = 0, i = 0, tried = -1;
-	char *ext = NULL;
+	int             done = 0, i = 0, tried = -1;
+	char           *ext = NULL;
 
 	if (path == NULL)
 		return False;
 
-	if (strlen(path) > 3)
-	{
+	if (strlen(path) > 3) {
 		ext = path + strlen(path) - 3;
 	}
-	/* first try to load by extension */
-	while (!done && ext != NULL && Loaders[i].extension != NULL)
-	{
-		if (StrEquals(Loaders[i].extension, ext))
-		{
-			if (Loaders[i].func(FIMAGE_PASS_ARGS))
-			{
+	/*
+	 * first try to load by extension
+	 */
+	while (!done && ext != NULL && Loaders[i].extension != NULL) {
+		if (StrEquals(Loaders[i].extension, ext)) {
+			if (Loaders[i].func(FIMAGE_PASS_ARGS)) {
 				return True;
 			}
 			tried = i;
@@ -117,10 +114,8 @@ Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
 	}
 
 	i = 0;
-	while (Loaders[i].extension != NULL)
-	{
-		if (i != tried && Loaders[i].func(FIMAGE_PASS_ARGS))
-		{
+	while (Loaders[i].extension != NULL) {
+		if (i != tried && Loaders[i].func(FIMAGE_PASS_ARGS)) {
 			return True;
 		}
 		i++;
@@ -134,66 +129,62 @@ Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
  * png loader
  *
  */
-static
-Bool PImageLoadPng(FIMAGE_CMD_ARGS)
+static Bool
+PImageLoadPng(FIMAGE_CMD_ARGS)
 {
-	Fpng_uint_32 w32, h32;
-	Fpng_structp Fpng_ptr = NULL;
-	Fpng_infop Finfo_ptr = NULL;
-	CARD32 *data;
-	int w, h;
-	char hasa = 0, hasg = 0;
-	FILE *f;
-	int bit_depth;
-	int color_type;
-	int interlace_type;
-	unsigned char buf[FPNG_BYTES_TO_CHECK];
+	Fpng_uint_32    w32, h32;
+	Fpng_structp    Fpng_ptr = NULL;
+	Fpng_infop      Finfo_ptr = NULL;
+	CARD32         *data;
+	int             w, h;
+	char            hasa = 0, hasg = 0;
+	FILE           *f;
+	int             bit_depth;
+	int             color_type;
+	int             interlace_type;
+	unsigned char   buf[FPNG_BYTES_TO_CHECK];
 	unsigned char **lines;
-	int i;
+	int             i;
 
-	if (!PngSupport)
-	{
-		/* suppress compiler warning */
+	if (!PngSupport) {
+		/*
+		 * suppress compiler warning
+		 */
 		bit_depth = 0;
 
 		fprintf(stderr, "[PImageLoadPng]: Tried to load PNG file "
-				"when FVWM has not been compiled with PNG support.\n");
+		    "when FVWM has not been compiled with PNG support.\n");
 
 		return False;
 	}
-	if (!(f = fopen(path, "rb")))
-	{
+	if (!(f = fopen(path, "rb"))) {
 		return False;
 	}
 	{
-		int n;
+		int             n;
 
 		n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
-		(void)n;
+		(void) n;
 	}
-	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK))
-	{
+	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK)) {
 		fclose(f);
 		return False;
 	}
 	rewind(f);
 	Fpng_ptr = Fpng_create_read_struct(FPNG_LIBPNG_VER_STRING,
-					   NULL, NULL, NULL);
-	if (!Fpng_ptr)
-	{
+	    NULL, NULL, NULL);
+	if (!Fpng_ptr) {
 		fclose(f);
 		return False;
 	}
 	Finfo_ptr = Fpng_create_info_struct(Fpng_ptr);
-	if (!Finfo_ptr)
-	{
+	if (!Finfo_ptr) {
 		Fpng_destroy_read_struct(&Fpng_ptr, NULL, NULL);
 		fclose(f);
 		return False;
 	}
 #if 0
-	if (setjmp(Fpng_ptr->jmpbuf))
-	{
+	if (setjmp(Fpng_ptr->jmpbuf)) {
 		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
 		fclose(f);
 		return False;
@@ -201,51 +192,53 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 #endif
 	Fpng_init_io(Fpng_ptr, f);
 	Fpng_read_info(Fpng_ptr, Finfo_ptr);
-	Fpng_get_IHDR(
-		Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
-		(Fpng_uint_32 *) (&h32), &bit_depth, &color_type,
-		&interlace_type, NULL, NULL);
-	interlace_type = 0; /* not used */
+	Fpng_get_IHDR(Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
+	    (Fpng_uint_32 *) (&h32), &bit_depth, &color_type,
+	    &interlace_type, NULL, NULL);
+	interlace_type = 0;	/* not used */
 	*width = w = (int) w32;
 	*height = h = (int) h32;
-	if (color_type == FPNG_COLOR_TYPE_PALETTE)
-	{
+	if (color_type == FPNG_COLOR_TYPE_PALETTE) {
 		Fpng_set_expand(Fpng_ptr);
 	}
 
-	/* TA:  XXX:  (2011-02-14) -- Happy Valentines Day.
-	 *
-	 * png_get_color_type() defined in libpng 1.5 now hides a data member
-	 * to a struct:
-	 *
-	 * Finfo_ptr->color_type
-	 *
-	 * I'm not going to wrap this up in more #ifdef madness, but should
-	 * this fail to build on much older libpng versions which we support
-	 * (pre 1.3), then I might have to.
+	/*
+	 * TA:  XXX:  (2011-02-14) -- Happy Valentines Day.
+	 * *
+	 * * png_get_color_type() defined in libpng 1.5 now hides a data member
+	 * * to a struct:
+	 * *
+	 * * Finfo_ptr->color_type
+	 * *
+	 * * I'm not going to wrap this up in more #ifdef madness, but should
+	 * * this fail to build on much older libpng versions which we support
+	 * * (pre 1.3), then I might have to.
 	 */
-	if (png_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_RGB_ALPHA)
-	{
+	if (png_get_color_type(Fpng_ptr,
+		Finfo_ptr) == FPNG_COLOR_TYPE_RGB_ALPHA) {
 		hasa = 1;
 	}
-	if (png_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_GRAY_ALPHA)
-	{
+	if (png_get_color_type(Fpng_ptr,
+		Finfo_ptr) == FPNG_COLOR_TYPE_GRAY_ALPHA) {
 		hasa = 1;
 		hasg = 1;
 	}
-	if (png_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_GRAY)
-	{
+	if (png_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_GRAY) {
 		hasg = 1;
 	}
 
 	if (hasa)
 		Fpng_set_expand(Fpng_ptr);
-	/* we want ARGB */
-	/* note form raster:
-	* thanks to mustapha for helping debug this on PPC Linux remotely by
-	* sending across screenshots all the time and me figuring out form them
-	* what the hell was up with the colors
-	* now png loading should work on big endian machines nicely   */
+	/*
+	 * we want ARGB
+	 */
+	/*
+	 * note form raster:
+	 * * thanks to mustapha for helping debug this on PPC Linux remotely by
+	 * * sending across screenshots all the time and me figuring out form them
+	 * * what the hell was up with the colors
+	 * * now png loading should work on big endian machines nicely
+	 */
 #ifdef WORDS_BIGENDIAN
 	Fpng_set_swap_alpha(Fpng_ptr);
 	Fpng_set_filler(Fpng_ptr, 0xff, FPNG_FILLER_BEFORE);
@@ -253,29 +246,29 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_set_bgr(Fpng_ptr);
 	Fpng_set_filler(Fpng_ptr, 0xff, FPNG_FILLER_AFTER);
 #endif
-	/* 16bit color -> 8bit color */
+	/*
+	 * 16bit color -> 8bit color
+	 */
 	Fpng_set_strip_16(Fpng_ptr);
-	/* pack all pixels to byte boundaires */
+	/*
+	 * pack all pixels to byte boundaires
+	 */
 	Fpng_set_packing(Fpng_ptr);
-	if (Fpng_get_valid(Fpng_ptr, Finfo_ptr, FPNG_INFO_tRNS))
-	{
+	if (Fpng_get_valid(Fpng_ptr, Finfo_ptr, FPNG_INFO_tRNS)) {
 		Fpng_set_expand(Fpng_ptr);
 	}
 
 	data = xmalloc(w * h * sizeof(CARD32));
 	lines = xmalloc(h * sizeof(unsigned char *));
 
-	if (hasg)
-	{
+	if (hasg) {
 		Fpng_set_gray_to_rgb(Fpng_ptr);
-		if (Fpng_get_bit_depth(Fpng_ptr, Finfo_ptr) < 8)
-		{
+		if (Fpng_get_bit_depth(Fpng_ptr, Finfo_ptr) < 8) {
 			Fpng_set_gray_1_2_4_to_8(Fpng_ptr);
 		}
 	}
-	for (i = 0; i < h; i++)
-	{
-		lines[i] = (unsigned char *)data + (i * w * sizeof(CARD32));
+	for (i = 0; i < h; i++) {
+		lines[i] = (unsigned char *) data + (i * w * sizeof(CARD32));
 	}
 	Fpng_read_image(Fpng_ptr, lines);
 	Fpng_read_end(Fpng_ptr, Finfo_ptr);
@@ -292,30 +285,26 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
  * copy image to server
  *
  */
-static
-Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
+static Pixmap
+PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage * fimage)
 {
-	GC gc;
-	Pixmap pixmap;
-	int w;
-	int h;
-	int depth;
+	GC              gc;
+	Pixmap          pixmap;
+	int             w;
+	int             h;
+	int             depth;
 
 	w = fimage->im->width;
 	h = fimage->im->height;
 	depth = fimage->im->depth;
 	pixmap = XCreatePixmap(dpy, win, w, h, depth);
-	if (depth == Pdepth)
-	{
+	if (depth == Pdepth) {
 		gc = PictureDefaultGC(dpy, win);
-	}
-	else
-	{
+	} else {
 		gc = fvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
 	}
 	FPutFImage(dpy, pixmap, gc, fimage, 0, 0, 0, 0, w, h);
-	if (depth != Pdepth)
-	{
+	if (depth != Pdepth) {
 		XFreeGC(dpy, gc);
 	}
 
@@ -329,128 +318,108 @@ Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
  * argb data to pixmaps
  *
  */
-Bool PImageCreatePixmapFromArgbData(
-	Display *dpy, Window win, CARD32 *data, int start, int width,
-	int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
-	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
-	FvwmPictureAttributes fpa)
+Bool
+PImageCreatePixmapFromArgbData(Display *dpy, Window win, CARD32 *data,
+    int start, int width, int height, Pixmap *pixmap, Pixmap *mask,
+    Pixmap *alpha, int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
+    FvwmPictureAttributes fpa)
 {
-	FImage *fim;
-	FImage *m_fim = NULL;
-	FImage *a_fim = NULL;
-	XColor c;
-	int i;
-	int j;
-	int a;
+	FImage         *fim;
+	FImage         *m_fim = NULL;
+	FImage         *a_fim = NULL;
+	XColor          c;
+	int             i;
+	int             j;
+	int             a;
 	PictureImageColorAllocator *pica = NULL;
-	int alpha_limit = PICTURE_ALPHA_LIMIT;
-	int alpha_depth = FRenderGetAlphaDepth();
-	Bool have_mask = False;
-	Bool have_alpha = False;
+	int             alpha_limit = PICTURE_ALPHA_LIMIT;
+	int             alpha_depth = FRenderGetAlphaDepth();
+	Bool            have_mask = False;
+	Bool            have_alpha = False;
 
-	fim = FCreateFImage(
-		dpy, Pvisual, (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth,
-		ZPixmap, width, height);
-	if (!fim)
-	{
+	fim =
+	    FCreateFImage(dpy, Pvisual,
+	    (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth, ZPixmap, width,
+	    height);
+	if (!fim) {
 		return False;
 	}
-	if (mask)
-	{
-		m_fim = FCreateFImage(
-			dpy, Pvisual, 1, ZPixmap, width, height);
+	if (mask) {
+		m_fim =
+		    FCreateFImage(dpy, Pvisual, 1, ZPixmap, width, height);
 	}
-	if (alpha && !(fpa.mask & FPAM_NO_ALPHA) && alpha_depth)
-	{
+	if (alpha && !(fpa.mask & FPAM_NO_ALPHA) && alpha_depth) {
 		alpha_limit = 0;
-		a_fim = FCreateFImage(
-			dpy, Pvisual, alpha_depth, ZPixmap, width, height);
+		a_fim =
+		    FCreateFImage(dpy, Pvisual, alpha_depth, ZPixmap, width,
+		    height);
 	}
-	if (!(fpa.mask & FPAM_MONOCHROME))
-	{
+	if (!(fpa.mask & FPAM_MONOCHROME)) {
 		c.flags = DoRed | DoGreen | DoBlue;
-		pica = PictureOpenImageColorAllocator(
-			dpy, Pcmap, width, height,
-			!!(fpa.mask & FPAM_NO_COLOR_LIMIT),
-			!!(fpa.mask & FPAM_NO_ALLOC_PIXELS),
-			!!(fpa.mask & FPAM_DITHER),
-			True);
+		pica =
+		    PictureOpenImageColorAllocator(dpy, Pcmap, width, height,
+		    ! !(fpa.mask & FPAM_NO_COLOR_LIMIT),
+		    ! !(fpa.mask & FPAM_NO_ALLOC_PIXELS),
+		    ! !(fpa.mask & FPAM_DITHER), True);
 	}
 	data += start;
-	for (j = 0; j < height; j++)
-	{
-		for (i = 0; i < width; i++, data++)
-		{
+	for (j = 0; j < height; j++) {
+		for (i = 0; i < width; i++, data++) {
 			a = (*data >> 030) & 0xff;
-			if (a > alpha_limit)
-			{
-				c.red   = (*data >> 16) & 0xff;
-				c.green = (*data >>  8) & 0xff;
-				c.blue  = (*data      ) & 0xff;
-				if (pica)
-				{
-					PictureAllocColorImage(
-						dpy, pica, &c, i, j);
+			if (a > alpha_limit) {
+				c.red = (*data >> 16) & 0xff;
+				c.green = (*data >> 8) & 0xff;
+				c.blue = (*data) & 0xff;
+				if (pica) {
+					PictureAllocColorImage(dpy, pica, &c,
+					    i, j);
 					XPutPixel(fim->im, i, j, c.pixel);
 				}
-				/* Brightness threshold */
-				else if ((0x99  * c.red +
-					  0x12D * c.green +
-					  0x3A  * c.blue) >> 16)
-				{
+				/*
+				 * Brightness threshold
+				 */
+				else if ((0x99 * c.red +
+					0x12D * c.green +
+					0x3A * c.blue) >> 16) {
 					XPutPixel(fim->im, i, j, 1);
-				}
-				else
-				{
+				} else {
 					XPutPixel(fim->im, i, j, 0);
 				}
-				if (m_fim)
-				{
+				if (m_fim) {
 					XPutPixel(m_fim->im, i, j, 1);
 				}
-			}
-			else if (m_fim != NULL)
-			{
+			} else if (m_fim != NULL) {
 				XPutPixel(m_fim->im, i, j, 0);
 				have_mask = True;
 			}
-			if (a_fim != NULL)
-			{
+			if (a_fim != NULL) {
 				XPutPixel(a_fim->im, i, j, a);
-				if (a > 0 && a < 0xff)
-				{
+				if (a > 0 && a < 0xff) {
 					have_alpha = True;
 				}
 			}
 		}
 	}
-	if (pica)
-	{
-		PictureCloseImageColorAllocator(
-			dpy, pica, nalloc_pixels, alloc_pixels, no_limit);
+	if (pica) {
+		PictureCloseImageColorAllocator(dpy, pica, nalloc_pixels,
+		    alloc_pixels, no_limit);
 	}
 	*pixmap = PImageCreatePixmapFromFImage(dpy, win, fim);
-	if (have_alpha)
-	{
+	if (have_alpha) {
 		*alpha = PImageCreatePixmapFromFImage(dpy, win, a_fim);
-	}
-	else if (have_mask)
-	{
+	} else if (have_mask) {
 		*mask = PImageCreatePixmapFromFImage(dpy, win, m_fim);
 	}
 	FDestroyFImage(dpy, fim);
-	if (m_fim)
-	{
+	if (m_fim) {
 		FDestroyFImage(dpy, m_fim);
 	}
-	if (a_fim)
-	{
+	if (a_fim) {
 		FDestroyFImage(dpy, a_fim);
 	}
 
 	return True;
 }
-
 
 /*
  *
@@ -458,34 +427,31 @@ Bool PImageCreatePixmapFromArgbData(
  *
  */
 
-Bool PImageLoadPixmapFromFile(
-	Display *dpy, Window win, char *path, Pixmap *pixmap, Pixmap *mask,
-	Pixmap *alpha, int *width, int *height, int *depth,
-	int *nalloc_pixels, Pixel **alloc_pixels,
-	int *no_limit, FvwmPictureAttributes fpa)
+Bool
+PImageLoadPixmapFromFile(Display *dpy, Window win, char *path, Pixmap *pixmap,
+    Pixmap *mask, Pixmap *alpha, int *width, int *height, int *depth,
+    int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
+    FvwmPictureAttributes fpa)
 {
-	CARD32 *data;
+	CARD32         *data;
 
-	if (PImageLoadArgbDataFromFile(dpy, path, &data, width, height))
-	{
+	if (PImageLoadArgbDataFromFile(dpy, path, &data, width, height)) {
 		*depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
-		if (PImageCreatePixmapFromArgbData(
-			dpy, win, data, 0, *width, *height, pixmap, mask,
-			alpha, nalloc_pixels, alloc_pixels, no_limit, fpa))
-		{
+		if (PImageCreatePixmapFromArgbData(dpy, win, data, 0, *width,
+			*height, pixmap, mask, alpha, nalloc_pixels,
+			alloc_pixels, no_limit, fpa)) {
 			free(data);
 
 			return True;
 		}
 		free(data);
 	}
-	/* Bitmap fallback */
-	else if (
-		XReadBitmapFile(
-			dpy, win, path, (unsigned int *)width,
-			(unsigned int *)height, pixmap, NULL, NULL) ==
-		BitmapSuccess)
-	{
+	/*
+	 * Bitmap fallback
+	 */
+	else if (XReadBitmapFile(dpy, win, path, (unsigned int *) width,
+		(unsigned int *) height, pixmap, NULL, NULL) ==
+	    BitmapSuccess) {
 		*depth = 1;
 		*mask = None;
 
@@ -495,36 +461,34 @@ Bool PImageLoadPixmapFromFile(
 	mask = None;
 	alpha = None;
 	*width = *height = *depth = 0;
-	if (nalloc_pixels != NULL)
-	{
+	if (nalloc_pixels != NULL) {
 		*nalloc_pixels = 0;
 	}
-	if (alloc_pixels != NULL)
-	{
+	if (alloc_pixels != NULL) {
 		*alloc_pixels = NULL;
 	}
 	return False;
 }
 
-FvwmPicture *PImageLoadFvwmPictureFromFile(
-	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa)
+FvwmPicture    *
+PImageLoadFvwmPictureFromFile(Display *dpy, Window win, char *path,
+    FvwmPictureAttributes fpa)
 {
-	FvwmPicture *p;
-	Pixmap pixmap = None;
-	Pixmap mask = None;
-	Pixmap alpha = None;
-	int width = 0, height = 0;
-	int depth = 0, no_limit;
-	int nalloc_pixels = 0;
-	Pixel *alloc_pixels = NULL;
-	char *real_path;
+	FvwmPicture    *p;
+	Pixmap          pixmap = None;
+	Pixmap          mask = None;
+	Pixmap          alpha = None;
+	int             width = 0, height = 0;
+	int             depth = 0, no_limit;
+	int             nalloc_pixels = 0;
+	Pixel          *alloc_pixels = NULL;
+	char           *real_path;
 
 	real_path = path;
 
-	if (!PImageLoadPixmapFromFile(
-		dpy, win, path, &pixmap, &mask, &alpha, &width, &height,
-		&depth, &nalloc_pixels, &alloc_pixels, &no_limit, fpa))
-	{
+	if (!PImageLoadPixmapFromFile(dpy, win, path, &pixmap, &mask, &alpha,
+		&width, &height, &depth, &nalloc_pixels, &alloc_pixels,
+		&no_limit, fpa)) {
 		return NULL;
 	}
 
@@ -546,26 +510,27 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	return p;
 }
 
-Cursor PImageLoadCursorFromFile(
-	Display *dpy, Window win, char *path, int x_hot, int y_hot)
+Cursor
+PImageLoadCursorFromFile(Display *dpy, Window win, char *path, int x_hot,
+    int y_hot)
 {
-	Cursor cursor = 0;
-	CARD32 *data;
-	int width;
-	int height;
-	int i;
-	FcursorImages *fcis;
-	FcursorImage *fci;
+	Cursor          cursor = 0;
+	CARD32         *data;
+	int             width;
+	int             height;
+	int             i;
+	FcursorImages  *fcis;
+	FcursorImage   *fci;
 
-	/* First try the Xcursor loader (animated cursors) */
-	if ((fcis = FcursorFilenameLoadImages(
-		path, FcursorGetDefaultSize(dpy))))
-	{
-		for (i = 0; i < fcis->nimage; i++)
-		{
+	/*
+	 * First try the Xcursor loader (animated cursors)
+	 */
+	if ((fcis =
+		FcursorFilenameLoadImages(path,
+		    FcursorGetDefaultSize(dpy)))) {
+		for (i = 0; i < fcis->nimage; i++) {
 			if (x_hot < fcis->images[i]->width && x_hot >= 0 &&
-			    y_hot < fcis->images[i]->height && y_hot >= 0)
-			{
+			    y_hot < fcis->images[i]->height && y_hot >= 0) {
 				fcis->images[i]->xhot = x_hot;
 				fcis->images[i]->yhot = y_hot;
 			}
@@ -573,55 +538,61 @@ Cursor PImageLoadCursorFromFile(
 		cursor = FcursorImagesLoadCursor(dpy, fcis);
 		FcursorImagesDestroy(fcis);
 	}
-	/* Get cursor data from the regular image loader */
-	else if (PImageLoadArgbDataFromFile(dpy, path, &data, &width, &height))
-	{
-		Pixmap src;
-		Pixmap msk = None;
+	/*
+	 * Get cursor data from the regular image loader
+	 */
+	else if (PImageLoadArgbDataFromFile(dpy, path, &data, &width,
+		&height)) {
+		Pixmap          src;
+		Pixmap          msk = None;
 		FvwmPictureAttributes fpa;
 
 		fpa.mask = FPAM_NO_ALPHA | FPAM_MONOCHROME;
 
-		/* Use the Xcursor library to create the argb cursor */
-		if ((fci = FcursorImageCreate(width, height)))
-		{
-			unsigned char alpha;
-			unsigned char red;
-			unsigned char green;
-			unsigned char blue;
+		/*
+		 * Use the Xcursor library to create the argb cursor
+		 */
+		if ((fci = FcursorImageCreate(width, height))) {
+			unsigned char   alpha;
+			unsigned char   red;
+			unsigned char   green;
+			unsigned char   blue;
 
-			/* Xcursor expects alpha prescaled RGB values */
-			for (i = 0; i < width * height; i++)
-			{
+			/*
+			 * Xcursor expects alpha prescaled RGB values
+			 */
+			for (i = 0; i < width * height; i++) {
 				alpha = ((data[i] >> 24) & 0xff);
-				red   = ((data[i] >> 16) & 0xff) * alpha/0xff;
-				green = ((data[i] >>  8) & 0xff) * alpha/0xff;
-				blue  = ((data[i]      ) & 0xff) * alpha/0xff;
+				red = ((data[i] >> 16) & 0xff) * alpha / 0xff;
+				green =
+				    ((data[i] >> 8) & 0xff) * alpha / 0xff;
+				blue = ((data[i]) & 0xff) * alpha / 0xff;
 
 				data[i] =
-					(alpha << 24) | (red << 16) |
-					(green <<  8) | blue;
+				    (alpha << 24) | (red << 16) |
+				    (green << 8) | blue;
 			}
 
 			fci->xhot = x_hot;
 			fci->yhot = y_hot;
 			fci->delay = 0;
-			fci->pixels = (FcursorPixel *)data;
+			fci->pixels = (FcursorPixel *) data;
 			cursor = FcursorImageLoadCursor(dpy, fci);
 			FcursorImageDestroy(fci);
 		}
-		/* Create monochrome cursor from argb data */
-		else if (PImageCreatePixmapFromArgbData(
-			dpy, win, data, 0, width, height,
-			&src, &msk, 0, 0, 0, 0, fpa))
-		{
-			XColor c[2];
+		/*
+		 * Create monochrome cursor from argb data
+		 */
+		else if (PImageCreatePixmapFromArgbData(dpy, win, data, 0,
+			width, height, &src, &msk, 0, 0, 0, 0, fpa)) {
+			XColor          c[2];
 
 			c[0].pixel = GetColor(DEFAULT_CURSOR_FORE_COLOR);
 			c[1].pixel = GetColor(DEFAULT_CURSOR_BACK_COLOR);
 			XQueryColors(dpy, Pcmap, c, 2);
-			cursor = XCreatePixmapCursor(
-				dpy, src, msk, &(c[0]), &(c[1]), x_hot, y_hot);
+			cursor =
+			    XCreatePixmapCursor(dpy, src, msk, &(c[0]),
+			    &(c[1]), x_hot, y_hot);
 			XFreePixmap(dpy, src);
 			XFreePixmap(dpy, msk);
 		}

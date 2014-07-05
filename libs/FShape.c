@@ -26,14 +26,15 @@
 #include <X11/Xutil.h>
 #include "FShape.h"
 
-int FShapeEventBase = 0;
-int FShapeErrorBase = 0;
-Bool FShapesSupported = False;
+int             FShapeEventBase = 0;
+int             FShapeErrorBase = 0;
+Bool            FShapesSupported = False;
 
-void FShapeInit(Display *dpy)
+void
+FShapeInit(Display *dpy)
 {
-  FShapesSupported =
-    FShapeQueryExtension(dpy, &FShapeEventBase, &FShapeErrorBase);
+	FShapesSupported =
+	    FShapeQueryExtension(dpy, &FShapeEventBase, &FShapeErrorBase);
 }
 
 #endif /* SHAPE */

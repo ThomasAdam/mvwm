@@ -24,24 +24,27 @@
 #include <unistd.h>
 #include "setpgrp.h"
 
-int fvwm_setpgrp(void)
+int
+fvwm_setpgrp(void)
 {
-	int rc;
+	int             rc;
 
 #ifdef HAVE_SETPGID
 	rc = setpgid(0, 0);
 #else
 
-#  ifdef HAVE_SETPGRP
-#    ifdef SETPGRP_VOID
+#ifdef HAVE_SETPGRP
+#ifdef SETPGRP_VOID
 	rc = setpgrp();
-#    else
+#else
 	rc = setpgrp(0, 0);
-#    endif
-#  else
-	/* neither setpgrp nor setpgid - just do nothing */
+#endif
+#else
+	/*
+	 * neither setpgrp nor setpgid - just do nothing
+	 */
 	rc = 0;
-#  endif
+#endif
 #endif
 
 	return rc;

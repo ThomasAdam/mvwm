@@ -21,8 +21,8 @@ typedef enum
 
 typedef struct
 {
-	cond_rc_enum rc;
-	int break_levels;
+	cond_rc_enum    rc;
+	int             break_levels;
 } cond_rc_t;
 
 /* ---------------------------- forward declarations ----------------------- */
@@ -31,6 +31,6 @@ typedef struct
 
 /* ---------------------------- interface functions ------------------------ */
 
-void condrc_init(cond_rc_t *cond_rc);
+void            condrc_init(cond_rc_t *cond_rc);
 
 #endif /* CONDRC_H */

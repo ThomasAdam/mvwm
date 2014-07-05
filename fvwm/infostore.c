@@ -41,8 +41,8 @@ static MetaInfo *mi_store;
 
 /* ---------------------------- forward declarations ----------------------- */
 
-static void delete_metainfo(const char *);
-static int get_metainfo_length(void);
+static void     delete_metainfo(const char *);
+static int      get_metainfo_length(void);
 
 /* ---------------------------- local variables ---------------------------- */
 
@@ -50,35 +50,38 @@ static int get_metainfo_length(void);
 
 /* ---------------------------- local functions ---------------------------- */
 
-MetaInfo *new_metainfo(void)
+MetaInfo       *
+new_metainfo(void)
 {
-	MetaInfo *mi;
+	MetaInfo       *mi;
 
 	mi = xcalloc(1, sizeof *mi);
 
 	return mi;
 }
 
-void insert_metainfo(char *key, char *value)
+void
+insert_metainfo(char *key, char *value)
 {
-	MetaInfo *mi;
-	MetaInfo *mi_new;
+	MetaInfo       *mi;
+	MetaInfo       *mi_new;
 
-	for (mi = mi_store; mi; mi = mi->next)
-	{
-		if (StrEquals(mi->key, key))
-		{
-			/* We already have an entry in the list with that key, so
-			 * update the value of it only.
+	for (mi = mi_store; mi; mi = mi->next) {
+		if (StrEquals(mi->key, key)) {
+			/*
+			 * We already have an entry in the list with that key, so
+			 * * update the value of it only.
 			 */
-			free (mi->value);
+			free(mi->value);
 			CopyString(&mi->value, value);
 
 			return;
 		}
 	}
 
-	/* It's a new item, add it to the list. */
+	/*
+	 * It's a new item, add it to the list.
+	 */
 	mi_new = new_metainfo();
 	mi_new->key = key;
 	CopyString(&mi_new->value, value);
@@ -89,14 +92,14 @@ void insert_metainfo(char *key, char *value)
 	return;
 }
 
-static void delete_metainfo(const char *key)
+static void
+delete_metainfo(const char *key)
 {
-	MetaInfo *mi_current, *mi_prev;
+	MetaInfo       *mi_current, *mi_prev;
 	mi_prev = NULL;
 
-	for(mi_current = mi_store; mi_current != NULL;
-		mi_prev = mi_current, mi_current = mi_current->next)
-	{
+	for (mi_current = mi_store; mi_current != NULL;
+	    mi_prev = mi_current, mi_current = mi_current->next) {
 		if (StrEquals(mi_current->key, key)) {
 			if (mi_prev == NULL)
 				mi_store = mi_current->next;
@@ -114,12 +117,12 @@ static void delete_metainfo(const char *key)
 	return;
 }
 
-inline char *get_metainfo_value(const char *key)
+inline char    *
+get_metainfo_value(const char *key)
 {
-	MetaInfo *mi_current;
+	MetaInfo       *mi_current;
 
-	for(mi_current = mi_store; mi_current; mi_current = mi_current->next)
-	{
+	for (mi_current = mi_store; mi_current; mi_current = mi_current->next) {
 		if (StrEquals(mi_current->key, key))
 			return mi_current->value;
 	}
@@ -127,34 +130,34 @@ inline char *get_metainfo_value(const char *key)
 	return NULL;
 }
 
-static inline int get_metainfo_length(void)
+static inline int
+get_metainfo_length(void)
 {
-	MetaInfo *mi;
-	int count;
+	MetaInfo       *mi;
+	int             count;
 
 	count = 0;
 
-	for(mi = mi_store; mi; mi = mi->next)
+	for (mi = mi_store; mi; mi = mi->next)
 		count++;
 
 	return count;
 }
 
-void print_infostore(void)
+void
+print_infostore(void)
 {
-	MetaInfo *mi;
+	MetaInfo       *mi;
 
 	fprintf(stderr, "Current items in infostore (key, value):\n\n");
 
-	if (get_metainfo_length() == 0)
-	{
+	if (get_metainfo_length() == 0) {
 		fprintf(stderr,
-			"No items are currently stored in the infostore.\n");
+		    "No items are currently stored in the infostore.\n");
 		return;
 	}
 
-	for(mi = mi_store; mi; mi = mi->next)
-	{
+	for (mi = mi_store; mi; mi = mi->next) {
 		fprintf(stderr, "%s\t%s\n", mi->key, mi->value);
 	}
 
@@ -165,10 +168,11 @@ void print_infostore(void)
 /* ---------------------------- interface functions ------------------------ */
 
 /* ---------------------------- builtin commands --------------------------- */
-void CMD_InfoStoreAdd(F_CMD_ARGS)
+void
+CMD_InfoStoreAdd(F_CMD_ARGS)
 {
-	char *key, *value;
-	char *token;
+	char           *key, *value;
+	char           *token;
 
 	token = PeekToken(action, &action);
 	key = value = NULL;
@@ -181,8 +185,7 @@ void CMD_InfoStoreAdd(F_CMD_ARGS)
 	if (token)
 		value = strdup(token);
 
-	if (!key || !value)
-	{
+	if (!key || !value) {
 		fvwm_msg(ERR, "CMD_InfoStore", "Bad arguments given.");
 		return;
 	}
@@ -193,15 +196,16 @@ void CMD_InfoStoreAdd(F_CMD_ARGS)
 	return;
 }
 
-void CMD_InfoStoreRemove(F_CMD_ARGS)
+void
+CMD_InfoStoreRemove(F_CMD_ARGS)
 {
-	char *token;
+	char           *token;
 
 	token = PeekToken(action, &action);
 
-	if (!token)
-	{
-		fvwm_msg(ERR, "CMD_InfoStoreRemove", "No key given to remove item.");
+	if (!token) {
+		fvwm_msg(ERR, "CMD_InfoStoreRemove",
+		    "No key given to remove item.");
 		return;
 	}
 
