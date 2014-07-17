@@ -178,12 +178,12 @@ ewmh_ActiveWindow(EWMH_CMD_ARGS)
 int
 ewmh_CloseWindow(EWMH_CMD_ARGS)
 {
-	if (ev == NULL) {
+	if (ev == NULL)
 		return 0;
-	}
-	if (!is_function_allowed(F_CLOSE, NULL, fw, RQORIG_PROGRAM_US, False)) {
+
+	if (!is_function_allowed(F_CLOSE, NULL, fw, RQORIG_PROGRAM_US, False))
 		return 0;
-	}
+
 	execute_function_override_window(NULL, NULL, "Close", 0, fw);
 
 	return 0;
@@ -198,9 +198,9 @@ ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 	int             value_mask;
 	int             source;
 
-	if (ev == NULL) {
+	if (ev == NULL)
 		return 0;
-	}
+
 	win_gravity = ev->xclient.data.l[0] & 0xff;
 	value_mask = (ev->xclient.data.l[0] >> 8) & 0xf;
 	source = (ev->xclient.data.l[0] >> 12) & 0xf;
@@ -218,9 +218,9 @@ ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 		    ((value_mask & CWHeight) == 0 ||
 			ev->xclient.data.l[4] == fw->g.normal.height)) {
 			func = F_MOVE;
-		} else {
+		} else
 			func = F_RESIZE;
-		}
+
 		do_reconfigure =
 		    ! !is_function_allowed(func, NULL, fw, RQORIG_PROGRAM,
 		    False);
@@ -244,17 +244,17 @@ ewmh_RestackWindow(EWMH_CMD_ARGS)
 	XConfigureRequestEvent cre;
 	int             do_restack;
 
-	if (ev == NULL) {
+	if (ev == NULL)
 		return 0;
-	}
+
 	if (fw == NULL) {
 		/*
 		 * unmanaged window
 		 */
 		do_restack = 1;
-	} else {
+	} else
 		do_restack = ! !DO_EWMH_USE_STACKING_HINTS(fw);
-	}
+
 	if (do_restack == 1) {
 		cre.value_mask = CWSibling | CWStackMode;
 		cre.above = ev->xclient.data.l[1];
@@ -320,9 +320,9 @@ ewmh_WMDesktop(EWMH_CMD_ARGS)
 
 			return 0;
 		}
-		if (HAS_EWMH_INIT_WM_DESKTOP(fw) != EWMH_STATE_UNDEFINED_HINT) {
+		if (HAS_EWMH_INIT_WM_DESKTOP(fw) != EWMH_STATE_UNDEFINED_HINT)
 			return 0;
-		}
+
 		val =
 		    ewmh_AtomGetByName(FW_W(fw), "_NET_WM_DESKTOP",
 		    EWMH_ATOM_LIST_CLIENT_WIN, &size);
@@ -369,9 +369,8 @@ ewmh_MoveResize(EWMH_CMD_ARGS)
 	Bool            move = False;
 	char            cmd[256];
 
-	if (ev == NULL) {
+	if (ev == NULL)
 		return 0;
-	}
 
 	dir = ev->xclient.data.l[2];
 	switch (dir) {
@@ -427,11 +426,10 @@ ewmh_MoveResize(EWMH_CMD_ARGS)
 		execute_function_override_window(NULL, NULL, cmd, 0, fw);
 	}
 
-	if (move) {
+	if (move)
 		execute_function_override_window(NULL, NULL, "Move", 0, fw);
-	} else {
+	else
 		execute_function_override_window(NULL, NULL, "Resize", 0, fw);
-	}
 
 	return 0;
 }
@@ -490,9 +488,8 @@ ewmh_WMState(EWMH_CMD_ARGS)
 			list->action(fw, NULL, style, has_hint);
 			list++;
 		}
-		if (val != NULL) {
-			free(val);
-		}
+		free(val);
+
 		return 0;
 	}
 
@@ -521,9 +518,8 @@ ewmh_WMState(EWMH_CMD_ARGS)
 int
 ewmh_WMStateFullScreen(EWMH_CMD_ARGS)
 {
-	if (ev == NULL && style == NULL) {
+	if (ev == NULL && style == NULL)
 		return (IS_EWMH_FULLSCREEN(fw));
-	}
 
 	if (ev == NULL && style != NULL) {
 		/*
@@ -642,6 +638,7 @@ ewmh_WMStateHidden(EWMH_CMD_ARGS)
 		style->flag_mask.do_start_iconic = 1;
 		style->change_mask.do_start_iconic = 1;
 		SET_HAS_EWMH_INIT_HIDDEN_STATE(fw, EWMH_STATE_HAS_HINT);
+
 		return 0;
 	}
 
@@ -683,8 +680,9 @@ ewmh_WMStateMaxHoriz(EWMH_CMD_ARGS)
 #else
 		/*
 		 * DV: the notion of vertical/horizontal maximization does not
-		 * * make any sense in fvwm, so just claim we're never maximized
+		 * make any sense in fvwm, so just claim we're never maximized
 		 */
+		/* TA:  Oh, but it does!  This is wrong!!! FIXME */
 		return 0;
 #endif
 	}
@@ -708,9 +706,9 @@ ewmh_WMStateMaxHoriz(EWMH_CMD_ARGS)
 		 * * override it, since having just one of MAXIMIZED_HORIZ or
 		 * * MAXIMIZED_HORZ is enough to make the window maximized.
 		 */
-		if (HAS_EWMH_INIT_MAXHORIZ_STATE(fw) == EWMH_STATE_HAS_HINT) {
+		if (HAS_EWMH_INIT_MAXHORIZ_STATE(fw) == EWMH_STATE_HAS_HINT)
 			return 0;
-		}
+
 		if (!has_hint) {
 			SET_HAS_EWMH_INIT_MAXHORIZ_STATE(fw,
 			    EWMH_STATE_NO_HINT);
@@ -751,6 +749,7 @@ ewmh_WMStateMaxVert(EWMH_CMD_ARGS)
 		 * DV: the notion of vertical/horizontal maximization does not
 		 * * make any sense in fvwm, so just claim we're never maximized
 		 */
+		/* TA:  Oh, but it does!  This is wrong!!! FIXME */
 		return 0;
 #endif
 	}
@@ -892,11 +891,11 @@ ewmh_WMStateModal(EWMH_CMD_ARGS)
 			 */
 		}
 		/*
-		 * !MODAL                       MODAL
-		 * * CMD
-		 * * STATE_ADD            ON                    do nothing
-		 * * STATE_TOGGLE                 ON                      OFF
-		 * * STATE_REMOVE                 do nothing              OFF
+		 *			!MODAL		MODAL
+		 * CMD
+		 * STATE_ADD            ON	        do nothing
+		 * STATE_TOGGLE         ON              OFF
+		 * STATE_REMOVE		do nothing	OFF
 		 */
 	}
 	return 0;
@@ -1027,7 +1026,6 @@ ewmh_WMStateSkipPager(EWMH_CMD_ARGS)
 		if ((bool_arg == NET_WM_STATE_TOGGLE &&
 			!DO_SKIP_WINDOW_LIST(fw)) ||
 		    bool_arg == NET_WM_STATE_ADD) {
-		} else {
 		}
 	}
 	return 0;
@@ -1091,7 +1089,6 @@ ewmh_WMStateSkipTaskBar(EWMH_CMD_ARGS)
 		if ((bool_arg == NET_WM_STATE_TOGGLE &&
 			!DO_SKIP_WINDOW_LIST(fw)) ||
 		    bool_arg == NET_WM_STATE_ADD) {
-		} else {
 		}
 	}
 	return 0;
@@ -1104,14 +1101,14 @@ ewmh_WMStateStaysOnTop(EWMH_CMD_ARGS)
 		unsigned long   do_restore = any;
 
 		if (do_restore) {
-			if (fw->ewmh_hint_layer == Scr.TopLayer) {
+			if (fw->ewmh_hint_layer == Scr.TopLayer)
 				return True;
-			}
+
 			return False;
 		}
-		if (fw->layer >= Scr.TopLayer) {
+		if (fw->layer >= Scr.TopLayer)
 			return True;
-		}
+
 		return False;
 	}
 
@@ -1122,16 +1119,15 @@ ewmh_WMStateStaysOnTop(EWMH_CMD_ARGS)
 			fprintf(stderr, "\tStaysOnTop\n");
 		}
 #endif
-		if (!DO_EWMH_USE_STACKING_HINTS(style)) {
+		if (!DO_EWMH_USE_STACKING_HINTS(style))
 			return 0;
-		}
+
 		if (!has_hint && fw->ewmh_hint_layer == 0) {
 			fw->ewmh_hint_layer = -1;
 			return 0;
 		}
-		if (fw->ewmh_hint_layer == -1) {
+		if (fw->ewmh_hint_layer == -1)
 			return 0;
-		}
 
 		fw->ewmh_hint_layer = Scr.TopLayer;
 		SSET_LAYER(*style, Scr.TopLayer);
@@ -1181,14 +1177,14 @@ ewmh_WMStateStaysOnBottom(EWMH_CMD_ARGS)
 		unsigned long   do_restore = any;
 
 		if (do_restore) {
-			if (fw->ewmh_hint_layer == Scr.BottomLayer) {
+			if (fw->ewmh_hint_layer == Scr.BottomLayer)
 				return True;
-			}
+
 			return False;
 		}
-		if (fw->layer <= Scr.BottomLayer) {
+		if (fw->layer <= Scr.BottomLayer)
 			return True;
-		}
+
 		return False;
 	}
 
@@ -1198,16 +1194,15 @@ ewmh_WMStateStaysOnBottom(EWMH_CMD_ARGS)
 		if (has_hint)
 			fprintf(stderr, "\tStaysOnBottom\n");
 #endif
-		if (!DO_EWMH_USE_STACKING_HINTS(style)) {
+		if (!DO_EWMH_USE_STACKING_HINTS(style))
 			return 0;
-		}
-		if (!has_hint && fw->ewmh_hint_layer == 0) {
+
+		if (!has_hint && fw->ewmh_hint_layer == 0)
 			fw->ewmh_hint_layer = -1;
 			return 0;
-		}
-		if (fw->ewmh_hint_layer == -1) {
+
+		if (fw->ewmh_hint_layer == -1)
 			return 0;
-		}
 
 		fw->ewmh_hint_layer = Scr.BottomLayer;
 		SSET_LAYER(*style, Scr.BottomLayer);
@@ -1333,8 +1328,8 @@ ewmh_WMIconGeometry(EWMH_CMD_ARGS)
 
 	/*
 	 * FIXME: After a (un)slide of kicker the geometry are wrong (not
-	 * * because we set the geometry just after the property notify).  This
-	 * * does not happen with kwin
+	 * because we set the geometry just after the property notify).  This
+	 * does not happen with kwin
 	 */
 	val = ewmh_AtomGetByName(FW_W(fw), "_NET_WM_ICON_GEOMETRY",
 	    EWMH_ATOM_LIST_PROPERTY_NOTIFY, &size);
@@ -1383,8 +1378,6 @@ EWMH_GetIconGeometry(FvwmWindow *fw, rectangle *icon_rect)
 	icon_rect->y = fw->ewmh_icon_geometry.y;
 	icon_rect->width = fw->ewmh_icon_geometry.width;
 	icon_rect->height = fw->ewmh_icon_geometry.height;
-
-	return;
 }
 
 int
@@ -1403,9 +1396,8 @@ ewmh_WMStrut(EWMH_CMD_ARGS)
 	val = ewmh_AtomGetByName(FW_W(fw), "_NET_WM_STRUT",
 	    EWMH_ATOM_LIST_PROPERTY_NOTIFY, &size);
 
-	if (val == NULL) {
+	if (val == NULL)
 		return 0;
-	}
 
 	if ((val[0] > 0 || val[1] > 0 || val[2] > 0 || val[3] > 0)
 	    &&
@@ -1441,9 +1433,9 @@ EWMH_ProcessClientMessage(const exec_context_t *exc)
 	if ((ewmh_a =
 		(ewmh_atom *) ewmh_GetEwmhAtomByAtom(ev->xclient.message_type,
 		    EWMH_ATOM_LIST_CLIENT_ROOT)) != NULL) {
-		if (ewmh_a->action != None) {
+		if (ewmh_a->action != None)
 			ewmh_a->action(fw, ev, NULL, 0);
-		}
+
 		return True;
 	}
 
@@ -1454,9 +1446,8 @@ EWMH_ProcessClientMessage(const exec_context_t *exc)
 		return False;
 	}
 
-	if (ev->xclient.window == None) {
+	if (ev->xclient.window == None)
 		return False;
-	}
 
 	/*
 	 * these one are special: we can get it on an unamaged window
@@ -1467,16 +1458,15 @@ EWMH_ProcessClientMessage(const exec_context_t *exc)
 		return True;
 	}
 
-	if (fw == NULL) {
+	if (fw == NULL)
 		return False;
-	}
 
 	if ((ewmh_a =
 		(ewmh_atom *) ewmh_GetEwmhAtomByAtom(ev->xclient.message_type,
 		    EWMH_ATOM_LIST_CLIENT_WIN)) != NULL) {
-		if (ewmh_a->action != None) {
+		if (ewmh_a->action != None)
 			ewmh_a->action(fw, ev, NULL, 0);
-		}
+
 		return True;
 	}
 
@@ -1498,5 +1488,4 @@ EWMH_ProcessPropertyNotify(const exec_context_t *exc)
 			ewmh_a->action(fw, ev, NULL, 0);
 		}
 	}
-
 }

@@ -63,39 +63,33 @@ static void
 update_nr_buttons(int contexts, int *nr_left_buttons, int *nr_right_buttons,
     Bool do_set)
 {
-	int             i;
-	int             l = *nr_left_buttons;
-	int             r = *nr_right_buttons;
+	int		 i;
+	int              l = *nr_left_buttons;
+	int              r = *nr_right_buttons;
 
-	if (contexts == C_ALL) {
+	if (contexts == C_ALL)
 		return;
-	}
+
 	/*
 	 * check for nr_left_buttons
 	 */
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i += 2) {
-		if ((contexts & (C_L1 << i))) {
-			if (do_set || *nr_left_buttons <= i / 2) {
+		if ((contexts & (C_L1 << i)))
+			if (do_set || *nr_left_buttons <= i / 2)
 				*nr_left_buttons = i / 2 + 1;
-			}
-		}
 	}
 	/*
 	 * check for nr_right_buttons
 	 */
 	for (i = 1; i < NUMBER_OF_TITLE_BUTTONS; i += 2) {
-		if ((contexts & (C_L1 << i))) {
-			if (do_set || *nr_right_buttons <= i / 2) {
+		if ((contexts & (C_L1 << i)))
+			if (do_set || *nr_right_buttons <= i / 2)
 				*nr_right_buttons = i / 2 + 1;
-			}
-		}
 	}
 	if (*nr_left_buttons != l || *nr_right_buttons != r) {
 		scr_flags.do_need_window_update = 1;
 		scr_flags.has_nr_buttons_changed = 1;
 	}
-
-	return;
 }
 
 static int
@@ -104,9 +98,9 @@ activate_binding(Binding *binding, binding_t type, Bool do_grab)
 	FvwmWindow     *t;
 	Bool            rc = 0;
 
-	if (binding == NULL) {
+	if (binding == NULL)
 		return rc;
-	}
+
 	if (BIND_IS_PKEY_BINDING(type) || binding->Context == C_ALL) {
 		/*
 		 * necessary for key bindings that work over unfocused windows
@@ -114,17 +108,15 @@ activate_binding(Binding *binding, binding_t type, Bool do_grab)
 		GrabWindowKeyOrButton(dpy, Scr.Root, binding,
 		    C_WINDOW | C_DECOR | C_ROOT | C_ICON | C_EWMH_DESKTOP,
 		    GetUnusedModifiers(), None, do_grab);
-		if (do_grab == False) {
+		if (do_grab == False)
 			rc = 1;
-		}
 	}
 	if (do_grab == False && BIND_IS_KEY_BINDING(type) &&
 	    (binding->Context & C_ROOT)) {
 		rc = 1;
 	}
-	if (fFvwmInStartup == True) {
+	if (fFvwmInStartup == True)
 		return rc;
-	}
 
 	/*
 	 * grab keys immediately
@@ -156,7 +148,6 @@ activate_binding(Binding *binding, binding_t type, Bool do_grab)
 			    do_grab);
 		}
 	}
-
 	return rc;
 }
 
@@ -167,13 +158,13 @@ bind_get_bound_button_contexts(Binding **pblist,
 	int             bcontext = 0;
 	Binding        *b;
 
-	if (buttons_grabbed) {
+	if (buttons_grabbed)
 		*buttons_grabbed = 0;
-	}
+
 	for (b = *pblist; b != NULL; b = b->NextBinding) {
-		if (!BIND_IS_MOUSE_BINDING(b->type)) {
+		if (!BIND_IS_MOUSE_BINDING(b->type))
 			continue;
-		}
+
 		if ((b->Context & (C_WINDOW | C_EWMH_DESKTOP)) &&
 		    buttons_grabbed != NULL) {
 			if (b->Button_Key == 0) {
@@ -186,9 +177,8 @@ bind_get_bound_button_contexts(Binding **pblist,
 				    (1 << (b->Button_Key - 1));
 			}
 		}
-		if (b->Context != C_ALL && (b->Context & (C_LALL | C_RALL))) {
+		if (b->Context != C_ALL && (b->Context & (C_LALL | C_RALL)))
 			bcontext |= b->Context;
-		}
 	}
 
 	return bcontext;
@@ -207,8 +197,6 @@ __rebind_global_key(Binding **pblist, int Button_Key)
 			return;
 		}
 	}
-
-	return;
 }
 
 /* Parses a mouse or key binding */
@@ -266,7 +254,6 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 					    "Syntax error in line %s -"
 					    " missing ')'", tline);
 				}
-
 				return 0;
 			}
 			++p;
@@ -279,7 +266,6 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 				    "Syntax error in line %s - trailing"
 				    " text after specified window", tline);
 			}
-
 			return 0;
 		}
 		token = PeekToken(ptr, &ptr);
@@ -317,13 +303,12 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 	}
 
 	token = PeekToken(ptr, &ptr);
-	if (token != NULL) {
+	if (token != NULL)
 		n2 = sscanf(token, "%19s", context_string);
-	}
+
 	token = PeekToken(ptr, &action);
-	if (token != NULL) {
+	if (token != NULL)
 		n3 = sscanf(token, "%19s", modifier_string);
-	}
 
 	if (n1 != 1 || n2 != 1 || n3 != 1) {
 		if (!is_silent) {
@@ -359,9 +344,9 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 		}
 	}
 
-	if (action != NULL) {
+	if (action != NULL)
 		action = SkipSpaces(action, NULL, 0);
-	}
+
 	if (action == NULL || *action == 0 ||
 	    (action[0] == '-' && !is_pass_through)) {
 		is_unbind_request = True;
@@ -382,7 +367,6 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 					    "Invalid action for global "
 					    "binding: %s", tline);
 				}
-
 				return 0;
 			}
 		}
@@ -396,7 +380,7 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 		    action, window_name);
 		/*
 		 * ParseBinding returns the number of new bindings in pblist
-		 * * menu bindings does not add to pblist, and should return 0
+		 * menu bindings does not add to pblist, and should return 0
 		 */
 
 		return 0;
@@ -408,8 +392,8 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 		placement_binding(button, keysym, modifier, action);
 		/*
 		 * ParseBinding returns the number of new bindings in pblist
-		 * * placement bindings does not add to pblist, and should
-		 * * return 0
+		 * placement bindings does not add to pblist, and should
+		 * return 0
 		 */
 
 		return 0;
@@ -434,10 +418,9 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 				 */
 				rc |= activate_binding(b, type, False);
 			}
-			if (rc) {
+			if (rc)
 				__rebind_global_key(pblist,
 				    rmlist->Button_Key);
-			}
 		}
 		FreeBindingList(rmlist);
 		bcontext =
@@ -448,9 +431,9 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 	/*
 	 * return if it is an unbind request
 	 */
-	if (is_unbind_request) {
+	if (is_unbind_request)
 		return 0;
-	}
+
 	/*
 	 * END remove
 	 */
@@ -468,9 +451,8 @@ ParseBinding(Display *dpy, Binding **pblist, char *tline, binding_t type,
 		if (button == 0) {
 			*buttons_grabbed |=
 			    ((1 << NUMBER_OF_EXTENDED_MOUSE_BUTTONS) - 1);
-		} else {
+		} else
 			*buttons_grabbed |= (1 << (button - 1));
-		}
 	}
 	rc = AddBinding(dpy, pblist, type,
 	    button, keysym, key_string, modifier, context, (void *) action,
@@ -499,8 +481,6 @@ binding_cmd(F_CMD_ARGS, binding_t type)
 	    count--, b = b->NextBinding) {
 		activate_binding(b, type, True);
 	}
-
-	return;
 }
 
 void
@@ -526,9 +506,9 @@ print_bindings(void)
 			    "invalid binding type %d", b->type);
 			continue;
 		}
-		if (b->windowName != NULL) {
+		if (b->windowName != NULL)
 			fprintf(stderr, " (%s)", b->windowName);
-		}
+
 		switch (b->type) {
 		case BIND_KEYPRESS:
 		case BIND_PKEYPRESS:
@@ -540,8 +520,8 @@ print_bindings(void)
 			break;
 		}
 		{
-			char           *mod_string;
-			char           *context_string;
+			char    *mod_string;
+			char	*context_string;
 
 			mod_string =
 			    charmap_table_to_string(MaskUsedModifiers(b->
@@ -579,24 +559,18 @@ void
 CMD_Key(F_CMD_ARGS)
 {
 	binding_cmd(F_PASS_ARGS, BIND_KEYPRESS);
-
-	return;
 }
 
 void
 CMD_PointerKey(F_CMD_ARGS)
 {
 	binding_cmd(F_PASS_ARGS, BIND_PKEYPRESS);
-
-	return;
 }
 
 void
 CMD_Mouse(F_CMD_ARGS)
 {
 	binding_cmd(F_PASS_ARGS, BIND_BUTTONPRESS);
-
-	return;
 }
 
 /* Declares which X modifiers are actually locks and should be ignored when
@@ -608,20 +582,15 @@ CMD_IgnoreModifiers(F_CMD_ARGS)
 	int             mods_unused_old = mods_unused;
 
 	token = PeekToken(action, &action);
-	if (!token) {
+	if (!token)
 		mods_unused = 0;
-	} else if (StrEquals(token, "default")) {
+	else if (StrEquals(token, "default"))
 		mods_unused = DEFAULT_MODS_UNUSED;
-	} else if (modifiers_string_to_modmask(token, &mods_unused)) {
+	else if (modifiers_string_to_modmask(token, &mods_unused)) {
 		fvwm_msg(ERR, "ignore_modifiers",
 		    "illegal modifier in line %s\n", action);
 	}
-	if (mods_unused != mods_unused_old) {
-		/*
-		 * broadcast config to modules
-		 */
-		broadcast_ignore_modifiers();
-	}
 
-	return;
+	if (mods_unused != mods_unused_old)
+		broadcast_ignore_modifiers();
 }

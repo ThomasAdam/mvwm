@@ -49,9 +49,8 @@ EWMH_SetVisibleName(FvwmWindow *fw, Bool is_icon_name)
 	char           *tmp_str;
 	FlocaleCharset *fc = NULL;
 
-	if (!FiconvSupport) {
+	if (!FiconvSupport)
 		return;
-	}
 
 	/*
 	 * set the ewmh visible name only if it is != wm name
@@ -83,17 +82,15 @@ EWMH_SetVisibleName(FvwmWindow *fw, Bool is_icon_name)
 		tmp_str = fw->visible_name;
 	}
 
-	if (tmp_str == NULL) {
+	if (tmp_str == NULL)
 		return;	/* should never happen */
-	}
 
 	val =
 	    (unsigned char *) FiconvCharsetToUtf8(dpy, fc, tmp_str,
 	    strlen(tmp_str));
 
-	if (val == NULL) {
+	if (val == NULL)
 		return;
-	}
 
 	if (is_icon_name) {
 		ewmh_ChangeProperty(FW_W(fw), "_NET_WM_ICON_VISIBLE_NAME",
@@ -118,9 +115,8 @@ EWMH_WMIconName(EWMH_CMD_ARGS)
 	char           *tmp_str;
 	FlocaleCharset *fc = NULL;
 
-	if (!FiconvSupport) {
+	if (!FiconvSupport)
 		return 0;
-	}
 
 	val = ewmh_AtomGetByName(FW_W(fw), "_NET_WM_ICON_NAME",
 	    EWMH_ATOM_LIST_PROPERTY_NOTIFY, &size);
@@ -129,9 +125,8 @@ EWMH_WMIconName(EWMH_CMD_ARGS)
 		SET_HAS_EWMH_WM_ICON_NAME(fw, 0);
 		return 0;
 	}
-	if (IS_ICON_FONT_LOADED(fw) && fw->icon_font != NULL) {
+	if (IS_ICON_FONT_LOADED(fw) && fw->icon_font != NULL)
 		fc = fw->icon_font->str_fc;
-	}
 
 	tmp_str =
 	    (char *) FiconvUtf8ToCharset(dpy, fc, (const char *) val, size);
@@ -140,9 +135,9 @@ EWMH_WMIconName(EWMH_CMD_ARGS)
 		SET_HAS_EWMH_WM_ICON_NAME(fw, 0);
 		return 0;
 	}
-	if (strlen(tmp_str) > MAX_ICON_NAME_LEN) {
+	if (strlen(tmp_str) > MAX_ICON_NAME_LEN)
 		tmp_str[MAX_ICON_NAME_LEN] = 0;
-	}
+
 	SET_HAS_EWMH_WM_ICON_NAME(fw, 1);
 	if (fw->icon_name.name && strcmp(tmp_str, fw->icon_name.name) == 0) {
 		/*
@@ -174,6 +169,7 @@ EWMH_WMIconName(EWMH_CMD_ARGS)
 	EWMH_SetVisibleName(fw, True);
 	BroadcastWindowIconNames(fw, False, True);
 	RedoIconName(fw);
+
 	return 1;
 }
 
@@ -227,9 +223,8 @@ EWMH_WMName(EWMH_CMD_ARGS)
 
 	fw->name.name = tmp_str;
 
-	if (ev == NULL) {
+	if (ev == NULL)
 		return 1;
-	}
 
 	setup_visible_name(fw, False);
 	SET_NAME_CHANGED(fw, 1);
@@ -269,35 +264,34 @@ EWMH_SetDesktopNames(struct monitor *m)
 	unsigned char **names;
 	unsigned char  *val;
 
-	if (!FiconvSupport) {
+	if (!FiconvSupport)
 		return;
-	}
 
 	d = m->Desktops->next;
 	/*
 	 * skip negative desk
 	 */
-	while (d != NULL && d->desk < 0) {
+	while (d != NULL && d->desk < 0)
 		d = d->next;
-	}
+
 	s = d;
 	while (d != NULL && d->name != NULL && d->desk == nbr) {
 		nbr++;
 		d = d->next;
 	}
-	if (nbr == 0) {
+	if (nbr == 0)
 		return;
-	}
+
 	names = xmalloc(sizeof(*names) * nbr);
 	for (i = 0; i < nbr; i++) {
 		names[i] =
 		    (unsigned char *) FiconvCharsetToUtf8(dpy, NULL, s->name,
 		    strlen(s->name));
-		if (names[i]) {
+		if (names[i])
 			len += strlen((char *) names[i]) + 1;
-		} else {
+		else
 			len++;
-		}
+
 		s = s->next;
 	}
 	val = xmalloc(len);

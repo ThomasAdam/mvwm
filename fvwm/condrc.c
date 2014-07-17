@@ -46,6 +46,4 @@ condrc_init(cond_rc_t *cond_rc)
 {
 	memset(cond_rc, 0, sizeof(*cond_rc));
 	cond_rc->rc = COND_RC_OK;
-
-	return;
 }

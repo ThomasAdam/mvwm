@@ -52,11 +52,10 @@ set_state_workaround(void)
 		if ((t->Desk != t->m->virtual_scr.CurrentDesk) &&
 		    (!is_window_sticky_across_desks(t) &&
 			!IS_ICON_UNMAPPED(t))) {
-			if (bo.do_enable_ewmh_iconic_state_workaround) {
+			if (bo.do_enable_ewmh_iconic_state_workaround)
 				SetMapStateProp(t, NormalState);
-			} else {
+			else
 				SetMapStateProp(t, IconicState);
-			}
 		}
 	}
 }
@@ -79,9 +78,9 @@ EWMH_BugOpts(char *opt, Bool toggle)
 			bo.do_enable_ewmh_iconic_state_workaround = 0;
 			break;
 		}
-		if (save_isw != bo.do_enable_ewmh_iconic_state_workaround) {
+		if (save_isw != bo.do_enable_ewmh_iconic_state_workaround)
 			set_state_workaround();
-		}
+
 		return True;
 	}
 

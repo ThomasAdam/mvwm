@@ -85,14 +85,13 @@ typedef struct ewmh_info
 
 extern ewmhInfo ewmhc;
 
-ewmh_atom      *ewmh_GetEwmhAtomByAtom(Atom atom,
-    ewmh_atom_list_name list_name);
-void            ewmh_ChangeProperty(Window w, const char *atom_name,
-    ewmh_atom_list_name list, unsigned char *data, int length);
-void            ewmh_DeleteProperty(Window w, const char *atom_name,
+ewmh_atom      *ewmh_GetEwmhAtomByAtom(Atom, ewmh_atom_list_name list_name);
+void            ewmh_ChangeProperty(Window, const char *,
+    ewmh_atom_list_name list, unsigned char *, int);
+void            ewmh_DeleteProperty(Window, const char *,
     ewmh_atom_list_name list);
-void           *ewmh_AtomGetByName(Window win, const char *atom_name,
-    ewmh_atom_list_name list, int *size);
+void           *ewmh_AtomGetByName(Window, const char *,
+    ewmh_atom_list_name list, int *);
 
 int             ewmh_HandleDesktop(EWMH_CMD_ARGS);
 int             ewmh_HandleDialog(EWMH_CMD_ARGS);
@@ -106,7 +105,7 @@ void            ewmh_AddToKdeSysTray(FvwmWindow *fw);
 void            ewmh_SetWorkArea(void);
 void            ewmh_ComputeAndSetWorkArea(struct monitor *);
 void            ewmh_HandleDynamicWorkArea(struct monitor *);
-void            ewmh_HandleWindowType(FvwmWindow *fw, window_style *style);
+void            ewmh_HandleWindowType(FvwmWindow *, window_style *);
 
 int             ewmh_CurrentDesktop(EWMH_CMD_ARGS);
 int             ewmh_DesktopGeometry(EWMH_CMD_ARGS);
@@ -146,12 +145,12 @@ Bool            ewmh_AllowsResize(EWMH_CMD_ARGS);
 
 /* ewmh_icon */
 int             ewmh_WMIcon(EWMH_CMD_ARGS);
-CARD32         *ewmh_SetWmIconFromPixmap(FvwmWindow *fw, CARD32 *orig_icon,
-    int *orig_size, Bool is_mini_icon);
+CARD32         *ewmh_SetWmIconFromPixmap(FvwmWindow *, CARD32 *,
+    int *, Bool);
 
 /* debugging */
 #ifdef EWMH_DEBUG
-void            EWMH_DLOG(char *msg, ...);
+void            EWMH_DLOG(char *, ...);
 #else
 
 #endif

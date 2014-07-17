@@ -151,9 +151,8 @@ blockissubset(char *sub, char *super, int length)
 	int             i;
 
 	for (i = 0; i < length; i++) {
-		if ((sub[i] & super[i]) != sub[i]) {
+		if ((sub[i] & super[i]) != sub[i])
 			return 0;
-		}
 	}
 
 	return 1;
@@ -165,9 +164,8 @@ blocksintersect(char *blk1, char *blk2, int length)
 	int             i;
 
 	for (i = 0; i < length; i++) {
-		if (blk1[i] & blk2[i]) {
+		if (blk1[i] & blk2[i])
 			return 1;
-		}
 	}
 
 	return 0;
@@ -204,20 +202,18 @@ static int
 fw_match_style_id(FvwmWindow *fw, style_id_t s_id)
 {
 	if (SID_GET_HAS_NAME(s_id)) {
-		if (matchWildcards(SID_GET_NAME(s_id), fw->class.res_class) ==
-		    1) {
+		if (matchWildcards(SID_GET_NAME(s_id), fw->class.res_class) == 1)
 			return 1;
-		}
-		if (matchWildcards(SID_GET_NAME(s_id), fw->class.res_name) ==
-		    1) {
+
+		if (matchWildcards(SID_GET_NAME(s_id), fw->class.res_name) == 1)
 			return 1;
-		}
-		if (matchWildcards(SID_GET_NAME(s_id), fw->visible_name) == 1) {
+
+		if (matchWildcards(SID_GET_NAME(s_id), fw->visible_name) == 1)
 			return 1;
-		}
-		if (matchWildcards(SID_GET_NAME(s_id), fw->name.name) == 1) {
+
+		if (matchWildcards(SID_GET_NAME(s_id), fw->name.name) == 1)
 			return 1;
-		}
+
 		if (fw->style_name != NULL &&
 		    matchWildcards(SID_GET_NAME(s_id), fw->style_name) == 1) {
 			return 1;
@@ -250,8 +246,6 @@ remove_icon_boxes_from_style(window_style *pstyle)
 		pstyle->flags.has_icon_boxes = 0;
 		SSET_ICON_BOXES(*pstyle, NULL);
 	}
-
-	return;
 }
 
 static void
@@ -325,11 +319,8 @@ cleanup_style_defaults(window_style *style)
 
 	mask = (char *) &(style->flag_mask);
 	dflt = (char *) &(style->flag_default);
-	for (i = 0; i < sizeof(style_flags); i++) {
+	for (i = 0; i < sizeof(style_flags); i++)
 		dflt[i] &= ~mask[i];
-	}
-
-	return;
 }
 
 /* merge_styles - For a matching style, merge window_style to window_style
@@ -692,8 +683,6 @@ merge_styles(window_style *merged_style, window_style *add_style,
 		merge_dflt[i] &= ~merge_mask[i];
 	}
 	merged_style->has_style_changed |= add_style->has_style_changed;
-
-	return;
 }
 
 static void
@@ -717,8 +706,6 @@ free_style(window_style *style)
 	SAFEFREE(SGET_INITIAL_MAP_COMMAND_STRING(*style));
 	SAFEFREE(SGET_TITLE_FORMAT_STRING(*style));
 	SAFEFREE(SGET_ICON_TITLE_FORMAT_STRING(*style));
-
-	return;
 }
 
 /* Frees only selected members of a style; adjusts the flag_mask and
@@ -739,36 +726,16 @@ free_style_mask(window_style *style, style_flags * mask)
 	/*
 	 * Free contents of style
 	 */
-	if (pmask->has_color_back) {
-		SAFEFREE(SGET_BACK_COLOR_NAME(*style));
-	}
-	if (pmask->has_color_fore) {
-		SAFEFREE(SGET_FORE_COLOR_NAME(*style));
-	}
-	if (pmask->has_color_back_hi) {
-		SAFEFREE(SGET_BACK_COLOR_NAME_HI(*style));
-	}
-	if (pmask->has_color_fore_hi) {
-		SAFEFREE(SGET_FORE_COLOR_NAME_HI(*style));
-	}
-	if (pmask->has_decor) {
-		SAFEFREE(SGET_DECOR_NAME(*style));
-	}
-	if (pmask->common.has_icon_font) {
-		SAFEFREE(SGET_ICON_FONT(*style));
-	}
-	if (pmask->common.has_window_font) {
-		SAFEFREE(SGET_WINDOW_FONT(*style));
-	}
-	if (pmask->has_icon) {
-		SAFEFREE(SGET_ICON_NAME(*style));
-	}
-	if (pmask->has_mini_icon) {
-		SAFEFREE(SGET_MINI_ICON_NAME(*style));
-	}
-	if (pmask->has_icon_boxes) {
-		remove_icon_boxes_from_style(style);
-	}
+	SAFEFREE(SGET_BACK_COLOR_NAME(*style));
+	SAFEFREE(SGET_FORE_COLOR_NAME(*style));
+	SAFEFREE(SGET_BACK_COLOR_NAME_HI(*style));
+	SAFEFREE(SGET_FORE_COLOR_NAME_HI(*style));
+	SAFEFREE(SGET_DECOR_NAME(*style));
+	SAFEFREE(SGET_ICON_FONT(*style));
+	SAFEFREE(SGET_WINDOW_FONT(*style));
+	SAFEFREE(SGET_ICON_NAME(*style));
+	SAFEFREE(SGET_MINI_ICON_NAME(*style));
+	remove_icon_boxes_from_style(style);
 	/*
 	 * remove styles from definitiion
 	 */
@@ -780,8 +747,6 @@ free_style_mask(window_style *style, style_flags * mask)
 	blockunmask((char *) &style->change_mask,
 	    (char *) &style->change_mask, (char *) pmask,
 	    sizeof(style_flags));
-
-	return;
 }
 
 static void
@@ -789,11 +754,11 @@ add_style_to_list(window_style *new_style)
 {
 	/*
 	 * This used to contain logic that returned if the style didn't contain
-	 * * anything.    I don't see why we should bother. dje.
-	 * *
-	 * * used to merge duplicate entries, but that is no longer
-	 * * appropriate since conflicting styles are possible, and the
-	 * * last match should win!
+	 * anything.    I don't see why we should bother. dje.
+	 *
+	 * used to merge duplicate entries, but that is no longer
+	 * appropriate since conflicting styles are possible, and the
+	 * last match should win!
 	 */
 
 	if (last_style_in_list != NULL) {
@@ -811,8 +776,6 @@ add_style_to_list(window_style *new_style)
 	SSET_NEXT_STYLE(*new_style, NULL);
 	last_style_in_list = new_style;
 	scr_flags.do_need_style_list_update = 1;
-
-	return;
 }      /* end function */
 
 static void
@@ -1240,8 +1203,6 @@ style_set_old_focus_policy(window_style *ps, int policy)
 		FPS_SORT_WINDOWLIST_BY(S_FOCUS_POLICY(SCD(*ps)), 1);
 		FPS_SORT_WINDOWLIST_BY(S_FOCUS_POLICY(SCC(*ps)), 1);
 	}
-
-	return;
 }
 
 static char    *
@@ -1313,9 +1274,8 @@ style_parse_focus_policy_style(char *option, char *rest, char **ret_rest,
 	int             index;
 	char           *token;
 
-	if (ret_rest) {
+	if (ret_rest)
 		*ret_rest = rest;
-	}
 
 	found = True;
 	val = !is_reversed;
@@ -1347,22 +1307,21 @@ style_parse_focus_policy_style(char *option, char *rest, char **ret_rest,
 			s[0] = *token;
 			s[1] = 0;
 			button = atoi(s);
-			if (button == 0) {
+			if (button == 0)
 				val = ~0;
-			} else if (button > NUMBER_OF_EXTENDED_MOUSE_BUTTONS) {
+			else if (button > NUMBER_OF_EXTENDED_MOUSE_BUTTONS)
 				break;
-			} else {
+			else
 				val |= (1 << (button - 1));
-			}
 		}
 		if (token != NULL && *token != 0) {
 			fvwm_msg(ERR, "style_parse_focus_policy_style",
 			    "illegal mouse button '%c'", *token);
 			val = DEF_FP_MOUSE_BUTTONS;
 		}
-		if (token == NULL) {
+		if (token == NULL)
 			val = DEF_FP_MOUSE_BUTTONS;
-		}
+
 		FPS_MOUSE_BUTTONS(*f, val);
 		FPS_MOUSE_BUTTONS(*m, ~0);
 		FPS_MOUSE_BUTTONS(*c, ~0);
@@ -1380,9 +1339,9 @@ style_parse_focus_policy_style(char *option, char *rest, char **ret_rest,
 		    modifiers_string_to_modmask(token, &val) == 1) {
 			val = DEF_FP_MODIFIERS;
 		}
-		if (val & AnyModifier) {
+		if (val & AnyModifier)
 			val = FPOL_ANY_MODIFIER;
-		}
+
 		FPS_MODIFIERS(*f, val);
 		FPS_MODIFIERS(*m, ~0);
 		FPS_MODIFIERS(*c, ~0);
@@ -1627,9 +1586,8 @@ style_parse_icon_size_style(char *option, char *rest, window_style *ps)
 	} else if (StrEquals(option, "Shrunk")) {
 		SSET_ICON_RESIZE_TYPE(*ps, ICON_RESIZE_TYPE_SHRUNK);
 		option = PeekToken(rest, &rest);
-	} else {
+	} else
 		SSET_ICON_RESIZE_TYPE(*ps, ICON_RESIZE_TYPE_NONE);
-	}
 
 	switch (GetIntegerArguments(rest, &rest, vals, 4)) {
 	case 0:
@@ -1670,9 +1628,8 @@ style_parse_icon_size_style(char *option, char *rest, window_style *ps)
 			/*
 			 * User requests default value for this dimension
 			 */
-			else if (vals[i] == UNSPECIFIED_ICON_DIMENSION) {
+			else if (vals[i] == UNSPECIFIED_ICON_DIMENSION)
 				use_default = 1;
-			}
 
 			if (use_default) {
 				/*
@@ -1721,9 +1678,9 @@ style_parse_icon_box_style(icon_boxes ** ret_ib, char *option, char *rest,
 		/*
 		 * delete icon boxes from style
 		 */
-		if (SGET_ICON_BOXES(*ps)) {
+		if (SGET_ICON_BOXES(*ps))
 			remove_icon_boxes_from_style(ps);
-		}
+
 		(*ret_ib) = NULL;
 		if (option) {
 			/*
@@ -2032,9 +1989,9 @@ style_parse_icon_fill_style(char *option, char *rest, window_style *ps,
 		/*
 		 * its wrong
 		 */
-		if (!option) {
+		if (!option)
 			option = "(none)";
-		}
+
 		fvwm_msg(ERR, "CMD_Style",
 		    "IconFill must be followed by T|B|R|L, found"
 		    " %s.", option);
@@ -2157,9 +2114,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_MAXIMIZE_FIXED_SIZE_DISALLOWED(SCF(*ps), !on);
 			S_SET_MAXIMIZE_FIXED_SIZE_DISALLOWED(SCM(*ps), 1);
 			S_SET_MAXIMIZE_FIXED_SIZE_DISALLOWED(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'b':
@@ -2179,9 +2136,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				    "Style BackColor requires color"
 				    " argument");
 			}
-		} else if (StrEquals(token, "Button")) {
+		} else if (StrEquals(token, "Button"))
 			rest = style_parse_button_style(ps, rest, on);
-		} else if (StrEquals(token, "BorderWidth")) {
+		else if (StrEquals(token, "BorderWidth")) {
 			if (GetIntegerArguments(rest, &rest, val, 1)) {
 				SSET_BORDER_WIDTH(*ps, (short) *val);
 				ps->flags.has_border_width = 1;
@@ -2224,9 +2181,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_HAS_NO_BORDER(SCF(*ps), !on);
 			S_SET_HAS_NO_BORDER(SCM(*ps), 1);
 			S_SET_HAS_NO_BORDER(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'c':
@@ -2291,12 +2248,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 					 * spool to third '/' in original
 					 * * string too
 					 */
-					for (i = 0, s = rest; *s && i < 3;
-					    s++) {
-						if (*s == '/') {
+					for (i = 0, s = rest; *s && i < 3; s++)
+						if (*s == '/')
 							i++;
-						}
-					}
 					next = s - 1;
 				}
 			} else {
@@ -2324,9 +2278,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				    *rest != ',' && *rest != '/') {
 					rest++;
 				}
-				if (*rest == '/') {
+				if (*rest == '/')
 					rest++;
-				}
 			}
 
 			rest = GetNextToken(rest, &token);
@@ -2412,9 +2365,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_IS_UNCLOSABLE(SCF(*ps), !on);
 			S_SET_IS_UNCLOSABLE(SCM(*ps), 1);
 			S_SET_IS_UNCLOSABLE(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'd':
@@ -2442,9 +2395,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_DO_STACK_TRANSIENT_PARENT(SCF(*ps), !on);
 			S_SET_DO_STACK_TRANSIENT_PARENT(SCM(*ps), 1);
 			S_SET_DO_STACK_TRANSIENT_PARENT(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'e':
@@ -2452,9 +2405,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			char           *format;
 			/*
 			 * TA:  This is being deprecated in favour of the more
-			 * * generic:
-			 * *
-			 * * TitleFormat %n
+			 * generic:
+			 *
+			 * TitleFormat %n
 			 */
 			fvwm_msg(WARN, "style_parse_one_style_option",
 			    "ExactWindowName is deprecated -- using"
@@ -2468,9 +2421,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			char           *format;
 			/*
 			 * TA:  This is being deprecated in favour of the more
-			 * * generic:
-			 * *
-			 * * IconTitleFormat %n
+			 * generic:
+			 *
+			 * IconTitleFormat %n
 			 */
 			fvwm_msg(WARN, "style_parse_one_style_option",
 			    "ExactIconName is deprecated -- using"
@@ -2498,12 +2451,12 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				has_move = 0;
 				has_xinerama_move = 0;
 			}
-			if (val[0] < 0) {
+			if (val[0] < 0)
 				val[0] = 0;
-			}
-			if (val[1] < 0) {
+
+			if (val[1] < 0)
 				val[1] = 0;
-			}
+
 			ps->flags.has_edge_resistance_move = has_move;
 			ps->flag_mask.has_edge_resistance_move = 1;
 			ps->change_mask.has_edge_resistance_move = 1;
@@ -2535,9 +2488,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				ps->flag_mask.has_edge_delay_ms_resize = 1;
 				ps->change_mask.has_edge_delay_ms_resize = 1;
 			}
-		} else {
+		} else
 			found = EWMH_CMD_Style(token, ps, on);
-		}
+
 		break;
 
 	case 'f':
@@ -2606,9 +2559,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_IS_PSIZE_FIXED(SCF(*ps), on);
 			S_SET_IS_PSIZE_FIXED(SCM(*ps), 1);
 			S_SET_IS_PSIZE_FIXED(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'g':
@@ -2630,9 +2583,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			    on);
 			FPS_GRAB_FOCUS_TRANSIENT(S_FOCUS_POLICY(SCM(*ps)), 1);
 			FPS_GRAB_FOCUS_TRANSIENT(S_FOCUS_POLICY(SCC(*ps)), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'h':
@@ -2711,9 +2664,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->flags.use_icon_title_colorset_hi = (*val >= 0);
 			ps->flag_mask.use_icon_title_colorset_hi = 1;
 			ps->change_mask.use_icon_title_colorset_hi = 1;
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'i':
@@ -2746,11 +2699,11 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 		} else if (StrEquals(token, "IconBackgroundPadding")) {
 			*val = ICON_BACKGROUND_PADDING;
 			GetIntegerArguments(rest, &rest, val, 1);
-			if (*val < 0) {
+			if (*val < 0)
 				*val = 0;
-			} else if (*val > 50) {
+			else if (*val > 50)
 				*val = 50;
-			}
+
 			SSET_ICON_BACKGROUND_PADDING(*ps,
 			    (unsigned char) *val);
 			ps->flags.has_icon_background_padding = 1;
@@ -2759,11 +2712,11 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 		} else if (StrEquals(token, "IconBackgroundRelief")) {
 			*val = ICON_RELIEF_WIDTH;
 			GetIntegerArguments(rest, &rest, val, 1);
-			if (*val < -50) {
+			if (*val < -50)
 				*val = -50;
-			} else if (*val > 50) {
+			else if (*val > 50)
 				*val = 50;
-			}
+
 			SSET_ICON_BACKGROUND_RELIEF(*ps, (signed char) *val);
 			ps->flags.has_icon_background_relief = 1;
 			ps->flag_mask.has_icon_background_relief = 1;
@@ -2819,11 +2772,11 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 		} else if (StrEquals(token, "IconTitleRelief")) {
 			*val = ICON_RELIEF_WIDTH;
 			GetIntegerArguments(rest, &rest, val, 1);
-			if (*val < -50) {
+			if (*val < -50)
 				*val = -50;
-			} else if (*val > 50) {
+			else if (*val > 50)
 				*val = 50;
-			}
+
 			SSET_ICON_TITLE_RELIEF(*ps, (signed char) *val);
 			ps->flags.has_icon_title_relief = 1;
 			ps->flag_mask.has_icon_title_relief = 1;
@@ -2857,9 +2810,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			char           *format;
 			/*
 			 * TA:  This is being deprecated in favour of the more
-			 * * generic:
-			 * *
-			 * * TitleFormat %n
+			 * generic:
+			 *
+			 * TitleFormat %n
 			 */
 			fvwm_msg(WARN, "style_parse_one_style_option",
 			    "IndexedWindowName is deprecated.  "
@@ -2874,9 +2827,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			char           *format;
 			/*
 			 * TA:  This is being deprecated in favour of the more
-			 * * generic:
-			 * *
-			 * * TitleFormat %n
+			 * generic:
+			 *
+			 * TitleFormat %n
 			 */
 			fvwm_msg(WARN, "style_parse_one_style_option",
 			    "IndexedIconName is deprecated.  "
@@ -2896,16 +2849,13 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->flag_mask.has_initial_map_command_string = on;
 			ps->change_mask.has_initial_map_command_string = 1;
 			rest = NULL;	/* consume the entire string */
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'j':
-		if (0) {
-		} else {
 			found = False;
-		}
 		break;
 
 	case 'k':
@@ -2913,9 +2863,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_DO_USE_WINDOW_GROUP_HINT(SCF(*ps), on);
 			S_SET_DO_USE_WINDOW_GROUP_HINT(SCM(*ps), 1);
 			S_SET_DO_USE_WINDOW_GROUP_HINT(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'l':
@@ -2956,9 +2906,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_DO_LOWER_TRANSIENT(SCF(*ps), on);
 			S_SET_DO_LOWER_TRANSIENT(SCM(*ps), 1);
 			S_SET_DO_LOWER_TRANSIENT(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'm':
@@ -3003,9 +2953,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				    &f[1], &f[2], &f[3], &f[4], &f[5]);
 				for (i = 0; i < num; i++) {
 					PeekToken(rest, &rest);
-					if (f[i] < 0) {
+					if (f[i] < 0)
 						bad = True;
-					}
 				}
 			}
 			if (bad) {
@@ -3020,24 +2969,24 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				p = SGET_PLACEMENT_PENALTY_PTR(*ps);
 				*p = default_pl_penalty;
 			}
-			if (num > 0) {
+			if (num > 0)
 				(*ps).pl_penalty.normal = f[0];
-			}
-			if (num > 1) {
+
+			if (num > 1)
 				(*ps).pl_penalty.ontop = f[1];
-			}
-			if (num > 2) {
+
+			if (num > 2)
 				(*ps).pl_penalty.icon = f[2];
-			}
-			if (num > 3) {
+
+			if (num > 3)
 				(*ps).pl_penalty.sticky = f[3];
-			}
-			if (num > 4) {
+
+			if (num > 4)
 				(*ps).pl_penalty.below = f[4];
-			}
-			if (num > 5) {
+
+			if (num > 5)
 				(*ps).pl_penalty.strut = f[5];
-			}
+
 			ps->flags.has_placement_penalty = 1;
 			ps->flag_mask.has_placement_penalty = 1;
 			ps->change_mask.has_placement_penalty = 1;
@@ -3067,18 +3016,18 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				    (*ps);
 				*p = default_pl_percent_penalty;
 			}
-			if (num > 0) {
+			if (num > 0)
 				(*ps).pl_percent_penalty.p99 = val[0];
-			}
-			if (num > 1) {
+
+			if (num > 1)
 				(*ps).pl_percent_penalty.p95 = val[1];
-			}
-			if (num > 2) {
+
+			if (num > 2)
 				(*ps).pl_percent_penalty.p85 = val[2];
-			}
-			if (num > 3) {
+
+			if (num > 3)
 				(*ps).pl_percent_penalty.p75 = val[3];
-			}
+
 			ps->flags.has_placement_percentage_penalty = 1;
 			ps->flag_mask.has_placement_percentage_penalty = 1;
 			ps->change_mask.has_placement_percentage_penalty = 1;
@@ -3087,9 +3036,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_HAS_MWM_BUTTONS(SCM(*ps), 1);
 			S_SET_HAS_MWM_BUTTONS(SCC(*ps), 1);
 		} else if (StrEquals(token, "MiniIcon")) {
-			if (!FMiniIconsSupported) {
+			if (!FMiniIconsSupported)
 				break;
-			}
+
 			rest = GetNextToken(rest, &token);
 			if (token) {
 				SAFEFREE(SGET_MINI_ICON_NAME(*ps));
@@ -3158,12 +3107,12 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				val1 = val1 * val1_unit / 100;
 				val2 = val2 * val2_unit / 100;
 			}
-			if (val1 < 0) {
+			if (val1 < 0)
 				val1 = 0;
-			}
-			if (val2 < 0) {
+
+			if (val2 < 0)
 				val2 = 0;
-			}
+
 			SSET_MIN_WINDOW_WIDTH(*ps, val1);
 			SSET_MIN_WINDOW_HEIGHT(*ps, val2);
 			ps->flags.has_min_window_size = 1;
@@ -3186,18 +3135,18 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				val1 = val1 * val1_unit / 100;
 				val2 = val2 * val2_unit / 100;
 			}
-			if (val1 < DEFAULT_MIN_MAX_WINDOW_WIDTH) {
+			if (val1 < DEFAULT_MIN_MAX_WINDOW_WIDTH)
 				val1 = DEFAULT_MIN_MAX_WINDOW_WIDTH;
-			}
-			if (val1 > DEFAULT_MAX_MAX_WINDOW_WIDTH || val1 <= 0) {
+
+			if (val1 > DEFAULT_MAX_MAX_WINDOW_WIDTH || val1 <= 0)
 				val1 = DEFAULT_MAX_MAX_WINDOW_WIDTH;
-			}
-			if (val2 < DEFAULT_MIN_MAX_WINDOW_HEIGHT) {
+
+			if (val2 < DEFAULT_MIN_MAX_WINDOW_HEIGHT)
 				val2 = DEFAULT_MIN_MAX_WINDOW_HEIGHT;
-			}
-			if (val2 > DEFAULT_MAX_MAX_WINDOW_HEIGHT || val2 <= 0) {
+
+			if (val2 > DEFAULT_MAX_MAX_WINDOW_HEIGHT || val2 <= 0)
 				val2 = DEFAULT_MAX_MAX_WINDOW_HEIGHT;
-			}
+
 			SSET_MAX_WINDOW_WIDTH(*ps, val1);
 			SSET_MAX_WINDOW_HEIGHT(*ps, val2);
 			ps->flags.has_max_window_size = 1;
@@ -3213,17 +3162,17 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			};
 
 			i = GetTokenIndex(rest, methodlist, 0, &rest);
-			if (i == -1) {
+			if (i == -1)
 				i = WS_CR_MOTION_METHOD_AUTO;
-			}
+
 			SCR_MOTION_METHOD(&ps->flags) = i;
 			SCR_MOTION_METHOD(&ps->flag_mask) =
 			    WS_CR_MOTION_METHOD_MASK;
 			SCR_MOTION_METHOD(&ps->change_mask) =
 			    WS_CR_MOTION_METHOD_MASK;
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'n':
@@ -3305,9 +3254,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->change_mask.has_ol_decor = 1;
 		} else if (StrEquals(token, "NeverFocus")) {
 			style_set_old_focus_policy(ps, 3);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'o':
@@ -3319,9 +3268,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->flags.use_parent_relative = !on;
 			ps->flag_mask.use_parent_relative = 1;
 			ps->change_mask.use_parent_relative = 1;
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'p':
@@ -3341,16 +3290,13 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->flags.use_parent_relative = on;
 			ps->flag_mask.use_parent_relative = 1;
 			ps->change_mask.use_parent_relative = 1;
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 'q':
-		if (0) {
-		} else {
-			found = False;
-		}
+		found = False;
 		break;
 
 	case 'r':
@@ -3390,9 +3336,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_IS_RIGHT_TITLE_ROTATED_CW(SCF(*ps), !on);
 			S_SET_IS_RIGHT_TITLE_ROTATED_CW(SCM(*ps), 1);
 			S_SET_IS_RIGHT_TITLE_ROTATED_CW(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
+
 		break;
 
 	case 's':
@@ -3626,9 +3572,9 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 					    "Option: %s is not valid with"
 					    " StartShaded", token);
 				}
-			} else {
+			} else
 				SSET_STARTS_SHADED_DIR(*ps, DIR_N);
-			}
+
 			ps->flags.do_start_shaded = on;
 			ps->flag_mask.do_start_shaded = 1;
 			ps->change_mask.do_start_shaded = 1;
@@ -3687,19 +3633,19 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				snap_proximity = DEFAULT_SNAP_ATTRACTION;
 				snap_mode = DEFAULT_SNAP_ATTRACTION_MODE;
 				if (GetIntegerArguments(rest, &rest, &val,
-					1) != 1) {
+					1) != 1)
 					break;
-				}
-				if (val >= 0) {
+
+				if (val >= 0)
 					snap_proximity = val;
-				}
-				if (val == 0) {
+
+				if (val == 0)
 					break;
-				}
+
 				token = PeekToken(rest, &rest);
-				if (token == NULL) {
+				if (token == NULL)
 					break;
-				}
+
 				if (StrEquals(token, "All")) {
 					snap_mode = SNAP_ICONS | SNAP_WINDOWS;
 					token = PeekToken(rest, &rest);
@@ -3716,18 +3662,17 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 					snap_mode = SNAP_WINDOWS;
 					token = PeekToken(rest, &rest);
 				}
-				if (token == NULL) {
+				if (token == NULL)
 					break;
-				}
-				if (StrEquals(token, "Screen")) {
+
+				if (StrEquals(token, "Screen"))
 					snap_mode |= SNAP_SCREEN;
-				} else if (StrEquals(token, "ScreenWindows")) {
+				else if (StrEquals(token, "ScreenWindows"))
 					snap_mode |= SNAP_SCREEN_WINDOWS;
-				} else if (StrEquals(token, "ScreenIcons")) {
+				else if (StrEquals(token, "ScreenIcons"))
 					snap_mode |= SNAP_SCREEN_ICONS;
-				} else if (StrEquals(token, "ScreenAll")) {
+				else if (StrEquals(token, "ScreenAll"))
 					snap_mode |= SNAP_SCREEN_ALL;
-				}
 			} while (0);
 			ps->flags.has_snap_attraction = 1;
 			ps->flag_mask.has_snap_attraction = 1;
@@ -3742,20 +3687,19 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 				val[0] = DEFAULT_SNAP_GRID_X;
 				val[1] = DEFAULT_SNAP_GRID_Y;
 			}
-			if (val[0] < 0) {
+			if (val[0] < 0)
 				val[0] = DEFAULT_SNAP_GRID_X;
-			}
-			if (val[1] < 0) {
+
+			if (val[1] < 0)
 				val[1] = DEFAULT_SNAP_GRID_Y;
-			}
+
 			ps->flags.has_snap_grid = 1;
 			ps->flag_mask.has_snap_grid = 1;
 			ps->change_mask.has_snap_grid = 1;
 			SSET_SNAP_GRID_X(*ps, val[0]);
 			SSET_SNAP_GRID_Y(*ps, val[1]);
-		} else {
+		} else
 			found = False;
-		}
 		break;
 
 	case 't':
@@ -3792,9 +3736,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			(rest != NULL) ? fmt_string = strdup(rest) : NULL;
 			rest = NULL;	/* Consume the string. */
 
-			if (fmt_string == NULL) {
+			if (fmt_string == NULL)
 				fmt_string = DEFAULT_TITLE_FORMAT;
-			}
 
 			if (!__validate_titleformat_string(fmt_string)) {
 				fvwm_msg(ERR, "style_parse_one_style_option",
@@ -3815,9 +3758,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_IS_TOP_TITLE_ROTATED(SCF(*ps), !on);
 			S_SET_IS_TOP_TITLE_ROTATED(SCM(*ps), 1);
 			S_SET_IS_TOP_TITLE_ROTATED(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
 		break;
 
 	case 'u':
@@ -3888,9 +3830,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			ps->flags.is_unmanaged = on;
 			ps->flag_mask.is_unmanaged = 1;
 			ps->change_mask.is_unmanaged = 1;
-		} else {
+		} else
 			found = False;
-		}
 		break;
 
 	case 'v':
@@ -3912,9 +3853,8 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			S_SET_IS_PSIZE_FIXED(SCF(*ps), !on);
 			S_SET_IS_PSIZE_FIXED(SCM(*ps), 1);
 			S_SET_IS_PSIZE_FIXED(SCC(*ps), 1);
-		} else {
+		} else
 			found = False;
-		}
 		break;
 
 	case 'w':
@@ -3932,11 +3872,10 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			int             unit = 0;
 
 			n = GetOnePercentArgument(rest, &val, &unit);
-			if (n != 1) {
+			if (n != 1)
 				val = 0;
-			} else {
+			else
 				PeekToken(rest, &rest);
-			}
 			/*
 			 * we have a 'pixel' suffix if unit != 0; negative
 			 * * values mean pixels
@@ -3975,30 +3914,24 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			    WINDOWSHADE_LAZY_MASK);
 			S_SET_WINDOWSHADE_LAZINESS(SCC(*ps),
 			    WINDOWSHADE_LAZY_MASK);
-		} else {
+		} else
 			found = False;
-		}
 		break;
 
 	case 'x':
 	case 'y':
 	case 'z':
-		if (0) {
-		} else {
-			found = False;
-		}
+		found = False;
 		break;
 
 	default:
 		found = False;
 		break;
 	}
-	if (ret_rest) {
+	if (ret_rest)
 		*ret_rest = rest;
-	}
-	if (token_l != NULL) {
-		free(token_l);
-	}
+
+	free(token_l);
 
 	return found;
 }
@@ -4016,16 +3949,16 @@ parse_and_set_window_style(char *action, char *prefix, window_style *ps)
 	 */
 	icon_boxes     *cur_ib = NULL;
 
-	while (isspace((unsigned char) *action)) {
+	while (isspace((unsigned char) *action))
 		action++;
-	}
+
 	line = action;
 	(void) line;
 	while (action && *action && *action != '\n') {
 		action = GetNextFullOption(action, &option);
-		if (!option) {
+		if (!option)
 			break;
-		}
+
 		token = PeekToken(option, &rest);
 		if (!token) {
 			free(option);
@@ -4034,8 +3967,8 @@ parse_and_set_window_style(char *action, char *prefix, window_style *ps)
 
 		/*
 		 * It might make more sense to capture the whole word, fix its
-		 * * case, and use strcmp, but there aren't many caseless compares
-		 * * because of this "switch" on the first letter.
+		 * case, and use strcmp, but there aren't many caseless compares
+		 * because of this "switch" on the first letter.
 		 */
 		found =
 		    style_parse_one_style_option(token, rest, &rest, prefix,
@@ -4046,18 +3979,18 @@ parse_and_set_window_style(char *action, char *prefix, window_style *ps)
 			    "Bad style option: %s", option);
 			/*
 			 * Can't return here since all malloced memory will be
-			 * * lost. Ignore rest of line instead.
+			 * lost. Ignore rest of line instead.
 			 */
 			/*
 			 * No, I think we /can/ return here. In fact, /not/
-			 * * bombing out leaves a half-done style in the list!
-			 * * N.Bird 07-Sep-1999
+			 * bombing out leaves a half-done style in the list!
+			 * N.Bird 07-Sep-1999
 			 */
 			/*
 			 * domivogt (01-Oct-1999): Which is exactly what we
-			 * * want! Why should all the styles be thrown away if a
-			 * * single one is mis-spelled? Let's just continue
-			 * * parsing styles.
+			 * want! Why should all the styles be thrown away if a
+			 * single one is mis-spelled? Let's just continue
+			 * parsing styles.
 			 */
 		} else if (rest != NULL) {
 			rest = SkipSpaces(rest, NULL, 0);
@@ -4070,8 +4003,6 @@ parse_and_set_window_style(char *action, char *prefix, window_style *ps)
 		}
 		free(option);
 	}	/* end while still stuff on command */
-
-	return;
 }
 
 /* Process a style command.  First built up in a temp area.
@@ -4168,8 +4099,6 @@ __style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 		add_style_to_list(ps);
 		cleanup_style_defaults(ps);
 	}
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -4209,17 +4138,15 @@ free_icon_boxes(icon_boxes * ib)
 
 	for (; ib != NULL; ib = temp) {
 		temp = ib->next;
-		if (ib->use_count == 0) {
+		if (ib->use_count == 0)
 			free(ib);
-		} else {
+		else {
 			/*
 			 * we can't delete the icon box yet, it is still in use
 			 */
 			ib->is_orphan = True;
 		}
 	}
-
-	return;
 }
 
 void
@@ -4229,8 +4156,6 @@ simplify_style_list(void)
 	 * one pass through the style list, then process other events first
 	 */
 	scr_flags.do_need_style_list_update = __simplify_style_list();
-
-	return;
 }
 
 /* lookup_style - look through a list for a window name, or class
@@ -4256,13 +4181,10 @@ lookup_style(FvwmWindow *fw, window_style *styles)
 	 * look thru all styles in order defined.
 	 */
 	for (nptr = all_styles; nptr != NULL; nptr = SGET_NEXT_STYLE(*nptr)) {
-		if (fw_match_style_id(fw, SGET_ID(*nptr))) {
+		if (fw_match_style_id(fw, SGET_ID(*nptr)))
 			merge_styles(styles, nptr, False);
-		}
 	}
 	EWMH_GetStyle(fw, styles);
-
-	return;
 }
 
 /* This function sets the style update flags as necessary */
@@ -4295,11 +4217,8 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 		/*
 		 * copy the static common window flags
 		 */
-		for (i = 0; i < sizeof(SCFS(*ret_style)); i++) {
+		for (i = 0; i < sizeof(SCFS(*ret_style)); i++)
 			wf[i] = sf[i];
-		}
-
-		return;
 	}
 	/*
 	 * All static common styles can simply be copied. For some there is
@@ -4335,9 +4254,9 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 
 	/*
 	 * is_left_title_rotated_cw
-	 * * is_right_title_rotated_cw
-	 * * is_top_title_rotated
-	 * * is_bottom_title_rotated
+	 * is_right_title_rotated_cw
+	 * is_top_title_rotated
+	 * is_bottom_title_rotated
 	 */
 	if (S_IS_LEFT_TITLE_ROTATED_CW(SCC(*ret_style)) ||
 	    S_IS_RIGHT_TITLE_ROTATED_CW(SCC(*ret_style)) ||
@@ -4349,16 +4268,14 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * title_dir
 	 */
-	if (S_TITLE_DIR(SCC(*ret_style))) {
+	if (S_TITLE_DIR(SCC(*ret_style)))
 		flags->do_update_title_dir = 1;
-	}
 
 	/*
 	 * use_title_decor_rotation
 	 */
-	if (S_USE_TITLE_DECOR_ROTATION(SCC(*ret_style))) {
+	if (S_USE_TITLE_DECOR_ROTATION(SCC(*ret_style)))
 		flags->do_update_rotated_title = 1;
-	}
 
 	/*
 	 * has_mwm_border
@@ -4372,16 +4289,14 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * has_icon_font
 	 */
-	if (S_HAS_ICON_FONT(SCC(*ret_style))) {
+	if (S_HAS_ICON_FONT(SCC(*ret_style)))
 		flags->do_update_icon_font = 1;
-	}
 
 	/*
 	 * has_window_font
 	 */
-	if (S_HAS_WINDOW_FONT(SCC(*ret_style))) {
+	if (S_HAS_WINDOW_FONT(SCC(*ret_style)))
 		flags->do_update_window_font = 1;
-	}
 
 	/*
 	 * has_stippled_title
@@ -4395,36 +4310,36 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 
 	/*
 	 * has_no_icon_title
-	 * * is_icon_suppressed
-	 * *
-	 * * handled below
+	 * is_icon_suppressed
+	 *
+	 * handled below
 	 */
 
 	/*** private style flags ***/
 
 	/*
 	 * nothing to do for these flags (only used when mapping new windows):
-	 * *
-	 * *   do_place_random
-	 * *   do_place_smart
-	 * *   do_start_lowered
-	 * *   use_no_pposition
-	 * *   use_no_usposition
-	 * *   use_no_transient_pposition
-	 * *   use_no_transient_usposition
-	 * *   use_start_on_desk
-	 * *   use_start_on_page_for_transient
-	 * *   use_start_on_screen
-	 * *   manual_placement_honors_starts_on_page
-	 * *   capture_honors_starts_on_page
-	 * *   recapture_honors_starts_on_page
-	 * *   ewmh_placement_mode
+	 *
+	 *   do_place_random
+	 *   do_place_smart
+	 *   do_start_lowered
+	 *   use_no_pposition
+	 *   use_no_usposition
+	 *   use_no_transient_pposition
+	 *   use_no_transient_usposition
+	 *   use_start_on_desk
+	 *   use_start_on_page_for_transient
+	 *   use_start_on_screen
+	 *   manual_placement_honors_starts_on_page
+	 *   capture_honors_starts_on_page
+	 *   recapture_honors_starts_on_page
+	 *   ewmh_placement_mode
 	 */
 
 	/*
 	 * not implemented yet:
-	 * *
-	 * *   handling the 'usestyle' style
+	 *
+	 *   handling the 'usestyle' style
 	 */
 
 	/*
@@ -4529,9 +4444,9 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 
 	/*
 	 * has_color_back
-	 * * has_color_fore
-	 * * use_colorset
-	 * * use_border_colorset
+	 * has_color_fore
+	 * use_colorset
+	 * use_border_colorset
 	 */
 	if (ret_style->change_mask.has_color_fore ||
 	    ret_style->change_mask.has_color_back ||
@@ -4541,9 +4456,9 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	}
 	/*
 	 * has_color_back_hi
-	 * * has_color_fore_hi
-	 * * use_colorset_hi
-	 * * use_border_colorset_hi
+	 * has_color_fore_hi
+	 * use_colorset_hi
+	 * use_border_colorset_hi
 	 */
 	if (ret_style->change_mask.has_color_fore_hi ||
 	    ret_style->change_mask.has_color_back_hi ||
@@ -4555,30 +4470,26 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * use_icon_title_colorset
 	 */
-	if (ret_style->change_mask.use_icon_title_colorset) {
+	if (ret_style->change_mask.use_icon_title_colorset)
 		flags->do_update_icon_title_cs = 1;
-	}
 
 	/*
 	 * use_icon_title_colorset_hi
 	 */
-	if (ret_style->change_mask.use_icon_title_colorset_hi) {
+	if (ret_style->change_mask.use_icon_title_colorset_hi)
 		flags->do_update_icon_title_cs_hi = 1;
-	}
 
 	/*
 	 * use_icon_title_colorset
 	 */
-	if (ret_style->change_mask.use_icon_title_colorset) {
+	if (ret_style->change_mask.use_icon_title_colorset)
 		flags->do_update_icon_title_cs = 1;
-	}
 
 	/*
 	 * use_icon_background_colorset
 	 */
-	if (ret_style->change_mask.use_icon_background_colorset) {
+	if (ret_style->change_mask.use_icon_background_colorset)
 		flags->do_update_icon_background_cs = 1;
-	}
 
 	/*
 	 * has_decor
@@ -4599,9 +4510,8 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * do_decorate_transient
 	 */
-	if (ret_style->change_mask.do_decorate_transient) {
+	if (ret_style->change_mask.do_decorate_transient)
 		flags->do_redecorate_transient = 1;
-	}
 
 	/*
 	 * has_ol_decor
@@ -4619,18 +4529,17 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * Changing layer.
 	 */
-	if (ret_style->change_mask.use_layer) {
+	if (ret_style->change_mask.use_layer)
 		flags->do_update_layer = 1;
-	}
 
 	/*
 	 * has_no_border
-	 * * has_border_width
-	 * * has_handle_width
-	 * * has_mwm_decor
-	 * * has_mwm_functions
-	 * * has_no_handles
-	 * * is_button_disabled
+	 * has_border_width
+	 * has_handle_width
+	 * has_mwm_decor
+	 * has_mwm_functions
+	 * has_no_handles
+	 * is_button_disabled
 	 */
 	if (S_HAS_NO_BORDER(SCC(*ret_style)) ||
 	    ret_style->change_mask.has_border_width ||
@@ -4660,7 +4569,7 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 
 	/*
 	 * has_placement_penalty
-	 * * has_placement_percentage_penalty
+	 * has_placement_percentage_penalty
 	 */
 	if (ret_style->change_mask.has_placement_penalty ||
 	    ret_style->change_mask.has_placement_percentage_penalty) {
@@ -4670,9 +4579,8 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * do_ewmh_ignore_strut_hints
 	 */
-	if (S_DO_EWMH_IGNORE_STRUT_HINTS(SCC(*ret_style))) {
+	if (S_DO_EWMH_IGNORE_STRUT_HINTS(SCC(*ret_style)))
 		flags->do_update_working_area = 1;
-	}
 
 	/*
 	 * do_ewmh_ignore_state_hints
@@ -4685,9 +4593,8 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * do_ewmh_use_staking_hints
 	 */
-	if (S_DO_EWMH_USE_STACKING_HINTS(SCC(*ret_style))) {
+	if (S_DO_EWMH_USE_STACKING_HINTS(SCC(*ret_style)))
 		flags->do_update_ewmh_stacking_hints = 1;
-	}
 
 	/*
 	 * has_title_format_string
@@ -4720,11 +4627,8 @@ check_window_style_change(FvwmWindow *t, update_win *flags,
 	/*
 	 * cr_motion_method
 	 */
-	if (SCR_MOTION_METHOD(&ret_style->change_mask)) {
+	if (SCR_MOTION_METHOD(&ret_style->change_mask))
 		flags->do_update_cr_motion_method = 1;
-	}
-
-	return;
 }
 
 /* Mark all styles as unchanged. */
@@ -4738,8 +4642,6 @@ reset_style_changes(void)
 		memset(&SCCS(*temp), 0, sizeof(SCCS(*temp)));
 		memset(&(temp->change_mask), 0, sizeof(temp->change_mask));
 	}
-
-	return;
 }
 
 /* Mark styles as updated if their colorset changed. */
@@ -4792,8 +4694,6 @@ update_style_colorset(int colorset)
 			scr_flags.do_need_window_update = 1;
 		}
 	}
-
-	return;
 }
 
 /* Update fore and back colours for a specific window */
@@ -4805,15 +4705,15 @@ update_window_color_style(FvwmWindow *fw, window_style *pstyle)
 	if (SUSE_COLORSET(&pstyle->flags)) {
 		cs = SGET_COLORSET(*pstyle);
 		fw->cs = cs;
-	} else {
+	} else
 		fw->cs = -1;
-	}
+
 	if (SGET_FORE_COLOR_NAME(*pstyle) != NULL &&
 	    !SUSE_COLORSET(&pstyle->flags)) {
 		fw->colors.fore = GetColor(SGET_FORE_COLOR_NAME(*pstyle));
-	} else {
+	} else
 		fw->colors.fore = Colorset[cs].fg;
-	}
+
 	if (SGET_BACK_COLOR_NAME(*pstyle) != NULL &&
 	    !SUSE_COLORSET(&pstyle->flags)) {
 		fw->colors.back = GetColor(SGET_BACK_COLOR_NAME(*pstyle));
@@ -4846,16 +4746,16 @@ update_window_color_hi_style(FvwmWindow *fw, window_style *pstyle)
 	if (SUSE_COLORSET_HI(&pstyle->flags)) {
 		cs = SGET_COLORSET_HI(*pstyle);
 		fw->cs_hi = cs;
-	} else {
+	} else
 		fw->cs_hi = -1;
-	}
+
 	if (SGET_FORE_COLOR_NAME_HI(*pstyle) != NULL &&
 	    !SUSE_COLORSET_HI(&pstyle->flags)) {
 		fw->hicolors.fore =
 		    GetColor(SGET_FORE_COLOR_NAME_HI(*pstyle));
-	} else {
+	} else
 		fw->hicolors.fore = Colorset[cs].fg;
-	}
+
 	if (SGET_BACK_COLOR_NAME_HI(*pstyle) != NULL &&
 	    !SUSE_COLORSET_HI(&pstyle->flags)) {
 		fw->hicolors.back =
@@ -4884,21 +4784,19 @@ update_window_color_hi_style(FvwmWindow *fw, window_style *pstyle)
 void
 update_icon_title_cs_style(FvwmWindow *fw, window_style *pstyle)
 {
-	if (SUSE_ICON_TITLE_COLORSET(&pstyle->flags)) {
+	if (SUSE_ICON_TITLE_COLORSET(&pstyle->flags))
 		fw->icon_title_cs = SGET_ICON_TITLE_COLORSET(*pstyle);
-	} else {
+	else
 		fw->icon_title_cs = -1;
-	}
 }
 
 void
 update_icon_title_cs_hi_style(FvwmWindow *fw, window_style *pstyle)
 {
-	if (SUSE_ICON_TITLE_COLORSET_HI(&pstyle->flags)) {
+	if (SUSE_ICON_TITLE_COLORSET_HI(&pstyle->flags))
 		fw->icon_title_cs_hi = SGET_ICON_TITLE_COLORSET_HI(*pstyle);
-	} else {
+	else
 		fw->icon_title_cs_hi = -1;
-	}
 }
 
 void
@@ -4907,9 +4805,8 @@ update_icon_background_cs_style(FvwmWindow *fw, window_style *pstyle)
 	if (SUSE_ICON_BACKGROUND_COLORSET(&pstyle->flags)) {
 		fw->icon_background_cs =
 		    SGET_ICON_BACKGROUND_COLORSET(*pstyle);
-	} else {
+	} else
 		fw->icon_background_cs = -1;
-	}
 }
 
 void
@@ -4922,9 +4819,9 @@ style_destroy_style(style_id_t s_id)
 		 * compact the current list of styles
 		 */
 		scr_flags.do_need_style_list_update = 1;
-	} else {
+	} else
 		return;
-	}
+
 	/*
 	 * mark windows for update
 	 */
@@ -4934,8 +4831,6 @@ style_destroy_style(style_id_t s_id)
 			scr_flags.do_need_window_update = 1;
 		}
 	}
-
-	return;
 }
 
 void
@@ -5033,8 +4928,6 @@ print_styles(int verbose)
 	}
 	fprintf(stderr, "  Number of styles: %d, Memory Used: %d bits\n",
 	    count, (int) (count * sizeof(window_style) + mem));
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -5043,24 +4936,18 @@ void
 CMD_Style(F_CMD_ARGS)
 {
 	__style_command(F_PASS_ARGS, NULL, False);
-
-	return;
 }
 
 void
 CMD_WindowStyle(F_CMD_ARGS)
 {
 	__style_command(F_PASS_ARGS, NULL, True);
-
-	return;
 }
 
 void
 CMD_FocusStyle(F_CMD_ARGS)
 {
 	__style_command(F_PASS_ARGS, "FP", False);
-
-	return;
 }
 
 void
@@ -5088,7 +4975,6 @@ CMD_DestroyStyle(F_CMD_ARGS)
 	 * Do it
 	 */
 	style_destroy_style(s_id);
-	return;
 }
 
 void
@@ -5104,5 +4990,4 @@ CMD_DestroyWindowStyle(F_CMD_ARGS)
 	 * Do it
 	 */
 	style_destroy_style(s_id);
-	return;
 }

@@ -68,9 +68,9 @@ menustyle_free_face(MenuFace *mf)
 			int             i;
 
 			p = xmalloc(mf->u.grad.npixels * sizeof(Pixel));
-			for (i = 0; i < mf->u.grad.npixels; i++) {
+			for (i = 0; i < mf->u.grad.npixels; i++)
 				p[i] = mf->u.grad.xcs[i].pixel;
-			}
+
 			PictureFreeColors(dpy, Pcmap, p, mf->u.grad.npixels,
 			    0, False);
 			free(p);
@@ -80,9 +80,9 @@ menustyle_free_face(MenuFace *mf)
 		break;
 	case PixmapMenu:
 	case TiledPixmapMenu:
-		if (mf->u.p) {
+		if (mf->u.p)
 			PDestroyFvwmPicture(dpy, mf->u.p);
-		}
+
 		mf->u.p = NULL;
 		break;
 	case SolidMenu:
@@ -91,8 +91,6 @@ menustyle_free_face(MenuFace *mf)
 		break;
 	}
 	mf->type = SimpleMenu;
-
-	return;
 }
 
 static void
@@ -115,9 +113,8 @@ menustyle_copy_face(MenuFace *destmf, MenuFace *origmf)
 		memcpy(destmf->u.grad.xcs,
 		    origmf->u.grad.xcs,
 		    sizeof(XColor) * origmf->u.grad.npixels);
-		for (i = 0; i < origmf->u.grad.npixels; i++) {
+		for (i = 0; i < origmf->u.grad.npixels; i++)
 			fvwmlib_clone_color(origmf->u.grad.xcs[i].pixel);
-		}
 
 		destmf->u.grad.npixels = origmf->u.grad.npixels;
 		destmf->u.grad.do_dither = origmf->u.grad.do_dither;
@@ -192,33 +189,31 @@ menustyle_parse_face(char *s, MenuFace *mf, int verbose)
 		int             npixels, nsegs, *perc;
 		XColor         *xcs;
 
-		if (!IsGradientTypeSupported(style[0])) {
+		if (!IsGradientTypeSupported(style[0]))
 			return False;
-		}
 
 		/*
 		 * translate the gradient string into an array of colors etc
 		 */
 		npixels = ParseGradient(s, NULL, &s_colors, &perc, &nsegs);
-		if (npixels <= 0) {
+		if (npixels <= 0)
 			return False;
-		}
+
 		/*
 		 * dither ?
 		 */
 		mf->u.grad.do_dither = False;
-		if (Pdepth <= 8) {
+		if (Pdepth <= 8)
 			mf->u.grad.do_dither = True;
-		}
+
 		/*
 		 * grab the colors
 		 */
 		xcs =
 		    AllocAllGradientColors(s_colors, perc, nsegs, npixels,
 		    mf->u.grad.do_dither);
-		if (xcs == None) {
+		if (xcs == None)
 			return False;
-		}
 
 		mf->u.grad.xcs = xcs;
 		mf->u.grad.npixels = npixels;
@@ -287,8 +282,6 @@ parse_vertical_spacing_line(char *args, signed char *above,
 	}
 	*above = val[0];
 	*below = val[1];
-
-	return;
 }
 
 static void
@@ -310,8 +303,6 @@ parse_vertical_margins_line(char *args, unsigned char *top,
 	}
 	*top = val[0];
 	*bottom = val[1];
-
-	return;
 }
 
 static MenuStyle *
@@ -347,24 +338,12 @@ menustyle_parse_old_style(F_CMD_ARGS)
 		ms = menustyle_parse_style(F_PASS_ARGS);
 	}
 
-	if (fore) {
-		free(fore);
-	}
-	if (back) {
-		free(back);
-	}
-	if (stipple) {
-		free(stipple);
-	}
-	if (font) {
-		free(font);
-	}
-	if (style) {
-		free(style);
-	}
-	if (animated) {
-		free(animated);
-	}
+	free(fore);
+	free(back);
+	free(stipple);
+	free(font);
+	free(style);
+	free(animated);
 
 	return ms;
 }
@@ -419,13 +398,10 @@ menustyle_get_styleopt_index(char *option)
 static void
 change_or_make_gc(GC *gc, unsigned long gcm, XGCValues * gcv)
 {
-	if (*gc != None) {
+	if (*gc != None)
 		XChangeGC(dpy, *gc, gcm, gcv);
-	} else {
+	else
 		*gc = fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, gcv);
-	}
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -441,61 +417,60 @@ menustyle_free(MenuStyle *ms)
 {
 	MenuStyle      *before = default_menu_style;
 
-	if (!ms) {
+	if (!ms)
 		return;
-	}
+
 	menustyle_free_face(&ST_FACE(ms));
-	if (FORE_GC(ST_MENU_INACTIVE_GCS(ms))) {
+	if (FORE_GC(ST_MENU_INACTIVE_GCS(ms)))
 		XFreeGC(dpy, FORE_GC(ST_MENU_INACTIVE_GCS(ms)));
-	}
-	if (FORE_GC(ST_MENU_ACTIVE_GCS(ms))) {
+
+	if (FORE_GC(ST_MENU_ACTIVE_GCS(ms)))
 		XFreeGC(dpy, FORE_GC(ST_MENU_ACTIVE_GCS(ms)));
-	}
-	if (BACK_GC(ST_MENU_ACTIVE_GCS(ms))) {
+
+	if (BACK_GC(ST_MENU_ACTIVE_GCS(ms)))
 		XFreeGC(dpy, BACK_GC(ST_MENU_ACTIVE_GCS(ms)));
-	}
-	if (HILIGHT_GC(ST_MENU_ACTIVE_GCS(ms))) {
+
+	if (HILIGHT_GC(ST_MENU_ACTIVE_GCS(ms)))
 		XFreeGC(dpy, HILIGHT_GC(ST_MENU_ACTIVE_GCS(ms)));
-	}
-	if (SHADOW_GC(ST_MENU_ACTIVE_GCS(ms))) {
+
+	if (SHADOW_GC(ST_MENU_ACTIVE_GCS(ms)))
 		XFreeGC(dpy, SHADOW_GC(ST_MENU_ACTIVE_GCS(ms)));
-	}
-	if (HILIGHT_GC(ST_MENU_INACTIVE_GCS(ms))) {
+
+	if (HILIGHT_GC(ST_MENU_INACTIVE_GCS(ms)))
 		XFreeGC(dpy, HILIGHT_GC(ST_MENU_INACTIVE_GCS(ms)));
-	}
-	if (SHADOW_GC(ST_MENU_INACTIVE_GCS(ms))) {
+
+	if (SHADOW_GC(ST_MENU_INACTIVE_GCS(ms)))
 		XFreeGC(dpy, SHADOW_GC(ST_MENU_INACTIVE_GCS(ms)));
-	}
-	if (FORE_GC(ST_MENU_STIPPLE_GCS(ms))) {
+
+	if (FORE_GC(ST_MENU_STIPPLE_GCS(ms)))
 		XFreeGC(dpy, FORE_GC(ST_MENU_STIPPLE_GCS(ms)));
-	}
-	if (FORE_GC(ST_MENU_TITLE_GCS(ms))) {
+
+	if (FORE_GC(ST_MENU_TITLE_GCS(ms)))
 		XFreeGC(dpy, FORE_GC(ST_MENU_TITLE_GCS(ms)));
-	}
-	if (BACK_GC(ST_MENU_TITLE_GCS(ms))) {
+
+	if (BACK_GC(ST_MENU_TITLE_GCS(ms)))
 		XFreeGC(dpy, BACK_GC(ST_MENU_TITLE_GCS(ms)));
-	}
-	if (HILIGHT_GC(ST_MENU_TITLE_GCS(ms))) {
+
+	if (HILIGHT_GC(ST_MENU_TITLE_GCS(ms)))
 		XFreeGC(dpy, HILIGHT_GC(ST_MENU_TITLE_GCS(ms)));
-	}
-	if (SHADOW_GC(ST_MENU_TITLE_GCS(ms))) {
+
+	if (SHADOW_GC(ST_MENU_TITLE_GCS(ms)))
 		XFreeGC(dpy, SHADOW_GC(ST_MENU_TITLE_GCS(ms)));
-	}
-	if (ST_SIDEPIC(ms)) {
+
+	if (ST_SIDEPIC(ms))
 		PDestroyFvwmPicture(dpy, ST_SIDEPIC(ms));
-	}
-	if (ST_HAS_SIDE_COLOR(ms) == 1) {
+
+	if (ST_HAS_SIDE_COLOR(ms) == 1)
 		fvwmlib_free_colors(dpy, &ST_SIDE_COLOR(ms), 1, True);
-	}
-	if (ST_PSTDFONT(ms) && !ST_USING_DEFAULT_FONT(ms)) {
+
+	if (ST_PSTDFONT(ms) && !ST_USING_DEFAULT_FONT(ms))
 		FlocaleUnloadFont(dpy, ST_PSTDFONT(ms));
-	}
-	if (ST_PTITLEFONT(ms) && !ST_USING_DEFAULT_TITLEFONT(ms)) {
+
+	if (ST_PTITLEFONT(ms) && !ST_USING_DEFAULT_TITLEFONT(ms))
 		FlocaleUnloadFont(dpy, ST_PTITLEFONT(ms));
-	}
-	if (ST_ITEM_FORMAT(ms)) {
+
+	if (ST_ITEM_FORMAT(ms))
 		free(ST_ITEM_FORMAT(ms));
-	}
 
 	fvwmlib_free_colors(dpy, &ST_MENU_COLORS(ms).back, 1, True);
 	fvwmlib_free_colors(dpy, &ST_MENU_COLORS(ms).fore, 1, True);
@@ -522,8 +497,6 @@ menustyle_free(MenuStyle *ms)
 	ST_NEXT_STYLE(before) = ST_NEXT_STYLE(ms);
 	free(ST_NAME(ms));
 	free(ms);
-
-	return;
 }
 
 MenuStyle      *
@@ -532,9 +505,9 @@ menustyle_find(char *name)
 	MenuStyle      *ms = default_menu_style;
 
 	while (ms) {
-		if (strcasecmp(ST_NAME(ms), name) == 0) {
+		if (strcasecmp(ST_NAME(ms), name) == 0)
 			return ms;
-		}
+
 		ms = ST_NEXT_STYLE(ms);
 	}
 
@@ -570,18 +543,18 @@ menustyle_update(MenuStyle *ms)
 	/*
 	 * calculate colors based on foreground
 	 */
-	if (!ST_HAS_ACTIVE_FORE(ms)) {
+	if (!ST_HAS_ACTIVE_FORE(ms))
 		ST_MENU_ACTIVE_COLORS(ms).fore = ST_MENU_COLORS(ms).fore;
-	}
+
 	/*
 	 * calculate colors based on background
 	 */
-	if (!ST_HAS_ACTIVE_BACK(ms)) {
+	if (!ST_HAS_ACTIVE_BACK(ms))
 		ST_MENU_ACTIVE_COLORS(ms).back = ST_MENU_COLORS(ms).back;
-	}
-	if (!ST_HAS_STIPPLE_FORE(ms)) {
+
+	if (!ST_HAS_STIPPLE_FORE(ms))
 		ST_MENU_STIPPLE_COLORS(ms).fore = ST_MENU_COLORS(ms).back;
-	}
+
 	ST_MENU_STIPPLE_COLORS(ms).back = ST_MENU_COLORS(ms).back;
 	/*
 	 * prepare colours for changing the gcs
@@ -711,9 +684,9 @@ menustyle_update(MenuStyle *ms)
 	 * update title gcs
 	 */
 	if (ST_PTITLEFONT(ms)->font != NULL && ST_PSTDFONT(ms)->font == NULL) {
-		if (ST_PSTDFONT(ms)->font == NULL) {
+		if (ST_PSTDFONT(ms)->font == NULL)
 			gcm |= GCFont;
-		}
+
 		gcv.font = ST_PTITLEFONT(ms)->font->fid;
 	}
 	gcv.foreground = c_title.fore;
@@ -762,8 +735,6 @@ menustyle_update(MenuStyle *ms)
 	}
 	change_or_make_gc(&FORE_GC(ST_MENU_STIPPLE_GCS(ms)), gcm, &gcv);
 	BACK_GC(ST_MENU_STIPPLE_GCS(ms)) = BACK_GC(ST_MENU_INACTIVE_GCS(ms));
-
-	return;
 }
 
 MenuStyle      *
@@ -1115,9 +1086,9 @@ menustyle_parse_style(F_CMD_ARGS)
 			if (GetIntegerArguments(args, NULL, val, 1) == 0 ||
 			    *val < 0) {
 				ST_POPUP_DELAY(tmpms) = DEFAULT_POPUP_DELAY;
-			} else {
+			} else
 				ST_POPUP_DELAY(tmpms) = (*val + 9) / 10;
-			}
+
 			break;
 
 		case 18:	/* PopupOffset */
@@ -1131,9 +1102,8 @@ menustyle_parse_style(F_CMD_ARGS)
 				if (n == 2 && val[1] <= 100 && val[1] >= 0) {
 					ST_POPUP_OFFSET_PERCENT(tmpms) =
 					    val[1];
-				} else {
+				} else
 					ST_POPUP_OFFSET_PERCENT(tmpms) = 100;
-				}
 			}
 			break;
 
@@ -1186,9 +1156,8 @@ menustyle_parse_style(F_CMD_ARGS)
 			    *val < 0) {
 				ST_DOUBLE_CLICK_TIME(tmpms) =
 				    DEFAULT_MENU_CLICKTIME;
-			} else {
+			} else
 				ST_DOUBLE_CLICK_TIME(tmpms) = *val;
-			}
 			break;
 
 		case 31:	/* SidePic */
@@ -1362,9 +1331,8 @@ menustyle_parse_style(F_CMD_ARGS)
 			    *val < 0) {
 				ST_POPDOWN_DELAY(tmpms) =
 				    DEFAULT_POPDOWN_DELAY;
-			} else {
+			} else
 				ST_POPDOWN_DELAY(tmpms) = (*val + 9) / 10;
-			}
 			break;
 
 		case 53:	/* PopupActiveArea */
@@ -1463,15 +1431,6 @@ menustyle_parse_style(F_CMD_ARGS)
 		case 63:	/* UniqueHotKeyActivatesImmediate */
 			ST_HOTKEY_ACTIVATES_IMMEDIATE(tmpms) = on;
 			break;
-
-#if 0
-		case 99:	/* PositionHints */
-			/*
-			 * to be implemented
-			 */
-			break;
-#endif
-
 		default:
 			fvwm_msg(ERR, "NewMenuStyle", "unknown option '%s'",
 			    poption);
@@ -1578,9 +1537,9 @@ menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 	/*
 	 * font
 	 */
-	if (ST_PSTDFONT(destms) && !ST_USING_DEFAULT_FONT(destms)) {
+	if (ST_PSTDFONT(destms) && !ST_USING_DEFAULT_FONT(destms))
 		FlocaleUnloadFont(dpy, ST_PSTDFONT(destms));
-	}
+
 	if (ST_PSTDFONT(origms) && !ST_USING_DEFAULT_FONT(origms)) {
 		if (!(ST_PSTDFONT(destms) =
 			FlocaleLoadFont(dpy, ST_PSTDFONT(origms)->name,
@@ -1590,9 +1549,8 @@ menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 			fvwm_msg(ERR, "CopyMenuStyle",
 			    "Couldn't load font '%s' use Default Font\n",
 			    ST_PSTDFONT(origms)->name);
-		} else {
+		} else
 			ST_USING_DEFAULT_FONT(destms) = False;
-		}
 	} else {
 		ST_USING_DEFAULT_FONT(destms) = True;
 		ST_PSTDFONT(destms) = Scr.DefaultFont;
@@ -1612,9 +1570,8 @@ menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 			fvwm_msg(ERR, "CopyMenuStyle",
 			    "Couldn't load font '%s' use Default Font\n",
 			    ST_PTITLEFONT(origms)->name);
-		} else {
+		} else
 			ST_USING_DEFAULT_TITLEFONT(destms) = False;
-		}
 	} else {
 		ST_USING_DEFAULT_TITLEFONT(destms) = True;
 		ST_PTITLEFONT(destms) = Scr.DefaultFont;
@@ -1782,8 +1739,6 @@ menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 	ST_DO_HILIGHT_TITLE_BACK(destms) = ST_DO_HILIGHT_TITLE_BACK(origms);
 
 	menustyle_update(destms);
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -1863,8 +1818,6 @@ CMD_CopyMenuStyle(F_CMD_ARGS)
 	}
 
 	menustyle_copy(origms, destms);
-
-	return;
 }
 
 void
@@ -1877,17 +1830,13 @@ CMD_MenuStyle(F_CMD_ARGS)
 	(void) dummy;
 	GetNextSimpleOption(SkipNTokens(action, 1), &option);
 	poption = option;
-	while (poption && poption[0] == '!') {
+	while (poption && poption[0] == '!')
 		poption++;
-	}
-	if (option == NULL || menustyle_get_styleopt_index(poption) != -1) {
-		(void) menustyle_parse_style(F_PASS_ARGS);
-	} else {
-		(void) menustyle_parse_old_style(F_PASS_ARGS);
-	}
-	if (option) {
-		free(option);
-	}
 
-	return;
+	if (option == NULL || menustyle_get_styleopt_index(poption) != -1)
+		(void) menustyle_parse_style(F_PASS_ARGS);
+	else
+		(void) menustyle_parse_old_style(F_PASS_ARGS);
+
+	free(option);
 }

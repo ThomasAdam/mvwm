@@ -131,21 +131,6 @@ static struct
 
 /* ---------------------------- local functions ---------------------------- */
 
-#if 0
-static void
-print_g(char *text, rectangle *g)
-{
-	if (g == NULL) {
-		fprintf(stderr, "%s: (null)", (text == NULL) ? "" : text);
-	} else {
-		fprintf(stderr, "%s: %4d %4d %4dx%4d (%4d - %4d %4d - %4d)\n",
-		    (text == NULL) ? "" : text,
-		    g->x, g->y, g->width, g->height,
-		    g->x, g->x + g->width - 1, g->y, g->y + g->height - 1);
-	}
-}
-#endif
-
 static void
 combine_gravities(frame_decor_gravities_type * ret_grav,
     frame_decor_gravities_type * grav_x, frame_decor_gravities_type * grav_y)
@@ -164,8 +149,6 @@ combine_gravities(frame_decor_gravities_type * ret_grav,
 	    gravity_combine_xy_grav(grav_x->parent_grav, grav_y->parent_grav);
 	ret_grav->client_grav =
 	    gravity_combine_xy_grav(grav_x->client_grav, grav_y->client_grav);
-
-	return;
 }
 
 static void
@@ -213,17 +196,15 @@ get_resize_decor_gravities_one_axis(frame_decor_gravities_type * ret_grav,
 		break;
 	}
 	ret_grav->parent_grav = ret_grav->client_grav;
-
-	return;
 }
 
 static void
 frame_get_titlebar_dimensions_only(FvwmWindow *fw, rectangle *frame_g,
     size_borders *bs, rectangle *ret_titlebar_g)
 {
-	if (!HAS_TITLE(fw)) {
+	if (!HAS_TITLE(fw))
 		return;
-	}
+
 	switch (GET_TITLE_DIR(fw)) {
 	case DIR_W:
 	case DIR_E:
@@ -248,8 +229,6 @@ frame_get_titlebar_dimensions_only(FvwmWindow *fw, rectangle *frame_g,
 		ret_titlebar_g->height = fw->title_thickness;
 		break;
 	}
-
-	return;
 }
 
 static void
@@ -263,15 +242,15 @@ frame_setup_border(FvwmWindow *fw, rectangle *frame_g,
 	rectangle       part_g;
 	Bool            dummy;
 
-	if (HAS_NO_BORDER(fw)) {
+	if (HAS_NO_BORDER(fw))
 		return;
-	}
+
 	frame_get_sidebar_geometry(fw, NULL, frame_g, &sidebar_g, &dummy,
 	    &dummy);
 	for (part = PART_BORDER_N; (part & PART_FRAME); part <<= 1) {
-		if ((part & PART_FRAME & setup_parts) == PART_NONE) {
+		if ((part & PART_FRAME & setup_parts) == PART_NONE)
 			continue;
-		}
+
 		border_get_part_geometry(fw, part, &sidebar_g, &part_g, &w);
 		if (part_g.width <= 0 || part_g.height <= 0) {
 			xwc.x = -1;
@@ -294,11 +273,8 @@ frame_setup_border(FvwmWindow *fw, rectangle *frame_g,
 				xwc.y -= diff_g->height;
 			}
 		}
-		XConfigureWindow(dpy, w, CWWidth | CWHeight | CWX | CWY,
-		    &xwc);
+		XConfigureWindow(dpy, w, CWWidth | CWHeight | CWX | CWY, &xwc);
 	}
-
-	return;
 }
 
 static void
@@ -308,9 +284,9 @@ frame_setup_titlebar(FvwmWindow *fw, rectangle *frame_g,
 	frame_title_layout_t title_layout;
 	int             i;
 
-	if (!HAS_TITLE(fw)) {
+	if (!HAS_TITLE(fw))
 		return;
-	}
+
 	frame_get_titlebar_dimensions(fw, frame_g, diff_g, &title_layout);
 	/*
 	 * configure buttons
@@ -333,8 +309,6 @@ frame_setup_titlebar(FvwmWindow *fw, rectangle *frame_g,
 		    title_layout.title_g.x, title_layout.title_g.y,
 		    title_layout.title_g.width, title_layout.title_g.height);
 	}
-
-	return;
 }
 
 static void
@@ -350,12 +324,12 @@ __frame_setup_window(FvwmWindow *fw, rectangle *frame_g,
 	/*
 	 * sanity checks
 	 */
-	if (new_g.width < 1) {
+	if (new_g.width < 1)
 		new_g.width = 1;
-	}
-	if (new_g.height < 1) {
+
+	if (new_g.height < 1)
 		new_g.height = 1;
-	}
+
 	/*
 	 * set some flags
 	 */
@@ -372,13 +346,12 @@ __frame_setup_window(FvwmWindow *fw, rectangle *frame_g,
 	if (is_resized || do_force) {
 		frame_move_resize_mode mode;
 
-		if (is_application_request) {
+		if (is_application_request)
 			mode = FRAME_MR_SETUP_BY_APP;
-		} else if (do_force) {
+		else if (do_force)
 			mode = FRAME_MR_FORCE_SETUP;
-		} else {
+		else
 			mode = FRAME_MR_SETUP;
-		}
 		mr_args =
 		    frame_create_move_resize_args(fw, mode, NULL, &new_g, 0,
 		    DIR_NONE);
@@ -391,10 +364,10 @@ __frame_setup_window(FvwmWindow *fw, rectangle *frame_g,
 
 		/*
 		 * inform the application of the change
-		 * *
-		 * * According to the July 27, 1988 ICCCM draft, we should send a
-		 * * synthetic ConfigureNotify event to the client if the window
-		 * * was moved but not resized.
+		 *
+		 * According to the July 27, 1988 ICCCM draft, we should send a
+		 * synthetic ConfigureNotify event to the client if the window
+		 * was moved but not resized.
 		 */
 		XMoveWindow(dpy, FW_W_FRAME(fw), frame_g->x, frame_g->y);
 		fw->g.frame = *frame_g;
@@ -423,8 +396,6 @@ __frame_setup_window(FvwmWindow *fw, rectangle *frame_g,
 	 * inform the modules of the change
 	 */
 	BroadcastConfig(M_CONFIGURE_WINDOW, fw);
-
-	return;
 }
 
 static void
@@ -434,17 +405,15 @@ frame_reparent_hide_windows(Window w)
 
 	hide_wins.parent = w;
 	for (i = 0; i < 4; i++) {
-		if (w == Scr.Root) {
+		if (w == Scr.Root)
 			XUnmapWindow(dpy, hide_wins.w[i]);
-		}
+
 		XReparentWindow(dpy, hide_wins.w[i], w, -1, -1);
 	}
 	if (w != Scr.Root) {
 		XRaiseWindow(dpy, hide_wins.w[0]);
 		XRestackWindows(dpy, hide_wins.w, 4);
 	}
-
-	return;
 }
 
 /* Returns True if the frame is so small that the parent window would have a
@@ -473,20 +442,19 @@ frame_get_titlebar_compression(FvwmWindow *fw, rectangle *frame_g)
 	int             space;
 	int             need_space;
 
-	if (!HAS_TITLE(fw)) {
+	if (!HAS_TITLE(fw))
 		return 0;
-	}
+
 	get_window_borders(fw, &b);
-	if (HAS_VERTICAL_TITLE(fw)) {
+	if (HAS_VERTICAL_TITLE(fw))
 		space = frame_g->height - b.total_size.height;
-	} else {
+	else
 		space = frame_g->width - b.total_size.width;
-	}
+
 	need_space = (fw->nr_left_buttons + fw->nr_right_buttons) *
 	    fw->title_thickness + MIN_WINDOW_TITLE_LENGTH;
-	if (space < need_space) {
+	if (space < need_space)
 		return need_space - space;
-	}
 
 	return 0;
 }
@@ -514,8 +482,6 @@ frame_get_resize_decor_gravities(frame_decor_gravities_type * ret_grav,
 	get_resize_decor_gravities_one_axis(&grav_y, title_dir_y, rmode,
 	    DIR_N, DIR_S, (delta_g->y != 0));
 	combine_gravities(ret_grav, &grav_x, &grav_y);
-
-	return;
 }
 
 /* sets the gravity for the various parts of the window */
@@ -552,39 +518,37 @@ frame_set_decor_gravities(FvwmWindow *fw, frame_decor_gravities_type * grav,
 	xcwa.win_gravity = grav->parent_grav;
 	valuemask = CWWinGravity;
 	XChangeWindowAttributes(dpy, FW_W_PARENT(fw), valuemask, &xcwa);
-	if (!HAS_TITLE(fw)) {
+	if (!HAS_TITLE(fw))
 		return;
-	}
+
 	xcwa.win_gravity = grav->title_grav;
 	XChangeWindowAttributes(dpy, FW_W_TITLE(fw), valuemask, &xcwa);
 	if (fw->title_text_rotation == ROTATION_270 ||
 	    fw->title_text_rotation == ROTATION_180) {
 		button_reverted = True;
 	}
-	if (button_reverted) {
+	if (button_reverted)
 		xcwa.win_gravity = grav->rbutton_grav;
-	} else {
+	else
 		xcwa.win_gravity = grav->lbutton_grav;
-	}
+
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i += 2) {
 		if (FW_W_BUTTON(fw, i)) {
 			XChangeWindowAttributes(dpy, FW_W_BUTTON(fw, i),
 			    valuemask, &xcwa);
 		}
 	}
-	if (button_reverted) {
+	if (button_reverted)
 		xcwa.win_gravity = grav->lbutton_grav;
-	} else {
+	else
 		xcwa.win_gravity = grav->rbutton_grav;
-	}
+
 	for (i = 1; i < NUMBER_OF_TITLE_BUTTONS; i += 2) {
 		if (FW_W_BUTTON(fw, i)) {
 			XChangeWindowAttributes(dpy, FW_W_BUTTON(fw, i),
 			    valuemask, &xcwa);
 		}
 	}
-
-	return;
 }
 
 /* Just restore the win and bit gravities on the client window. */
@@ -602,8 +566,6 @@ frame_restore_client_gravities(FvwmWindow *fw)
 	}
 	xcwa.win_gravity = fw->hints.win_gravity;
 	XChangeWindowAttributes(dpy, FW_W(fw), valuemask, &xcwa);
-
-	return;
 }
 
 /* Prepares the structure for the next animation step. */
@@ -651,7 +613,6 @@ frame_get_hidden_pos(FvwmWindow *fw, mr_args_internal * mra, Bool do_unhide,
 		}
 		target_g = &mra->next_g;
 	}
-
 	return target_g;
 }
 
@@ -670,8 +631,6 @@ frame_update_hidden_window_pos(FvwmWindow *fw, mr_args_internal * mra,
 	XMoveResizeWindow(dpy, FW_W(fw), hidden_g.x, hidden_g.y,
 	    mra->client_g.width, mra->client_g.height);
 	mra->flags.was_moved = 1;
-
-	return;
 }
 
 static void
@@ -681,9 +640,9 @@ frame_prepare_animation_shape(FvwmWindow *fw, mr_args_internal * mra,
 	rectangle       parent_g;
 	rectangle       client_g;
 
-	if (!FShapesSupported) {
+	if (!FShapesSupported)
 		return;
-	}
+
 	parent_g.x = parent_x;
 	parent_g.y = parent_y;
 	parent_g.width = mra->parent_s.width;
@@ -712,8 +671,6 @@ frame_prepare_animation_shape(FvwmWindow *fw, mr_args_internal * mra,
 		FShapeCombineRectangles(dpy, Scr.NoFocusWin, FShapeBounding,
 		    0, 0, &rect, 1, FShapeUnion, Unsorted);
 	}
-
-	return;
 }
 
 static void
@@ -750,19 +707,16 @@ frame_mrs_prepare_vars(FvwmWindow *fw, mr_args_internal * mra)
 	if (mra->parent_s.width < 1) {
 		mra->minimal_w_offset = 1 - mra->parent_s.width;
 		mra->parent_s.width = 1;
-	} else {
+	} else
 		mra->minimal_w_offset = 0;
-	}
+
 	mra->parent_s.height =
 	    mra->next_g.height - mra->b_g.total_size.height;
 	if (mra->parent_s.height < 1) {
 		mra->minimal_h_offset = 1 - mra->parent_s.height;
 		mra->parent_s.height = 1;
-	} else {
+	} else
 		mra->minimal_h_offset = 0;
-	}
-
-	return;
 }
 
 static void
@@ -780,29 +734,27 @@ frame_mrs_hide_changing_parts(mr_args_internal * mra)
 	b_add = 0;
 	r_add = 0;
 	if (mra->mode == FRAME_MR_SHRINK) {
-		if (mra->dstep_g.x > 0) {
+		if (mra->dstep_g.x > 0)
 			l_add = mra->dstep_g.x;
-		}
-		if (mra->dstep_g.y > 0) {
+	
+		if (mra->dstep_g.y > 0)
 			t_add = mra->dstep_g.y;
-		}
 	} else if (mra->mode == FRAME_MR_SCROLL) {
-		if (mra->dstep_g.x == 0 && mra->dstep_g.width < 0) {
+		if (mra->dstep_g.x == 0 && mra->dstep_g.width < 0)
 			l_add = -mra->dstep_g.width;
-		}
-		if (mra->dstep_g.y == 0 && mra->dstep_g.height < 0) {
+
+		if (mra->dstep_g.y == 0 && mra->dstep_g.height < 0)
 			t_add = -mra->dstep_g.height;
-		}
 	}
-	if (l_add > 0) {
+	if (l_add > 0)
 		l_add -= mra->minimal_w_offset;
-	} else {
+	else {
 		r_add = (mra->dstep_g.width < 0) ? -mra->dstep_g.width : 0;
 		r_add -= mra->minimal_w_offset;
 	}
-	if (t_add > 0) {
+	if (t_add > 0)
 		t_add -= mra->minimal_h_offset;
-	} else {
+	else {
 		b_add = (mra->dstep_g.height < 0) ? -mra->dstep_g.height : 0;
 		b_add -= mra->minimal_h_offset;
 	}
@@ -845,8 +797,6 @@ frame_mrs_hide_changing_parts(mr_args_internal * mra)
 		    mra->b_g.bottom_right.width - r_add, 0, w, h);
 		XMapWindow(dpy, hide_wins.w[3]);
 	}
-
-	return;
 }
 
 static void
@@ -897,8 +847,6 @@ frame_mrs_hide_unhide_parent2(FvwmWindow *fw, mr_args_internal * mra)
 		XLowerWindow(dpy, FW_W_PARENT(fw));
 		XMapWindow(dpy, FW_W_PARENT(fw));
 	}
-
-	return;
 }
 
 static void
@@ -957,8 +905,6 @@ frame_mrs_setup_draw_decorations(FvwmWindow *fw, mr_args_internal * mra)
 			    CLEAR_ALL, &mra->current_g, &lazy_g);
 		}
 	}
-
-	return;
 }
 
 static void
@@ -974,22 +920,10 @@ frame_mrs_resize_move_windows(FvwmWindow *fw, mr_args_internal * mra)
 			    mra->parent_s.width, mra->parent_s.height);
 			mra->client_g.width = mra->parent_s.width;
 			mra->client_g.height = mra->parent_s.height;
-		} else {
+		} else
 			XMoveWindow(dpy, FW_W(fw), 0, 0);
-		}
+
 		mra->flags.was_moved = 1;
-#if 0
-		/*
-		 * reduces flickering
-		 */
-		/*
-		 * dv (11-Aug-2002): ... and slows down large scripts
-		 * * dramatically.  Rather let it flicker
-		 */
-		if (mra->flags.is_setup) {
-			usleep(1000);
-		}
-#endif
 		XSync(dpy, 0);
 		XMoveResizeWindow(dpy, FW_W_PARENT(fw),
 		    mra->b_g.top_left.width, mra->b_g.top_left.height,
@@ -1013,16 +947,16 @@ frame_mrs_resize_move_windows(FvwmWindow *fw, mr_args_internal * mra)
 			x += mra->dstep_g.x;
 			y += mra->dstep_g.y;
 		}
-		if (x > 0) {
+		if (x > 0)
 			x -= mra->minimal_w_offset;
-		} else if (x < 0) {
+		else if (x < 0)
 			x += mra->minimal_w_offset;
-		}
-		if (y > 0) {
+
+		if (y > 0)
 			y -= mra->minimal_h_offset;
-		} else if (y < 0) {
+		else if (y < 0)
 			y += mra->minimal_h_offset;
-		}
+
 		XMoveResizeWindow(dpy, FW_W_PARENT(fw), x, y,
 		    mra->parent_s.width, mra->parent_s.height);
 		if (mra->flags.do_update_shape) {
@@ -1047,8 +981,6 @@ frame_mrs_resize_move_windows(FvwmWindow *fw, mr_args_internal * mra)
 		FShapeCombineShape(dpy, FW_W_FRAME(fw), FShapeBounding, 0, 0,
 		    Scr.NoFocusWin, FShapeBounding, FShapeSet);
 	}
-
-	return;
 }
 
 static void
@@ -1061,8 +993,6 @@ frame_move_resize_step(FvwmWindow *fw, mr_args_internal * mra)
 	frame_mrs_resize_move_windows(fw, mra);
 	frame_mrs_hide_unhide_parent2(fw, mra);
 	fw->g.frame = mra->next_g;
-
-	return;
 }
 
 static void
@@ -1072,20 +1002,18 @@ frame_has_handles_and_tiled_border(FvwmWindow *fw, int *ret_has_handles,
 	DecorFace      *df;
 
 	*ret_has_handles = 1;
-	if (!HAS_HANDLES(fw)) {
+	if (!HAS_HANDLES(fw))
 		*ret_has_handles = 0;
-	}
+
 	df = border_get_border_style(fw, (fw == Scr.Hilite) ? True : False);
-	if (DFS_HAS_HIDDEN_HANDLES(df->style)) {
+	if (DFS_HAS_HIDDEN_HANDLES(df->style))
 		*ret_has_handles = 0;
-	}
+
 	*ret_has_tiled_border =
 	    (DFS_FACE_TYPE(df->style) == TiledPixmapButton) ||
 	    (DFS_FACE_TYPE(df->style) == ColorsetButton &&
 	    !CSET_IS_TRANSPARENT_PR(df->u.acs.cs) &&
 	    CSET_HAS_PIXMAP(df->u.acs.cs));
-
-	return;
 }
 
 static int
@@ -1104,9 +1032,9 @@ frame_get_shading_laziness(FvwmWindow *fw, mr_args_internal * mra)
 		using_border_style =
 		    border_is_using_border_style(fw,
 		    (fw == Scr.Hilite) ? True : False);
-	} else {
+	} else
 		using_border_style = 0;
-	}
+
 	switch (WINDOWSHADE_LAZINESS(fw)) {
 	case WINDOWSHADE_ALWAYS_LAZY:
 		return 1;
@@ -1180,8 +1108,6 @@ frame_reshape_border(FvwmWindow *fw)
 		frame_force_setup_window(fw, new_g->x, new_g->y, new_g->width,
 		    new_g->height, True);
 	}
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -1214,8 +1140,6 @@ frame_init(void)
 			exit(1);
 		}
 	}
-
-	return;
 }
 
 Bool
@@ -1223,15 +1147,13 @@ is_frame_hide_window(Window w)
 {
 	int             i;
 
-	if (w == None) {
+	if (w == None)
 		return False;
-	}
-	for (i = 0; i < 4; i++) {
-		if (w == hide_wins.w[i]) {
-			return True;
-		}
-	}
 
+	for (i = 0; i < 4; i++) {
+		if (w == hide_wins.w[i])
+			return True;
+	}
 	return False;
 }
 
@@ -1245,8 +1167,6 @@ frame_destroyed_frame(Window frame_w)
 		 */
 		frame_init();
 	}
-
-	return;
 }
 
 void
@@ -1272,9 +1192,9 @@ frame_get_titlebar_dimensions(FvwmWindow *fw, rectangle *frame_g,
 	int            *b_l;
 	Bool            revert_button = False;
 
-	if (!HAS_TITLE(fw)) {
+	if (!HAS_TITLE(fw))
 		return;
-	}
+
 	get_window_borders_no_title(fw, &b);
 	if (HAS_VERTICAL_TITLE(fw)) {
 		tb_length = frame_g->height - b.total_size.height;
@@ -1323,9 +1243,8 @@ frame_get_titlebar_dimensions(FvwmWindow *fw, rectangle *frame_g,
 		} else {
 			tb_x = frame_g->width - b.bottom_right.width -
 			    tb_thick;
-			if (diff_g != NULL) {
+			if (diff_g != NULL)
 				tb_x -= diff_g->width;
-			}
 		}
 		padd_coord = &tb_y;
 		b_w = tb_thick;
@@ -1427,8 +1346,6 @@ frame_get_titlebar_dimensions(FvwmWindow *fw, rectangle *frame_g,
 			(*b_l)--;
 		}
 	}
-
-	return;
 }
 
 void
@@ -1445,9 +1362,9 @@ frame_get_sidebar_geometry(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 	ret_g->height = 0;
 	*ret_has_x_marks = False;
 	*ret_has_y_marks = False;
-	if (HAS_NO_BORDER(fw)) {
+	if (HAS_NO_BORDER(fw))
 		return;
-	}
+
 	/*
 	 * get the corner size
 	 */
@@ -1491,8 +1408,6 @@ frame_get_sidebar_geometry(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 	 */
 	ret_g->width = frame_g->width - 2 * ret_g->x;
 	ret_g->height = frame_g->height - 2 * ret_g->y;
-
-	return;
 }
 
 int
@@ -1501,9 +1416,9 @@ frame_window_id_to_context(FvwmWindow *fw, Window w, int *ret_num)
 	int             context = C_ROOT;
 
 	*ret_num = -1;
-	if (fw == NULL || w == None) {
+	if (fw == NULL || w == None)
 		return C_ROOT;
-	}
+
 	if (w == FW_W_TITLE(fw)) {
 		context = C_TITLE;
 	} else if (Scr.EwmhDesktop &&
@@ -1553,9 +1468,8 @@ frame_window_id_to_context(FvwmWindow *fw, Window w, int *ret_num)
 			}
 		}
 	}
-	if (!HAS_HANDLES(fw) && (context & (C_SIDEBAR | C_FRAME))) {
+	if (!HAS_HANDLES(fw) && (context & (C_SIDEBAR | C_FRAME)))
 		context = C_SIDEBAR;
-	}
 
 	return context;
 }
@@ -1606,15 +1520,15 @@ frame_create_move_resize_args(FvwmWindow *fw, frame_move_resize_mode mr_mode,
 	if (mr_mode & FRAME_MR_DONT_DRAW) {
 		mr_mode &= ~FRAME_MR_DONT_DRAW;
 		mra->flags.do_not_draw = 1;
-	} else {
+	} else
 		mra->flags.do_not_draw = 0;
-	}
+
 	if (mr_mode == FRAME_MR_SETUP_BY_APP) {
 		mr_mode = FRAME_MR_SETUP;
 		mra->flags.do_set_bit_gravity = 0;
-	} else {
+	} else
 		mra->flags.do_set_bit_gravity = 1;
-	}
+
 	if (mr_mode == FRAME_MR_FORCE_SETUP_NO_W) {
 		mr_mode = FRAME_MR_FORCE_SETUP;
 		mra->flags.do_not_configure_client = 1;
@@ -1715,9 +1629,8 @@ frame_create_move_resize_args(FvwmWindow *fw, frame_move_resize_mode mr_mode,
 	mra->flags.had_handles = HAS_HANDLES(fw);
 	mra->flags.is_lazy_shading = frame_get_shading_laziness(fw, mra);
 	mra->trans_parts = border_get_transparent_decorations_part(fw);
-	if (mra->flags.is_lazy_shading) {
+	if (mra->flags.is_lazy_shading)
 		SET_HAS_HANDLES(fw, 0);
-	}
 
 	/*
 	 * Set gravities for the window parts.
@@ -1769,8 +1682,6 @@ frame_update_move_resize_args(frame_move_resize_args mr_args,
 	mra->end_g = *end_g;
 	fvwmrect_subtract_rectangles(&mra->delta_g, &mra->end_g,
 	    &mra->start_g);
-
-	return;
 }
 
 /* Destroys the structure allocated with frame_create_move_resize_args().  Does
@@ -1815,23 +1726,23 @@ frame_free_move_resize_args(FvwmWindow *fw, frame_move_resize_args mr_args)
 	if (mra->flags.do_restore_gravity) {
 		/*
 		 * TA:  2011-09-04: There might be a chance some clients with
-		 * *      a gravity other than Static (such as non-NW gravity)
-		 * *      might not react well -- but setting the gravity to the
-		 * *      main window hint will break clients being remapped as
-		 * *      subwindows, c.f. XEmbed.
-		 * *
-		 * *      Note that we should probably consider handling
-		 * *      GravityNotify events ourselves, since we already set
-		 * *      StructureNotify and SubstructureNotify events on
-		 * *      FW_W_PARENT for example.
-		 * *
-		 * * mra->grav.client_grav = fw->hints.win_gravity;
+		 *      a gravity other than Static (such as non-NW gravity)
+		 *      might not react well -- but setting the gravity to the
+		 *      main window hint will break clients being remapped as
+		 *      subwindows, c.f. XEmbed.
+		 *
+		 *      Note that we should probably consider handling
+		 *      GravityNotify events ourselves, since we already set
+		 *      StructureNotify and SubstructureNotify events on
+		 *      FW_W_PARENT for example.
+		 *
+		 * mra->grav.client_grav = fw->hints.win_gravity;
 		 */
 		frame_set_decor_gravities(fw, &mra->grav,
 		    (mra->flags.do_set_bit_gravity) ? 2 : 0);
-	} else {
+	} else
 		frame_restore_client_gravities(fw);
-	}
+
 	if (!IS_SHADED(fw) && mra->flags.was_moved) {
 		SendConfigureNotify(fw, fw->g.frame.x, fw->g.frame.y,
 		    fw->g.frame.width, fw->g.frame.height, 0, True);
@@ -1842,8 +1753,6 @@ frame_free_move_resize_args(FvwmWindow *fw, frame_move_resize_args mr_args)
 	 * free the memory
 	 */
 	free(mr_args);
-
-	return;
 }
 
 void
@@ -1858,9 +1767,9 @@ frame_move_resize(FvwmWindow *fw, frame_move_resize_args mr_args)
 	 * freeze the cursor shape; otherwise it may flash to a different shape
 	 * * during the animation
 	 */
-	if (mra->anim_steps > 1) {
+	if (mra->anim_steps > 1)
 		is_grabbed = GrabEm(None, GRAB_FREEZE_CURSOR);
-	}
+
 	/*
 	 * animation
 	 */
@@ -1869,11 +1778,8 @@ frame_move_resize(FvwmWindow *fw, frame_move_resize_args mr_args)
 		mra->current_step = i;
 		frame_move_resize_step(fw, mra);
 	}
-	if (is_grabbed == True) {
+	if (is_grabbed == True)
 		UngrabEm(GRAB_FREEZE_CURSOR);
-	}
-
-	return;
 }
 
 /***********************************************************************
@@ -1910,8 +1816,6 @@ frame_setup_window(FvwmWindow *fw, int x, int y, int w, int h,
 	g.width = w;
 	g.height = h;
 	__frame_setup_window(fw, &g, do_send_configure_notify, False, False);
-
-	return;
 }
 
 void
@@ -1925,8 +1829,6 @@ frame_setup_window_app_request(FvwmWindow *fw, int x, int y, int w, int h,
 	g.width = w;
 	g.height = h;
 	__frame_setup_window(fw, &g, do_send_configure_notify, False, True);
-
-	return;
 }
 
 void
@@ -1940,8 +1842,6 @@ frame_force_setup_window(FvwmWindow *fw, int x, int y, int w, int h,
 	g.width = w;
 	g.height = h;
 	__frame_setup_window(fw, &g, do_send_configure_notify, True, False);
-
-	return;
 }
 
 /****************************************************************************
@@ -1956,9 +1856,9 @@ frame_setup_shape(FvwmWindow *fw, int w, int h, int shape_mode)
 	rectangle       r;
 	size_borders    b;
 
-	if (!FShapesSupported) {
+	if (!FShapesSupported)
 		return;
-	}
+
 	if (fw->wShaped != shape_mode) {
 		fw->wShaped = shape_mode;
 		frame_reshape_border(fw);
@@ -1993,8 +1893,6 @@ frame_setup_shape(FvwmWindow *fw, int w, int h, int shape_mode)
 			    Unsorted);
 		}
 	}
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */

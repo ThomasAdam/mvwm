@@ -56,16 +56,15 @@ typedef enum
 
 /* ---------------------------- interface functions ------------------------ */
 
-DecorFace      *border_get_border_style(FvwmWindow *fw, Bool has_focus);
-int             border_is_using_border_style(FvwmWindow *fw, Bool has_focus);
-int             border_context_to_parts(int context);
-void            border_get_part_geometry(FvwmWindow *fw, window_parts part,
-    rectangle *sidebar_g, rectangle *ret_g, Window *ret_w);
-int             get_button_number(int context);
-void            border_draw_decorations(FvwmWindow *t,
-    window_parts draw_parts, Bool has_focus, int force,
-    clear_window_parts clear_parts, rectangle *old_g, rectangle *new_g);
-void            border_undraw_decorations(FvwmWindow *fw);
-void            border_redraw_decorations(FvwmWindow *fw);
-unsigned int    border_get_transparent_decorations_part(FvwmWindow *fw);
+DecorFace      *border_get_border_style(FvwmWindow *, Bool);
+int             border_is_using_border_style(FvwmWindow *, Bool);
+int             border_context_to_parts(int);
+void            border_get_part_geometry(FvwmWindow *, window_parts,
+    rectangle *g, rectangle *, Window *);
+int             get_button_number(int);
+void            border_draw_decorations(FvwmWindow *,
+    window_parts, Bool, int, clear_window_parts, rectangle *, rectangle *);
+void            border_undraw_decorations(FvwmWindow *);
+void            border_redraw_decorations(FvwmWindow *);
+unsigned int    border_get_transparent_decorations_part(FvwmWindow *);
 #endif /* _BORDERS_H */

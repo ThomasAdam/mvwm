@@ -17,9 +17,9 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
-void            parse_colorset(int n, char *line);
+void            parse_colorset(int, char *);
 void            cleanup_colorsets(void);
-void            alloc_colorset(int n);
-void            update_root_transparent_colorset(Atom prop);
+void            alloc_colorset(int);
+void            update_root_transparent_colorset(Atom);
 
 #endif /* COLORSET_H */

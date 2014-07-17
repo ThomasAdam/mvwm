@@ -236,8 +236,6 @@ SaveDesktopState(void)
 	XChangeProperty(dpy, Scr.Root, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
 	    PropModeReplace, (unsigned char *) data, 1);
 	XFlush(dpy);
-
-	return;
 }
 
 static void
@@ -276,8 +274,6 @@ InternUsefulAtoms(void)
 	_XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
 	_XA_XROOTPMAP_ID = XInternAtom(dpy, "_XROOTPMAP_ID", False);
 	_XA_XSETROOT_ID = XInternAtom(dpy, "_XSETROOT_ID", False);
-
-	return;
 }
 
 /* exit handler that will try to release any grabs */
@@ -294,14 +290,12 @@ catch_exit(void)
 		XUngrabPointer(dpy, CurrentTime);
 		XUngrabKeyboard(dpy, CurrentTime);
 	}
-
-	return;
 }
 
 /*
  * Restart on a signal
  */
-static          RETSIGTYPE
+static RETSIGTYPE
 Restart(int sig)
 {
 	fvwmRunState = FVWM_RESTART;
@@ -316,7 +310,7 @@ Restart(int sig)
 	SIGNAL_RETURN;
 }
 
-static          RETSIGTYPE
+static RETSIGTYPE
 SigDone(int sig)
 {
 	fvwmRunState = FVWM_DONE;
@@ -393,20 +387,19 @@ parse_command_args(const char *command, char **argv, int max_argc,
 	for (argc = 0; argc < max_argc - 1; argc++) {
 		int             s_quote = 0;
 		argv[argc] = aptr;
-		while (isspace(the_char)) {
+		while (isspace(the_char))
 			adv_char;
-		}
-		if (the_char == '\0') {
+
+		if (the_char == '\0')
 			break;
-		}
+
 		while ((s_quote || !isspace(the_char)) &&
 		    the_char != '\0' && can_add_arg_char) {
 			if (the_char == '"') {
-				if (s_quote) {
+				if (s_quote)
 					s_quote = 0;
-				} else {
+				else
 					s_quote = 1;
-				}
 				adv_char;
 			} else if (!s_quote && the_char == '\'') {
 				adv_char;
@@ -414,20 +407,20 @@ parse_command_args(const char *command, char **argv, int max_argc,
 				    can_add_arg_char) {
 					add_arg_char(pop_char);
 				}
-				if (the_char == '\'') {
+				if (the_char == '\'')
 					adv_char;
-				} else if (!can_add_arg_char) {
+				else if (!can_add_arg_char)
 					break;
-				} else {
+				else {
 					*error_msg =
 					    "No closing single quote";
 					error_code = -3;
 					break;
 				}
 			} else if (!s_quote && the_char == '~') {
-				if (!can_add_arg_str(home_dir)) {
+				if (!can_add_arg_str(home_dir))
 					break;
-				}
+
 				add_arg_str(home_dir);
 				adv_char;
 			} else if (the_char == '$') {
@@ -440,15 +433,14 @@ parse_command_args(const char *command, char **argv, int max_argc,
 					adv_char;
 					continue;
 				}
-				if (!can_add_arg_str(str)) {
+				if (!can_add_arg_str(str))
 					break;
-				}
+
 				add_arg_str(str);
 				cptr += len;
 			} else {
-				if (add_arg_char(pop_char) == '\0') {
+				if (add_arg_char(pop_char) == '\0')
 					break;
-				}
 			}
 		}
 		if (*(aptr - 1) == '\0') {
@@ -456,9 +448,9 @@ parse_command_args(const char *command, char **argv, int max_argc,
 			error_code = -2;
 			break;
 		}
-		if (error_code) {
+		if (error_code)
 			break;
-		}
+
 		if (the_char == '~' || the_char == '$' || !can_add_arg_char) {
 			*error_msg = "The command is too long";
 			error_code = -argc - 100;
@@ -480,9 +472,8 @@ parse_command_args(const char *command, char **argv, int max_argc,
 #undef can_add_arg_str
 #undef add_arg_str
 	argv[argc] = NULL;
-	if (argc == 0 && !error_code) {
+	if (argc == 0 && !error_code)
 		*error_msg = "Void command";
-	}
 
 	return error_code ? error_code : argc;
 }
@@ -569,19 +560,17 @@ Done(int restart, char *command)
 		SaveDesktopState();
 
 		if (command) {
-			while (isspace(command[0])) {
+			while (isspace(command[0]))
 				command++;
-			}
-			if (strncmp(command, "--dont-preserve-state",
-				21) == 0) {
+
+			if (strncmp(command, "--dont-preserve-state", 21) == 0) {
 				command += 21;
 				while (isspace(command[0]))
 					command++;
 			}
 		}
-		if (command[0] == '\0') {
+		if (command[0] == '\0')
 			command = NULL;	/* native restart */
-		}
 
 		/*
 		 * RBW - 06/08/1999 - without this, windows will wander to
@@ -629,9 +618,9 @@ Done(int restart, char *command)
 					int             i;
 					my_argv[0] = my_argv[1];
 					for (i = 1; i < g_argc &&
-					    i < MAX_ARG_SIZE - 1; i++) {
+					    i < MAX_ARG_SIZE - 1; i++)
 						my_argv[i] = g_argv[i];
-					}
+
 					my_argv[i] = NULL;
 
 					execvp(my_argv[0], my_argv);
@@ -822,8 +811,6 @@ fvmm_deinstall_signals(void)
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTERM, SIG_DFL);
 	signal(SIGUSR1, SIG_DFL);
-
-	return;
 }
 
 /***********************************************************************
@@ -933,8 +920,6 @@ LoadDefaultLeftButton(DecorFace *df, int i)
 		v->xoff[j] = 0;
 		v->yoff[j] = 0;
 	}
-
-	return;
 }
 
 /***********************************************************************
@@ -1045,8 +1030,6 @@ LoadDefaultRightButton(DecorFace *df, int i)
 		v->xoff[j] = 0;
 		v->yoff[j] = 0;
 	}
-
-	return;
 }
 
 /***********************************************************************
@@ -1234,8 +1217,6 @@ init_scr(void)
 	 * make sure colorset 0 exists
 	 */
 	alloc_colorset(0);
-
-	return;
 }
 
 static void
@@ -1274,8 +1255,6 @@ usage(int is_verbose)
 	    " -S:           static palette\n"
 	    " -V:           print version information\n");
 	fprintf(stderr, "Try 'man %s' for more information.\n", PACKAGE);
-
-	return;
 }
 
 static void
@@ -1345,11 +1324,8 @@ setVersionInfo(void)
 		support_str[support_len - 1] = '\0';
 		Fvwm_SupportInfo =
 		    xstrdup(CatString2("with support for:", support_str));
-	} else {
+	} else
 		Fvwm_SupportInfo = "with no optional feature support";
-	}
-
-	return;
 }
 
 /* Sets some initial style values & such */
@@ -1440,8 +1416,6 @@ SetRCDefaults(void)
 		exc_destroy_context(exc);
 	}
 #undef RC_DEFAULTS_COMPLETE
-
-	return;
 }
 
 static int
@@ -1524,9 +1498,9 @@ StartupStuff(void)
 	 * Turn off the SM stuff after the initial capture so that new windows
 	 * * will not be matched by accident.
 	 */
-	if (Restarting) {
+	if (Restarting)
 		DisableRestoringState();
-	}
+
 	/*
 	 * Have to do this here too because preprocessor modules have not run
 	 * * to the end when HandleEvents is entered from the main loop.
@@ -1546,21 +1520,6 @@ StartupStuff(void)
 	if (Scr.ClickTime < 0) {
 		Scr.ClickTime = -Scr.ClickTime;
 	}
-#if 0
-	/*
-	 * It is safe to ungrab here: if not, and one of the init functions
-	 * * does not finish, we've got a complete freeze!
-	 */
-	/*
-	 * DV (15-Jul-2004): No, it is not safe to ungrab.  If another
-	 * * application grabs the pointer before execute_function gets it, the
-	 * * start functions are not executed.  And the pointer is grabbed
-	 * * during function execution anyway, so releasing it here buys us
-	 * * nothing.
-	 */
-	UngrabEm(GRAB_STARTUP);
-	XUngrabPointer(dpy, CurrentTime);
-#endif
 
 	/*
 	 * migo (04-Sep-1999): execute StartFunction
@@ -1598,9 +1557,9 @@ StartupStuff(void)
 	 ** migo (20-Jun-1999): Remove state file after usage.
 	 ** migo (09-Jul-1999): but only on restart, otherwise it can be reused.
 	 */
-	if (Restarting) {
+	if (Restarting)
 		unlink(state_filename);
-	}
+
 	exc_destroy_context(exc);
 
 	/*
@@ -1608,8 +1567,6 @@ StartupStuff(void)
 	 * * flag back to False!
 	 */
 	Restarting = False;
-
-	return;
 }
 
 /***********************************************************************
@@ -1621,13 +1578,10 @@ StartupStuff(void)
 void
 LoadDefaultButton(DecorFace *df, int i)
 {
-	if (i & 1) {
+	if (i & 1)
 		LoadDefaultRightButton(df, i / 2);
-	} else {
+	else
 		LoadDefaultLeftButton(df, i / 2);
-	}
-
-	return;
 }
 
 /***********************************************************************
@@ -1651,8 +1605,6 @@ DestroyAllButtons(FvwmDecor * decor)
 			FreeDecorFace(dpy, face);
 		}
 	}
-
-	return;
 }
 
 void
@@ -1681,8 +1633,6 @@ ResetAllButtons(FvwmDecor * decor)
 	TB_MWM_DECOR_FLAGS(decor->buttons[0]) |= MWM_DECOR_MENU;
 	TB_MWM_DECOR_FLAGS(decor->buttons[1]) |= MWM_DECOR_MAXIMIZE;
 	TB_MWM_DECOR_FLAGS(decor->buttons[3]) |= MWM_DECOR_MINIMIZE;
-
-	return;
 }
 
 void
@@ -1715,8 +1665,6 @@ SetMWM_INFO(Window window)
 		    PropModeReplace, (unsigned char *) &motif_wm_info, 2);
 		set_yorn = 'y';
 	}
-
-	return;
 }
 
 /*
@@ -1729,11 +1677,9 @@ void
 set_init_function_name(int n, const char *name)
 {
 	init_function_names[n >= 0 && n < 3 ? n : 3] = name;
-
-	return;
 }
 
-const char     *
+const char *
 get_init_function_name(int n)
 {
 	return init_function_names[n >= 0 && n < 3 ? n : 3];
@@ -1751,17 +1697,14 @@ reopen_fd(int fd, char *mode, FILE * of)
 
 	errno = 0;
 	rc = fstat(fd, &sbuf);
-	if (rc == 0) {
+	if (rc == 0)
 		return;
-	} else if (errno != EBADF) {
+	else if (errno != EBADF)
 		exit(77);
-	}
-	f = freopen(_PATH_DEVNULL, mode, of);
-	if (f == 0 || fileno(f) != fd) {
-		exit(88);
-	}
 
-	return;
+	f = freopen(_PATH_DEVNULL, mode, of);
+	if (f == 0 || fileno(f) != fd)
+		exit(88);
 }
 
 /***********************************************************************
@@ -1794,9 +1737,9 @@ main(int argc, char **argv)
 	/*
 	 * close open fds
 	 */
-	for (i = 3; i < fvwmlib_max_fd; i++) {
+	for (i = 3; i < fvwmlib_max_fd; i++)
 		close(i);
-	}
+
 	/*
 	 * reopen stdin, stdout and stderr if necessary
 	 */
@@ -1810,9 +1753,9 @@ main(int argc, char **argv)
 	 */
 	g_argv = xmalloc((argc + 4) * sizeof(char *));
 	g_argc = argc;
-	for (i = 0; i < argc; i++) {
+	for (i = 0; i < argc; i++)
 		g_argv[i] = argv[i];
-	}
+
 	g_argv[g_argc] = NULL;
 
 	FlocaleInit(LC_CTYPE, "", "", "fvwm");
@@ -1832,14 +1775,12 @@ main(int argc, char **argv)
 #ifdef HAVE_GETPWUID
 	if (home_dir == NULL) {
 		struct passwd  *pw = getpwuid(getuid());
-		if (pw != NULL) {
+		if (pw != NULL)
 			home_dir = xstrdup(pw->pw_dir);
-		}
 	}
 #endif
-	if (home_dir == NULL) {
+	if (home_dir == NULL)
 		home_dir = "/";	/* give up and use root dir */
-	}
 
 	/*
 	 * Figure out where to read and write user's data files.
@@ -1861,9 +1802,9 @@ main(int argc, char **argv)
 	/*
 	 * Create FVWM_USERDIR directory if needed
 	 */
-	if (access(fvwm_userdir, F_OK) != 0) {
+	if (access(fvwm_userdir, F_OK) != 0)
 		mkdir(fvwm_userdir, 0777);
-	}
+
 	if (access(fvwm_userdir, W_OK) != 0) {
 		fvwm_msg(ERR, "main", "No write permissions in `%s/'.\n",
 		    fvwm_userdir);
@@ -2036,12 +1977,12 @@ main(int argc, char **argv)
 	if (single_screen_num >= 0) {
 		char           *dn = NULL;
 
-		if (display_name) {
+		if (display_name)
 			dn = display_name;
-		}
-		if (!dn) {
+
+		if (!dn)
 			dn = getenv("DISPLAY");
-		}
+
 		if (!dn) {
 			/*
 			 * should never happen ?
@@ -2050,9 +1991,8 @@ main(int argc, char **argv)
 				fvwm_msg(ERR, "main", "can't open display %s"
 				    "to get the default display",
 				    XDisplayName(dn));
-			} else {
+			} else
 				dn = XDisplayString(dpy);
-			}
 		}
 		if (dn == NULL) {
 			fvwm_msg(ERR,
@@ -2131,7 +2071,7 @@ main(int argc, char **argv)
 
 	/*
 	 * Add a DISPLAY entry to the environment, incase we were started
-	 * * with fvwm -display term:0.0
+	 * with fvwm -display term:0.0
 	 */
 	len = strlen(XDisplayString(dpy));
 	display_string = xmalloc(len + 10);
@@ -2223,9 +2163,8 @@ main(int argc, char **argv)
 				Pdepth = vinfo[i].depth;
 			}
 		}
-		if (vinfo) {
+		if (vinfo)
 			XFree(vinfo);
-		}
 
 		/*
 		 * Detection of a card with 2 hardware colormaps (8+24) which
@@ -2246,9 +2185,8 @@ main(int argc, char **argv)
 					Pdepth = vinfo[i].depth;
 				}
 			}
-			if (vinfo) {
+			if (vinfo)
 				XFree(vinfo);
-			}
 		}
 
 		/*
@@ -2330,9 +2268,8 @@ main(int argc, char **argv)
 
 	frame_init();
 	XFlush(dpy);
-	if (debugging) {
+	if (debugging)
 		sync_server(1);
-	}
 
 	SetupICCCM2(replace_wm);
 	XSetIOErrorHandler(CatchFatal);
@@ -2381,9 +2318,8 @@ main(int argc, char **argv)
 	restart_state_filename =
 	    xstrdup(CatString3(fvwm_userdir, "/.fs-restart-",
 		getenv("HOSTDISPLAY")));
-	if (!state_filename && Restarting) {
+	if (!state_filename && Restarting)
 		state_filename = restart_state_filename;
-	}
 
 	/*
 	 * This should be done early enough to have the window states loaded
@@ -2434,15 +2370,15 @@ main(int argc, char **argv)
 	} else {
 		/*
 		 * Run startup command file in these places (default prefix):
-		 * *   ~/.fvwm/config
-		 * *   /usr/local/share/fvwm/config
-		 * * and for compatibility:
-		 * *   ~/.fvwm/.fvwm2rc
-		 * *   /usr/local/share/fvwm/system.fvwm2rc
-		 * * and for compatibility to be discontinued:
-		 * *   ~/.fvwm2rc,
-		 * *   /usr/local/share/fvwm/.fvwm2rc
-		 * *   /usr/local/etc/system.fvwm2rc
+		 *   ~/.fvwm/config
+		 *   /usr/local/share/fvwm/config
+		 * and for compatibility:
+		 *   ~/.fvwm/.fvwm2rc
+		 *   /usr/local/share/fvwm/system.fvwm2rc
+		 * and for compatibility to be discontinued:
+		 *   ~/.fvwm2rc,
+		 *   /usr/local/share/fvwm/.fvwm2rc
+		 *   /usr/local/etc/system.fvwm2rc
 		 */
 		if (!run_command_file(CatString3(fvwm_userdir, "/",
 			    FVWM_CONFIG), exc)

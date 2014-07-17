@@ -153,15 +153,13 @@ typedef struct MenuPaintItemParameters
 
 /* ---------------------------- interface functions ------------------------ */
 
-struct MenuItem *menuitem_clone(struct MenuItem *mi);
+struct MenuItem *menuitem_clone(struct MenuItem *);
 struct MenuItem *menuitem_create(void);
-void            menuitem_free(struct MenuItem *mi);
-void            menuitem_get_size(struct MenuItem *mi,
-    struct MenuItemPartSizesT *mipst, FlocaleFont *font,
-    Bool do_reverse_icon_order);
-void            menuitem_paint(struct MenuItem *mi,
-    struct MenuPaintItemParameters *mpip);
-int             menuitem_middle_y_offset(struct MenuItem *mi,
-    struct MenuStyle *ms);
+void            menuitem_free(struct MenuItem *);
+void            menuitem_get_size(struct MenuItem *,
+    struct MenuItemPartSizesT *, FlocaleFont *, Bool);
+void            menuitem_paint(struct MenuItem *,
+    struct MenuPaintItemParameters *);
+int             menuitem_middle_y_offset(struct MenuItem *, struct MenuStyle *);
 
 #endif /* MENUITEM_H */

@@ -86,11 +86,10 @@ get_desk_title(struct monitor *m, int desk, unsigned long flags,
 	char           *tlabel;
 
 	desk_name = GetDesktopName(m, desk);
-	if (desk_name != NULL) {
+	if (desk_name != NULL)
 		tlabel = xmalloc(strlen(desk_name) + 50);
-	} else {
+	else
 		tlabel = xmalloc(50);
-	}
 
 	/*
 	 * TA:  FIXME! xasprintf()
@@ -136,9 +135,8 @@ classCompare(const FvwmWindow **a, const FvwmWindow **b)
 {
 	int             result =
 	    strcasecmp((*a)->class.res_class, (*b)->class.res_class);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	return strcasecmp((*a)->visible_name, (*b)->visible_name);
 }
@@ -148,14 +146,12 @@ resourceCompare(const FvwmWindow **a, const FvwmWindow **b)
 {
 	int             result =
 	    strcasecmp((*a)->class.res_class, (*b)->class.res_class);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	result = strcasecmp((*a)->class.res_name, (*b)->class.res_name);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	return strcasecmp((*a)->visible_name, (*b)->visible_name);
 }
@@ -165,9 +161,8 @@ classIconCompare(const FvwmWindow **a, const FvwmWindow **b)
 {
 	int             result =
 	    strcasecmp((*a)->class.res_class, (*b)->class.res_class);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	return strcasecmp((*a)->visible_icon_name, (*b)->visible_icon_name);
 }
@@ -177,14 +172,12 @@ resourceIconCompare(const FvwmWindow **a, const FvwmWindow **b)
 {
 	int             result =
 	    strcasecmp((*a)->class.res_class, (*b)->class.res_class);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	result = strcasecmp((*a)->class.res_name, (*b)->class.res_name);
-	if (result) {
+	if (result)
 		return result;
-	}
 
 	return strcasecmp((*a)->visible_icon_name, (*b)->visible_icon_name);
 }

@@ -205,9 +205,9 @@ get_root_pixmap(Atom prop)
 	    && after == 0) {
 		pix = (Pixmap) (*(long *) reteval);
 	}
-	if (reteval) {
+	if (reteval)
 		XFree(reteval);
-	}
+
 	return pix;
 }
 
@@ -220,9 +220,9 @@ update_root_pixmap(Atom prop)
 	XID             dummy;
 	Pixmap          pix;
 
-	if (a_rootpix == None) {
+	if (a_rootpix == None)
 		a_rootpix = XInternAtom(dpy, "_XROOTPMAP_ID", False);
-	}
+
 	XSync(dpy, False);
 	if (prop != 0) {
 		pix = get_root_pixmap(prop);
@@ -246,10 +246,6 @@ update_root_pixmap(Atom prop)
 	root_pic.pixmap = pix;
 	root_pic.width = w;
 	root_pic.height = h;
-#if 0
-	fprintf(stderr, "Get New Root Pixmap: 0x%lx %i,%i\n",
-	    root_pic.pixmap, w, h);
-#endif
 }
 
 static void
@@ -268,8 +264,6 @@ add_to_junk(Pixmap pixmap)
 		exc_destroy_context(exc);
 		cleanup_scheduled = True;
 	}
-
-	return;
 }
 
 static char    *
@@ -293,9 +287,8 @@ get_simple_color(char *string, char **color, colorset_t *cs,
 			cs->color_flags |= supplied_color;
 			cs->color_flags &= ~special_flag;
 		}
-	} else {
+	} else
 		cs->color_flags &= ~(supplied_color | special_flag);
-	}
 
 	return rest;
 }
@@ -325,17 +318,15 @@ SafeDestroyPicture(Display *dpy, FvwmPicture *picture)
 	 * all that this will now do is free the colors and the name
 	 */
 	PDestroyFvwmPicture(dpy, picture);
-
-	return;
 }
 
 static void
 free_colorset_background(colorset_t *cs, Bool do_free_args)
 {
 	if (cs->picture != NULL) {
-		if (cs->picture->picture != cs->pixmap) {
+		if (cs->picture->picture != cs->pixmap)
 			add_to_junk(cs->pixmap);
-		}
+
 		SafeDestroyPicture(dpy, cs->picture);
 		cs->picture = NULL;
 		cs->pixmap = None;
@@ -386,8 +377,6 @@ reset_cs_pixmap(colorset_t *cs, GC gc)
 		XCopyPlane(dpy, cs->picture->picture, cs->pixmap, gc,
 		    0, 0, cs->width, cs->height, 0, 0, 1);
 	}
-
-	return;
 }
 
 static void
@@ -400,16 +389,15 @@ parse_pixmap(Window win, GC gc, colorset_t *cs, Bool *pixmap_is_a_bitmap)
 	 * dither
 	 */
 	fpa.mask = 0;
-	if (cs->dither) {
+	if (cs->dither)
 		fpa.mask = FPAM_DITHER;
-	}
 
 	/*
 	 * read filename
 	 */
-	if (!cs->pixmap_args) {
+	if (!cs->pixmap_args)
 		return;
-	}
+
 	/*
 	 * load the file
 	 */
@@ -488,29 +476,28 @@ parse_shape(Window win, colorset_t *cs, int i, char *args,
 	/*
 	 * set the flags
 	 */
-	if (csetopts[i][0] == 'T') {
+	if (csetopts[i][0] == 'T')
 		cs->shape_type = SHAPE_TILED;
-	} else if (csetopts[i][0] == 'A') {
+	else if (csetopts[i][0] == 'A')
 		cs->shape_type = SHAPE_STRETCH_ASPECT;
-	} else {
+	else
 		cs->shape_type = SHAPE_STRETCH;
-	}
+
 	fpa.mask = FPAM_NO_ALPHA;
 
 	/*
 	 * try to load the shape mask
 	 */
-	if (!token) {
+	if (!token)
 		return;
-	}
 
 	/*
 	 * load the shape mask
 	 */
 	picture = PCacheFvwmPicture(dpy, win, NULL, token, fpa);
-	if (!picture) {
+	if (!picture)
 		fvwm_msg(ERR, name, "can't load picture %s", token);
-	} else if (picture->depth != 1 && picture->mask == None) {
+	else if (picture->depth != 1 && picture->mask == None) {
 		fvwm_msg(ERR, name, "shape pixmap must be of depth 1");
 		SafeDestroyPicture(dpy, picture);
 	} else {
@@ -519,11 +506,11 @@ parse_shape(Window win, colorset_t *cs, int i, char *args,
 		/*
 		 * okay, we have what we want
 		 */
-		if (picture->mask != None) {
+		if (picture->mask != None)
 			mask = picture->mask;
-		} else {
+		else
 			mask = picture->picture;
-		}
+
 		cs->shape_width = picture->width;
 		cs->shape_height = picture->height;
 
@@ -542,7 +529,6 @@ parse_shape(Window win, colorset_t *cs, int i, char *args,
 		SafeDestroyPicture(dpy, picture);
 		picture = None;
 	}
-	return;
 }
 
 static void
@@ -567,11 +553,10 @@ parse_simple_tint(colorset_t *cs, char *args, char **tint, int supplied_color,
 		return;
 	}
 	*changed = True;
-	if (*percent > 100) {
+	if (*percent > 100)
 		*percent = 100;
-	} else if (*percent < 0) {
+	else if (*percent < 0)
 		*percent = 0;
-	}
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -640,9 +625,8 @@ parse_colorset(int n, char *line)
 	/*
 	 * initialize statics
 	 */
-	if (gc == None) {
+	if (gc == None)
 		gc = fvwmlib_XCreateGC(dpy, win, 0, &xgcv);
-	}
 
 	/*
 	 * make sure it exists and has sensible contents
@@ -704,9 +688,9 @@ parse_colorset(int n, char *line)
 					tmp = 100;
 				else if (tmp < 0)
 					tmp = 0;
-			} else {
+			} else
 				tmp = 100;
-			}
+
 			if (tmp != cs->fg_alpha_percent) {
 				cs->fg_alpha_percent = tmp;
 				has_fg_alpha_changed = True;
@@ -725,14 +709,13 @@ parse_colorset(int n, char *line)
 				/*
 				 * set the flags
 				 */
-				if (csetopts[i][0] == 'T') {
+				if (csetopts[i][0] == 'T')
 					cs->pixmap_type = PIXMAP_TILED;
-				} else if (csetopts[i][0] == 'A') {
+				else if (csetopts[i][0] == 'A')
 					cs->pixmap_type =
 					    PIXMAP_STRETCH_ASPECT;
-				} else {
+				else 
 					cs->pixmap_type = PIXMAP_STRETCH;
-				}
 			}
 			/*
 			 * the pixmap is build later
@@ -785,11 +768,11 @@ parse_colorset(int n, char *line)
 			cs->pixmap_type = PIXMAP_ROOT_PIXMAP_PURE;
 			do_reload_pixmap = True;
 			tmp_str = PeekToken(args, &args);
-			if (StrEquals(tmp_str, "buffer")) {
+			if (StrEquals(tmp_str, "buffer"))
 				cs->allows_buffered_transparency = True;
-			} else {
+			else
 				cs->allows_buffered_transparency = False;
-			}
+
 			cs->is_maybe_root_transparent = True;
 			break;
 		case 25:	/* Tint */
@@ -798,9 +781,8 @@ parse_colorset(int n, char *line)
 		case 28:	/* TintMask */
 			parse_simple_tint(cs, args, &tint, TINT_SUPPLIED,
 			    &has_tint_changed, &percent, "tint");
-			if (has_tint_changed) {
+			if (has_tint_changed)
 				cs->tint_percent = percent;
-			}
 			break;
 		case 29:	/* NoTint */
 			has_tint_changed = True;
@@ -811,30 +793,30 @@ parse_colorset(int n, char *line)
 			parse_simple_tint(cs, args, &fg_tint,
 			    FG_TINT_SUPPLIED, &has_fg_tint_changed, &percent,
 			    "fgTint");
-			if (has_fg_tint_changed) {
+			if (has_fg_tint_changed)
 				cs->fg_tint_percent = percent;
-			}
+
 			break;
 		case 31:	/* bgTint */
 			parse_simple_tint(cs, args, &bg_tint,
 			    BG_TINT_SUPPLIED, &has_bg_tint_changed, &percent,
 			    "bgTint");
-			if (has_bg_tint_changed) {
+			if (has_bg_tint_changed)
 				cs->bg_tint_percent = percent;
-			}
+
 			break;
 		case 32:	/* dither */
-			if (cs->pixmap_args || cs->gradient_args) {
+			if (cs->pixmap_args || cs->gradient_args) 
 				has_pixmap_changed = True;
 				do_reload_pixmap = True;
-			}
+
 			cs->dither = True;
 			break;
 		case 33:	/* nodither */
-			if (cs->pixmap_args || cs->gradient_args) {
+			if (cs->pixmap_args || cs->gradient_args)
 				has_pixmap_changed = True;
 				do_reload_pixmap = True;
-			}
+
 			cs->dither = False;
 			break;
 		case 34:	/* Alpha */
@@ -845,9 +827,9 @@ parse_colorset(int n, char *line)
 					tmp = 100;
 				else if (tmp < 0)
 					tmp = 0;
-			} else {
+			} else 
 				tmp = 100;
-			}
+	
 			if (tmp != cs->image_alpha_percent) {
 				has_image_alpha_changed = True;
 				cs->image_alpha_percent = tmp;
@@ -874,9 +856,9 @@ parse_colorset(int n, char *line)
 			break;
 		case 40:	/* NoIconTint */
 			has_icon_tint_changed = True;
-			if (cs->icon_tint_percent != 0) {
+			if (cs->icon_tint_percent != 0)
 				has_icon_pixels_changed = True;
-			}
+
 			cs->icon_tint_percent = 0;
 			break;
 		case 41:	/* IconAlpha */
@@ -885,9 +867,9 @@ parse_colorset(int n, char *line)
 					tmp = 100;
 				else if (tmp < 0)
 					tmp = 0;
-			} else {
+			} else
 				tmp = 100;
-			}
+
 			if (tmp != cs->icon_alpha_percent) {
 				has_icon_pixels_changed = True;
 				cs->icon_alpha_percent = tmp;
@@ -919,10 +901,8 @@ parse_colorset(int n, char *line)
 			break;
 		}	/* switch */
 
-		if (option) {
-			free(option);
-			option = NULL;
-		}
+		free(option);
+		option = NULL;
 		free(optstring);
 		optstring = NULL;
 	}	/* while (line && *line) */
@@ -938,9 +918,8 @@ parse_colorset(int n, char *line)
 			Pixel           old_tint = cs->tint;
 			PictureFreeColors(dpy, Pcmap, &cs->tint, 1, 0, True);
 			cs->tint = GetColor(tint);
-			if (old_tint != cs->tint) {
+			if (old_tint != cs->tint)
 				have_pixels_changed = True;
-			}
 		} else if (tint == NULL) {
 			/*
 			 * default
@@ -948,9 +927,8 @@ parse_colorset(int n, char *line)
 			Pixel           old_tint = cs->tint;
 			PictureFreeColors(dpy, Pcmap, &cs->tint, 1, 0, True);
 			cs->tint = GetColor(black);
-			if (old_tint != cs->tint) {
+			if (old_tint != cs->tint)
 				have_pixels_changed = True;
-			}
 		}
 	}
 
@@ -996,14 +974,10 @@ parse_colorset(int n, char *line)
 				cs->width = root_pic.width;
 				cs->height = root_pic.height;
 				cs->pixmap_type = PIXMAP_ROOT_PIXMAP_PURE;
-#if 0
-				fprintf(stderr, "Cset %i LoadRoot 0x%lx\n",
-				    n, cs->pixmap);
-#endif
 			}
-		} else if (cs->pixmap_args) {
+		} else if (cs->pixmap_args)
 			parse_pixmap(win, gc, cs, &pixmap_is_a_bitmap);
-		} else if (cs->gradient_args) {
+		else if (cs->gradient_args) {
 			cs->pixmap =
 			    CreateGradientPixmapFromString(dpy, win, gc,
 			    cs->gradient_type, cs->gradient_args, &w, &h,
@@ -1014,9 +988,8 @@ parse_colorset(int n, char *line)
 		has_pixmap_changed = True;
 	}
 
-	if (cs->picture != NULL && cs->picture->depth != Pdepth) {
+	if (cs->picture != NULL && cs->picture->depth != Pdepth)
 		pixmap_is_a_bitmap = True;
-	}
 
 	/*
 	 * ---------- change the background colour ----------
@@ -1032,9 +1005,8 @@ parse_colorset(int n, char *line)
 			if (cs->picture != NULL
 			    && cs->picture->picture != None) {
 				average_pix = cs->picture->picture;
-			} else if (cs->pixmap != ParentRelative) {
+			} else if (cs->pixmap != ParentRelative)
 				average_pix = cs->pixmap;
-			}
 
 			if (average_pix == root_pic.pixmap) {
 				int             w;
@@ -1050,10 +1022,9 @@ parse_colorset(int n, char *line)
 					(unsigned int *) &dummy,
 					(unsigned int *) &dummy)) {
 					average_pix = None;
-				} else {
-					if (w != cs->width || h != cs->height) {
+				} else  {
+					if (w != cs->width || h != cs->height)
 						average_pix = None;
-					}
 				}
 				if (average_pix == None) {
 					MyXUngrabServer(dpy);
@@ -1119,15 +1090,15 @@ parse_colorset(int n, char *line)
 					}
 				}
 			}
-			if (image != None) {
+			if (image != None)
 				XDestroyImage(image);
-			}
-			if (mask_image != None) {
+
+			if (mask_image != None)
 				XDestroyImage(mask_image);
-			}
-			if (k == 0) {
+	
+			if (k == 0)
 				do_set_default_background = True;
-			} else {
+			else {
 				/*
 				 * look them all up, XQueryColors() can't
 				 * * handle more than 256
@@ -1177,9 +1148,8 @@ parse_colorset(int n, char *line)
 					PictureAllocColor(dpy, Pcmap, &color,
 					    True);
 					cs->bg = color.pixel;
-					if (old_bg != cs->bg) {
+					if (old_bg != cs->bg)
 						have_pixels_changed = True;
-					}
 				}
 			}
 			free(colors);
@@ -1192,9 +1162,8 @@ parse_colorset(int n, char *line)
 
 			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
 			cs->bg = GetColor(bg);
-			if (old_bg != cs->bg) {
+			if (old_bg != cs->bg)
 				have_pixels_changed = True;
-			}
 		} /* user specified */
 		else if (bg == NULL && has_bg_changed) {
 			/*
@@ -1207,9 +1176,9 @@ parse_colorset(int n, char *line)
 
 			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
 			cs->bg = GetColor(white);
-			if (old_bg != cs->bg) {
+			if (old_bg != cs->bg)
 				have_pixels_changed = True;
-			}
+
 			has_bg_changed = True;
 		}
 
@@ -1383,9 +1352,8 @@ parse_colorset(int n, char *line)
 			PictureFreeColors(dpy, Pcmap, &cs->hilite, 1, 0,
 			    True);
 			cs->hilite = GetHilite(cs->bg);
-			if (old_hilite != cs->hilite) {
+			if (old_hilite != cs->hilite)
 				have_pixels_changed = True;
-			}
 		}
 	}
 
@@ -1417,9 +1385,8 @@ parse_colorset(int n, char *line)
 			PictureFreeColors(dpy, Pcmap, &cs->shadow, 1, 0,
 			    True);
 			cs->shadow = GetShadow(cs->bg);
-			if (old_shadow != cs->shadow) {
+			if (old_shadow != cs->shadow)
 				have_pixels_changed = True;
-			}
 		}
 	}
 
@@ -1441,18 +1408,16 @@ parse_colorset(int n, char *line)
 
 			PictureFreeColors(dpy, Pcmap, &cs->fgsh, 1, 0, True);
 			cs->fgsh = GetColor(fgsh);
-			if (old_fgsh != cs->fgsh) {
+			if (old_fgsh != cs->fgsh)
 				have_pixels_changed = True;
-			}
 		} /* user specified */
 		else if (fgsh == NULL) {
 			Pixel           old_fgsh = cs->fgsh;
 
 			PictureFreeColors(dpy, Pcmap, &cs->fgsh, 1, 0, True);
 			cs->fgsh = GetForeShadow(cs->fg, cs->bg);
-			if (old_fgsh != cs->fgsh) {
+			if (old_fgsh != cs->fgsh)
 				have_pixels_changed = True;
-			}
 		}
 	}
 
@@ -1508,14 +1473,13 @@ parse_colorset(int n, char *line)
 		    Pdepth, &fra, temp, gc, Scr.MonoGC, Scr.AlphaGC, 0, 0,
 		    cs->width, cs->height, 0, 0, cs->width, cs->height,
 		    False);
-		if (cs->pixmap != root_pic.pixmap) {
+		if (cs->pixmap != root_pic.pixmap)
 			add_to_junk(cs->pixmap);
-		}
+
 		cs->pixmap = temp;
 		has_pixmap_changed = True;
-		if (CSETS_IS_TRANSPARENT_ROOT(cs)) {
+		if (CSETS_IS_TRANSPARENT_ROOT(cs))
 			cs->pixmap_type = PIXMAP_ROOT_PIXMAP_TRAN;
-		}
 	}
 
 	/*
@@ -1533,9 +1497,8 @@ parse_colorset(int n, char *line)
 			PictureFreeColors(dpy, Pcmap, &cs->icon_tint, 1, 0,
 			    True);
 			cs->icon_tint = GetColor(icon_tint);
-			if (old_tint != cs->icon_tint) {
+			if (old_tint != cs->icon_tint)
 				has_icon_pixels_changed = True;
-			}
 		} else {
 			/*
 			 * default
@@ -1544,9 +1507,8 @@ parse_colorset(int n, char *line)
 			PictureFreeColors(dpy, Pcmap, &cs->icon_tint, 1, 0,
 			    True);
 			cs->icon_tint = GetColor(black);
-			if (old_tint != cs->icon_tint) {
+			if (old_tint != cs->icon_tint)
 				has_icon_pixels_changed = True;
-			}
 		}
 	}
 
@@ -1566,34 +1528,15 @@ parse_colorset(int n, char *line)
 		BroadcastColorset(n);
 	}
 
-	if (fg) {
-		free(fg);
-	}
-	if (bg) {
-		free(bg);
-	}
-	if (hi) {
-		free(hi);
-	}
-	if (sh) {
-		free(sh);
-	}
-	if (fgsh) {
-		free(fgsh);
-	}
-	if (tint) {
-		free(tint);
-	}
-	if (fg_tint) {
-		free(fg_tint);
-	}
-	if (bg_tint) {
-		free(bg_tint);
-	}
-	if (icon_tint) {
-		free(icon_tint);
-	}
-	return;
+	free(fg);
+	free(bg);
+	free(hi);
+	free(sh);
+	free(fgsh);
+	free(tint);
+	free(fg_tint);
+	free(bg_tint);
+	free(icon_tint);
 }
 
 /*
@@ -1607,17 +1550,16 @@ alloc_colorset(int n)
 	/*
 	 * do nothing if it already exists
 	 */
-	if (n < nColorsets) {
+	if (n < nColorsets)
 		return;
-	} else {
+	else {
 		Colorset = xrealloc(
 		    (void *) Colorset, (n + 1), sizeof(colorset_t));
 		memset(&Colorset[nColorsets], 0,
 		    (n + 1 - nColorsets) * sizeof(colorset_t));
 	}
-	if (n == 0) {
+	if (n == 0)
 		update_root_pixmap(0);
-	}
 
 	/*
 	 * initialize new colorsets to black on gray
@@ -1686,11 +1628,7 @@ update_root_transparent_colorset(Atom prop)
 
 	root_pic.old_pixmap = root_pic.pixmap;
 	update_root_pixmap(prop);
-#if 0
-	if (!root_pic.pixmap) {
-		return;
-	}
-#endif
+
 	for (i = 0; i < nColorsets; i++) {
 		Bool            root_trans = False;
 		cs = &Colorset[i];
@@ -1702,9 +1640,9 @@ update_root_transparent_colorset(Atom prop)
 			parse_colorset(i, "RootTransparent");
 			root_trans = True;
 		}
-		if (root_trans) {
+		if (root_trans)
 			update_fvwm_colorset(i);
-		}
+	
 	}
 }
 
@@ -1714,8 +1652,6 @@ void
 CMD_ReadWriteColors(F_CMD_ARGS)
 {
 	fvwm_msg(WARN, "CMD_ReadWriteColors", "ReadWriteColors is obsolete");
-
-	return;
 }
 
 void
@@ -1724,19 +1660,17 @@ CMD_Colorset(F_CMD_ARGS)
 	int             n;
 	char           *token;
 
-	if (GetIntegerArguments(action, &token, &n, 1) != 1) {
+	if (GetIntegerArguments(action, &token, &n, 1) != 1)
 		return;
-	}
-	if (n < 0) {
+
+	if (n < 0)
 		return;
-	}
-	if (token == NULL) {
+
+	if (token == NULL)
 		return;
-	}
+
 	parse_colorset(n, token);
 	update_fvwm_colorset(n);
-
-	return;
 }
 
 void

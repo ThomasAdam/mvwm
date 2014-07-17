@@ -14,7 +14,7 @@
 **  Load and save the 'global', ie not window-related, state of fvwm
 **  into a file.
 */
-void            LoadGlobalState(char *filename);
+void            LoadGlobalState(char *);
 
 /*
 **  Turn off SM for new windows
@@ -24,7 +24,7 @@ void            DisableRestoringState(void);
 /*
 **  Load and save window states.
 */
-void            LoadWindowStates(char *filename);
+void            LoadWindowStates(char *);
 
 /*
 **  Fill in the FvwmWindow struct with information saved from
@@ -46,6 +46,6 @@ typedef struct
 	unsigned        do_max:1;
 } mwtsm_state_args;
 
-Bool            MatchWinToSM(FvwmWindow *ewin,
-    mwtsm_state_args *ret_state_args, initial_window_options_t *win_opts);
+Bool            MatchWinToSM(FvwmWindow *, mwtsm_state_args *,
+    initial_window_options_t *);
 #endif

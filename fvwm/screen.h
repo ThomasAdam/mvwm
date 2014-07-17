@@ -272,8 +272,8 @@ typedef struct
 		mwm_flags       mwm_decor_flags:9;
 		/*
 		 * Support {ButtonStyle <number> - Layer 4} construction, so
-		 * * button can be rendered 'pressed in' when the window is
-		 * * assigned to a particular layer.
+		 * button can be rendered 'pressed in' when the window is
+		 * assigned to a particular layer.
 		 */
 		unsigned        has_layer:1;
 	} flags;

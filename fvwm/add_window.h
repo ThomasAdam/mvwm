@@ -20,46 +20,37 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
-void            setup_visible_name(FvwmWindow *fw, Bool is_icon);
-void            setup_wm_hints(FvwmWindow *fw);
-void            setup_snapping(FvwmWindow *fw, window_style *pstyle);
-void            setup_placement_penalty(FvwmWindow *fw, window_style *pstyle);
-void            setup_focus_policy(FvwmWindow *fw);
-Bool            setup_transientfor(FvwmWindow *fw);
-void            setup_icon_size_limits(FvwmWindow *fw, window_style *pstyle);
-void            setup_icon_background_parameters(FvwmWindow *fw,
-    window_style *pstyle);
-void            setup_icon_title_parameters(FvwmWindow *fw,
-    window_style *pstyle);
-void            setup_numeric_vals(FvwmWindow *fw, window_style *pstyle);
-Bool            validate_transientfor(FvwmWindow *fw);
-void            setup_title_geometry(FvwmWindow *fw, window_style *pstyle);
-void            setup_window_font(FvwmWindow *fw, window_style *pstyle,
-    Bool do_destroy);
-void            setup_icon_font(FvwmWindow *fw, window_style *pstyle,
-    Bool do_destroy);
-void            setup_style_and_decor(FvwmWindow *fw, window_style *pstyle,
-    short *buttons);
-void            setup_frame_attributes(FvwmWindow *fw, window_style *pstyle);
-void            change_auxiliary_windows(FvwmWindow *fw, short buttons);
-void            setup_frame_geometry(FvwmWindow *fw);
-void            setup_frame_size_limits(FvwmWindow *fw, window_style *pstyle);
-void            increase_icon_hint_count(FvwmWindow *fw);
-void            change_icon(FvwmWindow *fw, window_style *pstyle);
-void            change_mini_icon(FvwmWindow *fw, window_style *pstyle);
-void            change_icon_boxes(FvwmWindow *fw, window_style *pstyle);
+void            setup_visible_name(FvwmWindow *, Bool);
+void            setup_wm_hints(FvwmWindow *);
+void            setup_snapping(FvwmWindow *, window_style *);
+void            setup_placement_penalty(FvwmWindow *, window_style *);
+void            setup_focus_policy(FvwmWindow *);
+Bool            setup_transientfor(FvwmWindow *);
+void            setup_icon_size_limits(FvwmWindow *, window_style *);
+void            setup_icon_background_parameters(FvwmWindow *, window_style *);
+void            setup_icon_title_parameters(FvwmWindow *, window_style *);
+void            setup_numeric_vals(FvwmWindow *, window_style *);
+Bool            validate_transientfor(FvwmWindow *);
+void            setup_title_geometry(FvwmWindow *, window_style *);
+void            setup_window_font(FvwmWindow *, window_style *, Bool);
+void            setup_icon_font(FvwmWindow *, window_style *, Bool);
+void            setup_style_and_decor(FvwmWindow *, window_style *, short *);
+void            setup_frame_attributes(FvwmWindow *, window_style *);
+void            change_auxiliary_windows(FvwmWindow *, short);
+void            setup_frame_geometry(FvwmWindow *);
+void            setup_frame_size_limits(FvwmWindow *, window_style *);
+void            increase_icon_hint_count(FvwmWindow *);
+void            change_icon(FvwmWindow *, window_style *);
+void            change_mini_icon(FvwmWindow *, window_style *);
+void            change_icon_boxes(FvwmWindow *, window_style *);
 void            FetchWmProtocols(FvwmWindow *);
-FvwmWindow     *AddWindow(const char **ret_initial_map_command,
-    const exec_context_t *exc, FvwmWindow *ReuseWin,
-    initial_window_options_t *win_opts);
+FvwmWindow     *AddWindow(const char **, const exec_context_t *, FvwmWindow *,
+    initial_window_options_t *);
 void            GetWindowSizeHints(FvwmWindow *);
-void            free_window_names(FvwmWindow *tmp, Bool nukename,
-    Bool nukeicon);
+void            free_window_names(FvwmWindow *, Bool, Bool);
 void            destroy_window(FvwmWindow *);
-void            RestoreWithdrawnLocation(FvwmWindow *tmp,
-    Bool is_restart_or_recapture, Window parent);
+void            RestoreWithdrawnLocation(FvwmWindow *, Bool, Window);
 void            Reborder(void);
-void            CaptureAllWindows(const exec_context_t *exc,
-    Bool is_recapture);
+void            CaptureAllWindows(const exec_context_t *, Bool);
 
 #endif /* ADD_WINDOW_H */

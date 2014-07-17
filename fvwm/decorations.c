@@ -140,8 +140,6 @@ GetMwmHints(FvwmWindow *t)
 	}
 
 	t->mwm_hints = NULL;
-
-	return;
 }
 
 /*
@@ -189,41 +187,37 @@ GetOlHints(FvwmWindow *t)
 		if (nitems > 0) {
 			t->ol_hints |= OL_ANY_HINTS;
 
-			if (nitems == 3) {
+			if (nitems == 3)
 				win_type = hints[0];
-			} else {
+			else
 				win_type = hints[1];
-			}
 
 			/*
 			 * got this from olvwm and sort of mapped it to
 			 * * fvwm/MWM hints
 			 */
-			if (win_type == _XA_OL_WT_BASE) {
+			if (win_type == _XA_OL_WT_BASE)
 				t->ol_hints = OL_DECOR_ALL;
-			} else if (win_type == _XA_OL_WT_CMD) {
+			else if (win_type == _XA_OL_WT_CMD)
 				t->ol_hints = OL_DECOR_ALL & ~OL_DECOR_CLOSE;
-			} else if (win_type == _XA_OL_WT_HELP) {
+			else if (win_type == _XA_OL_WT_HELP) {
 				t->ol_hints = OL_DECOR_ALL &
 				    ~(OL_DECOR_CLOSE | OL_DECOR_RESIZEH);
 			} else if (win_type == _XA_OL_WT_NOTICE) {
 				t->ol_hints = OL_DECOR_ALL &
 				    ~(OL_DECOR_CLOSE | OL_DECOR_RESIZEH |
 				    OL_DECOR_HEADER | OL_DECOR_ICON_NAME);
-			} else if (win_type == _XA_OL_WT_OTHER) {
+			} else if (win_type == _XA_OL_WT_OTHER)
 				t->ol_hints = 0;
-			} else {
+			else
 				t->ol_hints = OL_DECOR_ALL;
-			}
 
-			if (nitems == 3) {
+			if (nitems == 3)
 				t->ol_hints &= ~OL_DECOR_ICON_NAME;
-			}
 		}
 
-		if (hints) {
+		if (hints)
 			XFree(hints);
-		}
 	}
 
 	if (XGetWindowProperty(dpy, FW_W(t), _XA_OL_DECOR_ADD, 0L, 32L, False,
@@ -231,19 +225,17 @@ GetOlHints(FvwmWindow *t)
 		&bytesafter, (unsigned char **) &hints) == Success) {
 		for (i = 0; i < nitems; i++) {
 			t->ol_hints |= OL_ANY_HINTS;
-			if (hints[i] == _XA_OL_DECOR_CLOSE) {
+			if (hints[i] == _XA_OL_DECOR_CLOSE)
 				t->ol_hints |= OL_DECOR_CLOSE;
-			} else if (hints[i] == _XA_OL_DECOR_RESIZE) {
+			else if (hints[i] == _XA_OL_DECOR_RESIZE)
 				t->ol_hints |= OL_DECOR_RESIZEH;
-			} else if (hints[i] == _XA_OL_DECOR_HEADER) {
+			else if (hints[i] == _XA_OL_DECOR_HEADER)
 				t->ol_hints |= OL_DECOR_HEADER;
-			} else if (hints[i] == _XA_OL_DECOR_ICON_NAME) {
+			else if (hints[i] == _XA_OL_DECOR_ICON_NAME)
 				t->ol_hints |= OL_DECOR_ICON_NAME;
-			}
 		}
-		if (hints) {
+		if (hints)
 			XFree(hints);
-		}
 	}
 
 	if (XGetWindowProperty(dpy, FW_W(t), _XA_OL_DECOR_DEL, 0L, 32L, False,
@@ -251,22 +243,18 @@ GetOlHints(FvwmWindow *t)
 		&bytesafter, (unsigned char **) &hints) == Success) {
 		for (i = 0; i < nitems; i++) {
 			t->ol_hints |= OL_ANY_HINTS;
-			if (hints[i] == _XA_OL_DECOR_CLOSE) {
+			if (hints[i] == _XA_OL_DECOR_CLOSE)
 				t->ol_hints &= ~OL_DECOR_CLOSE;
-			} else if (hints[i] == _XA_OL_DECOR_RESIZE) {
+			else if (hints[i] == _XA_OL_DECOR_RESIZE)
 				t->ol_hints &= ~OL_DECOR_RESIZEH;
-			} else if (hints[i] == _XA_OL_DECOR_HEADER) {
+			else if (hints[i] == _XA_OL_DECOR_HEADER)
 				t->ol_hints &= ~OL_DECOR_HEADER;
-			} else if (hints[i] == _XA_OL_DECOR_ICON_NAME) {
+			else if (hints[i] == _XA_OL_DECOR_ICON_NAME)
 				t->ol_hints &= ~OL_DECOR_ICON_NAME;
-			}
 		}
-		if (hints) {
+		if (hints)
 			XFree(hints);
-		}
 	}
-
-	return;
 }
 
 /*
@@ -306,33 +294,31 @@ SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 		if (SHAS_MWM_DECOR(sflags)) {
 			if (prop->flags & MWM_HINTS_DECORATIONS) {
 				decor = 0;
-				if (prop->decorations & 0x1) {
+				if (prop->decorations & 0x1)
 					decor |= MWM_DECOR_ALL;
-				}
-				if (prop->decorations & 0x2) {
+
+				if (prop->decorations & 0x2)
 					decor |= MWM_DECOR_BORDER;
-				}
-				if (prop->decorations & 0x4) {
+
+				if (prop->decorations & 0x4)
 					decor |= MWM_DECOR_RESIZEH;
-				}
-				if (prop->decorations & 0x8) {
+
+				if (prop->decorations & 0x8)
 					decor |= MWM_DECOR_TITLE;
-				}
-				if (prop->decorations & 0x10) {
+
+				if (prop->decorations & 0x10)
 					decor |= MWM_DECOR_MENU;
-				}
-				if (prop->decorations & 0x20) {
+
+				if (prop->decorations & 0x20)
 					decor |= MWM_DECOR_MINIMIZE;
-				}
-				if (prop->decorations & 0x40) {
+
+				if (prop->decorations & 0x40)
 					decor |= MWM_DECOR_MAXIMIZE;
-				}
 			}
 		}
 		if (SHAS_MWM_FUNCTIONS(sflags)) {
-			if (prop->flags & MWM_HINTS_FUNCTIONS) {
+			if (prop->flags & MWM_HINTS_FUNCTIONS)
 				t->functions = prop->functions;
-			}
 		}
 	}
 
@@ -394,11 +380,10 @@ SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 			decor &= ~(MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
 			    MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
 		}
-		if (t->ol_hints & OL_DECOR_ICON_NAME) {
+		if (t->ol_hints & OL_DECOR_ICON_NAME)
 			SET_HAS_NO_ICON_TITLE(t, 0);
-		} else {
+		else
 			SET_HAS_NO_ICON_TITLE(t, 1);
-		}
 	}
 
 	/*
@@ -406,18 +391,18 @@ SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 	 * * ALL attribute cleared and interpreted. I need to modify the
 	 * * decorations that are affected by the functions
 	 */
-	if (!(t->functions & MWM_FUNC_RESIZE)) {
+	if (!(t->functions & MWM_FUNC_RESIZE))
 		decor &= ~MWM_DECOR_RESIZEH;
-	}
+
 	/*
 	 * MWM_FUNC_MOVE has no impact on decorations.
 	 */
-	if (!(t->functions & MWM_FUNC_MINIMIZE)) {
+	if (!(t->functions & MWM_FUNC_MINIMIZE))
 		decor &= ~MWM_DECOR_MINIMIZE;
-	}
-	if (!(t->functions & MWM_FUNC_MAXIMIZE)) {
+
+	if (!(t->functions & MWM_FUNC_MAXIMIZE))
 		decor &= ~MWM_DECOR_MAXIMIZE;
-	}
+
 	/*
 	 * MWM_FUNC_CLOSE has no impact on decorations.
 	 */
@@ -445,14 +430,12 @@ SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 		decor &= ~MWM_DECOR_RESIZEH;
 	}
 
-	if (SHAS_MWM_DECOR(sflags) && IS_TRANSIENT(t)) {
+	if (SHAS_MWM_DECOR(sflags) && IS_TRANSIENT(t))
 		decor &= ~(MWM_DECOR_MAXIMIZE | MWM_DECOR_MINIMIZE);
-	}
 
 	if (FShapesSupported) {
-		if (t->wShaped) {
+		if (t->wShaped)
 			decor &= ~(MWM_DECOR_BORDER | MWM_DECOR_RESIZEH);
-		}
 	}
 	if (IS_EWMH_FULLSCREEN(t)) {
 		decor &=
@@ -559,8 +542,6 @@ SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 		if ((*buttons & (1 << i)) == 0)
 			t->nr_right_buttons--;
 	}
-
-	return;
 }
 
 static Bool
@@ -572,14 +553,13 @@ __is_resize_allowed(const FvwmWindow *t, int functions,
 	    t->hints.min_height == t->hints.max_height) {
 		return False;
 	}
-	if (request_origin && IS_SIZE_FIXED(t)) {
+	if (request_origin && IS_SIZE_FIXED(t))
 		return False;
-	} else if (!request_origin && IS_PSIZE_FIXED(t)) {
+	else if (!request_origin && IS_PSIZE_FIXED(t))
 		return False;
-	}
-	if (request_origin && !(functions & MWM_FUNC_RESIZE)) {
+
+	if (request_origin && !(functions & MWM_FUNC_RESIZE))
 		return False;
-	}
 
 	return True;
 }
@@ -608,9 +588,9 @@ is_function_allowed(int function, char *action_string, const FvwmWindow *t,
 		NULL
 	};
 
-	if (t == NULL) {
+	if (t == NULL)
 		return True;	/* this logic come from animated menu */
-	}
+
 	if (do_allow_override_mwm_hints && HAS_MWM_OVERRIDE_HINTS(t)) {
 		/*
 		 * allow everything

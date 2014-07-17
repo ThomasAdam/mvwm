@@ -69,9 +69,8 @@ clear_menu_item_background(MenuPaintItemParameters *mpip, int x, int y, int w,
 		e.xexpose.width = w;
 		e.xexpose.height = h;
 		mpip->cb_reset_bg(mpip->cb_mr, &e);
-	} else {
+	} else
 		XClearArea(dpy, mpip->w, x, y, w, h, False);
-	}
 }
 
 /*
@@ -84,8 +83,6 @@ draw_separator(Window w, GC TopGC, GC BottomGC, int x1, int y, int x2)
 {
 	XDrawLine(dpy, w, TopGC, x1, y, x2, y);
 	XDrawLine(dpy, w, BottomGC, x1 - 1, y + 1, x2 + 1, y + 1);
-
-	return;
 }
 
 /*
@@ -115,8 +112,6 @@ draw_tear_off_bar(Window w, GC TopGC, GC BottomGC, int x1, int y, int x2)
 	xgcv.line_style = LineSolid;
 	XChangeGC(dpy, TopGC, GCLineStyle, &xgcv);
 	XChangeGC(dpy, BottomGC, GCLineStyle, &xgcv);
-
-	return;
 }
 
 static void
@@ -169,9 +164,8 @@ draw_highlight_background(struct MenuPaintItemParameters *mpip, int x, int y,
 			break;
 		}
 		XFreePixmap(dpy, p);
-	} else {
+	} else
 		XFillRectangle(dpy, mpip->w, gc, x, y, width, height);
-	}
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -192,28 +186,24 @@ menuitem_free(struct MenuItem *mi)
 {
 	int             i;
 
-	if (!mi) {
+	if (!mi)
 		return;
-	}
+
 	for (i = 0; i < MAX_MENU_ITEM_LABELS; i++) {
-		if (MI_LABEL(mi)[i] != NULL) {
+		if (MI_LABEL(mi)[i] != NULL)
 			free(MI_LABEL(mi)[i]);
-		}
 	}
-	if (MI_ACTION(mi) != NULL) {
+	if (MI_ACTION(mi) != NULL)
 		free(MI_ACTION(mi));
-	}
-	if (MI_PICTURE(mi)) {
+
+	if (MI_PICTURE(mi))
 		PDestroyFvwmPicture(dpy, MI_PICTURE(mi));
-	}
+
 	for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++) {
-		if (MI_MINI_ICON(mi)[i]) {
+		if (MI_MINI_ICON(mi)[i])
 			PDestroyFvwmPicture(dpy, MI_MINI_ICON(mi)[i]);
-		}
 	}
 	free(mi);
-
-	return;
 }
 
 /* Duplicate a menu item into newly allocated memory.  The new item is
@@ -235,17 +225,16 @@ menuitem_clone(struct MenuItem *mi)
 	MI_NEXT_ITEM(new_mi) = NULL;
 	MI_PREV_ITEM(new_mi) = NULL;
 	MI_WAS_DESELECTED(new_mi) = 0;
-	if (MI_ACTION(mi) != NULL) {
+	if (MI_ACTION(mi) != NULL)
 		MI_ACTION(new_mi) = xstrdup(MI_ACTION(mi));
-	}
+
 	for (i = 0; i < MAX_MENU_ITEM_LABELS; i++) {
-		if (MI_LABEL(mi)[i] != NULL) {
+		if (MI_LABEL(mi)[i] != NULL)
 			MI_LABEL(new_mi)[i] = xstrdup(MI_LABEL(mi)[i]);
-		}
 	}
-	if (MI_PICTURE(mi) != NULL) {
+	if (MI_PICTURE(mi) != NULL)
 		MI_PICTURE(new_mi) = PCloneFvwmPicture(MI_PICTURE(mi));
-	}
+
 	for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++) {
 		if (MI_MINI_ICON(mi)[i] != NULL) {
 			MI_MINI_ICON(new_mi)[i] =
@@ -280,9 +269,8 @@ menuitem_get_size(struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
 			if (MI_LABEL(mi)[j] != NULL) {
 				is_formatted = True;
 				break;
-			} else {
+			} else
 				MI_LABEL_OFFSET(mi)[j] = 0;
-			}
 		}
 		if (!is_formatted && MI_LABEL(mi)[0] != NULL) {
 			MI_LABEL_STRLEN(mi)[0] = strlen(MI_LABEL(mi)[0]);
@@ -290,9 +278,9 @@ menuitem_get_size(struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
 			    MI_LABEL_STRLEN(mi)[0]);
 			MI_LABEL_OFFSET(mi)[0] = w;
 			MI_IS_TITLE_CENTERED(mi) = True;
-			if (mipst->title_width < w) {
+			if (mipst->title_width < w)
 				mipst->title_width = w;
-			}
+
 			return;
 		}
 	}
@@ -305,9 +293,8 @@ menuitem_get_size(struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
 			w = FlocaleTextWidth(font, MI_LABEL(mi)[i],
 			    MI_LABEL_STRLEN(mi)[i]);
 			MI_LABEL_OFFSET(mi)[i] = w;
-			if (mipst->label_width[i] < w) {
+			if (mipst->label_width[i] < w)
 				mipst->label_width[i] = w;
-			}
 		}
 	}
 	if (MI_PICTURE(mi) && mipst->picture_width < MI_PICTURE(mi)->width) {
@@ -325,8 +312,6 @@ menuitem_get_size(struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
 			mipst->icon_width[k] = MI_MINI_ICON(mi)[i]->width;
 		}
 	}
-
-	return;
 }
 
 /*
@@ -373,41 +358,38 @@ menuitem_paint(struct MenuItem *mi, struct MenuPaintItemParameters *mpip)
 	int             sx2;
 	FlocaleFont    *font;
 
-	if (!mi) {
+	if (!mi)
 		return;
-	}
+
 	is_item_selected = (mi == mpip->selected_item);
 
-	if (MI_IS_TITLE(mi)) {
+	if (MI_IS_TITLE(mi))
 		font = ST_PTITLEFONT(ms);
-	} else {
+	else
 		font = ST_PSTDFONT(ms);
-	}
 
 	y_offset = MI_Y_OFFSET(mi);
 	y_height = MI_HEIGHT(mi);
-	if (MI_IS_SELECTABLE(mi)) {
+	if (MI_IS_SELECTABLE(mi))
 		text_y = y_offset + MDIM_ITEM_TEXT_Y_OFFSET(*dim);
-	} else {
+	else
 		text_y = y_offset + font->ascent + ST_TITLE_GAP_ABOVE(ms);
-	}
+
 	/*
 	 * center text vertically if the pixmap is taller
 	 */
-	if (MI_PICTURE(mi)) {
+	if (MI_PICTURE(mi))
 		text_y += MI_PICTURE(mi)->height;
-	}
+
 	for (i = 0; i < mpip->used_mini_icons; i++) {
 		y = 0;
 		if (MI_MINI_ICON(mi)[i]) {
-			if (MI_MINI_ICON(mi)[i]->height > y) {
+			if (MI_MINI_ICON(mi)[i]->height > y)
 				y = MI_MINI_ICON(mi)[i]->height;
-			}
 		}
 		y -= font->height;
-		if (y > 1) {
+		if (y > 1)
 			text_y += y / 2;
-		}
 	}
 
 	off_cs = ST_HAS_MENU_CSET(ms) ? ST_CSET_MENU(ms) : -1;
@@ -430,20 +412,18 @@ menuitem_paint(struct MenuItem *mi, struct MenuPaintItemParameters *mpip)
 		gcs = ST_MENU_INACTIVE_GCS(ms);
 		off_gcs = ST_MENU_INACTIVE_GCS(ms);
 	}
-	if (is_item_selected) {
+	if (is_item_selected)
 		cs = (ST_HAS_ACTIVE_CSET(ms)) ? ST_CSET_ACTIVE(ms) : -1;
-	} else if (MI_IS_TITLE(mi)) {
+	else if (MI_IS_TITLE(mi))
 		cs = (ST_HAS_TITLE_CSET(ms)) ? ST_CSET_TITLE(ms) : off_cs;
-	} else {
+	else
 		cs = off_cs;
-	}
 
 	/*
 	 * Hilight the item.
 	 */
-	if (FftSupport && ST_PSTDFONT(ms)->fftf.fftfont != NULL) {
+	if (FftSupport && ST_PSTDFONT(ms)->fftf.fftfont != NULL)
 		xft_clear = True;
-	}
 
 	/*
 	 * Hilight or clear the background.
@@ -649,9 +629,9 @@ menuitem_paint(struct MenuItem *mi, struct MenuPaintItemParameters *mpip)
 	/*
 	 * Draw the labels.
 	 */
-	if (fws == NULL) {
+	if (fws == NULL)
 		FlocaleAllocateWinString(&fws);
-	}
+
 	fws->win = mpip->w;
 	fws->y = text_y;
 	fws->flags.has_colorset = 0;
@@ -932,8 +912,6 @@ menuitem_paint(struct MenuItem *mi, struct MenuPaintItemParameters *mpip)
 			}
 		}
 	}
-
-	return;
 }
 
 /* returns the center y coordinate of the menu item */
@@ -942,9 +920,9 @@ menuitem_middle_y_offset(struct MenuItem *mi, struct MenuStyle *ms)
 {
 	int             r;
 
-	if (!mi) {
+	if (!mi)
 		return ST_BORDER_WIDTH(ms);
-	}
+
 	r = (MI_IS_SELECTABLE(mi)) ? ST_RELIEF_THICKNESS(ms) : 0;
 
 	return MI_Y_OFFSET(mi) + (MI_HEIGHT(mi) + r) / 2;

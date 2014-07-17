@@ -66,12 +66,12 @@ menu_get_geometry(struct MenuRoot *mr, Window *root_return, int *x_return,
 	    (unsigned int *) width_return, (unsigned int *) height_return,
 	    (unsigned int *) border_width_return,
 	    (unsigned int *) depth_return);
-	if (rc == 0) {
+	if (rc == 0)
 		return False;
-	}
-	if (!MR_IS_TEAR_OFF_MENU(mr)) {
+
+	if (!MR_IS_TEAR_OFF_MENU(mr))
 		return True;
-	}
+
 	brc =
 	    XTranslateCoordinates(dpy, MR_WINDOW(mr), Scr.Root, *x_return,
 	    *y_return, &root_x, &root_y, &JunkChild);

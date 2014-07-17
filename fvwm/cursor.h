@@ -63,6 +63,6 @@ typedef enum
 
 /* ---------------------------- interface functions ------------------------ */
 
-Cursor         *CreateCursors(Display *dpy);
+Cursor         *CreateCursors(Display *);
 
 #endif /* CURSOR_H */

@@ -57,25 +57,21 @@ typedef enum
 
 /* ---------------------------- interface functions ------------------------ */
 
-Bool            GrabEm(int cursor, int grab_context);
-Bool            UngrabEm(int ungrab_context);
-int             GetTwoArguments(char *action, int *val1, int *val2,
-    int *val1_unit, int *val2_unit);
-void            NewFontAndColor(FlocaleFont *flf, Pixel color,
-    Pixel backcolor);
-void            Keyboard_shortcuts(XEvent *ev, FvwmWindow *fw, int *x_defect,
-    int *y_defect, int ReturnEvent);
-Bool            check_if_fvwm_window_exists(FvwmWindow *fw);
-int             truncate_to_multiple(int x, int m);
-Bool            IsRectangleOnThisPage(struct monitor *,
-    const rectangle *rec, int desk);
+Bool            GrabEm(int, int);
+Bool            UngrabEm(int);
+int             GetTwoArguments(char *, int *, int *, int *, int *);
+void            NewFontAndColor(FlocaleFont *, Pixel, Pixel);
+void            Keyboard_shortcuts(XEvent *, FvwmWindow *, int *, int *, int);
+Bool            check_if_fvwm_window_exists(FvwmWindow *);
+int             truncate_to_multiple(int, int);
+Bool            IsRectangleOnThisPage(struct monitor *, const rectangle *, int);
 FvwmWindow     *get_pointer_fvwm_window(void);
 Time            get_server_time(void);
-void            fvwm_msg(fvwm_msg_t type, char *id, char *msg, ...)
+void            fvwm_msg(fvwm_msg_t type, char *, char *msg, ...)
     __attribute__ ((format(printf, 3, 4)));
 void            fvwm_msg_report_app(void);
 void            fvwm_msg_report_app_and_workers(void);
-void            set_last_added_item(last_added_item_t type, void *item);
-void            print_g(char *text, rectangle *g);
+void            set_last_added_item(last_added_item_t, void *);
+void            print_g(char *, rectangle *);
 
 #endif /* MISC_H */

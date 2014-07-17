@@ -32,7 +32,6 @@ extern char    *repeat_last_module;
   extern FvwmWindow *repeat_last_fvwm_window;
 */
 
-Bool            set_repeat_data(void *data, repeat_t type,
-    const func_t * builtin);
+Bool            set_repeat_data(void *, repeat_t, const func_t *);
 
 #endif /* _REPEAT_ */

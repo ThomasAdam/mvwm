@@ -662,24 +662,19 @@
 	((s).icon_title_format_string = (x))
 
 /* function prototypes */
-void            lookup_style(FvwmWindow *fw, window_style *styles);
-Bool            blockcmpmask(char *blk1, char *blk2, char *mask, int length);
-void            check_window_style_change(FvwmWindow *t, update_win *flags,
-    window_style *ret_style);
+void            lookup_style(FvwmWindow *, window_style *);
+Bool            blockcmpmask(char *, char *, char *, int);
+void            check_window_style_change(FvwmWindow *, update_win *,
+    window_style *);
 void            reset_style_changes(void);
-void            update_style_colorset(int colorset);
-void            update_window_color_style(FvwmWindow *fw,
-    window_style *style);
-void            update_window_color_hi_style(FvwmWindow *fw,
-    window_style *style);
-void            update_icon_title_cs_style(FvwmWindow *fw,
-    window_style *pstyle);
-void            update_icon_title_cs_hi_style(FvwmWindow *fw,
-    window_style *pstyle);
-void            update_icon_background_cs_style(FvwmWindow *fw,
-    window_style *pstyle);
-void            free_icon_boxes(icon_boxes * ib);
-void            style_destroy_style(style_id_t s_id);
-void            print_styles(int verbose);
+void            update_style_colorset(int);
+void            update_window_color_style(FvwmWindow *, window_style *);
+void            update_window_color_hi_style(FvwmWindow *, window_style *);
+void            update_icon_title_cs_style(FvwmWindow *, window_style *);
+void            update_icon_title_cs_hi_style(FvwmWindow *, window_style *);
+void            update_icon_background_cs_style(FvwmWindow *, window_style *);
+void            free_icon_boxes(icon_boxes *);
+void            style_destroy_style(style_id_t);
+void            print_styles(int);
 
 #endif /* _STYLE_ */

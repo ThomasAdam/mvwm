@@ -98,9 +98,8 @@ typedef enum
 
 /* ---------------------------- forward declarations ----------------------- */
 
-static void     execute_complex_function(cond_rc_t *cond_rc,
-    const exec_context_t *exc, char *action, Bool *desperate,
-    Bool has_ref_window_moved);
+static void     execute_complex_function(cond_rc_t *,
+    const exec_context_t *, char *, Bool *, Bool);
 
 /* ---------------------------- local variables ---------------------------- */
 
@@ -111,11 +110,10 @@ static void     execute_complex_function(cond_rc_t *cond_rc,
 static int
 __context_has_window(const exec_context_t *exc, execute_flags_t flags)
 {
-	if (exc->w.fw != NULL) {
+	if (exc->w.fw != NULL)
 		return 1;
-	} else if ((flags & FUNC_ALLOW_UNMANAGED) && exc->w.w != None) {
+	else if ((flags & FUNC_ALLOW_UNMANAGED) && exc->w.w != None)
 		return 1;
-	}
 
 	return 0;
 }
@@ -166,9 +164,9 @@ DeferExecution(exec_context_changes_t *ret_ecc,
 			just_waiting_for_finish = 1;
 		}
 	}
-	if (scr_flags.are_functions_silent) {
+	if (scr_flags.are_functions_silent)
 		return True;
-	}
+
 	if (!GrabEm(cursor, GRAB_NORMAL)) {
 		XBell(dpy, 0);
 		return True;
@@ -214,15 +212,14 @@ DeferExecution(exec_context_changes_t *ret_ecc,
 		default:
 			break;
 		}
-		if (!done) {
+		if (!done)
 			dispatch_event(&e);
-		}
 	}
 	MyXUngrabKeyboard(dpy);
 	UngrabEm(GRAB_NORMAL);
-	if (just_waiting_for_finish) {
+	if (just_waiting_for_finish)
 		return False;
-	}
+
 	w = e.xany.window;
 	ret_ecc->x.etrigger = &e;
 	*ret_mask |= ECC_ETRIGGER | ECC_W | ECC_WCONTEXT;
@@ -245,12 +242,12 @@ DeferExecution(exec_context_changes_t *ret_ecc,
 		XBell(dpy, 0);
 		return (True);
 	}
-	if (w == FW_W_PARENT(fw)) {
+	if (w == FW_W_PARENT(fw))
 		w = FW_W(fw);
-	}
-	if (original_w == FW_W_PARENT(fw)) {
+
+	if (original_w == FW_W_PARENT(fw))
 		original_w = FW_W(fw);
-	}
+
 	/*
 	 * this ugly mess attempts to ensure that the release and press
 	 * * are in the same window.
@@ -299,23 +296,20 @@ find_builtin_function(char *func)
 	char           *temp;
 	char           *s;
 
-	if (!func || func[0] == 0) {
+	if (!func || func[0] == 0)
 		return NULL;
-	}
 
 	/*
 	 * since a lot of lines in a typical rc are probably menu/func
 	 * * continues:
 	 */
-	if (func[0] == '+' || (func[0] == ' ' && func[1] == '+')) {
+	if (func[0] == '+' || (func[0] == ' ' && func[1] == '+'))
 		return &(func_table[0]);
-	}
 
 	temp = xstrdup(func);
 	for (s = temp; *s != 0; s++) {
-		if (isupper(*s)) {
+		if (isupper(*s))
 			*s = tolower(*s);
-		}
 	}
 	if (nfuncs == 0) {
 		for (; (func_table[nfuncs]).action != NULL; nfuncs++) {
@@ -359,9 +353,9 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 	extern Window   PressedW;
 	Window          dummy_w;
 
-	if (!action) {
+	if (!action)
 		return;
-	}
+
 	/*
 	 * ignore whitespace at the beginning of all config lines
 	 */
@@ -388,28 +382,25 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 		return;
 	}
 	if (args) {
-		for (j = 0; j < 11; j++) {
+		for (j = 0; j < 11; j++)
 			arguments[j] = args[j];
-		}
 	} else {
-		for (j = 0; j < 11; j++) {
+		for (j = 0; j < 11; j++)
 			arguments[j] = NULL;
-		}
 	}
 
 	if (exc->w.fw == NULL || IS_EWMH_DESKTOP(FW_W(exc->w.fw))) {
 		if (exec_flags & FUNC_IS_UNMANAGED) {
 			w = exc->w.w;
-		} else {
+		} else
 			w = Scr.Root;
-		}
 	} else {
 		FvwmWindow     *tw;
 
 		w = GetSubwindowFromEvent(dpy, exc->x.elast);
-		if (w == None) {
+		if (w == None)
 			w = exc->x.elast->xany.window;
-		}
+
 		tw = NULL;
 		if (w != None) {
 			if (XFindContext(dpy, w, FvwmContext,
@@ -417,9 +408,8 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 				tw = NULL;
 			}
 		}
-		if (w == None || tw != exc->w.fw) {
+		if (w == None || tw != exc->w.fw)
 			w = FW_W(exc->w.fw);
-		}
 	}
 
 	set_silent = False;
@@ -445,9 +435,8 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 			do_keep_rc = True;
 			taction = trash2;
 			trash = PeekToken(taction, &trash2);
-		} else {
+		} else
 			break;
-		}
 	}
 	if (taction == NULL) {
 		if (set_silent) {
@@ -459,9 +448,8 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 	if (cond_rc == NULL || do_keep_rc == True) {
 		condrc_init(&dummy_rc);
 		func_rc = &dummy_rc;
-	} else {
+	} else
 		func_rc = cond_rc;
-	}
 
 	GetNextToken(taction, &function);
 	if (function) {
@@ -472,11 +460,10 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 		free(tmp);
 	}
 	if (function && function[0] != '*') {
-#if 1
 		/*
 		 * DV: with this piece of code it is impossible to have a
-		 * * complex function with embedded whitespace that begins with a
-		 * * builtin function name, e.g. a function "echo hello".
+		 * complex function with embedded whitespace that begins with a
+		 * builtin function name, e.g. a function "echo hello".
 		 */
 		/*
 		 * DV: ... and without it some of the complex functions will
@@ -484,18 +471,15 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 		 */
 		char           *tmp = function;
 
-		while (*tmp && !isspace(*tmp)) {
+		while (*tmp && !isspace(*tmp))
 			tmp++;
-		}
+
 		*tmp = 0;
-#endif
 		bif = find_builtin_function(function);
 		must_free_function = True;
 	} else {
 		bif = NULL;
-		if (function) {
-			free(function);
-		}
+		free(function);
 		function = "";
 	}
 
@@ -513,12 +497,11 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 		if (func_depth <= 1) {
 			must_free_string =
 			    set_repeat_data(expaction, REPEAT_COMMAND, bif);
-		} else {
+		} else
 			must_free_string = True;
-		}
-	} else {
+
+	} else
 		expaction = taction;
-	}
 
 #ifdef FVWM_COMMAND_LOG
 	fvwm_msg(INFO, "LOG", "%c: %s", (char) exc->type, expaction);
@@ -577,9 +560,9 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 					PressedW = None;
 					bif->action(func_rc, exc2, runaction);
 					PressedW = dummy_w;
-				} else {
+				} else
 					bif->action(func_rc, exc2, runaction);
-				}
+
 				exc_destroy_context(exc2);
 			}
 		} else {
@@ -591,9 +574,9 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 				 * strip "function" command
 				 */
 				runaction = SkipNTokens(expaction, 1);
-			} else {
+			} else
 				runaction = expaction;
-			}
+
 			exc2 = exc_clone_context(exc, &ecc, mask);
 			execute_complex_function(func_rc, exc2, runaction,
 			    &desperate, has_ref_window_moved);
@@ -609,21 +592,19 @@ __execute_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 		}
 	}
 
-	if (set_silent) {
+	if (set_silent)
 		scr_flags.are_functions_silent = 0;
-	}
-	if (cond_rc != NULL) {
-		cond_rc->break_levels = func_rc->break_levels;
-	}
-	if (must_free_string) {
-		free(expaction);
-	}
-	if (must_free_function) {
-		free(function);
-	}
-	func_depth--;
 
-	return;
+	if (cond_rc != NULL)
+		cond_rc->break_levels = func_rc->break_levels;
+
+	if (must_free_string)
+		free(expaction);
+
+	if (must_free_function)
+		free(function);
+
+	func_depth--;
 }
 
 /* find_complex_function expects a token as the input. Make sure you have used
@@ -633,15 +614,14 @@ find_complex_function(const char *function_name)
 {
 	FvwmFunction   *func;
 
-	if (function_name == NULL || *function_name == 0) {
+	if (function_name == NULL || *function_name == 0)
 		return NULL;
-	}
+
 	func = Scr.functions;
 	while (func != NULL) {
 		if (func->name != NULL) {
-			if (strcasecmp(function_name, func->name) == 0) {
+			if (strcasecmp(function_name, func->name) == 0)
 				return func;
-			}
 		}
 		func = func->next_func;
 	}
@@ -675,9 +655,9 @@ CheckActionType(int x, int y, XEvent *d, Bool may_time_out,
 			return (is_button_pressed) ? CF_MOTION : CF_TIMEOUT;
 		}
 
-		if (do_sleep) {
+		if (do_sleep)
 			usleep(20000);
-		} else {
+		else {
 			usleep(1);
 			do_sleep = 1;
 		}
@@ -764,8 +744,6 @@ __run_complex_function_items(cond_rc_t *cond_rc, char cond,
 		}
 		fi = fi->next_item;
 	}
-
-	return;
 }
 
 static void
@@ -778,15 +756,11 @@ __cf_cleanup(int *depth, char **arguments, cond_rc_t *cond_rc)
 		scr_flags.is_executing_complex_function = 0;
 	}
 	for (i = 0; i < 11; i++) {
-		if (arguments[i] != NULL) {
+		if (arguments[i] != NULL)
 			free(arguments[i]);
-		}
 	}
-	if (cond_rc->break_levels > 0) {
+	if (cond_rc->break_levels > 0)
 		cond_rc->break_levels--;
-	}
-
-	return;
 }
 
 static void
@@ -831,9 +805,9 @@ execute_complex_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 	 * find_complex_function expects a token, not just a quoted string
 	 */
 	func_name = PeekToken(action, &taction);
-	if (!func_name) {
+	if (!func_name)
 		return;
-	}
+
 	func = find_complex_function(func_name);
 	if (func == NULL) {
 		if (*desperate == 0) {
@@ -869,20 +843,19 @@ execute_complex_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 			taction = GetNextToken(taction, &arguments[i]);
 		}
 	} else {
-		for (i = 0; i < 11; i++) {
+		for (i = 0; i < 11; i++)
 			arguments[i] = NULL;
-		}
 	}
 	/*
 	 * In case we want to perform an action on a button press, we
 	 * * need to fool other routines
 	 */
 	te = exc->x.elast;
-	if (te->type == ButtonPress) {
+	if (te->type == ButtonPress)
 		trigger_evtype = ButtonRelease;
-	} else {
+	else
 		trigger_evtype = te->type;
-	}
+
 	func->use_depth++;
 
 	for (fi = func->first_item; fi != NULL; fi = fi->next_item) {
@@ -1033,9 +1006,8 @@ execute_complex_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 				break;
 			}
 		}
-	} else if (type == CF_TIMEOUT) {
+	} else if (type == CF_TIMEOUT)
 		type = CF_HOLD;
-	}
 
 	/*
 	 * some functions operate on button release instead of presses. These
@@ -1074,8 +1046,6 @@ execute_complex_function(cond_rc_t *cond_rc, const exec_context_t *exc,
 	func->use_depth--;
 	__cf_cleanup(&depth, arguments, cond_rc);
 	UngrabEm(GRAB_NORMAL);
-
-	return;
 }
 
 /*
@@ -1103,9 +1073,8 @@ DestroyFunction(FvwmFunction * func)
 	FunctionItem   *fi, *tmp2;
 	FvwmFunction   *tmp, *prev;
 
-	if (func == NULL) {
+	if (func == NULL)
 		return;
-	}
 
 	tmp = Scr.functions;
 	prev = NULL;
@@ -1113,9 +1082,8 @@ DestroyFunction(FvwmFunction * func)
 		prev = tmp;
 		tmp = tmp->next_func;
 	}
-	if (tmp != func) {
+	if (tmp != func)
 		return;
-	}
 
 	if (func->use_depth != 0) {
 		fvwm_msg(ERR, "DestroyFunction",
@@ -1124,11 +1092,10 @@ DestroyFunction(FvwmFunction * func)
 		return;
 	}
 
-	if (prev == NULL) {
+	if (prev == NULL)
 		Scr.functions = func->next_func;
-	} else {
+	else
 		prev->next_func = func->next_func;
-	}
 
 	free(func->name);
 
@@ -1142,8 +1109,6 @@ DestroyFunction(FvwmFunction * func)
 		fi = tmp2;
 	}
 	free(func);
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -1151,9 +1116,8 @@ DestroyFunction(FvwmFunction * func)
 Bool
 functions_is_complex_function(const char *function_name)
 {
-	if (find_complex_function(function_name) != NULL) {
+	if (find_complex_function(function_name) != NULL)
 		return True;
-	}
 
 	return False;
 }
@@ -1163,8 +1127,6 @@ execute_function(cond_rc_t *cond_rc, const exec_context_t *exc, char *action,
     FUNC_FLAGS_TYPE exec_flags)
 {
 	__execute_function(cond_rc, exc, action, exec_flags, NULL, False);
-
-	return;
 }
 
 void
@@ -1179,8 +1141,6 @@ execute_function_override_wcontext(cond_rc_t *cond_rc,
 	exc2 = exc_clone_context(exc, &ecc, ECC_WCONTEXT);
 	execute_function(cond_rc, exc2, action, exec_flags);
 	exc_destroy_context(exc2);
-
-	return;
 }
 
 void
@@ -1212,8 +1172,6 @@ execute_function_override_window(cond_rc_t *cond_rc,
 	}
 	execute_function(cond_rc, exc2, action, exec_flags);
 	exc_destroy_context(exc2);
-
-	return;
 }
 
 void
@@ -1225,9 +1183,8 @@ find_func_t(char *action, short *func_t, unsigned char *flags)
 	int             mlen;
 
 	if (action) {
-		while (*endtok && !isspace((unsigned char) *endtok)) {
+		while (*endtok && !isspace((unsigned char) *endtok))
 			++endtok;
-		}
 		len = endtok - action;
 		j = 0;
 		matched = False;
@@ -1239,27 +1196,25 @@ find_func_t(char *action, short *func_t, unsigned char *flags)
 				/*
 				 * found key word
 				 */
-				if (func_t) {
+				if (func_t)
 					*func_t = func_table[j].func_t;
-				}
-				if (flags) {
+
+				if (flags)
 					*flags = func_table[j].flags;
-				}
+
 				return;
-			} else {
+			} else
 				j++;
-			}
 		}
 		/*
 		 * No clue what the function is. Just return "BEEP"
 		 */
 	}
-	if (func_t) {
+	if (func_t)
 		*func_t = F_BEEP;
-	}
-	if (flags) {
+
+	if (flags)
 		*flags = 0;
-	}
 
 	return;
 }
@@ -1300,15 +1255,14 @@ AddToFunction(FvwmFunction * func, char *action)
 		    " error in the configuration file. Using %c as the"
 		    " specifier.", token, token[0]);
 	}
-	if (!action) {
+	if (!action)
 		return;
-	}
-	while (isspace(*action)) {
+
+	while (isspace(*action))
 		action++;
-	}
-	if (*action == 0) {
+
+	if (*action == 0)
 		return;
-	}
 
 	tmp = xmalloc(sizeof *tmp);
 	tmp->next_item = NULL;
@@ -1325,8 +1279,6 @@ AddToFunction(FvwmFunction * func, char *action)
 	tmp->action = stripcpy(action);
 
 	find_func_t(tmp->action, NULL, &(tmp->flags));
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -1338,19 +1290,17 @@ CMD_DestroyFunc(F_CMD_ARGS)
 	char           *token;
 
 	token = PeekToken(action, NULL);
-	if (!token) {
+	if (!token)
 		return;
-	}
+
 	func = find_complex_function(token);
-	if (!func) {
+	if (!func)
 		return;
-	}
+
 	if (Scr.last_added_item.type == ADDED_FUNCTION) {
 		set_last_added_item(ADDED_NONE, NULL);
 	}
 	DestroyFunction(func);
-
-	return;
 }
 
 void
@@ -1360,13 +1310,12 @@ CMD_AddToFunc(F_CMD_ARGS)
 	char           *token;
 
 	action = GetNextToken(action, &token);
-	if (!token) {
+	if (!token)
 		return;
-	}
+
 	func = find_complex_function(token);
-	if (func == NULL) {
+	if (func == NULL)
 		func = NewFvwmFunction(token);
-	}
 
 	/*
 	 * Set + state to last function
@@ -1375,8 +1324,6 @@ CMD_AddToFunc(F_CMD_ARGS)
 
 	free(token);
 	AddToFunction(func, action);
-
-	return;
 }
 
 void
@@ -1394,13 +1341,11 @@ CMD_Plus(F_CMD_ARGS)
 			 * nothing to do here
 			 */
 		}
-		if (!tmp) {
+		if (!tmp)
 			return;
-		}
+
 		AddToDecor(F_PASS_ARGS, tmp);
 	}
-
-	return;
 }
 
 void
@@ -1441,8 +1386,6 @@ CMD_EchoFuncDefinition(F_CMD_ARGS)
 	}
 	fvwm_msg(INFO, "EchoFuncDefinition", "end of definition");
 	free(token);
-
-	return;
 }
 
 /* dummy commands */

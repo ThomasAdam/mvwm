@@ -53,31 +53,28 @@ static void
 __exc_change_context(exec_context_t *exc, exec_context_changes_t *ecc,
     exec_context_change_mask_t mask)
 {
-	if (mask & ECC_TYPE) {
+	if (mask & ECC_TYPE)
 		exc->type = ecc->type;
-	}
+
 	if (mask & ECC_ETRIGGER) {
-		if (ecc->x.etrigger == NULL) {
+		if (ecc->x.etrigger == NULL)
 			fev_copy_last_event(&exc->private_data.te);
-		} else {
+		else
 			exc->private_data.te = *ecc->x.etrigger;
-		}
+
 		exc->x.etrigger = &(exc->private_data.te);
 	}
-	if (mask & ECC_FW) {
+	if (mask & ECC_FW)
 		exc->w.fw = ecc->w.fw;
-	}
-	if (mask & ECC_W) {
-		exc->w.w = ecc->w.w;
-	}
-	if (mask & ECC_WCONTEXT) {
-		exc->w.wcontext = ecc->w.wcontext;
-	}
-	if (mask & ECC_MODULE) {
-		exc->m.module = ecc->m.module;
-	}
 
-	return;
+	if (mask & ECC_W)
+		exc->w.w = ecc->w.w;
+
+	if (mask & ECC_WCONTEXT)
+		exc->w.wcontext = ecc->w.wcontext;
+
+	if (mask & ECC_MODULE)
+		exc->m.module = ecc->m.module;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -162,6 +159,4 @@ exc_destroy_context(const exec_context_t *exc)
 	fprintf(stderr, "0x%08x\n", (int) exc);
 #endif
 	free((exec_context_t *) exc);
-
-	return;
 }

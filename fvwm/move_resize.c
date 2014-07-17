@@ -182,9 +182,8 @@ struct
 		unsigned        is_enabled:1;
 	} flags;
 } move_resize_grid = {
-	{
-	0, 0, 0, 0}, {
-	0}
+	{0, 0, 0, 0},
+	{0}
 };
 
 static void

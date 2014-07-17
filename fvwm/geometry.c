@@ -70,8 +70,6 @@ gravity_get_naked_geometry(int gravity, FvwmWindow *t, rectangle *dest_g,
 	dest_g->y = orig_g->y + ((yoff + 1) * (orig_g->height - 1)) / 2;
 	dest_g->width = orig_g->width - b.total_size.width;
 	dest_g->height = orig_g->height - b.total_size.height;
-
-	return;
 }
 
 /* Decorate the rectangle.  Resize and shift it according to gravity. */
@@ -85,8 +83,6 @@ gravity_add_decoration(int gravity, FvwmWindow *t, rectangle *dest_g,
 	*dest_g = *orig_g;
 	gravity_resize(gravity, dest_g, b.total_size.width,
 	    b.total_size.height);
-
-	return;
 }
 
 void
@@ -96,8 +92,6 @@ get_relative_geometry(struct monitor *m, rectangle *rel_g, rectangle *abs_g)
 	rel_g->y = abs_g->y - m->virtual_scr.Vy;
 	rel_g->width = abs_g->width;
 	rel_g->height = abs_g->height;
-
-	return;
 }
 
 void
@@ -107,8 +101,6 @@ get_absolute_geometry(struct monitor *m, rectangle *abs_g, rectangle *rel_g)
 	abs_g->y = rel_g->y + m->virtual_scr.Vy;
 	abs_g->width = rel_g->width;
 	abs_g->height = rel_g->height;
-
-	return;
 }
 
 void
@@ -127,8 +119,6 @@ gravity_translate_to_northwest_geometry(int gravity, FvwmWindow *t,
 		2 * t->attr_backup.border_width)) / 2;
 	dest_g->width = orig_g->width;
 	dest_g->height = orig_g->height;
-
-	return;
 }
 
 void
@@ -140,8 +130,6 @@ gravity_translate_to_northwest_geometry_no_bw(int gravity, FvwmWindow *t,
 	t->attr_backup.border_width = 0;
 	gravity_translate_to_northwest_geometry(gravity, t, dest_g, orig_g);
 	t->attr_backup.border_width = bw;
-
-	return;
 }
 
 void
@@ -180,8 +168,6 @@ get_title_geometry(FvwmWindow *fw, rectangle *ret_g)
 	default:
 		break;
 	}
-
-	return;
 }
 
 void
@@ -205,8 +191,6 @@ get_title_gravity_factors(FvwmWindow *fw, int *ret_fx, int *ret_fy)
 		*ret_fy = 0;
 		break;
 	}
-
-	return;
 }
 
 Bool
@@ -281,11 +265,11 @@ get_title_font_size_and_offset(FvwmWindow *fw, direction_t title_dir,
 		}
 		break;
 	}
-	if (USE_TITLE_DECOR_ROTATION(fw)) {
+	if (USE_TITLE_DECOR_ROTATION(fw))
 		draw_rotation = ROTATION_0;
-	} else {
+	else
 		draw_rotation = fw->title_text_rotation;
-	}
+
 	min_offset = FlocaleGetMinOffset(fw->title_font, draw_rotation);
 	extra_size = (decor_size > 0) ? decor_size - font_size : 0;
 	*offset = min_offset;
@@ -293,12 +277,10 @@ get_title_font_size_and_offset(FvwmWindow *fw, direction_t title_dir,
 	    font_size + extra_size < fw->decor->min_title_height) {
 		extra_size = fw->decor->min_title_height - font_size;
 	}
-	if (extra_size > 0) {
+	if (extra_size > 0)
 		*offset += extra_size / 2;
-	}
-	*size = font_size + extra_size;
 
-	return;
+	*size = font_size + extra_size;
 }
 
 void
@@ -319,8 +301,6 @@ get_icon_corner(FvwmWindow *fw, rectangle *ret_g)
 		ret_g->y = fw->g.frame.y;
 		break;
 	}
-
-	return;
 }
 
 void
@@ -391,8 +371,6 @@ get_shaded_geometry(FvwmWindow *fw, rectangle *small_g, rectangle *big_g)
 	default:
 		break;
 	}
-
-	return;
 }
 
 void
@@ -405,8 +383,6 @@ get_shaded_geometry_with_dir(FvwmWindow *fw, rectangle *small_g,
 	SET_SHADED_DIR(fw, shade_dir);
 	get_shaded_geometry(fw, small_g, big_g);
 	SET_SHADED_DIR(fw, old_shade_dir);
-
-	return;
 }
 
 void
@@ -415,17 +391,14 @@ get_unshaded_geometry(FvwmWindow *fw, rectangle *ret_g)
 	struct monitor *m = fw->m;
 
 	if (IS_SHADED(fw)) {
-		if (IS_MAXIMIZED(fw)) {
+		if (IS_MAXIMIZED(fw))
 			*ret_g = fw->g.max;
-		} else {
+		else
 			*ret_g = fw->g.normal;
-		}
-		get_relative_geometry(m, ret_g, ret_g);
-	} else {
-		*ret_g = fw->g.frame;
-	}
 
-	return;
+		get_relative_geometry(m, ret_g, ret_g);
+	} else
+		*ret_g = fw->g.frame;
 }
 
 void
@@ -458,8 +431,6 @@ get_shaded_client_window_pos(FvwmWindow *fw, rectangle *ret_g)
 		ret_g->x = 0;
 		break;
 	}
-
-	return;
 }
 
 /* returns the dimensions of the borders */
@@ -488,8 +459,6 @@ get_window_borders(const FvwmWindow *fw, size_borders *borders)
 	    borders->top_left.width + borders->bottom_right.width;
 	borders->total_size.height =
 	    borders->top_left.height + borders->bottom_right.height;
-
-	return;
 }
 
 /* returns the dimensions of the borders without the title */
@@ -504,8 +473,6 @@ get_window_borders_no_title(const FvwmWindow *fw, size_borders *borders)
 	    borders->top_left.width + borders->bottom_right.width;
 	borders->total_size.height =
 	    borders->top_left.height + borders->bottom_right.height;
-
-	return;
 }
 
 void
@@ -518,8 +485,6 @@ set_window_border_size(FvwmWindow *fw, int used_width)
 		fw->unshaped_boundary_width = used_width;
 		fw->boundary_width = (fw->wShaped) ? 0 : used_width;
 	}
-
-	return;
 }
 
 /* Returns True if all window borders are only 1 pixel thick (or less). */
@@ -550,8 +515,6 @@ get_client_geometry(FvwmWindow *fw, rectangle *ret_g)
 	ret_g->y += borders.top_left.height;
 	ret_g->width -= borders.total_size.width;
 	ret_g->height -= borders.total_size.height;
-
-	return;
 }
 
 /* update the frame_g according to the window's g.normal or g.max and shaded
@@ -562,11 +525,8 @@ update_relative_geometry(FvwmWindow *fw)
 	struct monitor *m = fw->m;
 	get_relative_geometry(m,
 	    &fw->g.frame, (IS_MAXIMIZED(fw)) ? &fw->g.max : &fw->g.normal);
-	if (IS_SHADED(fw)) {
+	if (IS_SHADED(fw))
 		get_shaded_geometry(fw, &fw->g.frame, &fw->g.frame);
-	}
-
-	return;
 }
 
 /* update the g.normal or g.max according to the window's current position */
@@ -619,8 +579,6 @@ update_absolute_geometry(FvwmWindow *fw)
 			break;
 		}
 	}
-
-	return;
 }
 
 /* make sure a maximized window and it's normal version are never a page or
@@ -644,18 +602,15 @@ maximize_adjust_offset(FvwmWindow *fw)
 	off_y = fw->g.normal.y - fw->g.max.y - fw->g.max_offset.y;
 	dw = m->coord.w;
 	dh = m->coord.h;
-	if (off_x >= dw) {
+	if (off_x >= dw)
 		fw->g.normal.x -= (off_x / dw) * dw;
-	} else if (off_x <= -dw) {
+	else if (off_x <= -dw)
 		fw->g.normal.x += (-off_x / dw) * dw;
-	}
-	if (off_y >= dh) {
-		fw->g.normal.y -= (off_y / dh) * dh;
-	} else if (off_y <= -dh) {
-		fw->g.normal.y += (-off_y / dh) * dh;
-	}
 
-	return;
+	if (off_y >= dh)
+		fw->g.normal.y -= (off_y / dh) * dh;
+	else if (off_y <= -dh)
+		fw->g.normal.y += (-off_y / dh) * dh;
 }
 
 #define MAKEMULT(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
@@ -696,20 +651,20 @@ __cs_handle_aspect_ratio(size_rect * ret_s, FvwmWindow *fw, size_rect s,
 		ow = s.width;
 		oh = s.height;
 		odefect = 0;
-		if (r < rmin) {
+		if (r < rmin)
 			odefect = rmin - r;
-		} else if (r > rmax) {
+		else if (r > rmax)
 			odefect = r - rmax;
-		}
+
 		if (r < rmin && (flags & CS_ROUND_UP) && xmotion == 0) {
 			/*
 			 * change width to match
 			 */
 			delta =
 			    MAKEMULT(s.height * rmin - s.width, inc.width);
-			if (s.width + delta <= max.width) {
+			if (s.width + delta <= max.width)
 				s.width += delta;
-			}
+
 			r = (double) s.width / (double) s.height;
 		}
 		if (r < rmin) {
@@ -718,15 +673,14 @@ __cs_handle_aspect_ratio(size_rect * ret_s, FvwmWindow *fw, size_rect s,
 			 */
 			delta =
 			    MAKEMULT(s.height - s.width / rmin, inc.height);
-			if (s.height - delta >= min.height) {
+			if (s.height - delta >= min.height)
 				s.height -= delta;
-			} else {
+			else {
 				delta =
 				    MAKEMULT(s.height * rmin - s.width,
 				    inc.width);
-				if (s.width + delta <= max.width) {
+				if (s.width + delta <= max.width)
 					s.width += delta;
-				}
 			}
 			r = (double) s.width / (double) s.height;
 		}
@@ -737,9 +691,9 @@ __cs_handle_aspect_ratio(size_rect * ret_s, FvwmWindow *fw, size_rect s,
 			 */
 			delta =
 			    MAKEMULT(s.width / rmax - s.height, inc.height);
-			if (s.height + delta <= max.height) {
+			if (s.height + delta <= max.height)
 				s.height += delta;
-			}
+
 			r = (double) s.width / (double) s.height;
 		}
 		if (r > rmax) {
@@ -748,24 +702,22 @@ __cs_handle_aspect_ratio(size_rect * ret_s, FvwmWindow *fw, size_rect s,
 			 */
 			delta =
 			    MAKEMULT(s.width - s.height * rmax, inc.width);
-			if (s.width - delta >= min.width) {
+			if (s.width - delta >= min.width)
 				s.width -= delta;
-			} else {
+			else {
 				delta =
 				    MAKEMULT(s.width / rmax - s.height,
 				    inc.height);
-				if (s.height + delta <= max.height) {
+				if (s.height + delta <= max.height)
 					s.height += delta;
-				}
 			}
 			r = (double) s.width / (double) s.height;
 		}
 		defect = 0;
-		if (r < rmin) {
+		if (r < rmin)
 			defect = rmin - r;
-		} else if (r > rmax) {
+		else if (r > rmax)
 			defect = r - rmax;
-		}
 	} while (odefect > defect);
 	if (fw->hints.flags & PBaseSize) {
 		ow += base.width;
@@ -773,8 +725,6 @@ __cs_handle_aspect_ratio(size_rect * ret_s, FvwmWindow *fw, size_rect s,
 	}
 	ret_s->width = ow;
 	ret_s->height = oh;
-
-	return;
 }
 
 /*
@@ -797,9 +747,9 @@ constrain_size(FvwmWindow *fw, const XEvent *e, int *widthp, int *heightp,
 	size_borders    b;
 	struct monitor *m = fw->m;
 
-	if (DO_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw) == 1) {
+	if (DO_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw) == 1)
 		return;
-	}
+
 	if (HAS_NEW_WM_NORMAL_HINTS(fw)) {
 		/*
 		 * get the latest size hints
@@ -836,19 +786,17 @@ constrain_size(FvwmWindow *fw, const XEvent *e, int *widthp, int *heightp,
 
 	max.width = fw->hints.max_width;
 	max.height = fw->hints.max_height;
-	if (max.width > fw->max_window_width - b.total_size.width) {
+	if (max.width > fw->max_window_width - b.total_size.width)
 		max.width = fw->max_window_width - b.total_size.width;
-	}
-	if (max.height > fw->max_window_height - b.total_size.height) {
-		max.height = fw->max_window_height - b.total_size.height;
-	}
 
-	if (min.width > max.width) {
+	if (max.height > fw->max_window_height - b.total_size.height)
+		max.height = fw->max_window_height - b.total_size.height;
+
+	if (min.width > max.width)
 		min.width = max.width;
-	}
-	if (min.height > max.height) {
+
+	if (min.height > max.height)
 		min.height = max.height;
-	}
 
 	base.width = fw->hints.base_width;
 	base.height = fw->hints.base_height;
@@ -859,18 +807,17 @@ constrain_size(FvwmWindow *fw, const XEvent *e, int *widthp, int *heightp,
 	/*
 	 * First, clamp to min and max values
 	 */
-	if (d.width < min.width) {
+	if (d.width < min.width)
 		d.width = min.width;
-	}
-	if (d.height < min.height) {
+
+	if (d.height < min.height)
 		d.height = min.height;
-	}
-	if (d.width > max.width) {
+
+	if (d.width > max.width)
 		d.width = max.width;
-	}
-	if (d.height > max.height) {
+
+	if (d.height > max.height)
 		d.height = max.height;
-	}
 
 	/*
 	 * Second, round to base + N * inc (up or down depending on resize
@@ -914,18 +861,17 @@ constrain_size(FvwmWindow *fw, const XEvent *e, int *widthp, int *heightp,
 	/*
 	 * Step 2b: Check that we didn't violate min and max.
 	 */
-	if (d.width < min.width) {
+	if (d.width < min.width)
 		d.width += inc.width;
-	}
-	if (d.height < min.height) {
+
+	if (d.height < min.height)
 		d.height += inc.height;
-	}
-	if (d.width > max.width) {
+
+	if (d.width > max.width)
 		d.width -= inc.width;
-	}
-	if (d.height > max.height) {
+
+	if (d.height > max.height)
 		d.height -= inc.height;
-	}
 
 	/*
 	 * Third, adjust for aspect ratio
@@ -947,8 +893,6 @@ constrain_size(FvwmWindow *fw, const XEvent *e, int *widthp, int *heightp,
 		fw->g.max_defect.width = old.width - *widthp;
 		fw->g.max_defect.height = old.height - *heightp;
 	}
-
-	return;
 }
 
 /* This function does roughly the same as constrain_size, but takes into account
@@ -975,8 +919,6 @@ gravity_constrain_size(int gravity, FvwmWindow *t, rectangle *rect, int flags)
 		gravity_resize(gravity, rect, new_width - rect->width,
 		    new_height - rect->height);
 	}
-
-	return;
 }
 
 /* returns the icon title geometry if it is visible */
@@ -1043,12 +985,12 @@ get_visible_icon_geometry(FvwmWindow *fw, rectangle *ret_g)
 	}
 	if (fw->icon_g.picture_w_g.width > 0) {
 		*ret_g = fw->icon_g.picture_w_g;
-		if (!HAS_NO_ICON_TITLE(fw)) {
+		if (!HAS_NO_ICON_TITLE(fw))
 			ret_g->height += fw->icon_g.title_w_g.height;
-		}
-	} else if (!HAS_NO_ICON_TITLE(fw)) {
+
+	} else if (!HAS_NO_ICON_TITLE(fw))
 		*ret_g = fw->icon_g.title_w_g;
-	} else {
+	else {
 		memset(ret_g, 0, sizeof(*ret_g));
 		return False;
 	}
@@ -1065,25 +1007,21 @@ get_icon_geometry(FvwmWindow *fw, rectangle *ret_g)
 	 */
 	if (fw->icon_g.picture_w_g.width > 0) {
 		*ret_g = fw->icon_g.picture_w_g;
-		if (!HAS_NO_ICON_TITLE(fw)) {
+		if (!HAS_NO_ICON_TITLE(fw))
 			ret_g->height += fw->icon_g.title_w_g.height;
-		}
-	} else if (fw->icon_g.title_w_g.width > 0) {
+	} else if (fw->icon_g.title_w_g.width > 0)
 		*ret_g = fw->icon_g.title_w_g;
-	}
+
 	/*
 	 * valid position?
 	 */
 	else if (fw->icon_g.picture_w_g.x != 0
 	    || fw->icon_g.picture_w_g.y != 0) {
 		*ret_g = fw->icon_g.picture_w_g;
-	} else if (fw->icon_g.title_w_g.x != 0 || fw->icon_g.title_w_g.y != 0) {
+	} else if (fw->icon_g.title_w_g.x != 0 || fw->icon_g.title_w_g.y != 0)
 		*ret_g = fw->icon_g.title_w_g;
-	} else {
+	else
 		memset(ret_g, 0, sizeof(*ret_g));
-	}
-
-	return;
 }
 
 /* Returns the visible geometry of a window or icon.  This can be used to test
@@ -1091,9 +1029,9 @@ get_icon_geometry(FvwmWindow *fw, rectangle *ret_g)
 Bool
 get_visible_window_or_icon_geometry(FvwmWindow *fw, rectangle *ret_g)
 {
-	if (IS_ICONIFIED(fw)) {
+	if (IS_ICONIFIED(fw))
 		return get_visible_icon_geometry(fw, ret_g);
-	}
+
 	*ret_g = fw->g.frame;
 
 	return True;
@@ -1108,11 +1046,11 @@ move_icon_to_position(FvwmWindow *fw)
 	if (fw->icon_g.picture_w_g.width > 0) {
 		int             cs;
 
-		if (Scr.Hilite == fw) {
+		if (Scr.Hilite == fw)
 			cs = fw->cs_hi;
-		} else {
+		else
 			cs = fw->cs;
-		}
+
 		XMoveWindow(dpy, FW_W_ICON_PIXMAP(fw),
 		    fw->icon_g.picture_w_g.x, fw->icon_g.picture_w_g.y);
 		if (fw->icon_alphaPixmap ||
@@ -1127,11 +1065,11 @@ move_icon_to_position(FvwmWindow *fw)
 		int             cs;
 		rectangle       dummy;
 
-		if (Scr.Hilite == fw) {
+		if (Scr.Hilite == fw)
 			cs = fw->icon_title_cs_hi;
-		} else {
+		else
 			cs = fw->icon_title_cs;
-		}
+
 		XMoveWindow(dpy, FW_W_ICON_TITLE(fw),
 		    fw->icon_g.title_w_g.x, fw->icon_g.title_w_g.y);
 		if (CSET_IS_TRANSPARENT(cs) &&
@@ -1145,8 +1083,6 @@ move_icon_to_position(FvwmWindow *fw)
 		DrawIconWindow(fw, draw_title_w, draw_picture_w, False,
 		    draw_picture_w, NULL);
 	}
-
-	return;
 }
 
 void
@@ -1161,8 +1097,6 @@ broadcast_icon_geometry(FvwmWindow *fw, Bool do_force)
 		    (long) FW_W_FRAME(fw), (unsigned long) fw,
 		    (long) g.x, (long) g.y, (long) g.width, (long) g.height);
 	}
-
-	return;
 }
 
 void
@@ -1180,8 +1114,6 @@ modify_icon_position(FvwmWindow *fw, int dx, int dy)
 		fw->icon_g.title_w_g.x += dx;
 		fw->icon_g.title_w_g.y += dy;
 	}
-
-	return;
 }
 
 /* set the icon position to the specified value. take care of the actual icon
@@ -1216,8 +1148,6 @@ set_icon_position(FvwmWindow *fw, int x, int y)
 		fw->icon_g.picture_w_g.x = x;
 		fw->icon_g.picture_w_g.y = y;
 	}
-
-	return;
 }
 
 void
@@ -1230,18 +1160,13 @@ set_icon_picture_size(FvwmWindow *fw, int w, int h)
 		fw->icon_g.picture_w_g.width = 0;
 		fw->icon_g.picture_w_g.height = 0;
 	}
-
-	return;
 }
 
 void
 resize_icon_title_height(FvwmWindow *fw, int dh)
 {
-	if (!HAS_NO_ICON_TITLE(fw)) {
+	if (!HAS_NO_ICON_TITLE(fw))
 		fw->icon_g.title_w_g.height += dh;
-	}
-
-	return;
 }
 
 void
@@ -1260,8 +1185,6 @@ get_page_offset_rectangle(int *ret_page_x, int *ret_page_y, rectangle *r)
 	*ret_page_y =
 	    truncate_to_multiple(r->y + r->height / 2 + yoff,
 	    m->coord.h) - yoff;
-
-	return;
 }
 
 void
@@ -1274,8 +1197,6 @@ get_page_offset(int *ret_page_x, int *ret_page_y, FvwmWindow *fw)
 	r.width = fw->g.frame.width;
 	r.height = fw->g.frame.height;
 	get_page_offset_rectangle(ret_page_x, ret_page_y, &r);
-
-	return;
 }
 
 void
@@ -1289,11 +1210,8 @@ get_page_offset_check_visible(int *ret_page_x, int *ret_page_y,
 		 */
 		*ret_page_x = 0;
 		*ret_page_y = 0;
-	} else {
+	} else
 		get_page_offset(ret_page_x, ret_page_y, fw);
-	}
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */

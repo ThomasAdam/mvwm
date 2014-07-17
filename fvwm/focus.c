@@ -138,8 +138,6 @@ __try_program_focus(Window w, const FvwmWindow *fw)
 		send_clientmessage(dpy, w, _XA_WM_TAKE_FOCUS,
 		    fev_get_evtime());
 	}
-
-	return;
 }
 
 static Bool
@@ -186,9 +184,8 @@ __check_allow_focus(Window w, FvwmWindow *fw, fpol_set_focus_by_t set_by)
 		 */
 		return False;
 	}
-	if (fpol_query_allow_set_focus(&FW_FOCUS_POLICY(fw), set_by)) {
+	if (fpol_query_allow_set_focus(&FW_FOCUS_POLICY(fw), set_by))
 		return True;
-	}
 
 	return False;
 }
@@ -272,8 +269,6 @@ __update_windowlist(FvwmWindow *fw, fpol_set_focus_by_t set_by,
 		Scr.FvwmRoot.next = fw;
 		fw->prev = &Scr.FvwmRoot;
 	}
-
-	return;
 }
 
 static Bool
@@ -306,18 +301,17 @@ __set_focus_to_fwin(Window w, FvwmWindow *fw, sftfwin_args_t * args)
 {
 	FvwmWindow     *sf;
 
-	if (__try_forbid_user_focus(w, fw) == True) {
+	if (__try_forbid_user_focus(w, fw) == True)
 		return;
-	}
+
 	__try_program_focus(w, fw);
-	if (__check_allow_focus(w, fw, args->set_by) == False) {
+	if (__check_allow_focus(w, fw, args->set_by) == False)
 		return;
-	}
+
 	__update_windowlist(fw, args->set_by,
 	    args->is_focus_by_flip_focus_cmd);
-	if (__try_other_screen_focus(fw) == True) {
+	if (__try_other_screen_focus(fw) == True)
 		return;
-	}
 
 	if (fw && !args->do_forbid_warp) {
 		if (IS_ICONIFIED(fw)) {
@@ -380,9 +374,8 @@ __set_focus_to_fwin(Window w, FvwmWindow *fw, sftfwin_args_t * args)
 		FOCUS_SET(w, fw);
 		set_focus_window(fw);
 		if (fw) {
-			if (args->do_allow_force_broadcast) {
+			if (args->do_allow_force_broadcast)
 				SET_FOCUS_CHANGE_BROADCAST_PENDING(fw, 1);
-			}
 		}
 		Scr.UnknownWinFocused = None;
 	} else if (sf && sf->Desk == sf->m->virtual_scr.CurrentDesk) {
@@ -394,8 +387,6 @@ __set_focus_to_fwin(Window w, FvwmWindow *fw, sftfwin_args_t * args)
 		set_focus_window(NULL);
 	}
 	XFlush(dpy);
-
-	return;
 }
 
 static void
@@ -413,23 +404,20 @@ set_focus_to_fwin(Window w, FvwmWindow *fw, sftfwin_args_t * args)
 	 * Make sure the button grabs on the new and the old focused windows
 	 * * are up to date.
 	 */
-	if (args->client_entered) {
+	if (args->client_entered)
 		focus_grab_buttons_client_entered(fw);
-	} else {
+	else
 		focus_grab_buttons(fw);
-	}
+
 	/*
 	 * RBW -- don't call this twice for the same window!
 	 */
 	if (fw != get_focus_window()) {
-		if (args->client_entered) {
+		if (args->client_entered)
 			focus_grab_buttons_client_entered(get_focus_window());
-		} else {
+		else
 			focus_grab_buttons(get_focus_window());
-		}
 	}
-
-	return;
 }
 
 /*
@@ -451,17 +439,17 @@ warp_to_fvwm_window(const exec_context_t *exc, int warp_x, int x_unit,
 	    (IS_ICONIFIED(t) && FW_W_ICON_TITLE(t) == None)) {
 		return;
 	}
-	if (t->Desk != m->virtual_scr.CurrentDesk) {
+	if (t->Desk != m->virtual_scr.CurrentDesk)
 		goto_desk(t->Desk, t->m);
-	}
+
 	if (IS_ICONIFIED(t)) {
 		rectangle       g;
 		Bool            rc;
 
 		rc = get_visible_icon_title_geometry(t, &g);
-		if (rc == False) {
+		if (rc == False)
 			get_visible_icon_picture_geometry(t, &g);
-		}
+
 		cx = g.x + g.width / 2;
 		cy = g.y + g.height / 2;
 	} else {
@@ -496,11 +484,11 @@ warp_to_fvwm_window(const exec_context_t *exc, int warp_x, int x_unit,
 			    (t->g.frame.width - 1) * (100 + warp_x) / 100;
 		}
 
-		if (y_unit != m->coord.h && warp_y >= 0) {
+		if (y_unit != m->coord.h && warp_y >= 0)
 			y = t->g.frame.y + warp_y;
-		} else if (y_unit != m->coord.h) {
+		else if (y_unit != m->coord.h)
 			y = t->g.frame.y + t->g.frame.height + warp_y;
-		} else if (warp_y >= 0) {
+		else if (warp_y >= 0) {
 			y = t->g.frame.y +
 			    (t->g.frame.height - 1) * warp_y / 100;
 		} else {
@@ -521,8 +509,6 @@ warp_to_fvwm_window(const exec_context_t *exc, int warp_x, int x_unit,
 		FWarpPointerUpdateEvpos(exc->x.elast, dpy, None, Scr.Root, 0,
 		    0, 0, 0, 2, 2);
 	}
-
-	return;
 }
 
 static Bool
@@ -532,22 +518,20 @@ focus_query_grab_buttons(FvwmWindow *fw, Bool client_entered)
 	Bool            flag;
 	Bool            is_focused;
 
-	if (fw->Desk != m->virtual_scr.CurrentDesk || IS_ICONIFIED(fw)) {
+	if (fw->Desk != m->virtual_scr.CurrentDesk || IS_ICONIFIED(fw))
 		return False;
-	}
+
 	is_focused = focus_is_focused(fw);
-	if (!is_focused && FP_DO_FOCUS_CLICK_CLIENT(FW_FOCUS_POLICY(fw))) {
+	if (!is_focused && FP_DO_FOCUS_CLICK_CLIENT(FW_FOCUS_POLICY(fw)))
 		return True;
-	}
-	if (is_on_top_of_layer_and_above_unmanaged(fw)) {
+
+	if (is_on_top_of_layer_and_above_unmanaged(fw))
 		return False;
-	}
-	if (is_focused) {
+
+	if (is_focused)
 		flag = FP_DO_RAISE_FOCUSED_CLIENT_CLICK(FW_FOCUS_POLICY(fw));
-	} else {
-		flag =
-		    FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(FW_FOCUS_POLICY(fw));
-	}
+	else
+		flag = FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(FW_FOCUS_POLICY(fw));
 
 	return (flag) ? True : False;
 }
@@ -590,9 +574,8 @@ __restore_focus_after_unmap(const FvwmWindow *fw,
 		 */
 		SetFocusWindow(set_focus_to, True, FOCUS_SET_FORCE);
 	}
-	if (focus_is_focused(fw)) {
+	if (focus_is_focused(fw))
 		DeleteFocus(True);
-	}
 
 	return set_focus_to;
 }
@@ -659,23 +642,6 @@ __activate_window_by_command(F_CMD_ARGS, int is_focus_by_flip_focus_cmd)
 			    m->coord.h;
 			MoveViewport(m, dx, dy, True);
 		}
-#if 0  /* can not happen */
-		/*
-		 * If the window is still not visible, make it visible!
-		 */
-		if (fw->g.frame.x + fw->g.frame.width < 0 ||
-		    fw->g.frame.y + fw->g.frame.height < 0 ||
-		    fw->g.frame.x >= m->coord.w ||
-		    fw->g.frame.y >= m->coord.h) {
-			frame_setup_window(fw, 0, 0, fw->g.frame.width,
-			    fw->g.frame.height, False);
-			if (FP_DO_WARP_POINTER_ON_FOCUS_FUNC(FW_FOCUS_POLICY
-				(fw))) {
-				FWarpPointerUpdateEvpos(exc->x.elast, dpy,
-				    None, Scr.Root, 0, 0, 0, 0, 2, 2);
-			}
-		}
-#endif
 	}
 	UngrabEm(GRAB_NORMAL);
 
@@ -695,8 +661,6 @@ __activate_window_by_command(F_CMD_ARGS, int is_focus_by_flip_focus_cmd)
 			Scr.focus_in_pending_window = sf;
 		}
 	}
-
-	return;
 }
 
 static void
@@ -721,8 +685,6 @@ __focus_grab_one_button(FvwmWindow *fw, int button, int grab_buttons)
 		XUngrabButton(dpy, button + 1, AnyModifier, FW_W_PARENT(fw));
 		fw->grabbed_buttons &= ~(1 << button);
 	}
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -745,11 +707,10 @@ focus_query_click_to_raise(FvwmWindow *fw, Bool is_focused, int context)
 {
 	fpol_context_t *c;
 
-	if (is_focused) {
+	if (is_focused)
 		c = &FP_DO_RAISE_FOCUSED_CLICK(FW_FOCUS_POLICY(fw));
-	} else {
+	else
 		c = &FP_DO_RAISE_UNFOCUSED_CLICK(FW_FOCUS_POLICY(fw));
-	}
 
 	return focus_get_fpol_context_flag(c, context);
 }
@@ -769,9 +730,9 @@ focus_query_click_to_focus(FvwmWindow *fw, int context)
 Bool
 focus_query_open_grab_focus(FvwmWindow *fw, FvwmWindow *focus_win)
 {
-	if (fw == NULL) {
+	if (fw == NULL)
 		return False;
-	}
+
 	focus_win = get_focus_window();
 	if (focus_win != NULL &&
 	    FP_DO_OVERRIDE_GRAB_FOCUS(FW_FOCUS_POLICY(focus_win))) {
@@ -808,9 +769,9 @@ focus_query_open_grab_focus(FvwmWindow *fw, FvwmWindow *focus_win)
 Bool
 focus_query_close_release_focus(const FvwmWindow *fw)
 {
-	if (fw == NULL || fw != get_focus_window()) {
+	if (fw == NULL || fw != get_focus_window())
 		return False;
-	}
+
 	if (!IS_TRANSIENT(fw) &&
 	    (FW_W_TRANSIENTFOR(fw) == Scr.Root ||
 		FP_DO_GRAB_FOCUS(FW_FOCUS_POLICY(fw)))) {
@@ -833,7 +794,7 @@ __focus_grab_buttons(FvwmWindow *fw, Bool client_entered)
 	if (fw == NULL || IS_SCHEDULED_FOR_DESTROY(fw) || !IS_MAPPED(fw)) {
 		/*
 		 * It is pointless to grab buttons on dieing windows.  Buttons
-		 * * can not be grabbed when the window is unmapped.
+		 * can not be grabbed when the window is unmapped.
 		 */
 		return;
 	}
@@ -844,13 +805,11 @@ __focus_grab_buttons(FvwmWindow *fw, Bool client_entered)
 	}
 	if (grab_buttons != fw->grabbed_buttons) {
 		MyXGrabServer(dpy);
-		for (i = 0; i < NUMBER_OF_EXTENDED_MOUSE_BUTTONS; i++) {
+		for (i = 0; i < NUMBER_OF_EXTENDED_MOUSE_BUTTONS; i++)
 			__focus_grab_one_button(fw, i, grab_buttons);
-		}
+
 		MyXUngrabServer(dpy);
 	}
-
-	return;
 }
 
 void
@@ -872,12 +831,9 @@ focus_grab_buttons_on_layer(int layer)
 
 	for (fw = Scr.FvwmRoot.stack_next;
 	    fw != &Scr.FvwmRoot && fw->layer >= layer; fw = fw->stack_next) {
-		if (fw->layer == layer) {
+		if (fw->layer == layer)
 			focus_grab_buttons(fw);
-		}
 	}
-
-	return;
 }
 
 void
@@ -885,9 +841,8 @@ focus_grab_buttons_all(void)
 {
 	FvwmWindow     *fw;
 
-	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next) {
+	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
 		focus_grab_buttons(fw);
-	}
 
 	return;
 }
@@ -904,14 +859,12 @@ _SetFocusWindow(FvwmWindow *fw, Bool do_allow_force_broadcast,
 	sf_args.do_forbid_warp = 0;
 	sf_args.do_force = 1;
 	sf_args.set_by = set_by;
-	if (client_entered) {
+	if (client_entered)
 		sf_args.client_entered = 1;
-	} else {
+	else
 		sf_args.client_entered = 0;
-	}
-	set_focus_to_fwin(FW_W(fw), fw, &sf_args);
 
-	return;
+	set_focus_to_fwin(FW_W(fw), fw, &sf_args);
 }
 
 void
@@ -927,8 +880,6 @@ _ReturnFocusWindow(FvwmWindow *fw)
 	sf_args.do_force = 0;
 	sf_args.set_by = FOCUS_SET_FORCE;
 	set_focus_to_fwin(FW_W(fw), fw, &sf_args);
-
-	return;
 }
 
 void
@@ -944,8 +895,6 @@ _DeleteFocus(Bool do_allow_force_broadcast)
 	sf_args.do_force = 0;
 	sf_args.set_by = FOCUS_SET_FORCE;
 	set_focus_to_fwin(Scr.NoFocusWin, NULL, &sf_args);
-
-	return;
 }
 
 void
@@ -961,8 +910,6 @@ _ForceDeleteFocus(void)
 	sf_args.do_force = 1;
 	sf_args.set_by = FOCUS_SET_FORCE;
 	set_focus_to_fwin(Scr.NoFocusWin, NULL, &sf_args);
-
-	return;
 }
 
 /* When a window is unmapped (or destroyed) this function takes care of
@@ -979,14 +926,11 @@ restore_focus_after_unmap(const FvwmWindow *fw,
 		    __restore_focus_after_unmap(fw,
 		    do_skip_marked_transients);
 	}
-	if (fw == Scr.pushed_window) {
+	if (fw == Scr.pushed_window)
 		Scr.pushed_window = NULL;
-	}
-	if (fw == colormap_win) {
-		InstallWindowColormaps(set_focus_to);
-	}
 
-	return;
+	if (fw == colormap_win)
+		InstallWindowColormaps(set_focus_to);
 }
 
 Bool
@@ -1017,8 +961,6 @@ focus_grab_buttons_on_pointer_window(void)
 		return;
 	}
 	focus_grab_buttons(fw);
-
-	return;
 }
 
 /* functions to access ScreenFocus, LastScreenFocus and PreviousFocus */
@@ -1032,8 +974,6 @@ void
 set_focus_window(FvwmWindow *fw)
 {
 	ScreenFocus = fw;
-
-	return;
 }
 
 FvwmWindow     *
@@ -1046,38 +986,29 @@ void
 set_last_screen_focus_window(FvwmWindow *fw)
 {
 	LastScreenFocus = fw;
-
-	return;
 }
 
 void
 update_last_screen_focus_window(FvwmWindow *fw)
 {
-	if (fw == LastScreenFocus) {
+	if (fw == LastScreenFocus)
 		LastScreenFocus = NULL;
-	}
-
-	return;
 }
 
 void
 set_focus_model(FvwmWindow *fw)
 {
 	if (!focus_does_accept_input_focus(fw)) {
-		if (WM_TAKES_FOCUS(fw)) {
+		if (WM_TAKES_FOCUS(fw))
 			fw->focus_model = FM_GLOBALLY_ACTIVE;
-		} else {
+		else
 			fw->focus_model = FM_NO_INPUT;
-		}
 	} else {
-		if (WM_TAKES_FOCUS(fw)) {
+		if (WM_TAKES_FOCUS(fw))
 			fw->focus_model = FM_LOCALLY_ACTIVE;
-		} else {
+		else
 			fw->focus_model = FM_PASSIVE;
-		}
 	}
-
-	return;
 }
 
 /* This function is part of a hack to make focus handling work better with
@@ -1097,8 +1028,6 @@ focus_force_refresh_focus(const FvwmWindow *fw)
 		XSelectInput(dpy, FW_W(fw), winattrs.your_event_mask);
 	}
 	MyXUngrabServer(dpy);
-
-	return;
 }
 
 void
@@ -1128,11 +1057,8 @@ refresh_focus(const FvwmWindow *fw)
 		do_refresh = False;
 		break;
 	}
-	if (do_refresh) {
+	if (do_refresh)
 		focus_force_refresh_focus(fw);
-	}
-
-	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -1144,16 +1070,12 @@ CMD_FlipFocus(F_CMD_ARGS)
 	 * Reorder the window list
 	 */
 	__activate_window_by_command(F_PASS_ARGS, 1);
-
-	return;
 }
 
 void
 CMD_Focus(F_CMD_ARGS)
 {
 	__activate_window_by_command(F_PASS_ARGS, 0);
-
-	return;
 }
 
 void
@@ -1169,9 +1091,8 @@ CMD_WarpToWindow(F_CMD_ARGS)
 		if (n == 2) {
 			warp_to_fvwm_window(exc, val1, val1_unit, val2,
 			    val2_unit);
-		} else {
+		} else
 			warp_to_fvwm_window(exc, 0, 0, 0, 0);
-		}
 	} else {
 		int             x = 0;
 		int             y = 0;
@@ -1188,26 +1109,23 @@ CMD_WarpToWindow(F_CMD_ARGS)
 				(unsigned int *) &JunkDepth)) {
 				return;
 			}
-			if (val1_unit != m->coord.w) {
+			if (val1_unit != m->coord.w)
 				x = val1;
-			} else {
+			else
 				x = (ww - 1) * val1 / 100;
-			}
-			if (val2_unit != m->coord.h) {
+		
+			if (val2_unit != m->coord.h)
 				y = val2;
-			} else {
+			else
 				y = (wh - 1) * val2 / 100;
-			}
-			if (x < 0) {
+		
+			if (x < 0)
 				x += ww;
-			}
-			if (y < 0) {
+
+			if (y < 0)
 				y += wh;
-			}
 		}
 		FWarpPointerUpdateEvpos(exc->x.elast, dpy, None, exc->w.w, 0,
 		    0, 0, 0, x, y);
 	}
-
-	return;
 }

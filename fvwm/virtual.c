@@ -168,7 +168,7 @@ __drag_viewport(const exec_context_t *exc, int scroll_speed)
 			} else {
 				/*
 				 * pointer is on a different screen,
-				 * * ignore event
+				 * ignore event
 				 */
 			}
 		}
@@ -271,12 +271,12 @@ GetDeskNumber(struct monitor *mon, char *action, int current_desk)
 		return current_desk - 1;
 	}
 	n = GetIntegerArguments(action, NULL, &(val[0]), 4);
-	if (n <= 0) {
+	if (n <= 0)
 		return mon->virtual_scr.CurrentDesk;
-	}
-	if (n == 1) {
+
+	if (n == 1)
 		return current_desk + val[0];
-	}
+
 	desk = current_desk;
 	m = 0;
 	if (val[0] == 0) {
@@ -292,12 +292,12 @@ GetDeskNumber(struct monitor *mon, char *action, int current_desk)
 		desk += val[0];
 		is_relative = 1;
 	}
-	if (n == 3) {
+	if (n == 3)
 		m = 1;
-	}
-	if (n == 4) {
+
+	if (n == 4)
 		m = 2;
-	}
+
 	if (n > 2) {
 		/*
 		 * handle limits
@@ -316,29 +316,26 @@ GetDeskNumber(struct monitor *mon, char *action, int current_desk)
 			/*
 			 * Relative moves wrap around.
 			 */
-			if (desk < min) {
+			if (desk < min)
 				desk += (max - min + 1);
-			} else if (desk > max) {
+			else if (desk > max)
 				desk -= (max - min + 1);
-			}
 		} else if (desk < min) {
 			/*
 			 * Relative move outside of range, wrap around.
 			 */
-			if (val[0] < 0) {
+			if (val[0] < 0)
 				desk = max;
-			} else {
+			else
 				desk = min;
-			}
 		} else if (desk > max) {
 			/*
 			 * Move outside of range, truncate.
 			 */
-			if (val[0] > 0) {
+			if (val[0] > 0)
 				desk = min;
-			} else {
+			else
 				desk = max;
-			}
 		}
 	}
 
@@ -370,12 +367,11 @@ unmap_window(FvwmWindow *t)
 		XSelectInput(dpy, FW_W(t), eventMask & ~StructureNotifyMask);
 	}
 	if (IS_ICONIFIED(t)) {
-		if (FW_W_ICON_PIXMAP(t) != None) {
+		if (FW_W_ICON_PIXMAP(t) != None)
 			XUnmapWindow(dpy, FW_W_ICON_PIXMAP(t));
-		}
-		if (FW_W_ICON_TITLE(t) != None) {
+
+		if (FW_W_ICON_TITLE(t) != None)
 			XUnmapWindow(dpy, FW_W_ICON_TITLE(t));
-		}
 	} else {
 		XUnmapWindow(dpy, FW_W_FRAME(t));
 		border_undraw_decorations(t);
@@ -385,16 +381,13 @@ unmap_window(FvwmWindow *t)
 		 */
 		XUnmapWindow(dpy, FW_W(t));
 #endif
-		if (!bo.do_enable_ewmh_iconic_state_workaround) {
+		if (!bo.do_enable_ewmh_iconic_state_workaround)
 			SetMapStateProp(t, IconicState);
-		}
 	}
 	if (ret) {
 		XSelectInput(dpy, FW_W(t), eventMask);
 		XFlush(dpy);
 	}
-
-	return;
 }
 
 /*
@@ -425,12 +418,11 @@ map_window(FvwmWindow *t)
 		XSelectInput(dpy, FW_W(t), eventMask & ~StructureNotifyMask);
 	}
 	if (IS_ICONIFIED(t)) {
-		if (FW_W_ICON_PIXMAP(t) != None) {
+		if (FW_W_ICON_PIXMAP(t) != None)
 			XMapWindow(dpy, FW_W_ICON_PIXMAP(t));
-		}
-		if (FW_W_ICON_TITLE(t) != None) {
+
+		if (FW_W_ICON_TITLE(t) != None)
 			XMapWindow(dpy, FW_W_ICON_TITLE(t));
-		}
 	} else if (IS_MAPPED(t)) {
 		border_draw_decorations(t, PART_ALL,
 		    (t == get_focus_window())? True : False, False, CLEAR_ALL,
@@ -444,16 +436,13 @@ map_window(FvwmWindow *t)
 		 */
 		XMapWindow(dpy, FW_W(t));
 #endif
-		if (!bo.do_enable_ewmh_iconic_state_workaround) {
+		if (!bo.do_enable_ewmh_iconic_state_workaround)
 			SetMapStateProp(t, NormalState);
-		}
 	}
 	if (ret) {
 		XSelectInput(dpy, FW_W(t), eventMask);
 		XFlush(dpy);
 	}
-
-	return;
 }
 
 /*
@@ -470,9 +459,9 @@ UnmapDesk(struct monitor *m, int desk, Bool grab)
 	FvwmWindow     *t;
 	FvwmWindow     *sf = get_focus_window();
 
-	if (grab) {
+	if (grab)
 		MyXGrabServer(dpy);
-	}
+
 	for (t = get_prev_window_in_stack_ring(&Scr.FvwmRoot);
 	    t != &Scr.FvwmRoot; t = get_prev_window_in_stack_ring(t)) {
 		if (t->m != m)
@@ -487,22 +476,18 @@ UnmapDesk(struct monitor *m, int desk, Bool grab)
 					t->flags.is_focused_on_other_desk = 1;
 					t->FocusDesk = desk;
 					DeleteFocus(True);
-				} else {
+				} else
 					t->flags.is_focused_on_other_desk = 0;
-				}
+
 				unmap_window(t);
 				SET_FULLY_VISIBLE(t, 0);
 				SET_PARTIALLY_VISIBLE(t, 0);
 			}
-		} else {
+		} else
 			t->flags.is_focused_on_other_desk = 0;
-		}
 	}
-	if (grab) {
+	if (grab)
 		MyXUngrabServer(dpy);
-	}
-
-	return;
 }
 
 /*
@@ -522,9 +507,9 @@ MapDesk(struct monitor *m, int desk, Bool grab)
 	FvwmWindow     *sf = get_focus_window();
 
 	scr_flags.is_map_desk_in_progress = 1;
-	if (grab) {
+	if (grab)
 		MyXGrabServer(dpy);
-	}
+
 	for (t = get_next_window_in_stack_ring(&Scr.FvwmRoot);
 	    t != &Scr.FvwmRoot; t = get_next_window_in_stack_ring(t)) {
 		if (t->m != m)
@@ -534,23 +519,20 @@ MapDesk(struct monitor *m, int desk, Bool grab)
 		 * Only change mapping for non-sticky windows
 		 */
 		if (!is_window_sticky_across_desks(t) && !IS_ICON_UNMAPPED(t)) {
-			if (t->Desk == desk) {
+			if (t->Desk == desk)
 				map_window(t);
-			}
 		} else {
 			/*
 			 * If window is sticky, just update its desk (it's
 			 * * still mapped).
 			 */
 			t->Desk = desk;
-			if (sf == t) {
+			if (sf == t)
 				StickyWin = t;
-			}
 		}
 	}
-	if (grab) {
+	if (grab)
 		MyXUngrabServer(dpy);
-	}
 
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next) {
 		if (t->m != m)
@@ -561,9 +543,9 @@ MapDesk(struct monitor *m, int desk, Bool grab)
 		 * desk don't land on top of stationary ones on the new desk.
 		 */
 		if (is_window_sticky_across_desks(t) && IS_ICONIFIED(t) &&
-		    !IS_ICON_MOVED(t) && !IS_ICON_UNMAPPED(t)) {
+		    !IS_ICON_MOVED(t) && !IS_ICON_UNMAPPED(t))
 			AutoPlaceIcon(t, NULL, True);
-		}
+
 		/*
 		 * Keep track of the last-focused window on the new desk.
 		 */
@@ -583,13 +565,10 @@ MapDesk(struct monitor *m, int desk, Bool grab)
 		 */
 		if (!FP_DO_UNFOCUS_LEAVE(FW_FOCUS_POLICY(FocusWin))) {
 			ReturnFocusWindow(FocusWin);
-		} else {
+		} else
 			DeleteFocus(True);
-		}
 	}
 	scr_flags.is_map_desk_in_progress = 0;
-
-	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -657,9 +636,9 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 		add_time = 0;
 		last_x = -1;
 		last_y = -1;
-	} else if (my_last_timestamp != fev_get_evtime()) {
+	} else if (my_last_timestamp != fev_get_evtime())
 		add_time = 0;
-	}
+
 	my_last_timestamp = fev_get_evtime();
 
 	do {
@@ -723,9 +702,8 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 		add_time += 10;
 	} while (fLoop && fev_get_evtime() - my_timestamp + add_time < delay);
 
-	if (fev_get_evtime() - my_timestamp + add_time < delay) {
+	if (fev_get_evtime() - my_timestamp + add_time < delay)
 		return 0;
-	}
 
 	/*
 	 * Get the latest pointer position.  This is necessary as XFree 4.1.0.1
@@ -749,26 +727,25 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 	/*
 	 * started at
 	 */
-	if (x < edge_thickness) {
+	if (x < edge_thickness)
 		*delta_x = -HorWarpSize;
-	} else if (x >= mon->coord.w - edge_thickness) {
+	else if (x >= mon->coord.w - edge_thickness)
 		*delta_x = HorWarpSize;
-	} else {
+	else
 		*delta_x = 0;
-	}
-	if (mon->virtual_scr.VxMax == 0) {
+
+	if (mon->virtual_scr.VxMax == 0)
 		*delta_x = 0;
-	}
-	if (y < edge_thickness) {
+
+	if (y < edge_thickness)
 		*delta_y = -VertWarpSize;
-	} else if (y >= mon->coord.h - edge_thickness) {
+	else if (y >= mon->coord.h - edge_thickness)
 		*delta_y = VertWarpSize;
-	} else {
+	else
 		*delta_y = 0;
-	}
-	if (mon->virtual_scr.VyMax == 0) {
+
+	if (mon->virtual_scr.VyMax == 0)
 		*delta_y = 0;
-	}
 
 	/*
 	 * Ouch! lots of bounds checking
@@ -790,9 +767,8 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 			*delta_x -= mon->virtual_scr.VxMax + mon->coord.w;
 			*xl = x + *delta_x % mon->coord.w - HorWarpSize;
 		}
-	} else {
+	} else
 		*xl = x - *delta_x;
-	}
 
 	if (mon->virtual_scr.Vy + *delta_y < 0) {
 		if (!(scr_flags.do_edge_wrap_y)) {
@@ -811,38 +787,35 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 			*delta_y -= mon->virtual_scr.VyMax + mon->coord.h;
 			*yt = y + *delta_y % mon->coord.h - VertWarpSize;
 		}
-	} else {
+	} else
 		*yt = y - *delta_y;
-	}
 
 	/*
 	 * Check for paging -- and don't warp the pointer.
 	 */
 	is_timestamp_valid = False;
 	add_time = 0;
-	if (*delta_x == 0 && *delta_y == 0) {
+	if (*delta_x == 0 && *delta_y == 0)
 		return 0;
-	}
 
 	/*
 	 * make sure the pointer isn't warped into the panframes
 	 */
-	if (*xl < edge_thickness) {
+	if (*xl < edge_thickness)
 		*xl = edge_thickness;
-	}
-	if (*yt < edge_thickness) {
-		*yt = edge_thickness;
-	}
-	if (*xl >= mon->coord.w - edge_thickness) {
-		*xl = mon->coord.w - edge_thickness - 1;
-	}
-	if (*yt >= mon->coord.h - edge_thickness) {
-		*yt = mon->coord.h - edge_thickness - 1;
-	}
 
-	if (Grab) {
+	if (*yt < edge_thickness)
+		*yt = edge_thickness;
+
+	if (*xl >= mon->coord.w - edge_thickness)
+		*xl = mon->coord.w - edge_thickness - 1;
+
+	if (*yt >= mon->coord.h - edge_thickness)
+		*yt = mon->coord.h - edge_thickness - 1;
+
+	if (Grab)
 		MyXGrabServer(dpy);
-	}
+
 	/*
 	 * Turn off the rubberband if its on
 	 */
@@ -858,9 +831,8 @@ HandlePaging(XEvent *pev, int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 		*xl = 0;
 		*yt = 0;
 	}
-	if (Grab) {
+	if (Grab)
 		MyXUngrabServer(dpy);
-	}
 
 	return 1;
 }
@@ -914,16 +886,16 @@ checkPanFrames(void)
 		do_unmap_t = True;
 		do_unmap_b = True;
 	}
-	if (m->virtual_scr.Vx == 0 && !scr_flags.do_edge_wrap_x) {
+	if (m->virtual_scr.Vx == 0 && !scr_flags.do_edge_wrap_x)
 		do_unmap_l = True;
-	}
+
 	if (m->virtual_scr.Vx == m->virtual_scr.VxMax
 	    && !scr_flags.do_edge_wrap_x) {
 		do_unmap_r = True;
 	}
-	if (m->virtual_scr.Vy == 0 && !scr_flags.do_edge_wrap_y) {
+	if (m->virtual_scr.Vy == 0 && !scr_flags.do_edge_wrap_y)
 		do_unmap_t = True;
-	}
+
 	if (m->virtual_scr.Vy == m->virtual_scr.VyMax
 	    && !scr_flags.do_edge_wrap_y) {
 		do_unmap_b = True;
@@ -1067,12 +1039,9 @@ raisePanFrames(void)
 	}
 	if (n > 0) {
 		XRaiseWindow(dpy, windows[0]);
-		if (n > 1) {
+		if (n > 1)
 			XRestackWindows(dpy, windows, n);
-		}
 	}
-
-	return;
 }
 
 /*
@@ -1099,9 +1068,8 @@ initPanFrames(void)
 	 * if (edge_thickness == 0) return;
 	 */
 	saved_thickness = edge_thickness;
-	if (edge_thickness == 0) {
+	if (edge_thickness == 0)
 		edge_thickness = 2;
-	}
 
 	attributes.event_mask = XEVMASK_PANFW;
 	valuemask = (CWEventMask | CWCursor);
@@ -1109,7 +1077,7 @@ initPanFrames(void)
 	attributes.cursor = Scr.FvwmCursors[CRS_TOP_EDGE];
 	/*
 	 * I know these overlap, it's useful when at (0,0) and the top one is
-	 * * unmapped
+	 * unmapped
 	 */
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		Scr.PanFrameTop.win =
@@ -1137,8 +1105,6 @@ initPanFrames(void)
 		    False;
 	}
 	edge_thickness = saved_thickness;
-
-	return;
 }
 
 Bool
@@ -1147,9 +1113,8 @@ is_pan_frame(Window w)
 	if (w == Scr.PanFrameTop.win || w == Scr.PanFrameBottom.win ||
 	    w == Scr.PanFrameLeft.win || w == Scr.PanFrameRight.win) {
 		return True;
-	} else {
+	} else
 		return False;
-	}
 }
 
 /*
@@ -1166,21 +1131,21 @@ MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	int             PageBottom, PageRight;
 	int             txl, txr, tyt, tyb;
 
-	if (grab) {
+	if (grab)
 		MyXGrabServer(dpy);
-	}
-	if (newx > m->virtual_scr.VxMax) {
+
+	if (newx > m->virtual_scr.VxMax)
 		newx = m->virtual_scr.VxMax;
-	}
-	if (newy > m->virtual_scr.VyMax) {
+
+	if (newy > m->virtual_scr.VyMax)
 		newy = m->virtual_scr.VyMax;
-	}
-	if (newx < 0) {
+
+	if (newx < 0)
 		newx = 0;
-	}
-	if (newy < 0) {
+
+	if (newy < 0)
 		newy = 0;
-	}
+
 	deltay = m->virtual_scr.Vy - newy;
 	deltax = m->virtual_scr.Vx - newx;
 
@@ -1349,30 +1314,10 @@ MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	 */
 	focus_grab_buttons_all();
 
-#if 0
-	/*
-	 * dv (2004-07-01): I don't think that's a good idea.  We could eat too
-	 * * many events.
-	 */
-	/*
-	 * do this with PanFrames too ??? HEDU
-	 */
-	{
-		XEvent          e;
-
-		while (FCheckTypedEvent(dpy, MotionNotify, &e)) {
-			/*
-			 * nothing
-			 */
-		}
-	}
-#endif
-	if (grab) {
+	if (grab)
 		MyXUngrabServer(dpy);
-	}
-	EWMH_SetDesktopViewPort(m);
 
-	return;
+	EWMH_SetDesktopViewPort(m);
 }
 
 void
@@ -1397,20 +1342,18 @@ goto_desk(int desk, struct monitor *m)
 		    (long) m->virtual_scr.CurrentDesk);
 		/*
 		 * FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
-		 * * window upon desk change.  This is a workaround for a
-		 * * problem in FvwmPager: The pager has a separate 'root'
-		 * * window for each desk.  If the active desk changes, the
-		 * * pager destroys sticky mini windows and creates new ones in
-		 * * the other desktop 'root'.  But the pager can't know where to
-		 * * stack them.  So we have to tell it explicitly where they
-		 * * go :-( This should be fixed in the pager, but right now the
-		 * * pager doesn't maintain the stacking order.
+		 * window upon desk change.  This is a workaround for a
+		 * problem in FvwmPager: The pager has a separate 'root'
+		 * window for each desk.  If the active desk changes, the
+		 * pager destroys sticky mini windows and creates new ones in
+		 * the other desktop 'root'.  But the pager can't know where to
+		 * stack them.  So we have to tell it explicitly where they
+		 * go :-( This should be fixed in the pager, but right now the
+		 * pager doesn't maintain the stacking order.
 		 */
 		BroadcastRestackAllWindows();
 		EWMH_SetCurrentDesktop(m);
 	}
-
-	return;
 }
 
 /*
@@ -1421,9 +1364,8 @@ goto_desk(int desk, struct monitor *m)
 void
 do_move_window_to_desk(FvwmWindow *fw, int desk)
 {
-	if (fw == NULL) {
+	if (fw == NULL)
 		return;
-	}
 
 	struct monitor *m = fw->m;
 
@@ -1436,9 +1378,9 @@ do_move_window_to_desk(FvwmWindow *fw, int desk)
 	if (!is_window_sticky_across_desks(fw) /*&& !IS_ICON_UNMAPPED(fw) */ ) {
 		if (fw->Desk == m->virtual_scr.CurrentDesk) {
 			fw->Desk = desk;
-			if (fw == get_focus_window()) {
+			if (fw == get_focus_window())
 				DeleteFocus(True);
-			}
+
 			unmap_window(fw);
 			SET_FULLY_VISIBLE(fw, 0);
 			SET_PARTIALLY_VISIBLE(fw, 0);
@@ -1447,19 +1389,17 @@ do_move_window_to_desk(FvwmWindow *fw, int desk)
 			/*
 			 * If its an icon, auto-place it
 			 */
-			if (IS_ICONIFIED(fw)) {
+			if (IS_ICONIFIED(fw))
 				AutoPlaceIcon(fw, NULL, True);
-			}
+
 			map_window(fw);
-		} else {
+		} else
 			fw->Desk = desk;
-		}
+
 		BroadcastConfig(M_CONFIGURE_WINDOW, fw);
 	}
 	focus_grab_buttons_on_layer(fw->layer);
 	EWMH_SetWMDesktop(fw);
-
-	return;
 }
 
 Bool
@@ -1496,18 +1436,18 @@ get_page_arguments(struct monitor *m, char *action, int *page_x, int *page_y)
 			return True;
 		}
 		do_reverse = 0;
-		for (; *token == '!'; token++) {
+		for (; *token == '!'; token++)
 			do_reverse = !do_reverse;
-		}
-		if (StrEquals(token, "wrapx")) {
+
+		if (StrEquals(token, "wrapx"))
 			wrapx = (1 ^ do_reverse);
-		} else if (StrEquals(token, "wrapy")) {
+		else if (StrEquals(token, "wrapy"))
 			wrapy = (1 ^ do_reverse);
-		} else if (StrEquals(token, "nodesklimitx")) {
+		else if (StrEquals(token, "nodesklimitx"))
 			limitdeskx = (0 ^ do_reverse);
-		} else if (StrEquals(token, "nodesklimitx")) {
+		else if (StrEquals(token, "nodesklimitx"))
 			limitdesky = (0 ^ do_reverse);
-		} else {
+		else {
 			/*
 			 * no more options
 			 */
@@ -1515,77 +1455,68 @@ get_page_arguments(struct monitor *m, char *action, int *page_x, int *page_y)
 		}
 	}
 
-	if (GetSuffixedIntegerArguments(action, NULL, val, 2, "pw", suffix) !=
-	    2) {
+	if (GetSuffixedIntegerArguments(action, NULL, val, 2, "pw", suffix) != 2)
 		return 0;
-	}
 
-	if (suffix[0] == 1) {
+	if (suffix[0] == 1)
 		*page_x = val[0] * m->coord.w + m->virtual_scr.Vx;
-	} else if (suffix[0] == 2) {
+	else if (suffix[0] == 2)
 		*page_x += val[0] * m->coord.w;
-	} else if (val[0] >= 0) {
+	else if (val[0] >= 0)
 		*page_x = val[0] * m->coord.w;
-	} else {
+	else
 		*page_x = (val[0] + 1) * m->coord.w + m->virtual_scr.VxMax;
-	}
-	if (suffix[1] == 1) {
+
+	if (suffix[1] == 1)
 		*page_y = val[1] * m->coord.h + m->virtual_scr.Vy;
-	} else if (suffix[1] == 2) {
+	else if (suffix[1] == 2)
 		*page_y += val[1] * m->coord.h;
-	} else if (val[1] >= 0) {
+	else if (val[1] >= 0)
 		*page_y = val[1] * m->coord.h;
-	} else {
+	else
 		*page_y = (val[1] + 1) * m->coord.h + m->virtual_scr.VyMax;
-	}
 
 	/*
 	 * limit to desktop size
 	 */
 	if (limitdeskx && !wrapx) {
-		if (*page_x < 0) {
+		if (*page_x < 0)
 			*page_x = 0;
-		} else if (*page_x > m->virtual_scr.VxMax) {
+		else if (*page_x > m->virtual_scr.VxMax)
 			*page_x = m->virtual_scr.VxMax;
-		}
 	} else if (limitdeskx && wrapx) {
-		while (*page_x < 0) {
+		while (*page_x < 0)
 			*page_x += m->virtual_scr.VxMax + m->coord.w;
-		}
-		while (*page_x > m->virtual_scr.VxMax) {
+
+		while (*page_x > m->virtual_scr.VxMax)
 			*page_x -= m->virtual_scr.VxMax + m->coord.w;
-		}
 	}
 	if (limitdesky && !wrapy) {
-		if (*page_y < 0) {
+		if (*page_y < 0)
 			*page_y = 0;
-		} else if (*page_y > m->virtual_scr.VyMax) {
+		else if (*page_y > m->virtual_scr.VyMax)
 			*page_y = m->virtual_scr.VyMax;
-		}
 	} else if (limitdesky && wrapy) {
-		while (*page_y < 0) {
+		while (*page_y < 0)
 			*page_y += m->virtual_scr.VyMax + m->coord.h;
-		}
-		while (*page_y > m->virtual_scr.VyMax) {
-			*page_y -= m->virtual_scr.VyMax + m->coord.h;
-		}
-	}
 
+		while (*page_y > m->virtual_scr.VyMax)
+			*page_y -= m->virtual_scr.VyMax + m->coord.h;
+	}
 	return True;
 }
 
-char           *
+char *
 GetDesktopName(struct monitor *m, int desk)
 {
 	DesktopsInfo   *d = m->Desktops;
 
 	d = m->Desktops->next;
-	while (d != NULL && d->desk != desk) {
+	while (d != NULL && d->desk != desk)
 		d = d->next;
-	}
-	if (d != NULL) {
+
+	if (d != NULL)
 		return d->name;
-	}
 
 	return NULL;
 }
@@ -1622,24 +1553,16 @@ CMD_EdgeCommand(F_CMD_ARGS)
 		 * assign command to the edge(s)
 		 */
 		if (direction == DIR_N) {
-			if (Scr.PanFrameTop.command != NULL) {
-				free(Scr.PanFrameTop.command);
-			}
+			free(Scr.PanFrameTop.command);
 			Scr.PanFrameTop.command = command;
 		} else if (direction == DIR_S) {
-			if (Scr.PanFrameBottom.command != NULL) {
-				free(Scr.PanFrameBottom.command);
-			}
+			free(Scr.PanFrameBottom.command);
 			Scr.PanFrameBottom.command = command;
 		} else if (direction == DIR_W) {
-			if (Scr.PanFrameLeft.command != NULL) {
-				free(Scr.PanFrameLeft.command);
-			}
+			free(Scr.PanFrameLeft.command);
 			Scr.PanFrameLeft.command = command;
 		} else if (direction == DIR_E) {
-			if (Scr.PanFrameRight.command != NULL) {
-				free(Scr.PanFrameRight.command);
-			}
+			free(Scr.PanFrameRight.command);
 			Scr.PanFrameRight.command = command;
 		} else {
 			/*
@@ -1648,7 +1571,6 @@ CMD_EdgeCommand(F_CMD_ARGS)
 			fvwm_msg(ERR, "EdgeCommand",
 			    "Internal error in CMD_EdgeCommand");
 		}
-
 	} else {
 
 		/*
@@ -1659,22 +1581,14 @@ CMD_EdgeCommand(F_CMD_ARGS)
 			 * Just plain EdgeCommand, so all edge commands are
 			 * * removed
 			 */
-			if (Scr.PanFrameTop.command != NULL) {
-				free(Scr.PanFrameTop.command);
-				Scr.PanFrameTop.command = NULL;
-			}
-			if (Scr.PanFrameBottom.command != NULL) {
-				free(Scr.PanFrameBottom.command);
-				Scr.PanFrameBottom.command = NULL;
-			}
-			if (Scr.PanFrameLeft.command != NULL) {
-				free(Scr.PanFrameLeft.command);
-				Scr.PanFrameLeft.command = NULL;
-			}
-			if (Scr.PanFrameRight.command != NULL) {
-				free(Scr.PanFrameRight.command);
-				Scr.PanFrameRight.command = NULL;
-			}
+			free(Scr.PanFrameTop.command);
+			Scr.PanFrameTop.command = NULL;
+			free(Scr.PanFrameBottom.command);
+			Scr.PanFrameBottom.command = NULL;
+			free(Scr.PanFrameLeft.command);
+			Scr.PanFrameLeft.command = NULL;
+			free(Scr.PanFrameRight.command);
+			Scr.PanFrameRight.command = NULL;
 		} else {
 			/*
 			 * not a proper direction
@@ -1688,8 +1602,6 @@ CMD_EdgeCommand(F_CMD_ARGS)
 	 * maybe something has changed so we adapt the pan frames
 	 */
 	checkPanFrames();
-
-	return;
 }
 
 /* EdgeLeaveCommand - binds a function to a pan frame Leave event */
@@ -1722,24 +1634,16 @@ CMD_EdgeLeaveCommand(F_CMD_ARGS)
 		 * assign command to the edge(s)
 		 */
 		if (direction == DIR_N) {
-			if (Scr.PanFrameTop.command_leave != NULL) {
-				free(Scr.PanFrameTop.command_leave);
-			}
+			free(Scr.PanFrameTop.command_leave);
 			Scr.PanFrameTop.command_leave = command;
 		} else if (direction == DIR_S) {
-			if (Scr.PanFrameBottom.command_leave != NULL) {
-				free(Scr.PanFrameBottom.command_leave);
-			}
+			free(Scr.PanFrameBottom.command_leave);
 			Scr.PanFrameBottom.command_leave = command;
 		} else if (direction == DIR_W) {
-			if (Scr.PanFrameLeft.command_leave != NULL) {
-				free(Scr.PanFrameLeft.command_leave);
-			}
+			free(Scr.PanFrameLeft.command_leave);
 			Scr.PanFrameLeft.command_leave = command;
 		} else if (direction == DIR_E) {
-			if (Scr.PanFrameRight.command_leave != NULL) {
-				free(Scr.PanFrameRight.command_leave);
-			}
+			free(Scr.PanFrameRight.command_leave);
 			Scr.PanFrameRight.command_leave = command;
 		} else {
 			/*
@@ -1748,7 +1652,6 @@ CMD_EdgeLeaveCommand(F_CMD_ARGS)
 			fvwm_msg(ERR, "EdgeLeaveCommand",
 			    "Internal error in CMD_EdgeLeaveCommand");
 		}
-
 	} else {
 
 		/*
@@ -1757,24 +1660,16 @@ CMD_EdgeLeaveCommand(F_CMD_ARGS)
 		if (PeekToken(action, &action) == NULL) {
 			/*
 			 * Just plain EdgeLeaveCommand, so all edge commands are
-			 * * removed
+			 * removed
 			 */
-			if (Scr.PanFrameTop.command_leave != NULL) {
-				free(Scr.PanFrameTop.command_leave);
-				Scr.PanFrameTop.command_leave = NULL;
-			}
-			if (Scr.PanFrameBottom.command_leave != NULL) {
-				free(Scr.PanFrameBottom.command_leave);
-				Scr.PanFrameBottom.command_leave = NULL;
-			}
-			if (Scr.PanFrameLeft.command_leave != NULL) {
-				free(Scr.PanFrameLeft.command_leave);
-				Scr.PanFrameLeft.command_leave = NULL;
-			}
-			if (Scr.PanFrameRight.command_leave != NULL) {
-				free(Scr.PanFrameRight.command_leave);
-				Scr.PanFrameRight.command_leave = NULL;
-			}
+			free(Scr.PanFrameTop.command_leave);
+			Scr.PanFrameTop.command_leave = NULL;
+			free(Scr.PanFrameBottom.command_leave);
+			Scr.PanFrameBottom.command_leave = NULL;
+			free(Scr.PanFrameLeft.command_leave);
+			Scr.PanFrameLeft.command_leave = NULL;
+			free(Scr.PanFrameRight.command_leave);
+			Scr.PanFrameRight.command_leave = NULL;
 		} else {
 			/*
 			 * not a proper direction
@@ -1788,8 +1683,6 @@ CMD_EdgeLeaveCommand(F_CMD_ARGS)
 	 * maybe something has changed so we adapt the pan frames
 	 */
 	checkPanFrames();
-
-	return;
 }
 
 void
@@ -1815,8 +1708,6 @@ CMD_EdgeThickness(F_CMD_ARGS)
 	}
 	edge_thickness = val;
 	checkPanFrames();
-
-	return;
 }
 
 void
@@ -1840,15 +1731,14 @@ CMD_EdgeScroll(F_CMD_ARGS)
 	if (val1 >= 1000 && val1_unit != 100) {
 		val1 /= 1000;
 		scr_flags.do_edge_wrap_x = 1;
-	} else {
+	} else
 		scr_flags.do_edge_wrap_x = 0;
-	}
+
 	if (val2 >= 1000 && val2_unit != 100) {
 		val2 /= 1000;
 		scr_flags.do_edge_wrap_y = 1;
-	} else {
+	} else
 		scr_flags.do_edge_wrap_y = 0;
-	}
 
 	action = SkipNTokens(action, 2);
 	token = PeekToken(action, NULL);
@@ -1857,19 +1747,16 @@ CMD_EdgeScroll(F_CMD_ARGS)
 		if (StrEquals(token, "wrap")) {
 			scr_flags.do_edge_wrap_x = 1;
 			scr_flags.do_edge_wrap_y = 1;
-		} else if (StrEquals(token, "wrapx")) {
+		} else if (StrEquals(token, "wrapx"))
 			scr_flags.do_edge_wrap_x = 1;
-		} else if (StrEquals(token, "wrapy")) {
+		else if (StrEquals(token, "wrapy"))
 			scr_flags.do_edge_wrap_y = 1;
-		}
 	}
 
 	m->virtual_scr.EdgeScrollX = val1 * val1_unit / 100;
 	m->virtual_scr.EdgeScrollY = val2 * val2_unit / 100;
 
 	checkPanFrames();
-
-	return;
 }
 
 void
@@ -1918,8 +1805,6 @@ CMD_EdgeResistance(F_CMD_ARGS)
 		    "EdgeResistance requires two or three arguments");
 		return;
 	}
-
-	return;
 }
 
 void
@@ -1928,16 +1813,14 @@ CMD_Xinerama(F_CMD_ARGS)
 	int             toggle;
 
 	toggle = ParseToggleArgument(action, NULL, -1, 0);
-	if (toggle == -1) {
+	if (toggle == -1)
 		toggle = !FScreenIsEnabled();
-	}
+
 	if (!toggle != !FScreenIsEnabled()) {
 		scr_flags.do_need_window_update = True;
 		scr_flags.has_xinerama_state_changed = True;
 		broadcast_xinerama_state();
 	}
-
-	return;
 }
 
 void
@@ -1948,8 +1831,6 @@ CMD_XineramaPrimaryScreen(F_CMD_ARGS)
 		scr_flags.has_xinerama_state_changed = True;
 	}
 	broadcast_xinerama_state();
-
-	return;
 }
 
 void
@@ -1999,16 +1880,12 @@ CMD_GotoDesk(F_CMD_ARGS)
 	m = (fw != NULL) ? fw->m : monitor_get_current();
 
 	goto_desk(GetDeskNumber(m, action, m->virtual_scr.CurrentDesk), m);
-
-	return;
 }
 
 void
 CMD_Desk(F_CMD_ARGS)
 {
 	CMD_GotoDesk(F_PASS_ARGS);
-
-	return;
 }
 
 /*
@@ -2034,14 +1911,13 @@ CMD_GotoDeskAndPage(F_CMD_ARGS)
 	} else if (GetIntegerArguments(action, NULL, val, 3) == 3) {
 		val[1] *= m->coord.w;
 		val[2] *= m->coord.h;
-	} else {
+	} else
 		return;
-	}
 
 	is_new_desk = (m->virtual_scr.CurrentDesk != val[0]);
-	if (is_new_desk) {
+	if (is_new_desk)
 		UnmapDesk(m, m->virtual_scr.CurrentDesk, True);
-	}
+
 	m->virtual_scr.prev_desk_and_page_page_x = m->virtual_scr.Vx;
 	m->virtual_scr.prev_desk_and_page_page_y = m->virtual_scr.Vy;
 	MoveViewport(m, val[1], val[2], True);
@@ -2056,14 +1932,14 @@ CMD_GotoDeskAndPage(F_CMD_ARGS)
 		    (long) m->virtual_scr.CurrentDesk);
 		/*
 		 * FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
-		 * * window upon desk change.  This is a workaround for a
-		 * * problem in FvwmPager: The pager has a separate 'root'
-		 * * window for each desk.  If the active desk changes, the
-		 * * pager destroys sticky mini windows and creates new ones in
-		 * * the other desktop 'root'.  But the pager can't know where to
-		 * * stack them.  So we have to tell it ecplicitly where they
-		 * * go :-( This should be fixed in the pager, but right now the
-		 * * pager doesn't the stacking order.
+		 * window upon desk change.  This is a workaround for a
+		 * problem in FvwmPager: The pager has a separate 'root'
+		 * window for each desk.  If the active desk changes, the
+		 * pager destroys sticky mini windows and creates new ones in
+		 * the other desktop 'root'.  But the pager can't know where to
+		 * stack them.  So we have to tell it ecplicitly where they
+		 * go :-( This should be fixed in the pager, but right now the
+		 * pager doesn't the stacking order.
 		 */
 		BroadcastRestackAllWindows();
 	} else {
@@ -2071,8 +1947,6 @@ CMD_GotoDeskAndPage(F_CMD_ARGS)
 		    (long) m->virtual_scr.CurrentDesk);
 	}
 	EWMH_SetCurrentDesktop(m);
-
-	return;
 }
 
 void
@@ -2089,21 +1963,19 @@ CMD_GotoPage(F_CMD_ARGS)
 		    "GotoPage: invalid arguments: %s", action);
 		return;
 	}
-	if (x < 0) {
+	if (x < 0)
 		x = 0;
-	}
-	if (x > m->virtual_scr.VxMax) {
-		x = m->virtual_scr.VxMax;
-	}
-	if (y < 0) {
-		y = 0;
-	}
-	if (y > m->virtual_scr.VyMax) {
-		y = m->virtual_scr.VyMax;
-	}
-	MoveViewport(m, x, y, True);
 
-	return;
+	if (x > m->virtual_scr.VxMax)
+		x = m->virtual_scr.VxMax;
+
+	if (y < 0)
+		y = 0;
+
+	if (y > m->virtual_scr.VyMax)
+		y = m->virtual_scr.VyMax;
+
+	MoveViewport(m, x, y, True);
 }
 
 /* function with parsing of command line */
@@ -2114,12 +1986,10 @@ CMD_MoveToDesk(F_CMD_ARGS)
 	FvwmWindow     *const fw = exc->w.fw;
 
 	desk = GetDeskNumber(fw->m, action, fw->Desk);
-	if (desk == fw->Desk) {
+	if (desk == fw->Desk)
 		return;
-	}
-	do_move_window_to_desk(fw, desk);
 
-	return;
+	do_move_window_to_desk(fw, desk);
 }
 
 void
@@ -2133,7 +2003,7 @@ CMD_Scroll(F_CMD_ARGS)
 		&val2_unit) != 2) {
 		/*
 		 * less then two integer parameters implies interactive
-		 * * scroll check if we are scrolling in reverse direction
+		 * scroll check if we are scrolling in reverse direction
 		 */
 		char           *option;
 		int             scroll_speed = 1;
@@ -2148,16 +2018,16 @@ CMD_Scroll(F_CMD_ARGS)
 
 		return;
 	}
-	if ((val1 > -100000) && (val1 < 100000)) {
+	if ((val1 > -100000) && (val1 < 100000))
 		x = m->virtual_scr.Vx + val1 * val1_unit / 100;
-	} else {
+	else
 		x = m->virtual_scr.Vx + (val1 / 1000) * val1_unit / 100;
-	}
-	if ((val2 > -100000) && (val2 < 100000)) {
+
+	if ((val2 > -100000) && (val2 < 100000))
 		y = m->virtual_scr.Vy + val2 * val2_unit / 100;
-	} else {
+	else
 		y = m->virtual_scr.Vy + (val2 / 1000) * val2_unit / 100;
-	}
+
 	if (((val1 <= -100000) || (val1 >= 100000))
 	    && (x > m->virtual_scr.VxMax)) {
 		int             xpixels;
@@ -2175,9 +2045,8 @@ CMD_Scroll(F_CMD_ARGS)
 	if (((val1 <= -100000) || (val1 >= 100000)) && (x < 0)) {
 		x = m->virtual_scr.VxMax;
 		y -= m->coord.h;
-		if (y < 0) {
+		if (y < 0)
 			y = m->virtual_scr.VyMax;
-		}
 	}
 	if (((val2 <= -100000) || (val2 >= 100000))
 	    && (y > m->virtual_scr.VyMax)) {
@@ -2199,8 +2068,6 @@ CMD_Scroll(F_CMD_ARGS)
 		}
 	}
 	MoveViewport(m, x, y, True);
-
-	return;
 }
 
 /*
@@ -2230,18 +2097,16 @@ CMD_DesktopName(F_CMD_ARGS)
 			continue;
 
 		d = m->Desktops->next;
-		while (d != NULL && d->desk != desk) {
+		while (d != NULL && d->desk != desk)
 			d = d->next;
-		}
 
 		if (d != NULL) {
 			if (d->name != NULL) {
 				free(d->name);
 				d->name = NULL;
 			}
-			if (action != NULL && *action && *action != '\n') {
+			if (action != NULL && *action && *action != '\n')
 				CopyString(&d->name, action);
-			}
 		} else {
 			/*
 			 * new deskops entries: add it in order
@@ -2313,6 +2178,4 @@ CMD_DesktopName(F_CMD_ARGS)
 			EWMH_SetDesktopNames(m);
 		}
 	}
-
-	return;
 }

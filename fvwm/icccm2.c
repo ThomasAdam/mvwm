@@ -131,8 +131,6 @@ SetupICCCM2(Bool replace_wm)
 	 */
 	attr.event_mask = XEVMASK_NOFOCUSW;
 	XChangeWindowAttributes(dpy, Scr.NoFocusWin, CWEventMask, &attr);
-
-	return;
 }
 
 /* We must make sure that we have released SubstructureRedirect
@@ -144,8 +142,6 @@ CloseICCCM2(void)
 	DBUG("CloseICCCM2", "good luck, new wm");
 	XSelectInput(dpy, Scr.Root, NoEventMask);
 	XFlush(dpy);
-
-	return;
 }
 
 /* FIXME: property change actually succeeded */
@@ -166,9 +162,9 @@ convertProperty(Window w, Atom target, Atom property)
 	} else if (target == _XA_VERSION) {
 		XChangeProperty(dpy, w, property, XA_INTEGER, 32,
 		    PropModeReplace, (unsigned char *) icccm_version, 2);
-	} else {
+	} else
 		return False;
-	}
+
 	/*
 	 * FIXME: This is ugly. We should rather select for
 	 * PropertyNotify on the window, return to the main loop,
@@ -223,17 +219,14 @@ icccm2_handle_selection_request(const XEvent *e)
 			XFree(data);
 		}
 	} else {
-		if (ev.property == None) {
+		if (ev.property == None)
 			ev.property = ev.target;
-		}
-		if (convertProperty(ev.requestor, ev.target, ev.property)) {
+
+		if (convertProperty(ev.requestor, ev.target, ev.property))
 			reply.property = ev.property;
-		}
 	}
 	FSendEvent(dpy, ev.requestor, False, 0L, (XEvent *) &reply);
 	XFlush(dpy);
-
-	return;
 }
 
 /* If another wm is requesting ownership of the selection,
@@ -245,6 +238,4 @@ icccm2_handle_selection_clear(void)
 {
 	DBUG("HandleSelectionClear", "I lost my selection!");
 	Done(0, NULL);
-
-	return;
 }

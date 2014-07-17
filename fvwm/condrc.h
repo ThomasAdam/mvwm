@@ -31,6 +31,6 @@ typedef struct
 
 /* ---------------------------- interface functions ------------------------ */
 
-void            condrc_init(cond_rc_t *cond_rc);
+void            condrc_init(cond_rc_t *);
 
 #endif /* CONDRC_H */

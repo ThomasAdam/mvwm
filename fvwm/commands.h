@@ -367,10 +367,6 @@ P(State);
 P(Stick);
 P(StickAcrossDesks);
 P(StickAcrossPages);
-#ifdef HAVE_STROKE
-P(Stroke);
-P(StrokeFunc);
-#endif /* HAVE_STROKE */
 P(Style);
 P(TearMenuOff);
 P(Test);
