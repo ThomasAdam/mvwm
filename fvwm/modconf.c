@@ -84,10 +84,10 @@ static void     SendConfigToModule(fmodule *module,
 void
 ModuleConfig(char *action)
 {
-	int			 end;
-	fmodule_list_itr	 moditr;
-	fmodule			*module;
-	struct moduleInfoList	*new_entry;
+	int             end;
+	fmodule_list_itr moditr;
+	fmodule        *module;
+	struct moduleInfoList *new_entry;
 
 	end = strlen(action) - 1;
 	if (action[end] == '\n')
@@ -106,13 +106,15 @@ ModuleConfig(char *action)
 			 * module wants config cmds
 			 */
 			char           *name = MOD_NAME(module);
-			if (MOD_ALIAS(module))
+			if (MOD_ALIAS(module)) {
 				name = MOD_ALIAS(module);
-
+			}
 			SendConfigToModule(module, new_entry, CatString2("*",
 				name), 0);
 		}
 	}
+
+	return;
 }
 
 static struct moduleInfoList *

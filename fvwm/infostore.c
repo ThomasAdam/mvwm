@@ -70,7 +70,7 @@ insert_metainfo(char *key, char *value)
 		if (StrEquals(mi->key, key)) {
 			/*
 			 * We already have an entry in the list with that key, so
-			 * update the value of it only.
+			 * * update the value of it only.
 			 */
 			free(mi->value);
 			CopyString(&mi->value, value);
@@ -88,6 +88,8 @@ insert_metainfo(char *key, char *value)
 
 	mi_new->next = mi_store;
 	mi_store = mi_new;
+
+	return;
 }
 
 static void
@@ -111,9 +113,11 @@ delete_metainfo(const char *key)
 			break;
 		}
 	}
+
+	return;
 }
 
-inline char *
+inline char    *
 get_metainfo_value(const char *key)
 {
 	MetaInfo       *mi_current;
@@ -153,8 +157,12 @@ print_infostore(void)
 		return;
 	}
 
-	for (mi = mi_store; mi; mi = mi->next)
+	for (mi = mi_store; mi; mi = mi->next) {
 		fprintf(stderr, "%s\t%s\n", mi->key, mi->value);
+	}
+
+	return;
+
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -184,6 +192,8 @@ CMD_InfoStoreAdd(F_CMD_ARGS)
 
 	insert_metainfo(key, value);
 	free(value);
+
+	return;
 }
 
 void
@@ -200,4 +210,6 @@ CMD_InfoStoreRemove(F_CMD_ARGS)
 	}
 
 	delete_metainfo(token);
+
+	return;
 }

@@ -78,13 +78,16 @@ typedef struct
 
 /* ---------------------------- interface functions ------------------------ */
 
-void            find_func_t(char *, short *, FUNC_FLAGS_TYPE *);
-Bool            functions_is_complex_function(const char *);
-void            execute_function(cond_rc_t *, const exec_context_t *, char *,
-    FUNC_FLAGS_TYPE);
-void            execute_function_override_wcontext(cond_rc_t *,
-    const exec_context_t *, char *, FUNC_FLAGS_TYPE, int);
-void            execute_function_override_window(cond_rc_t *,
-    const exec_context_t *, char *, FUNC_FLAGS_TYPE, FvwmWindow *);
+void            find_func_t(char *action, short *func_t,
+    FUNC_FLAGS_TYPE * flags);
+Bool            functions_is_complex_function(const char *function_name);
+void            execute_function(cond_rc_t *cond_rc,
+    const exec_context_t *exc, char *action, FUNC_FLAGS_TYPE exec_flags);
+void            execute_function_override_wcontext(cond_rc_t *cond_rc,
+    const exec_context_t *exc, char *action, FUNC_FLAGS_TYPE exec_flags,
+    int wcontext);
+void            execute_function_override_window(cond_rc_t *cond_rc,
+    const exec_context_t *exc, char *action, FUNC_FLAGS_TYPE exec_flags,
+    FvwmWindow *fw);
 
 #endif /* FUNCTIONS_H */

@@ -81,17 +81,17 @@ CMD_WindowShade(F_CMD_ARGS)
 	Bool            has_dir;
 	FvwmWindow     *const fw = exc->w.fw;
 
-	if (IS_ICONIFIED(fw) || IS_EWMH_FULLSCREEN(fw))
+	if (IS_ICONIFIED(fw) || IS_EWMH_FULLSCREEN(fw)) {
 		return;
-
+	}
 	token = PeekToken(action, &naction);
 	if (StrEquals("shadeagain", token)) {
 		do_force_shading = True;
 		action = naction;
 		token = PeekToken(action, &naction);
-	} else
+	} else {
 		do_force_shading = False;
-
+	}
 	/*
 	 * parse arguments
 	 */
@@ -104,10 +104,11 @@ CMD_WindowShade(F_CMD_ARGS)
 		 * * setup_window_structure)
 		 */
 		action = naction;
-		if (!USED_TITLE_DIR_FOR_SHADING(fw))
+		if (!USED_TITLE_DIR_FOR_SHADING(fw)) {
 			shade_dir = SHADED_DIR(fw);
-		else
+		} else {
 			shade_dir = DIR_NONE;
+		}
 	} else {
 		/*
 		 * parse normal direction if last was not given
@@ -123,22 +124,24 @@ CMD_WindowShade(F_CMD_ARGS)
 		toggle = ParseToggleArgument(action, NULL, -1, 0);
 		if (toggle == -1 &&
 		    GetIntegerArguments(action, NULL, &toggle, 1) > 0) {
-			if (toggle == 1)
+			if (toggle == 1) {
 				toggle = 1;
-			else if (toggle == 2)
+			} else if (toggle == 2) {
 				toggle = 0;
-			else
+			} else {
 				toggle = -1;
+			}
 		}
-		if (toggle == -1)
+		if (toggle == -1) {
 			toggle = !(IS_SHADED(fw));
-
-		if (!IS_SHADED(fw) && toggle == 1)
+		}
+		if (!IS_SHADED(fw) && toggle == 1) {
 			shade_dir = GET_TITLE_DIR(fw);
-		else if (IS_SHADED(fw) && toggle == 0)
+		} else if (IS_SHADED(fw) && toggle == 0) {
 			shade_dir = SHADED_DIR(fw);
-		else
+		} else {
 			shade_dir = -1;
+		}
 	}
 	if (!IS_SHADED(fw) && toggle == 0) {
 		/*
@@ -152,23 +155,24 @@ CMD_WindowShade(F_CMD_ARGS)
 			 * nothing to do
 			 */
 			return;
-		} else if (do_force_shading == False)
+		} else if (do_force_shading == False) {
 			toggle = 0;
-		else if (shade_dir == SHADED_DIR(fw))
+		} else if (shade_dir == SHADED_DIR(fw)) {
 			return;
+		}
 	}
 
-	if (toggle == 1)
+	if (toggle == 1) {
 		SET_USED_TITLE_DIR_FOR_SHADING(fw, !has_dir);
-
+	}
 	/*
 	 * draw the animation
 	 */
 	start_g = fw->g.frame;
 	get_unshaded_geometry(fw, &end_g);
-	if (toggle == 1)
+	if (toggle == 1) {
 		get_shaded_geometry_with_dir(fw, &end_g, &end_g, shade_dir);
-
+	}
 	resize_mode = (DO_SHRINK_WINDOWSHADE(fw)) ?
 	    FRAME_MR_SHRINK : FRAME_MR_SCROLL;
 	mr_args =
@@ -180,9 +184,9 @@ CMD_WindowShade(F_CMD_ARGS)
 	 * * animation.
 	 */
 	SET_SHADED(fw, toggle);
-	if (toggle == 1)
+	if (toggle == 1) {
 		SET_SHADED_DIR(fw, shade_dir);
-
+	}
 	frame_free_move_resize_args(fw, mr_args);
 	border_draw_decorations(fw, PART_TITLEBAR,
 	    (fw == get_focus_window())? True : False, 0, CLEAR_BUTTONS, NULL,
@@ -197,6 +201,8 @@ CMD_WindowShade(F_CMD_ARGS)
 	FlushAllMessageQueues();
 	XFlush(dpy);
 	EWMH_SetWMState(fw, False);
+
+	return;
 }
 
 /* set the number or size of shade animation steps, N => steps, Np => pixels */
@@ -205,9 +211,9 @@ CMD_WindowShadeAnimate(F_CMD_ARGS)
 {
 	char           *buf;
 
-	if (!action)
+	if (!action) {
 		action = "";
-
+	}
 	fvwm_msg(ERR, "CMD_WindowShadeAnimate",
 	    "The WindowShadeAnimate command is obsolete. "
 	    "Please use 'Style * WindowShadeSteps %s' instead.", action);
@@ -219,4 +225,6 @@ CMD_WindowShadeAnimate(F_CMD_ARGS)
 	action = buf;
 	CMD_Style(F_PASS_ARGS);
 	free(buf);
+
+	return;
 }

@@ -216,12 +216,12 @@ __eae_parse_range(char *input, int *lower, int *upper)
 
 	*lower = 0;
 	*upper = INT_MAX;
-	if (*input == '*')
+	if (*input == '*') {
 		return 0;
-
-	if (!isdigit(*input))
+	}
+	if (!isdigit(*input)) {
 		return -1;
-
+	}
 	rc = sscanf(input, "%d-%d%n", lower, upper, &n);
 	if (rc < 2) {
 		rc = sscanf(input, "%d%n", lower, &n);
@@ -361,18 +361,18 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 			 */
 			return -1;
 		}
-		if (sscanf(rest, "%d%n", &cs, &n) < 1)
+		if (sscanf(rest, "%d%n", &cs, &n) < 1) {
 			return -1;
-
+		}
 		if (*(rest + n) != 0) {
 			/*
 			 * trailing characters
 			 */
 			return -1;
 		}
-		if (cs < 0)
+		if (cs < 0) {
 			return -1;
-
+		}
 		alloc_colorset(cs);
 		switch (i) {
 		case VAR_FG_CS:
@@ -395,9 +395,9 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 		len = pixel_to_color_string(dpy, Pcmap, pixel, target, False);
 		goto GOT_STRING;
 	case VAR_GT_:
-		if (rest == NULL)
+		if (rest == NULL) {
 			return -1;
-
+		}
 		string = _(rest);
 		goto GOT_STRING;
 	case VAR_INFOSTORE_:
@@ -540,9 +540,9 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 	case VAR_W_Y:
 	case VAR_W_WIDTH:
 	case VAR_W_HEIGHT:
-		if (!fw || IS_ICONIFIED(fw) || IS_EWMH_DESKTOP(FW_W(fw)))
+		if (!fw || IS_ICONIFIED(fw) || IS_EWMH_DESKTOP(FW_W(fw))) {
 			return -1;
-		else {
+		} else {
 			rectangle       g;
 
 			is_numeric = True;
@@ -829,29 +829,30 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 		is_target = True;
 		sprintf(target, "%d", val);
 	}
-	if (is_target)
+	if (is_target) {
 		string = target;
-	else {
-		if (!string)
+	} else {
+		if (!string) {
 			return -1;
-
-		if (output)
+		}
+		if (output) {
 			strcpy(output, string);
+		}
 	}
-	if (len < 0)
+	if (len < 0) {
 		len = strlen(string);
-
+	}
 	if (should_quote) {
 		quoted_string = xmalloc(len * 2 + 3);
 		len = QuoteString(quoted_string, string) - quoted_string;
-		if (output)
+		if (output) {
 			strcpy(output, quoted_string);
-
+		}
 		free(quoted_string);
 	}
-	if (allocated_string)
+	if (allocated_string) {
 		free(allocated_string);
-
+	}
 	return len;
 }
 
@@ -874,8 +875,9 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 	l = strlen(input);
 	l2 = l;
 
-	if (input[0] == '+' && Scr.last_added_item.type == ADDED_FUNCTION)
+	if (input[0] == '+' && Scr.last_added_item.type == ADDED_FUNCTION) {
 		addto = 1;
+	}
 
 	/*
 	 * Calculate best guess at length of expanded string
@@ -961,11 +963,11 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 			case '8':
 			case '9':
 			case '*':
-				if (input[i + 1] == '*')
+				if (input[i + 1] == '*') {
 					n = 0;
-				else
+				} else {
 					n = input[i + 1] - '0' + 1;
-
+				}
 				if (arguments[n] != NULL) {
 					l2 += strlen(arguments[n]) - 2;
 					i++;
@@ -1071,13 +1073,13 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 					/*
 					 * handle nested variables
 					 */
-					if (input[m] == ']')
+					if (input[m] == ']') {
 						xlevel--;
-					else if (input[m] == '[')
+					} else if (input[m] == '[') {
 						xlevel++;
-					else if (input[m] == '$')
+					} else if (input[m] == '$') {
 						name_has_dollar = True;
-
+					}
 					if (xlevel) {
 						m++;
 					}
@@ -1103,9 +1105,9 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 						    expand_vars_extended(var,
 						    &out[j], cond_rc, exc);
 					}
-					if (name_has_dollar)
+					if (name_has_dollar) {
 						free(var);
-
+					}
 					input[m] = ']';
 					if (xlen >= 0) {
 						j += xlen;
@@ -1120,9 +1122,9 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 						}
 						i--;
 					}
-				} else
+				} else {
 					out[j++] = input[i];
-
+				}
 				break;
 			case '0':
 			case '1':
@@ -1135,21 +1137,21 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 			case '8':
 			case '9':
 			case '*':
-				if (input[i + 1] == '*')
+				if (input[i + 1] == '*') {
 					n = 0;
-				else
+				} else {
 					n = input[i + 1] - '0' + 1;
-
+				}
 				if (arguments[n] != NULL) {
 					for (k = 0; arguments[n][k]; k++) {
 						out[j++] = arguments[n][k];
 					}
 					i++;
-				} else if (addto == 1)
+				} else if (addto == 1) {
 					out[j++] = '$';
-				else
+				} else {
 					i++;
-
+				}
 				break;
 			case '.':
 				string = get_current_read_dir();
@@ -1257,9 +1259,9 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 				is_string = False;
 			}
 		} /* if '$' */
-		else
+		else {
 			out[j++] = input[i];
-
+		}
 		i++;
 	}
 	out[j] = 0;

@@ -91,11 +91,12 @@ get_selectable_item_index(MenuRoot *mr, MenuItem *mi_target,
 			is_last_selectable = 0;
 		}
 	}
-	if (ret_sections)
+	if (ret_sections) {
 		*ret_sections = s;
-
-	if (mi == mi_target)
+	}
+	if (mi == mi_target) {
 		return i;
+	}
 
 	return -1;
 }
@@ -149,8 +150,9 @@ get_selectable_item_count(MenuRoot *mr, int *ret_sections)
 	int             count;
 
 	count = get_selectable_item_index(mr, MR_LAST_ITEM(mr), ret_sections);
-	if (MR_LAST_ITEM(mr) && MI_IS_SELECTABLE(MR_LAST_ITEM(mr)))
+	if (MR_LAST_ITEM(mr) && MI_IS_SELECTABLE(MR_LAST_ITEM(mr))) {
 		count++;
+	}
 
 	return count;
 }
@@ -169,7 +171,8 @@ __menu_binding_is_mouse(Binding *blist, XEvent *event, int context)
 		    (b->Modifier == AnyModifier ||
 			MaskUsedModifiers(b->Modifier) ==
 			MaskUsedModifiers(real_mod)) &&
-		    (b->Context == C_MENU || (b->Context & context) != C_MENU)) {
+		    (b->Context == C_MENU ||
+			(b->Context & context) != C_MENU)) {
 			break;
 		}
 	}
@@ -237,13 +240,15 @@ parse_menu_action(struct MenuRoot *mr, const char *action,
 				*items_to_move = count[1];
 			}
 
-			if (suffix[1] == 1)
+			if (suffix[1] == 1) {
 				*do_skip_section = 1;
+			}
 		} else if (num == 1) {
 			*saction = SA_MOVE_ITEMS;
 			*items_to_move = count[0];
-			if (suffix[0] == 1)
+			if (suffix[0] == 1) {
 				*do_skip_section = 1;
+			}
 		} else {
 			fvwm_msg(ERR, "parse_menu_action",
 			    "invalid MenuMoveCursor arguments '%s'", options);
@@ -294,6 +299,8 @@ parse_menu_action(struct MenuRoot *mr, const char *action,
 		    action);
 		*saction = SA_NONE;
 	}
+
+	return;
 }
 
 static Binding *
@@ -322,6 +329,8 @@ void
 menu_bindings_startup_complete(void)
 {
 	menu_bindings = &menu_bindings_regular;
+
+	return;
 }
 
 Binding        *
@@ -387,9 +396,9 @@ menu_binding(Display *dpy, binding_t type, int button, KeySym keysym,
 	 */
 	CollectBindingList(dpy, menu_bindings, &rmlist, &dummy, type,
 	    button, keysym, modifier, context, menu_style);
-	if (rmlist != NULL)
+	if (rmlist != NULL) {
 		FreeBindingList(rmlist);
-	else if (keysym == 0 && button != 0 && modifier == 0 &&
+	} else if (keysym == 0 && button != 0 && modifier == 0 &&
 	    strcmp(action, "-") == 0 && context == C_MENU) {
 		/*
 		 * Warn if Mouse n M N - occurs without removing any binding.
@@ -399,9 +408,9 @@ menu_binding(Display *dpy, binding_t type, int button, KeySym keysym,
 		    "The syntax for disabling the tear off button has "
 		    "changed.");
 	}
-	if (strcmp(action, "-") == 0)
+	if (strcmp(action, "-") == 0) {
 		return 0;
-
+	}
 	/*
 	 * END remove
 	 */
@@ -585,8 +594,8 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 
 		/*
 		 * Is it okay to treat keysym-s as Ascii?
-		 * No, because the keypad numbers don't work.
-		 * Use XlookupString
+		 * * No, because the keypad numbers don't work.
+		 * * Use XlookupString
 		 */
 		index = XLookupString(&(event->xkey), &ckeychar, 1, &keysym,
 		    NULL);
@@ -601,7 +610,7 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 	    with_control == 0 && with_meta == 0) {
 		/*
 		 * allow any printable character to be a keysym, but be sure
-		 * control isn't pressed
+		 * * control isn't pressed
 		 */
 		MenuItem       *mi;
 		MenuItem       *mi1;
@@ -617,9 +626,9 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 
 		/*
 		 * MMH mikehan@best.com 2/7/99
-		 * Multiple hotkeys per menu
-		 * Search menu for matching hotkey;
-		 * remember how many we found and where we found it
+		 * * Multiple hotkeys per menu
+		 * * Search menu for matching hotkey;
+		 * * remember how many we found and where we found it
 		 */
 		mi = (mi_current == NULL || mi_current == MR_LAST_ITEM(mr)) ?
 		    MR_FIRST_ITEM(mr) : MI_NEXT_ITEM(mi_current);
@@ -649,11 +658,11 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 		 */
 		/*
 		 * TA:  2011-07-24:  But if the user has turned off
-		 * "UniqueHotkeyActivatedImmediate", keep the menu open until
-		 * the user has asked for that entry to be enacted.  This also
-		 * implies the style "TitleWarpOff" and we're not over a popup
-		 * item, in which case the pointer is warped to the submenu in
-		 * the usual way.
+		 * * "UniqueHotkeyActivatedImmediate", keep the menu open until
+		 * * the user has asked for that entry to be enacted.  This also
+		 * * implies the style "TitleWarpOff" and we're not over a popup
+		 * * item, in which case the pointer is warped to the submenu in
+		 * * the usual way.
 		 */
 		if ((countHotkey > 1) || (countHotkey >= 1 && (
 			    (!MST_DO_WARP_TO_TITLE(mr) ||
@@ -865,9 +874,9 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 		    (MR_IS_TEAR_OFF_MENU(mr)) ? MENU_NOP : MENU_TEAR_OFF;
 		return;
 	case SA_SCROLL:
-		if (MST_MOUSE_WHEEL(mr) == MMW_MENU)
+		if (MST_MOUSE_WHEEL(mr) == MMW_MENU) {
 			items_to_move *= -1;
-
+		}
 		if (!menu_get_outer_geometry(mr, pmp, &JunkRoot, &menu_x,
 			&menu_y, &JunkWidth, &menu_height, &JunkBW,
 			&JunkDepth)) {
@@ -1002,4 +1011,6 @@ menu_shortcuts(struct MenuRoot *mr, struct MenuParameters *pmp,
 			*ret_menu_y = menu_y;
 		}
 	}
+
+	return;
 }

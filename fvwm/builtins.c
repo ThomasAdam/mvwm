@@ -139,8 +139,8 @@ static void
 obsolete_imagepaths(const char *pre_path)
 {
 	char           *tmp = stripcpy(pre_path);
-	char           *path = alloca(strlen(tmp) +
-	    strlen(PictureGetImagePath()) + 2);
+	char           *path =
+	    alloca(strlen(tmp) + strlen(PictureGetImagePath()) + 2);
 
 	strcpy(path, tmp);
 	free(tmp);
@@ -149,6 +149,8 @@ obsolete_imagepaths(const char *pre_path)
 	strcat(path, PictureGetImagePath());
 
 	PictureSetImagePath(path);
+
+	return;
 }
 
 /*
@@ -174,8 +176,9 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 
 	s = SkipSpaces(s, NULL, 0);
 	t = GetNextTokenIndex(s, button_states, 0, &bs);
-	if (bs != BS_All)
+	if (bs != BS_All) {
 		s = SkipSpaces(t, NULL, 0);
+	}
 
 	if (bs == BS_All) {
 		use_mask = 0;
@@ -254,8 +257,9 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 		spec = xmalloc(len);
 		strncpy(spec, s, len - 1);
 		spec[len - 1] = 0;
-	} else
+	} else {
 		spec = s;
+	}
 
 	spec = SkipSpaces(spec, NULL, 0);
 	/*
@@ -270,10 +274,11 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 		 */
 		Bool            verbose = True;
 		for (i = bs_start; i <= bs_end; ++i) {
-			if (multiple && (i & use_mask) != set_mask)
+			if (multiple && (i & use_mask) != set_mask) {
 				continue;
-
-			ReadDecorFace(spec, &TB_STATE(*tb)[i], button, verbose);
+			}
+			ReadDecorFace(spec, &TB_STATE(*tb)[i], button,
+			    verbose);
 			verbose = False;
 		}
 	} else if (ReadDecorFace(spec, &tmpdf, button, True)) {
@@ -282,9 +287,9 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 			DecorFace      *tail = head;
 			DecorFace      *next;
 
-			while (tail->next)
+			while (tail->next) {
 				tail = tail->next;
-
+			}
 			tail->next = xmalloc(sizeof(DecorFace));
 			memcpy(tail->next, &tmpdf, sizeof(DecorFace));
 			if (DFS_FACE_TYPE(tail->next->style) == VectorButton
@@ -304,14 +309,14 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 				free(next);
 			}
 			for (i = bs_start + 1; i <= bs_end; ++i) {
-				if (multiple && (i & use_mask) != set_mask)
+				if (multiple && (i & use_mask) != set_mask) {
 					continue;
-
+				}
 				head = &TB_STATE(*tb)[i];
 				tail = head;
-				while (tail->next)
+				while (tail->next) {
 					tail = tail->next;
-
+				}
 				tail->next = xcalloc(1, sizeof(DecorFace));
 				DFS_FACE_TYPE(tail->next->style) =
 				    SimpleButton;
@@ -342,9 +347,9 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 			memcpy(&(TB_STATE(*tb)[bs_start]), &tmpdf,
 			    sizeof(DecorFace));
 			for (i = bs_start + 1; i <= bs_end; ++i) {
-				if (multiple && (i & use_mask) != set_mask)
+				if (multiple && (i & use_mask) != set_mask) {
 					continue;
-
+				}
 				ReadDecorFace(spec, &TB_STATE(*tb)[i], button,
 				    False);
 			}
@@ -363,9 +368,9 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 static void
 __remove_window_decors(F_CMD_ARGS, FvwmDecor * d)
 {
-	const exec_context_t	*exc2;
-	exec_context_changes_t	 ecc;
-	FvwmWindow		*t;
+	const exec_context_t *exc2;
+	exec_context_changes_t ecc;
+	FvwmWindow     *t;
 
 	for (t = Scr.FvwmRoot.next; t; t = t->next) {
 		if (t->decor == d) {
@@ -385,6 +390,8 @@ __remove_window_decors(F_CMD_ARGS, FvwmDecor * d)
 			exc_destroy_context(exc2);
 		}
 	}
+
+	return;
 }
 
 static void
@@ -401,13 +408,13 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 
 	for (prev = action; (parm = PeekToken(action, &action));
 	    prev = action) {
-		if (!do_add && StrEquals(parm, "centered"))
+		if (!do_add && StrEquals(parm, "centered")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_CENTER;
-		else if (!do_add && StrEquals(parm, "leftjustified"))
+		} else if (!do_add && StrEquals(parm, "leftjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_LEFT;
-		else if (!do_add && StrEquals(parm, "rightjustified"))
+		} else if (!do_add && StrEquals(parm, "rightjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_RIGHT;
-		else if (!do_add && StrEquals(parm, "height")) {
+		} else if (!do_add && StrEquals(parm, "height")) {
 			int             height = 0;
 			int             next = 0;
 
@@ -450,10 +457,14 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 			}
 			if (action)
 				action += next;
-		} else
-			action = ReadTitleButton(prev, &decor->titlebar, do_add,
+		} else {
+			action =
+			    ReadTitleButton(prev, &decor->titlebar, do_add,
 			    -1);
+		}
 	}
+
+	return;
 }
 
 /*
@@ -478,15 +489,14 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 		"Buttons",
 		NULL
 	};
-
-	FvwmPicture		**pm;
-	FvwmAcs			*acs;
-	Pixel			*pixels;
-	char			*token;
-	Bool			 stretched;
-	Bool			 load_pixmap = False;
-	int			 pm_id, i = 0;
-	FvwmPictureAttributes	 fpa;
+	FvwmPicture   **pm;
+	FvwmAcs        *acs;
+	Pixel          *pixels;
+	char           *token;
+	Bool            stretched;
+	Bool            load_pixmap = False;
+	int             pm_id, i = 0;
+	FvwmPictureAttributes fpa;
 
 	df->style.face_type = MultiPixmap;
 	df->u.mp.pixmaps = pm =
@@ -508,18 +518,18 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 		} else if (StrEquals(token, "tiled")) {
 			s = DoPeekToken(s, &token, ",", NULL, NULL);
 		}
-		if (!token)
+		if (!token) {
 			break;
-
+		}
 		if (pm[pm_id] || acs[pm_id].cs >= 0 ||
 		    (df->u.mp.solid_flags & (1 << pm_id))) {
 			fvwm_msg(WARN, "ReadMultiPixmapDecor",
 			    "Ignoring: already-specified %s", pm_names[i]);
 			continue;
 		}
-		if (stretched)
+		if (stretched) {
 			df->u.mp.stretch_flags |= (1 << pm_id);
-
+		}
 		if (strncasecmp(token, "Colorset", 8) == 0) {
 			int             val;
 			char           *tmp;
@@ -554,9 +564,9 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 				df->u.mp.pixels[pm_id] = GetColor(token);
 				df->u.mp.solid_flags |= (1 << pm_id);
 			}
-		} else
+		} else {
 			load_pixmap = True;
-
+		}
 		if (load_pixmap && token) {
 			fpa.mask = (Pdepth <= 8) ? FPAM_DITHER : 0;	/* ? */
 			pm[pm_id] =
@@ -674,6 +684,8 @@ DestroyFvwmDecor(FvwmDecor * decor)
 		free(decor->tag);
 		decor->tag = NULL;
 	}
+
+	return;
 }
 
 static void
@@ -685,25 +697,29 @@ SetLayerButtonFlag(int layer, int multi, int set, FvwmDecor * decor,
 	int             add = 2;
 
 	if (multi) {
-		if (multi == 2)
+		if (multi == 2) {
 			start = 1;
-		else if (multi == 3)
+		} else if (multi == 3) {
 			add = 1;
-
+		}
 		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add) {
 			if (set) {
 				TB_FLAGS(decor->buttons[i]).has_layer = 1;
 				TB_LAYER(decor->buttons[i]) = layer;
-			} else
+			} else {
 				TB_FLAGS(decor->buttons[i]).has_layer = 0;
+			}
 		}
 	} else {
 		if (set) {
 			TB_FLAGS(*tb).has_layer = 1;
 			TB_LAYER(*tb) = layer;
-		} else
+		} else {
 			TB_FLAGS(*tb).has_layer = 0;
+		}
 	}
+
+	return;
 }
 
 /*
@@ -720,24 +736,28 @@ SetMWMButtonFlag(mwm_flags flag, int multi, int set, FvwmDecor * decor,
 	int             add = 2;
 
 	if (multi) {
-		if (multi == 2)
+		if (multi == 2) {
 			start = 1;
-		else if (multi == 3)
+		} else if (multi == 3) {
 			add = 1;
-
+		}
 		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add) {
-			if (set)
+			if (set) {
 				TB_MWM_DECOR_FLAGS(decor->buttons[i]) |= flag;
-			else
+			} else {
 				TB_MWM_DECOR_FLAGS(decor->buttons[i]) &=
 				    ~flag;
+			}
 		}
 	} else {
-		if (set)
+		if (set) {
 			TB_MWM_DECOR_FLAGS(*tb) |= flag;
-		else
+		} else {
 			TB_MWM_DECOR_FLAGS(*tb) &= ~flag;
+		}
 	}
+
+	return;
 }
 
 static void
@@ -770,20 +790,20 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 
 	do_return = 0;
 	if (!isdigit(*parm)) {
-		if (StrEquals(parm, "left"))
+		if (StrEquals(parm, "left")) {
 			multi = 1;	/* affect all left buttons */
-		else if (StrEquals(parm, "right"))
+		} else if (StrEquals(parm, "right")) {
 			multi = 2;	/* affect all right buttons */
-		else if (StrEquals(parm, "all"))
+		} else if (StrEquals(parm, "all")) {
 			multi = 3;	/* affect all buttons */
-		else {
+		} else {
 			/*
 			 * we're either resetting buttons or an invalid button
 			 * * set was specified
 			 */
-			if (StrEquals(parm, "reset"))
+			if (StrEquals(parm, "reset")) {
 				ResetAllButtons(decor);
-			else {
+			} else {
 				fvwm_msg(ERR, "ButtonStyle",
 				    "Bad button style (2) in line %s",
 				    action);
@@ -810,9 +830,9 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 			}
 		}
 	}
-	if (do_return == 1)
+	if (do_return == 1) {
 		return;
-
+	}
 	for (prev = text; (parm = PeekToken(text, &text)); prev = text) {
 		if (!do_add && strcmp(parm, "-") == 0) {
 			char           *tok;
@@ -900,9 +920,9 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 						    (sscanf(ltok, "%d",
 							&layer) == 1);
 						free(ltok);
-					} else
+					} else {
 						got_number = 0;
-
+					}
 					if (!ltok || !got_number) {
 						fvwm_msg(ERR, "ButtonStyle",
 						    "could not read"
@@ -919,11 +939,11 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 					    "unknown title button flag"
 					    " %s -- line: %s", tok, text);
 				}
-				if (set)
+				if (set) {
 					free(tok);
-				else
+				} else {
 					free(old_tok);
-
+				}
 				text = GetNextToken(text, &tok);
 			}
 			break;
@@ -943,6 +963,8 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 			}
 		}
 	}
+
+	return;
 }
 
 static int
@@ -1005,9 +1027,9 @@ update_decors_colorset(int cset)
 		decor->flags.has_changed |=
 		    update_decorface_colorset(&(decor->BorderStyle.inactive),
 		    cset);
-		if (decor->flags.has_changed)
+		if (decor->flags.has_changed) {
 			scr_flags.do_need_window_update = 1;
-
+		}
 	}
 }
 
@@ -1029,18 +1051,18 @@ __parse_vector_line_one_coord(char **ret_action, int *pcoord, int *poff,
 	 */
 	if (*action == '+' || *action == '-') {
 		n = sscanf(action, "%dp%n", poff, &offset);
-		if (n < 1)
+		if (n < 1) {
 			return False;
-
-		if (*poff < -128)
+		}
+		if (*poff < -128) {
 			*poff = -128;
-		else if (*poff > 127)
+		} else if (*poff > 127) {
 			*poff = 127;
-
+		}
 		action += offset;
-	} else
+	} else {
 		*poff = 0;
-
+	}
 	*ret_action = action;
 
 	return True;
@@ -1055,27 +1077,29 @@ __parse_vector_line(char **ret_action, int *px, int *py, int *pxoff,
 	int             n;
 
 	*ret_action = action;
-	if (__parse_vector_line_one_coord(&action, px, pxoff, action) == False)
+	if (__parse_vector_line_one_coord(&action, px, pxoff,
+		action) == False) {
 		return False;
-
-	if (*action != 'x')
+	}
+	if (*action != 'x') {
 		return False;
-
+	}
 	action++;
-	if (__parse_vector_line_one_coord(&action, py, pyoff, action) == False)
+	if (__parse_vector_line_one_coord(&action, py, pyoff,
+		action) == False) {
 		return False;
-
-	if (*action != '@')
+	}
+	if (*action != '@') {
 		return False;
-
+	}
 	action++;
 	/*
 	 * read the line style
 	 */
 	n = sscanf(action, "%d%n", pc, &offset);
-	if (n < 1)
+	if (n < 1) {
 		return False;
-
+	}
 	action += offset;
 	*ret_action = action;
 
@@ -1135,41 +1159,44 @@ ApplyDefaultFontAndColors(void)
 		gcv.foreground = Scr.StdFore;
 		gcv.background = Scr.StdBack;
 	}
-	if (Scr.StdGC)
+	if (Scr.StdGC) {
 		XChangeGC(dpy, Scr.StdGC, gcm, &gcv);
-	else
+	} else {
 		Scr.StdGC = fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
+	}
 
 	gcm = GCFunction | GCLineWidth | GCForeground;
-	if (cset >= 0)
+	if (cset >= 0) {
 		gcv.foreground = Colorset[cset].hilite;
-	else
+	} else {
 		gcv.foreground = Scr.StdHilite;
-
-	if (Scr.StdReliefGC)
+	}
+	if (Scr.StdReliefGC) {
 		XChangeGC(dpy, Scr.StdReliefGC, gcm, &gcv);
-	else
+	} else {
 		Scr.StdReliefGC =
 		    fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
-
-	if (cset >= 0)
+	}
+	if (cset >= 0) {
 		gcv.foreground = Colorset[cset].shadow;
-	else
+	} else {
 		gcv.foreground = Scr.StdShadow;
-
-	if (Scr.StdShadowGC)
+	}
+	if (Scr.StdShadowGC) {
 		XChangeGC(dpy, Scr.StdShadowGC, gcm, &gcv);
-	else {
+	} else {
 		Scr.StdShadowGC =
 		    fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
 	}
 	/*
 	 * update the geometry window for move/resize
 	 */
-	if (Scr.SizeWindow != None)
+	if (Scr.SizeWindow != None) {
 		resize_geometry_window();
-
+	}
 	UpdateAllMenuStyles();
+
+	return;
 }
 
 void
@@ -1189,14 +1216,16 @@ FreeDecorFace(Display *dpy, DecorFace *df)
 			int             i;
 
 			p = xmalloc(df->u.grad.npixels * sizeof(Pixel));
-			for (i = 0; i < df->u.grad.npixels; i++)
+			for (i = 0; i < df->u.grad.npixels; i++) {
 				p[i] = df->u.grad.xcs[i].pixel;
-		
+			}
 			PictureFreeColors(dpy, Pcmap, p, df->u.grad.npixels,
 			    0, False);
 			free(p);
 		}
-		free(df->u.grad.xcs);
+		if (df->u.grad.xcs != NULL) {
+			free(df->u.grad.xcs);
+		}
 		break;
 
 	case PixmapButton:
@@ -1204,8 +1233,9 @@ FreeDecorFace(Display *dpy, DecorFace *df)
 	case StretchedPixmapButton:
 	case AdjustedPixmapButton:
 	case ShrunkPixmapButton:
-		if (df->u.p)
+		if (df->u.p) {
 			PDestroyFvwmPicture(dpy, df->u.p);
+		}
 		break;
 
 	case MultiPixmap:
@@ -1221,20 +1251,33 @@ FreeDecorFace(Display *dpy, DecorFace *df)
 			}
 			free(df->u.mp.pixmaps);
 		}
-		
-		free(df->u.mp.acs);
-		free(df->u.mp.pixels);
+		if (df->u.mp.acs) {
+			free(df->u.mp.acs);
+		}
+		if (df->u.mp.pixels) {
+			free(df->u.mp.pixels);
+		}
 		break;
 	case VectorButton:
 	case DefaultVectorButton:
-		free(df->u.vector.x);
-		free(df->u.vector.y);
+		if (df->u.vector.x) {
+			free(df->u.vector.x);
+		}
+		if (df->u.vector.y) {
+			free(df->u.vector.y);
+		}
 		/*
 		 * free offsets for coord
 		 */
-		free(df->u.vector.xoff);
-		free(df->u.vector.yoff);
-		free(df->u.vector.c);
+		if (df->u.vector.xoff) {
+			free(df->u.vector.xoff);
+		}
+		if (df->u.vector.yoff) {
+			free(df->u.vector.yoff);
+		}
+		if (df->u.vector.c) {
+			free(df->u.vector.c);
+		}
 		break;
 	default:
 		/*
@@ -1253,6 +1296,8 @@ FreeDecorFace(Display *dpy, DecorFace *df)
 	memset(&df->style, 0, sizeof(df->style));
 	memset(&df->u, 0, sizeof(df->u));
 	DFS_FACE_TYPE(df->style) = SimpleButton;
+
+	return;
 }
 
 /*
@@ -1272,8 +1317,10 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 	 * * used, so a return value of 1 is no error.
 	 */
 	if (sscanf(s, "%255s%n", style, &offset) < 1) {
-		if (verbose)
-			fvwm_msg(ERR, "ReadDecorFace", "error in face `%s'", s);
+		if (verbose) {
+			fvwm_msg(ERR, "ReadDecorFace", "error in face `%s'",
+			    s);
+		}
 		return False;
 	}
 	style[255] = 0;
@@ -1307,9 +1354,9 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 				b = BUTTON_INDEX(b);
 				s += offset;
 			}
-			if (b >= 0 && b < NUMBER_OF_TITLE_BUTTONS)
+			if (b >= 0 && b < NUMBER_OF_TITLE_BUTTONS) {
 				LoadDefaultButton(df, b);
-			else {
+			} else {
 				if (verbose) {
 					fvwm_msg(ERR, "ReadDecorFace",
 					    "button number out of range:"
@@ -1331,8 +1378,9 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			if (strncasecmp(style, "Vector", 6) == 0) {
 				num = sscanf(s, "%d%n", &num_coords, &offset);
 				s += offset;
-			} else
+			} else {
 				num = sscanf(style, "%d", &num_coords);
+			}
 
 			if (num < 1 || num_coords < 2 ||
 			    num_coords > MAX_TITLE_BUTTON_VECTOR_LINES) {
@@ -1366,21 +1414,21 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 					&yoff, &c, s) == False) {
 					break;
 				}
-				if (x < 0)
+				if (x < 0) {
 					x = 0;
-
-				if (x > 100)
+				}
+				if (x > 100) {
 					x = 100;
-
-				if (y < 0)
+				}
+				if (y < 0) {
 					y = 0;
-
-				if (y > 100)
+				}
+				if (y > 100) {
 					y = 100;
-
-				if (c < 0 || c > 4)
+				}
+				if (c < 0 || c > 4) {
 					c = 4;
-
+				}
 				vc->x[i] = x;
 				vc->y[i] = y;
 				vc->c[i] = c;
@@ -1431,27 +1479,27 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			XColor         *xcs;
 			Bool            do_dither = False;
 
-			if (!IsGradientTypeSupported(style[0]))
+			if (!IsGradientTypeSupported(style[0])) {
 				return False;
-
+			}
 			/*
 			 * translate the gradient string into an array of
 			 * * colors etc
 			 */
 			npixels =
 			    ParseGradient(s, &s, &s_colors, &perc, &nsegs);
-			while (*s && isspace(*s))
+			while (*s && isspace(*s)) {
 				s++;
-
-			if (npixels <= 0)
+			}
+			if (npixels <= 0) {
 				return False;
-
+			}
 			/*
 			 * grab the colors
 			 */
-			if (Pdepth <= 16)
+			if (Pdepth <= 16) {
 				do_dither = True;
-
+			}
 			xcs =
 			    AllocAllGradientColors(s_colors, perc, nsegs,
 			    npixels, do_dither);
@@ -1493,16 +1541,19 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			}
 
 			memset(&df->style, 0, sizeof(df->style));
-			if (strncasecmp(style, "Tiled", 5) == 0)
+			if (strncasecmp(style, "Tiled", 5) == 0) {
 				DFS_FACE_TYPE(df->style) = TiledPixmapButton;
-			else if (strncasecmp(style, "Stretched", 9) == 0)
-				DFS_FACE_TYPE(df->style) = StretchedPixmapButton;
-			else if (strncasecmp(style, "Adjusted", 8) == 0)
-				DFS_FACE_TYPE(df->style) =  AdjustedPixmapButton;
-			else if (strncasecmp(style, "Shrunk", 6) == 0)
+			} else if (strncasecmp(style, "Stretched", 9) == 0) {
+				DFS_FACE_TYPE(df->style) =
+				    StretchedPixmapButton;
+			} else if (strncasecmp(style, "Adjusted", 8) == 0) {
+				DFS_FACE_TYPE(df->style) =
+				    AdjustedPixmapButton;
+			} else if (strncasecmp(style, "Shrunk", 6) == 0) {
 				DFS_FACE_TYPE(df->style) = ShrunkPixmapButton;
-			else
+			} else {
 				DFS_FACE_TYPE(df->style) = PixmapButton;
+			}
 		} else if (strncasecmp(style, "MultiPixmap", 11) == 0) {
 			if (button != -1) {
 				if (verbose) {
@@ -1529,8 +1580,8 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			int             n;
 
 			n = GetIntegerArguments(s, NULL, val, 2);
-			if (n == 0)
-
+			if (n == 0) {
+			}
 			memset(&df->style, 0, sizeof(df->style));
 			if (n > 0 && val[0] >= 0) {
 
@@ -1660,15 +1711,17 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 				    "unknown button face flag '%s'"
 				    " -- line: %s", tok, action);
 			}
-			if (set)
+			if (set) {
 				free(tok);
-			else
+			} else {
 				free(old_tok);
-
+			}
 			s = GetNextToken(s, &tok);
 		}
 	}
-	free(file);
+	if (file) {
+		free(file);
+	}
 
 	return True;
 }
@@ -1681,18 +1734,20 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 void
 AddToDecor(F_CMD_ARGS, FvwmDecor * decor)
 {
-	if (!action)
+	if (!action) {
 		return;
-
-	while (*action && isspace((unsigned char) *action))
+	}
+	while (*action && isspace((unsigned char) *action)) {
 		++action;
-
-	if (!*action)
+	}
+	if (!*action) {
 		return;
-
+	}
 	Scr.cur_decor = decor;
 	execute_function(cond_rc, exc, action, 0);
 	Scr.cur_decor = NULL;
+
+	return;
 }
 
 /*
@@ -1701,7 +1756,7 @@ AddToDecor(F_CMD_ARGS, FvwmDecor * decor)
  *
  */
 void
-InitFvwmDecor(FvwmDecor *decor)
+InitFvwmDecor(FvwmDecor * decor)
 {
 	int             i;
 	DecorFace       tmpdf;
@@ -1739,6 +1794,8 @@ InitFvwmDecor(FvwmDecor *decor)
 	 */
 	DFS_FACE_TYPE(decor->BorderStyle.active.style) = SimpleButton;
 	DFS_FACE_TYPE(decor->BorderStyle.inactive.style) = SimpleButton;
+
+	return;
 }
 
 void
@@ -1752,6 +1809,8 @@ reset_decor_changes(void)
 	/*
 	 * todo: must reset individual change flags too
 	 */
+
+	return;
 }
 
 void
@@ -1764,6 +1823,8 @@ update_fvwm_colorset(int cset)
 	UpdateMenuColorset(cset);
 	update_style_colorset(cset);
 	update_decors_colorset(cset);
+
+	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -1771,8 +1832,12 @@ update_fvwm_colorset(int cset)
 void
 CMD_Beep(F_CMD_ARGS)
 {
+#if 1  /*!!! */
 	parse_colorset(11, "RootTransparent");
+#endif
 	XBell(dpy, 0);
+
+	return;
 }
 
 void
@@ -1790,12 +1855,12 @@ CMD_EscapeFunc(F_CMD_ARGS)
 void
 CMD_CursorMove(F_CMD_ARGS)
 {
-	int			 x = 0, y = 0;
-	int			 val1, val2, val1_unit, val2_unit;
-	int			 x_unit, y_unit;
-	int			 virtual_x, virtual_y;
-	int			 x_pages, y_pages;
-	struct monitor		*m = monitor_get_current();
+	int             x = 0, y = 0;
+	int             val1, val2, val1_unit, val2_unit;
+	int             x_unit, y_unit;
+	int             virtual_x, virtual_y;
+	int             x_pages, y_pages;
+	struct monitor *m = monitor_get_current();
 
 	if (GetTwoArguments(action, &val1, &val2, &val1_unit,
 		&val2_unit) != 2) {
@@ -1818,11 +1883,11 @@ CMD_CursorMove(F_CMD_ARGS)
 
 	virtual_x = m->virtual_scr.Vx;
 	virtual_y = m->virtual_scr.Vy;
-	if (x >= 0)
+	if (x >= 0) {
 		x_pages = x / m->coord.w;
-	else
+	} else {
 		x_pages = ((x + 1) / m->coord.h) - 1;
-
+	}
 	virtual_x += x_pages * m->coord.w;
 	x -= x_pages * m->coord.w;
 	if (virtual_x < 0) {
@@ -1833,11 +1898,11 @@ CMD_CursorMove(F_CMD_ARGS)
 		virtual_x = m->virtual_scr.VxMax;
 	}
 
-	if (y >= 0)
+	if (y >= 0) {
 		y_pages = y / m->coord.h;
-	else
+	} else {
 		y_pages = ((y + 1) / m->coord.h) - 1;
-
+	}
 	virtual_y += y_pages * m->coord.h;
 	y -= y_pages * m->coord.h;
 
@@ -1851,8 +1916,8 @@ CMD_CursorMove(F_CMD_ARGS)
 
 	/*
 	 * TA:  (2010/12/19):  Only move to the new page if scrolling is
-	 * enabled and the viewport is able to change based on where the
-	 * pointer is.
+	 * * enabled and the viewport is able to change based on where the
+	 * * pointer is.
 	 */
 	if ((virtual_x != m->virtual_scr.Vx
 		&& m->virtual_scr.EdgeScrollX != 0)
@@ -1863,12 +1928,12 @@ CMD_CursorMove(F_CMD_ARGS)
 
 	/*
 	 * TA:  (2010/12/19):  If the cursor is about to enter a pan-window, or
-	 * is one, or the cursor's next step is to go beyond the page
-	 * boundary, stop the cursor from moving in that direction, *if* we've
-	 * disallowed edge scrolling.
-	 *
-	 * Whilst this stops the cursor short of the edge of the screen in a
-	 * given direction, this is the desired behaviour.
+	 * * is one, or the cursor's next step is to go beyond the page
+	 * * boundary, stop the cursor from moving in that direction, *if* we've
+	 * * disallowed edge scrolling.
+	 * *
+	 * * Whilst this stops the cursor short of the edge of the screen in a
+	 * * given direction, this is the desired behaviour.
 	 */
 	if (m->virtual_scr.EdgeScrollX == 0 && (x >= m->coord.w ||
 		x + x_unit >= m->coord.w))
@@ -1880,6 +1945,8 @@ CMD_CursorMove(F_CMD_ARGS)
 
 	FWarpPointerUpdateEvpos(exc->x.elast, dpy, None, Scr.Root, 0, 0,
 	    m->coord.w, m->coord.h, x, y);
+
+	return;
 }
 
 void
@@ -1895,22 +1962,26 @@ CMD_Delete(F_CMD_ARGS)
 	if (IS_TEAR_OFF_MENU(fw)) {
 		/*
 		 * 'soft' delete tear off menus.  Note: we can't send the
-		 * message to the menu window directly because it was created
-		 * using a different display.  The client message would never
-		 * be read from there.
+		 * * message to the menu window directly because it was created
+		 * * using a different display.  The client message would never
+		 * * be read from there.
 		 */
 		send_clientmessage(dpy, FW_W_PARENT(fw), _XA_WM_DELETE_WINDOW,
 		    CurrentTime);
+
+		return;
 	}
 	if (WM_DELETES_WINDOW(fw)) {
 		send_clientmessage(dpy, FW_W(fw), _XA_WM_DELETE_WINDOW,
 		    CurrentTime);
 
 		return;
-	} else 
+	} else {
 		XBell(dpy, 0);
-
+	}
 	XFlush(dpy);
+
+	return;
 }
 
 void
@@ -1928,11 +1999,14 @@ CMD_Destroy(F_CMD_ARGS)
 	}
 	if (XGetGeometry(dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
 		(unsigned int *) &JunkWidth, (unsigned int *) &JunkHeight,
-		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth) != 0)
+		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth)
+	    != 0) {
 		XKillClient(dpy, FW_W(fw));
-
+	}
 	destroy_window(fw);
 	XFlush(dpy);
+
+	return;
 }
 
 void
@@ -1955,11 +2029,15 @@ CMD_Close(F_CMD_ARGS)
 	}
 	if (XGetGeometry(dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
 		(unsigned int *) &JunkWidth, (unsigned int *) &JunkHeight,
-		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth) != 0)
+		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth)
+	    != 0) {
 		XKillClient(dpy, FW_W(fw));
+	}
 
 	destroy_window(fw);
 	XFlush(dpy);
+
+	return;
 }
 
 void
@@ -1976,17 +2054,18 @@ CMD_ExecUseShell(F_CMD_ARGS)
 	char           *arg = NULL;
 	static char     shell_set = 0;
 
-	if (shell_set)
+	if (shell_set) {
 		free(exec_shell_name);
-
+	}
 	shell_set = 1;
 	action = GetNextToken(action, &arg);
-	if (arg)
+	if (arg) {	/* specific shell was specified */
 		exec_shell_name = arg;
-	else {	/* no arg, so use $SHELL -- not working??? */
-		if (getenv("SHELL"))
+	} else {	/* no arg, so use $SHELL -- not working??? */
+
+		if (getenv("SHELL")) {
 			exec_shell_name = xstrdup(getenv("SHELL"));
-		else {
+		} else {
 			/*
 			 * if $SHELL not set, use default
 			 */
@@ -2018,9 +2097,9 @@ CMD_Exec(F_CMD_ARGS)
 	{
 		cmd = xstrdup(action);
 	}
-	if (!cmd)
+	if (!cmd) {
 		return;
-
+	}
 	/*
 	 * Use to grab the pointer here, but the fork guarantees that
 	 * * we wont be held up waiting for the function to finish,
@@ -2064,12 +2143,16 @@ CMD_Exec(F_CMD_ARGS)
 		}
 	}
 	free(cmd);
+
+	return;
 }
 
 void
 CMD_Refresh(F_CMD_ARGS)
 {
 	refresh_window(Scr.Root, True);
+
+	return;
 }
 
 void
@@ -2080,6 +2163,8 @@ CMD_RefreshWindow(F_CMD_ARGS)
 	refresh_window(
 	    (exc->w.wcontext == C_ICON) ?
 	    FW_W_ICON_TITLE(fw) : FW_W_FRAME(fw), True);
+
+	return;
 }
 
 void
@@ -2098,9 +2183,9 @@ CMD_Wait(F_CMD_ARGS)
 	 */
 	rest = GetNextToken(action, &wait_string);
 	if (wait_string) {
-		while (*rest && isspace((unsigned char) *rest))
+		while (*rest && isspace((unsigned char) *rest)) {
 			rest++;
-
+		}
 		if (*rest) {
 			int             i;
 			char           *temp;
@@ -2113,17 +2198,18 @@ CMD_Wait(F_CMD_ARGS)
 			 * strip leading and trailing whitespace
 			 */
 			temp = action;
-			while (*temp && isspace((unsigned char) *temp))
+			while (*temp && isspace((unsigned char) *temp)) {
 				temp++;
-
+			}
 			wait_string = xstrdup(temp);
 			for (i = strlen(wait_string) - 1; i >= 0 &&
 			    isspace(wait_string[i]); i--) {
 				wait_string[i] = 0;
 			}
 		}
-	} else
+	} else {
 		wait_string = xstrdup("");
+	}
 
 	is_ungrabbed = UngrabEm(GRAB_NORMAL);
 	while (!done && !isTerminated) {
@@ -2141,9 +2227,9 @@ CMD_Wait(F_CMD_ARGS)
 			}
 
 			if (e.type == MapNotify && e.xmap.event == Scr.Root) {
-				if (!*wait_string)
+				if (!*wait_string) {
 					done = True;
-
+				}
 				if (t
 				    && matchWildcards(wait_string,
 					t->name.name) == True) {
@@ -2179,34 +2265,41 @@ CMD_Wait(F_CMD_ARGS)
 				    GetUnusedModifiers(), context,
 				    BIND_KEYPRESS, class, name);
 				if (escape != NULL) {
-					if (!strcasecmp(escape, "escapefunc"))
+					if (!strcasecmp(escape, "escapefunc")) {
 						done = True;
+					}
 				}
 			}
 		}
 	}
-	if (redefine_cursor)
+	if (redefine_cursor) {
 		XDefineCursor(dpy, Scr.Root, Scr.FvwmCursors[CRS_ROOT]);
-
-	if (is_ungrabbed)
+	}
+	if (is_ungrabbed) {
 		GrabEm(CRS_NONE, GRAB_NORMAL);
-
+	}
 	free(wait_string);
+
+	return;
 }
 
 void
 CMD_Quit(F_CMD_ARGS)
 {
-	if (master_pid != getpid())
+	if (master_pid != getpid()) {
 		kill(master_pid, SIGTERM);
-
+	}
 	Done(0, NULL);
+
+	return;
 }
 
 void
 CMD_QuitScreen(F_CMD_ARGS)
 {
 	Done(0, NULL);
+
+	return;
 }
 
 void
@@ -2214,15 +2307,18 @@ CMD_Echo(F_CMD_ARGS)
 {
 	int             len;
 
-	if (!action)
+	if (!action) {
 		action = "";
-
+	}
 	len = strlen(action);
 	if (len != 0) {
-		if (action[len - 1] == '\n')
+		if (action[len - 1] == '\n') {
 			action[len - 1] = '\0';
+		}
 	}
 	fvwm_msg(ECHO, "Echo", "%s", action);
+
+	return;
 }
 
 void
@@ -2232,42 +2328,47 @@ CMD_PrintInfo(F_CMD_ARGS)
 	char           *rest, *subject = NULL;
 
 	rest = GetNextToken(action, &subject);
-	if (!rest || GetIntegerArguments(rest, NULL, &verbose, 1) != 1)
+	if (!rest || GetIntegerArguments(rest, NULL, &verbose, 1) != 1) {
 		verbose = 0;
-
-	if (StrEquals(subject, "Colors"))
+	}
+	if (StrEquals(subject, "Colors")) {
 		PicturePrintColorInfo(verbose);
-	else if (StrEquals(subject, "Locale"))
+	} else if (StrEquals(subject, "Locale")) {
 		FlocalePrintLocaleInfo(dpy, verbose);
-	else if (StrEquals(subject, "NLS"))
+	} else if (StrEquals(subject, "NLS")) {
 		FGettextPrintLocalePath(verbose);
-	else if (StrEquals(subject, "style"))
+	} else if (StrEquals(subject, "style")) {
 		print_styles(verbose);
-	else if (StrEquals(subject, "ImageCache"))
+	} else if (StrEquals(subject, "ImageCache")) {
 		PicturePrintImageCache(verbose);
-	else if (StrEquals(subject, "Bindings"))
+	} else if (StrEquals(subject, "Bindings")) {
 		print_bindings();
-	else if (StrEquals(subject, "InfoStore"))
+	} else if (StrEquals(subject, "InfoStore")) {
 		print_infostore();
-	else
+	} else {
 		fvwm_msg(ERR, "PrintInfo", "Unknown subject '%s'", action);
-
-	free(subject);
+	}
+	if (subject) {
+		free(subject);
+	}
+	return;
 }
 
 void
 CMD_ColormapFocus(F_CMD_ARGS)
 {
-	if (MatchToken(action, "FollowsFocus"))
+	if (MatchToken(action, "FollowsFocus")) {
 		Scr.ColormapFocus = COLORMAP_FOLLOWS_FOCUS;
-	else if (MatchToken(action, "FollowsMouse"))
+	} else if (MatchToken(action, "FollowsMouse")) {
 		Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
-	else {
+	} else {
 		fvwm_msg(ERR, "SetColormapFocus",
 		    "ColormapFocus requires 1 arg: FollowsFocus or"
 		    " FollowsMouse");
 		return;
 	}
+
+	return;
 }
 
 void
@@ -2275,23 +2376,29 @@ CMD_ClickTime(F_CMD_ARGS)
 {
 	int             val;
 
-	if (GetIntegerArguments(action, NULL, &val, 1) != 1)
+	if (GetIntegerArguments(action, NULL, &val, 1) != 1) {
 		Scr.ClickTime = DEFAULT_CLICKTIME;
-	else
+	} else {
 		Scr.ClickTime = (val < 0) ? 0 : val;
+	}
 
 	/*
 	 * Use a negative value during startup and change sign afterwards. This
 	 * * speeds things up quite a bit.
 	 */
-	if (fFvwmInStartup)
+	if (fFvwmInStartup) {
 		Scr.ClickTime = -Scr.ClickTime;
+	}
+
+	return;
 }
 
 void
 CMD_ImagePath(F_CMD_ARGS)
 {
 	PictureSetImagePath(action);
+
+	return;
 }
 
 void
@@ -2300,6 +2407,8 @@ CMD_IconPath(F_CMD_ARGS)
 	fvwm_msg(ERR, "iconPath_function",
 	    "IconPath is deprecated since 2.3.0; use ImagePath instead.");
 	obsolete_imagepaths(action);
+
+	return;
 }
 
 void
@@ -2309,12 +2418,16 @@ CMD_PixmapPath(F_CMD_ARGS)
 	    "PixmapPath is deprecated since 2.3.0; use ImagePath"
 	    " instead.");
 	obsolete_imagepaths(action);
+
+	return;
 }
 
 void
 CMD_LocalePath(F_CMD_ARGS)
 {
 	FGettextSetLocalePath(action);
+
+	return;
 }
 
 void
@@ -2324,6 +2437,8 @@ CMD_ModulePath(F_CMD_ARGS)
 
 	setPath(&ModulePath, action, need_to_free);
 	need_to_free = 1;
+
+	return;
 }
 
 void
@@ -2336,6 +2451,8 @@ CMD_ModuleTimeout(F_CMD_ARGS)
 	    && timeout > 0) {
 		moduleTimeout = timeout;
 	}
+
+	return;
 }
 
 void
@@ -2363,11 +2480,14 @@ CMD_HilightColor(F_CMD_ARGS)
 		    back);
 		CMD_Style(F_PASS_ARGS);
 	}
-	if (fore)
+	if (fore) {
 		free(fore);
-
-	if (back)
+	}
+	if (back) {
 		free(back);
+	}
+
+	return;
 }
 
 void
@@ -2393,13 +2513,17 @@ CMD_HilightColorset(F_CMD_ARGS)
 		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
+
+	return;
 }
 
 void
 CMD_TitleStyle(F_CMD_ARGS)
 {
 	do_title_style(F_PASS_ARGS, False);
-}
+
+	return;
+}      /* SetTitleStyle */
 
 /*
  *
@@ -2410,6 +2534,8 @@ void
 CMD_AddTitleStyle(F_CMD_ARGS)
 {
 	do_title_style(F_PASS_ARGS, True);
+
+	return;
 }
 
 void
@@ -2427,13 +2553,13 @@ CMD_PropertyChange(F_CMD_ARGS)
 	 * argument
 	 */
 	token = PeekToken(action, &rest);
-	if (token == NULL)
+	if (token == NULL) {
 		return;
-
+	}
 	ret = sscanf(token, "%lu", &argument);
-	if (ret < 1)
+	if (ret < 1) {
 		return;
-
+	}
 	/*
 	 * data1
 	 */
@@ -2441,8 +2567,9 @@ CMD_PropertyChange(F_CMD_ARGS)
 	token = PeekToken(rest, &rest);
 	if (token != NULL) {
 		ret = sscanf(token, "%lu", &data1);
-		if (ret < 1)
+		if (ret < 1) {
 			rest = NULL;
+		}
 	}
 	/*
 	 * data2
@@ -2451,24 +2578,31 @@ CMD_PropertyChange(F_CMD_ARGS)
 	token = PeekToken(rest, &rest);
 	if (token != NULL) {
 		ret = sscanf(token, "%lu", &data2);
-		if (ret < 1)
+		if (ret < 1) {
 			rest = NULL;
+		}
 	}
 	/*
 	 * string
 	 */
 	memset(string, 0, 256);
-	if (rest != NULL)
+	if (rest != NULL) {
 		ret = sscanf(rest, "%255c", &(string[0]));
-
+	}
 	BroadcastPropertyChange(argument, data1, data2, string);
+
+	return;
 }
 
 void
 CMD_DefaultIcon(F_CMD_ARGS)
 {
-	free(Scr.DefaultIcon);
+	if (Scr.DefaultIcon) {
+		free(Scr.DefaultIcon);
+	}
 	GetNextToken(action, &Scr.DefaultIcon);
+
+	return;
 }
 
 void
@@ -2476,16 +2610,18 @@ CMD_DefaultColorset(F_CMD_ARGS)
 {
 	int             cset;
 
-	if (GetIntegerArguments(action, NULL, &cset, 1) != 1)
+	if (GetIntegerArguments(action, NULL, &cset, 1) != 1) {
 		return;
-
+	}
 	Scr.DefaultColorset = cset;
-	if (Scr.DefaultColorset < 0)
+	if (Scr.DefaultColorset < 0) {
 		Scr.DefaultColorset = -1;
-
+	}
 	alloc_colorset(Scr.DefaultColorset);
 	scr_flags.do_need_window_update = 1;
 	scr_flags.has_default_color_changed = 1;
+
+	return;
 }
 
 void
@@ -2495,20 +2631,19 @@ CMD_DefaultColors(F_CMD_ARGS)
 	char           *back = NULL;
 
 	action = GetNextToken(action, &fore);
-	if (action)
+	if (action) {
 		action = GetNextToken(action, &back);
-
-	if (!back)
+	}
+	if (!back) {
 		back = xstrdup(DEFAULT_BACK_COLOR);
-
-	if (!fore)
+	}
+	if (!fore) {
 		fore = xstrdup(DEFAULT_FORE_COLOR);
-
+	}
 	if (!StrEquals(fore, "-")) {
 		PictureFreeColors(dpy, Pcmap, &Scr.StdFore, 1, 0, True);
 		Scr.StdFore = GetColor(fore);
 	}
-
 	if (!StrEquals(back, "-")) {
 		PictureFreeColors(dpy, Pcmap, &Scr.StdBack, 3, 0, True);
 		Scr.StdBack = GetColor(back);
@@ -2521,6 +2656,8 @@ CMD_DefaultColors(F_CMD_ARGS)
 	Scr.DefaultColorset = -1;
 	scr_flags.do_need_window_update = 1;
 	scr_flags.has_default_color_changed = 1;
+
+	return;
 }
 
 void
@@ -2537,10 +2674,11 @@ CMD_DefaultFont(F_CMD_ARGS)
 		 */
 	}
 	if (!(new_font = FlocaleLoadFont(dpy, font, "fvwm"))) {
-		if (Scr.DefaultFont == NULL)
+		if (Scr.DefaultFont == NULL) {
 			exit(1);
-		else
+		} else {
 			return;
+		}
 	}
 	FlocaleUnloadFont(dpy, Scr.DefaultFont);
 	Scr.DefaultFont = new_font;
@@ -2549,17 +2687,20 @@ CMD_DefaultFont(F_CMD_ARGS)
 	 * flush_window_updates is called ...
 	 */
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next) {
-		if (USING_DEFAULT_ICON_FONT(t))
+		if (USING_DEFAULT_ICON_FONT(t)) {
 			t->icon_font = Scr.DefaultFont;
-
-		if (USING_DEFAULT_WINDOW_FONT(t))
+		}
+		if (USING_DEFAULT_WINDOW_FONT(t)) {
 			t->title_font = Scr.DefaultFont;
+		}
 	}
 	/*
 	 * set flags to indicate that the font has changed
 	 */
 	scr_flags.do_need_window_update = 1;
 	scr_flags.has_default_font_changed = 1;
+
+	return;
 }
 
 void
@@ -2584,6 +2725,8 @@ CMD_IconFont(F_CMD_ARGS)
 		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
+
+	return;
 }
 
 void
@@ -2598,7 +2741,6 @@ CMD_WindowFont(F_CMD_ARGS)
 		    " instead.  Sorry for the inconvenience.");
 		return;
 	}
-
 	if (action) {
 		/*
 		 * TA;  FIXME!  xasprintf()
@@ -2609,6 +2751,8 @@ CMD_WindowFont(F_CMD_ARGS)
 		CMD_Style(F_PASS_ARGS);
 		free(newaction);
 	}
+
+	return;
 }
 
 /*
@@ -2625,9 +2769,9 @@ CMD_ChangeDecor(F_CMD_ARGS)
 	FvwmWindow     *const fw = exc->w.fw;
 
 	item = PeekToken(action, &action);
-	if (!action || !item)
+	if (!action || !item) {
 		return;
-
+	}
 	/*
 	 * search for tag
 	 */
@@ -2644,6 +2788,8 @@ CMD_ChangeDecor(F_CMD_ARGS)
 	SET_DECOR_CHANGED(fw, 1);
 	fw->decor = found;
 	apply_decor_change(fw);
+
+	return;
 }
 
 /*
@@ -2660,15 +2806,16 @@ CMD_DestroyDecor(F_CMD_ARGS)
 	Bool            do_recreate = False;
 
 	item = PeekToken(action, &action);
-	if (!item)
+	if (!item) {
 		return;
-
+	}
 	if (StrEquals(item, "recreate")) {
 		do_recreate = True;
 		item = PeekToken(action, NULL);
 	}
-	if (!item)
+	if (!item) {
 		return;
+	}
 
 	/*
 	 * search for tag
@@ -2703,6 +2850,8 @@ CMD_DestroyDecor(F_CMD_ARGS)
 			free(found);
 		}
 	}
+
+	return;
 }
 
 /*
@@ -2718,10 +2867,9 @@ CMD_AddToDecor(F_CMD_ARGS)
 	char           *item = NULL;
 
 	action = GetNextToken(action, &item);
-
-	if (!item)
+	if (!item) {
 		return;
-
+	}
 	if (!action) {
 		free(item);
 		return;
@@ -2752,8 +2900,9 @@ CMD_AddToDecor(F_CMD_ARGS)
 			 */
 		}
 		decor->next = found;
-	} else
+	} else {
 		free(item);
+	}
 
 	if (found) {
 		AddToDecor(F_PASS_ARGS, found);
@@ -2762,6 +2911,8 @@ CMD_AddToDecor(F_CMD_ARGS)
 		 */
 		set_last_added_item(ADDED_DECOR, found);
 	}
+
+	return;
 }
 
 /*
@@ -2817,6 +2968,8 @@ void
 CMD_ButtonStyle(F_CMD_ARGS)
 {
 	do_button_style(F_PASS_ARGS, False);
+
+	return;
 }
 
 /*
@@ -2828,6 +2981,8 @@ void
 CMD_AddButtonStyle(F_CMD_ARGS)
 {
 	do_button_style(F_PASS_ARGS, True);
+
+	return;
 }
 
 void
@@ -2838,19 +2993,21 @@ CMD_SetEnv(F_CMD_ARGS)
 	char           *szPutenv = NULL;
 
 	action = GetNextToken(action, &szVar);
-	if (!szVar)
+	if (!szVar) {
 		return;
-
+	}
 	action = GetNextToken(action, &szValue);
-	if (!szValue)
+	if (!szValue) {
 		szValue = xstrdup("");
-
+	}
 	szPutenv = xmalloc(strlen(szVar) + strlen(szValue) + 2);
 	sprintf(szPutenv, "%s=%s", szVar, szValue);
 	flib_putenv(szVar, szPutenv);
 	free(szVar);
 	free(szPutenv);
 	free(szValue);
+
+	return;
 }
 
 void
@@ -2859,10 +3016,12 @@ CMD_UnsetEnv(F_CMD_ARGS)
 	char           *szVar = NULL;
 
 	szVar = PeekToken(action, &action);
-	if (!szVar)
+	if (!szVar) {
 		return;
-
+	}
 	flib_unsetenv(szVar);
+
+	return;
 }
 
 void
@@ -2941,9 +3100,9 @@ CMD_GlobalOpts(F_CMD_ARGS)
 			if (replace == NULL) {
 				replace = &(buf[0]);
 				sprintf(buf, "* %s", opt);
-			} else if (*replace != '*')
+			} else if (*replace != '*') {
 				is_bugopt = True;
-	
+			}
 			tmp = action;
 			action = replace;
 			if (!is_bugopt) {
@@ -2961,8 +3120,18 @@ CMD_GlobalOpts(F_CMD_ARGS)
 			fvwm_msg(ERR, "SetGlobalOptions",
 			    "Unknown Global Option '%s'", opt);
 		}
+		/*
+		 * should never be null, but checking anyways...
+		 */
+		if (opt) {
+			free(opt);
+		}
 	}
-	free(opt);
+	if (opt) {
+		free(opt);
+	}
+
+	return;
 }
 
 void
@@ -2989,9 +3158,9 @@ CMD_BugOpts(F_CMD_ARGS)
 		opt = PeekToken(optstring, NULL);
 		free(optstring);
 
-		if (!opt)
+		if (!opt) {
 			return;
-
+		}
 		/*
 		 * toggle = ParseToggleArgument(rest, &rest, 2, False);
 		 */
@@ -3144,6 +3313,8 @@ CMD_BugOpts(F_CMD_ARGS)
 			    "Unknown Bug Option '%s'", opt);
 		}
 	}
+
+	return;
 }
 
 void
@@ -3168,6 +3339,8 @@ CMD_Emulate(F_CMD_ARGS)
 	scr_flags.do_need_window_update = 1;
 	scr_flags.has_default_font_changed = 1;
 	scr_flags.has_default_color_changed = 1;
+
+	return;
 }
 
 void
@@ -3175,6 +3348,8 @@ CMD_ColorLimit(F_CMD_ARGS)
 {
 	fvwm_msg(WARN, "ColorLimit", "ColorLimit is obsolete,\n\tuse the "
 	    "fvwm -color-limit option");
+
+	return;
 }
 
 /* set animation parameters */
@@ -3211,8 +3386,11 @@ CMD_SetAnimation(F_CMD_ARGS)
 	/*
 	 * No pct entries means don't change them at all
 	 */
-	if (i > 0 && rgpctMovementDefault[i - 1] != 1.0)
+	if (i > 0 && rgpctMovementDefault[i - 1] != 1.0) {
 		rgpctMovementDefault[i++] = 1.0;
+	}
+
+	return;
 }
 
 /* Determine which modifiers are required with a keycode to make <keysym>. */
@@ -3368,22 +3546,22 @@ __fake_event(F_CMD_ARGS, FakeEventType type)
 				e.xbutton.same_screen = (Scr.Root == root);
 				/*
 				 * SS: I think this mask handling code is
-				 * buggy.
-				 * The value of <mask> is overridden during a
-				 * "wait" operation. Also why are we only using
-				 * Button1Mask? What if the user has requested
-				 * a FakeClick using some other button?
+				 * * buggy.
+				 * * The value of <mask> is overridden during a
+				 * * "wait" operation. Also why are we only using
+				 * * Button1Mask? What if the user has requested
+				 * * a FakeClick using some other button?
 				 */
 				/*
 				 * DV: Button1Mask is actually a bit.  Shifting
-				 * it by (val -1) bits to the left gives
-				 * Button2Mask, Button3Mask etc.
+				 * * it by (val -1) bits to the left gives
+				 * * Button2Mask, Button3Mask etc.
 				 */
-				if (do_unset)
+				if (do_unset) {
 					mask &= ~(Button1Mask << (val - 1));
-				else
+				} else {
 					mask |= (Button1Mask << (val - 1));
-
+				}
 				add_mask = (do_unset) ?
 				    ButtonPressMask : ButtonReleaseMask;
 			} else {
@@ -3456,27 +3634,29 @@ __fake_event(F_CMD_ARGS, FakeEventType type)
 				do_unset = True;
 				val = -val;
 			}
-			if (val == 6)
+			if (val == 6) {
 				val = ShiftMask;
-			else if (val == 7)
+			} else if (val == 7) {
 				val = LockMask;
-			else if (val == 8)
+			} else if (val == 8) {
 				val = ControlMask;
-			else if (val >= 1 && val <= 5)
+			} else if (val >= 1 && val <= 5) {
 				val = (Mod1Mask << (val - 1));
-			else {
-				/* error */
+			} else {
+				/*
+				 * error
+				 */
 				return;
 			}
 			/*
 			 * SS: Could be buggy if a "modifier" operation
 			 * * preceeds a "wait" operation.
 			 */
-			if (do_unset)
+			if (do_unset) {
 				mask &= ~val;
-			else
+			} else {
 				mask |= val;
-
+			}
 			break;
 		case 8:
 		case 9:
@@ -3496,22 +3676,327 @@ __fake_event(F_CMD_ARGS, FakeEventType type)
 			    "Invalid command (%s) in \"%s\"", token, args);
 			return;
 		}
-		if (action)
+		if (action) {
 			token = PeekToken(action, &action);
+		}
 	}
+
+	return;
 }
 
 void
 CMD_FakeClick(F_CMD_ARGS)
 {
 	__fake_event(F_PASS_ARGS, FakeMouseEvent);
+
+	return;
 }
 
 void
 CMD_FakeKeypress(F_CMD_ARGS)
 {
 	__fake_event(F_PASS_ARGS, FakeKeyEvent);
+
+	return;
 }
+
+/* A function to handle stroke (olicha Nov 11, 1999) */
+#ifdef HAVE_STROKE
+void
+CMD_StrokeFunc(F_CMD_ARGS)
+{
+	int             finished = 0;
+	int             abort = 0;
+	int             modifiers = exc->x.etrigger->xbutton.state;
+	int             start_event_type = exc->x.etrigger->type;
+	char            sequence[STROKE_MAX_SEQUENCE + 1];
+	char           *stroke_action, *name;
+	char           *opt = NULL;
+	Bool            finish_on_release = True;
+	KeySym          keysym;
+	Bool            restore_repeat = False;
+	Bool            echo_sequence = False;
+	Bool            draw_motion = False;
+	int             i = 0;
+	int            *x = NULL;
+	int            *y = NULL;
+	const int       STROKE_CHUNK_SIZE = 0xff;
+	int             coords_size = STROKE_CHUNK_SIZE;
+	Window          JunkRoot, JunkChild;
+	int             JunkX, JunkY;
+	int             tmpx, tmpy;
+	unsigned int    JunkMask;
+	Bool            feed_back = False;
+	int             stroke_width = 1;
+	XEvent          e;
+	XClassHint     *class;
+
+	if (!GrabEm(CRS_STROKE, GRAB_NORMAL)) {
+		XBell(dpy, 0);
+		return;
+	}
+	x = (int *) safemalloc(coords_size * sizeof(int));
+	y = (int *) safemalloc(coords_size * sizeof(int));
+	e = *exc->x.etrigger;
+	/*
+	 * set the default option
+	 */
+	if (e.type == KeyPress || e.type == ButtonPress) {
+		finish_on_release = True;
+	} else {
+		finish_on_release = False;
+	}
+
+	/*
+	 * parse the option
+	 */
+	for (action = GetNextSimpleOption(action, &opt); opt;
+	    action = GetNextSimpleOption(action, &opt)) {
+		if (StrEquals("NotStayPressed", opt)) {
+			finish_on_release = False;
+		} else if (StrEquals("EchoSequence", opt)) {
+			echo_sequence = True;
+		} else if (StrEquals("DrawMotion", opt)) {
+			draw_motion = True;
+		} else if (StrEquals("FeedBack", opt)) {
+			feed_back = True;
+		} else if (StrEquals("StrokeWidth", opt)) {
+			/*
+			 * stroke width takes a positive integer argument
+			 */
+			if (opt) {
+				free(opt);
+			}
+			action = GetNextToken(action, &opt);
+			if (!opt) {
+				fvwm_msg(WARN, "StrokeWidth",
+				    "needs an integer argument");
+			}
+			/*
+			 * we allow stroke_width == 0 which means drawing a
+			 * * `fast' line of width 1; the upper level of 100 is
+			 * * arbitrary
+			 */
+			else if (!sscanf(opt, "%d", &stroke_width) ||
+			    stroke_width < 0 || stroke_width > 100) {
+				fvwm_msg(WARN, "StrokeWidth",
+				    "Bad integer argument %d", stroke_width);
+				stroke_width = 1;
+			}
+		} else {
+			fvwm_msg(WARN, "StrokeFunc", "Unknown option %s",
+			    opt);
+		}
+		if (opt) {
+			free(opt);
+		}
+	}
+	if (opt) {
+		free(opt);
+	}
+
+	/*
+	 * Force auto repeat off and grab the Keyboard to get proper
+	 * * KeyRelease events if we need it.
+	 * * Some computers do not support KeyRelease events, can we
+	 * * check this here ? No ?
+	 */
+	if (start_event_type == KeyPress && finish_on_release) {
+		XKeyboardState  kstate;
+
+		XGetKeyboardControl(dpy, &kstate);
+		if (kstate.global_auto_repeat == AutoRepeatModeOn) {
+			XAutoRepeatOff(dpy);
+			restore_repeat = True;
+		}
+		MyXGrabKeyboard(dpy);
+	}
+
+	/*
+	 * be ready to get a stroke sequence
+	 */
+	stroke_init();
+
+	if (draw_motion) {
+		MyXGrabServer(dpy);
+		if (FQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild, &x[0],
+			&y[0], &JunkX, &JunkY, &JunkMask) == False) {
+			/*
+			 * pointer is on a different screen
+			 */
+			x[0] = 0;
+			y[0] = 0;
+		}
+		XSetLineAttributes(dpy, Scr.XorGC, stroke_width, LineSolid,
+		    CapButt, JoinMiter);
+	}
+
+	while (!finished && !abort) {
+		/*
+		 * block until there is an event
+		 */
+		FMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+		    KeyPressMask | KeyReleaseMask | ButtonMotionMask |
+		    PointerMotionMask, &e);
+		switch (e.type) {
+		case MotionNotify:
+			if (e.xmotion.same_screen == False) {
+				continue;
+			}
+			if (e.xany.window != Scr.Root) {
+				if (FQueryPointer(dpy, Scr.Root, &JunkRoot,
+					&JunkChild, &tmpx, &tmpy, &JunkX,
+					&JunkY, &JunkMask) == False) {
+					/*
+					 * pointer is on a different screen
+					 */
+					tmpx = 0;
+					tmpy = 0;
+				}
+			} else {
+				tmpx = e.xmotion.x;
+				tmpy = e.xmotion.y;
+			}
+			stroke_record(tmpx, tmpy);
+			if (draw_motion && (x[i] != tmpx || y[i] != tmpy)) {
+				i++;
+				if (i >= coords_size) {
+					coords_size += STROKE_CHUNK_SIZE;
+					x = (int *) saferealloc(
+					    (void *) x, coords_size *
+					    sizeof(int));
+					y = (int *) saferealloc(
+					    (void *) y, coords_size *
+					    sizeof(int));
+				}
+				x[i] = tmpx;
+				y[i] = tmpy;
+				XDrawLine(dpy, Scr.Root, Scr.XorGC, x[i - 1],
+				    y[i - 1], x[i], y[i]);
+			}
+			break;
+		case ButtonRelease:
+			if (finish_on_release && start_event_type ==
+			    ButtonPress) {
+				finished = 1;
+			}
+			break;
+		case KeyRelease:
+			if (finish_on_release && start_event_type == KeyPress) {
+				finished = 1;
+			}
+			break;
+		case KeyPress:
+			keysym = XLookupKeysym(&e.xkey, 0);
+			/*
+			 * abort if Escape or Delete is pressed (as in menus.c)
+			 */
+			if (keysym == XK_Escape || keysym == XK_Delete ||
+			    keysym == XK_KP_Separator) {
+				abort = 1;
+			}
+			/*
+			 * finish on enter or space (as in menus.c)
+			 */
+			if (keysym == XK_Return || keysym == XK_KP_Enter ||
+			    keysym == XK_space) {
+				finished = 1;
+			}
+			break;
+		case ButtonPress:
+			if (!finish_on_release) {
+				finished = 1;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (draw_motion) {
+		while (i > 0) {
+			XDrawLine(dpy, Scr.Root, Scr.XorGC, x[i - 1],
+			    y[i - 1], x[i], y[i]);
+			i--;
+		}
+		XSetLineAttributes(dpy, Scr.XorGC, 0, LineSolid, CapButt,
+		    JoinMiter);
+		MyXUngrabServer(dpy);
+	}
+	if (x != NULL) {
+		free(x);
+		free(y);
+	}
+	if (start_event_type == KeyPress && finish_on_release) {
+		MyXUngrabKeyboard(dpy);
+	}
+	UngrabEm(GRAB_NORMAL);
+	if (restore_repeat) {
+		XAutoRepeatOn(dpy);
+	}
+
+	/*
+	 * get the stroke sequence
+	 */
+	stroke_trans(sequence);
+
+	if (echo_sequence) {
+		char            num_seq[STROKE_MAX_SEQUENCE + 1];
+
+		for (i = 0; sequence[i] != '\0'; i++) {
+			/*
+			 * Telephone to numeric pad
+			 */
+			if ('7' <= sequence[i] && sequence[i] <= '9') {
+				num_seq[i] = sequence[i] - 6;
+			} else if ('1' <= sequence[i] && sequence[i] <= '3') {
+				num_seq[i] = sequence[i] + 6;
+			} else {
+				num_seq[i] = sequence[i];
+			}
+		}
+		num_seq[i++] = '\0';
+		fvwm_msg(INFO, "StrokeFunc", "stroke sequence: %s (N%s)",
+		    sequence, num_seq);
+	}
+	if (abort) {
+		return;
+	}
+	if (exc->w.fw == NULL) {
+		class = NULL;
+		name = NULL;
+	} else {
+		class = &exc->w.fw->class;
+		name = exc->w.fw->name.name;
+	}
+	/*
+	 * check for a binding
+	 */
+	stroke_action =
+	    CheckBinding(Scr.AllBindings, sequence, 0, modifiers,
+	    GetUnusedModifiers(), exc->w.wcontext, BIND_STROKE, class, name);
+
+	/*
+	 * execute the action
+	 */
+	if (stroke_action != NULL) {
+		const exec_context_t *exc2;
+		exec_context_changes_t ecc;
+
+		if (feed_back && atoi(sequence) != 0) {
+			GrabEm(CRS_WAIT, GRAB_BUSY);
+			usleep(200000);
+			UngrabEm(GRAB_BUSY);
+		}
+		ecc.x.etrigger = &e;
+		exc2 = exc_clone_context(exc, &ecc, ECC_ETRIGGER);
+		execute_function(cond_rc, exc2, stroke_action, 0);
+		exc_destroy_context(exc2);
+	}
+
+	return;
+}
+#endif /* HAVE_STROKE */
 
 void
 CMD_State(F_CMD_ARGS)
@@ -3522,9 +4007,9 @@ CMD_State(F_CMD_ARGS)
 	FvwmWindow     *const fw = exc->w.fw;
 
 	n = GetIntegerArguments(action, &action, (int *) &state, 1);
-	if (n <= 0)
+	if (n <= 0) {
 		return;
-
+	}
 	if (state < 0 || state > 31) {
 		fvwm_msg(ERR, "CMD_State", "Illegal state %d\n", state);
 		return;
@@ -3543,4 +4028,6 @@ CMD_State(F_CMD_ARGS)
 		SET_USER_STATES(fw, state);
 		break;
 	}
+
+	return;
 }

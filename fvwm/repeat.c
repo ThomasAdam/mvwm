@@ -31,11 +31,47 @@
  * command again. */
 static int      repeat_depth = 0;
 
+#if 0
+typedef struct
+{
+	char           *start;
+	char           *end;
+} double_ended_string;
+
+static struct
+{
+	double_ended_string string;
+	double_ended_string old;
+	double_ended_string builtin;
+	double_ended_string function;
+	double_ended_string top_function;
+	double_ended_string module;
+	double_ended_string menu;
+	double_ended_string popup;
+	double_ended_string menu_or_popup;
+	int             page_x;
+	int             page_y;
+	int             desk;
+	FvwmWindow     *fvwm_window;
+} last;
+#endif
+
 static struct
 {
 	char           *command_line;
 	char           *menu_name;
-} last = {NULL, NULL};
+} last = {
+NULL, NULL};
+
+#if 0
+char           *repeat_last_function = NULL;
+char           *repeat_last_complex_function = NULL;
+char           *repeat_last_builtin_function = NULL;
+char           *repeat_last_module = NULL;
+char           *repeat_last_top_function = NULL;
+char           *repeat_last_menu = NULL;
+FvwmWindow     *repeat_last_fvwm_window = NULL;
+#endif
 
 /* Stores the contents of the data pointer internally for the repeat command.
  * The type of data is determined by the 'type' parameter. If this function is
@@ -94,7 +130,9 @@ set_repeat_data(void *data, repeat_t type, const func_t * builtin)
 		return False;
 	case REPEAT_MENU:
 	case REPEAT_POPUP:
-		free(last.menu_name);
+		if (last.menu_name) {
+			free(last.menu_name);
+		}
 		last.menu_name = (char *) data;
 		/*
 		 * Since we stored the pointer the caller must not free it.
@@ -135,4 +173,6 @@ CMD_Repeat(F_CMD_ARGS)
 		break;
 	}
 	repeat_depth--;
+
+	return;
 }

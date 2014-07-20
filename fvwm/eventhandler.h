@@ -25,24 +25,25 @@ typedef struct
 /* ---------------------------- event handlers ----------------------------- */
 
 void            HandleEvents(void);
-void            HandleExpose(const evh_args_t *);
-void            HandleFocusIn(const evh_args_t *);
-void            HandleFocusOut(const evh_args_t *);
-void            HandleDestroyNotify(const evh_args_t *);
-void            HandleMapRequest(const evh_args_t *);
-void            HandleMapRequestKeepRaised(const evh_args_t *,
-    Window, FvwmWindow *,initial_window_options_t *);
-void            HandleMapNotify(const evh_args_t *);
-void            HandleUnmapNotify(const evh_args_t *);
-void            HandleMotionNotify(const evh_args_t *);
-void            HandleButtonRelease(const evh_args_t *);
-void            HandleButtonPress(const evh_args_t *);
-void            HandleEnterNotify(const evh_args_t *);
-void            HandleLeaveNotify(const evh_args_t *);
-void            HandleConfigureRequest(const evh_args_t *);
-void            HandleClientMessage(const evh_args_t *);
-void            HandlePropertyNotify(const evh_args_t *);
-void            HandleKeyPress(const evh_args_t *);
-void            HandleKeyRelease(const evh_args_t *);
-void            HandleVisibilityNotify(const evh_args_t *);
+void            HandleExpose(const evh_args_t *ea);
+void            HandleFocusIn(const evh_args_t *ea);
+void            HandleFocusOut(const evh_args_t *ea);
+void            HandleDestroyNotify(const evh_args_t *ea);
+void            HandleMapRequest(const evh_args_t *ea);
+void            HandleMapRequestKeepRaised(const evh_args_t *ea,
+    Window KeepRaised, FvwmWindow *ReuseWin,
+    initial_window_options_t *win_opts);
+void            HandleMapNotify(const evh_args_t *ea);
+void            HandleUnmapNotify(const evh_args_t *ea);
+void            HandleMotionNotify(const evh_args_t *ea);
+void            HandleButtonRelease(const evh_args_t *ea);
+void            HandleButtonPress(const evh_args_t *ea);
+void            HandleEnterNotify(const evh_args_t *ea);
+void            HandleLeaveNotify(const evh_args_t *ea);
+void            HandleConfigureRequest(const evh_args_t *ea);
+void            HandleClientMessage(const evh_args_t *ea);
+void            HandlePropertyNotify(const evh_args_t *ea);
+void            HandleKeyPress(const evh_args_t *ea);
+void            HandleKeyRelease(const evh_args_t *ea);
+void            HandleVisibilityNotify(const evh_args_t *ea);
 #endif /* EVENTHANDLER_H */

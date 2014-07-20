@@ -326,11 +326,11 @@ UngrabEm(int ungrab_context)
 
 #ifndef fvwm_msg	/* Some ports (i.e. VMS) define their own version */
 /*
- * fvwm_msg: used to send output from fvwm to files and or stderr/stdout
- *
- * type -> DBG == Debug, ERR == Error, INFO == Information, WARN == Warning,
- * OLD == Command or option deprecated
- * id -> name of function, or other identifier
+** fvwm_msg: used to send output from fvwm to files and or stderr/stdout
+**
+** type -> DBG == Debug, ERR == Error, INFO == Information, WARN == Warning,
+** OLD == Command or option deprecated
+** id -> name of function, or other identifier
 */
 static char    *fvwm_msg_strings[] = {
 	"<<DEBUG>> ", "", "", "<<WARNING>> ", "<<DEPRECATED>> ", "<<ERROR>> "
@@ -417,6 +417,8 @@ fvwm_msg_report_app(void)
 	    " bug report\n"
 	    "    with this message included to the application owner.\n"
 	    "    There is no need to notify fvwm-workers@fvwm.org.\n");
+
+	return;
 }
 
 void
@@ -427,6 +429,8 @@ fvwm_msg_report_app_and_workers(void)
 	    " a bug report with\n"
 	    "    this message included to the application owner and"
 	    " notify\n" "    fvwm-workers@fvwm.org.\n");
+
+	return;
 }
 
 /* Store the last item that was added with '+' */
@@ -435,6 +439,8 @@ set_last_added_item(last_added_item_t type, void *item)
 {
 	Scr.last_added_item.type = type;
 	Scr.last_added_item.item = item;
+
+	return;
 }
 
 /* some fancy font handling stuff */
@@ -449,6 +455,8 @@ NewFontAndColor(FlocaleFont *flf, Pixel color, Pixel backcolor)
 	Globalgcv.foreground = color;
 	Globalgcv.background = backcolor;
 	XChangeGC(dpy, Scr.TitleGC, Globalgcm, &Globalgcv);
+
+	return;
 }
 
 /*
@@ -470,6 +478,8 @@ Keyboard_shortcuts(XEvent *ev, FvwmWindow *fw, int *x_defect, int *y_defect,
 	}
 	fvwmlib_keyboard_shortcuts(dpy, Scr.screen, ev, x_move_size,
 	    y_move_size, x_defect, y_defect, ReturnEvent);
+
+	return;
 }
 
 /*
@@ -550,6 +560,7 @@ get_pointer_fvwm_window(void)
 			XFree(children);
 		}
 	}
+
 	return t;
 }
 
@@ -589,4 +600,6 @@ print_g(char *text, rectangle *g)
 	fprintf(stderr, "%4d %4d %4dx%4d (%4d - %4d, %4d - %4d)\n",
 	    g->x, g->y, g->width, g->height,
 	    g->x, g->x + g->width, g->y, g->y + g->height);
+
+	return;
 }

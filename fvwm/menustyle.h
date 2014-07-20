@@ -342,11 +342,11 @@ typedef struct MenuStyle
 
 /* ---------------------------- interface functions ------------------------ */
 
-void            menustyle_free(MenuStyle *);
-MenuStyle      *menustyle_find(char *);
-void            menustyle_update(MenuStyle *);
+void            menustyle_free(MenuStyle *ms);
+MenuStyle      *menustyle_find(char *name);
+void            menustyle_update(MenuStyle *ms);
 MenuStyle      *menustyle_parse_style(F_CMD_ARGS);
 MenuStyle      *menustyle_get_default_style(void);
-void            menustyle_copy(MenuStyle *, MenuStyle *);
+void            menustyle_copy(MenuStyle *origms, MenuStyle *destms);
 
 #endif /* MENUSTYLE_H */

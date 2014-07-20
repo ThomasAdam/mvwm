@@ -43,25 +43,32 @@ typedef void   *frame_move_resize_args;
 /* ---------------------------- interface functions ------------------------ */
 
 void            frame_init(void);
-Bool            is_frame_hide_window(Window);
-void            frame_destroyed_frame(Window);
-frame_move_resize_args frame_create_move_resize_args(FvwmWindow *,
-    frame_move_resize_mode, rectangle *, rectangle *, int, int);
-void            frame_update_move_resize_args(frame_move_resize_args,
-    rectangle *);
-void            frame_free_move_resize_args(FvwmWindow *,
-    frame_move_resize_args);
-void            frame_get_titlebar_dimensions(FvwmWindow *,
-    rectangle *, rectangle *, frame_title_layout_t *);
-void            frame_get_sidebar_geometry(FvwmWindow *,
-    DecorFaceStyle *, rectangle *, rectangle *, Bool *, Bool *);
-int             frame_window_id_to_context(FvwmWindow *, Window, int *);
-void            frame_move_resize(FvwmWindow *, frame_move_resize_args);
-void            frame_setup_window(FvwmWindow *, int, int, int, int, Bool);
-void            frame_setup_window_app_request(FvwmWindow *, int, int,
-    int, int, Bool);
-void            frame_force_setup_window(FvwmWindow *, int, int, int, int,
-    Bool);
-void            frame_setup_shape(FvwmWindow *, int, int, int);
+Bool            is_frame_hide_window(Window w);
+void            frame_destroyed_frame(Window frame_w);
+frame_move_resize_args frame_create_move_resize_args(FvwmWindow *fw,
+    frame_move_resize_mode mr_mode, rectangle *start_g, rectangle *end_g,
+    int anim_steps, int shade_dir);
+void            frame_update_move_resize_args(frame_move_resize_args mr_args,
+    rectangle *end_g);
+void            frame_free_move_resize_args(FvwmWindow *fw,
+    frame_move_resize_args mr_args);
+void            frame_get_titlebar_dimensions(FvwmWindow *fw,
+    rectangle *frame_g, rectangle *diff_g,
+    frame_title_layout_t * title_layout);
+void            frame_get_sidebar_geometry(FvwmWindow *fw,
+    DecorFaceStyle *borderstyle, rectangle *frame_g, rectangle *ret_g,
+    Bool *ret_has_x_marks, Bool *ret_has_y_marks);
+int             frame_window_id_to_context(FvwmWindow *fw, Window w,
+    int *ret_num);
+void            frame_move_resize(FvwmWindow *fw,
+    frame_move_resize_args mr_args);
+void            frame_setup_window(FvwmWindow *fw, int x, int y, int w, int h,
+    Bool do_send_configure_notify);
+void            frame_setup_window_app_request(FvwmWindow *fw, int x, int y,
+    int w, int h, Bool do_send_configure_notify);
+void            frame_force_setup_window(FvwmWindow *fw, int x, int y, int w,
+    int h, Bool do_send_configure_notify);
+void            frame_setup_shape(FvwmWindow *fw, int w, int h,
+    int shape_mode);
 
 #endif /* FRAME_H */

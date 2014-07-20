@@ -90,6 +90,8 @@ clear_icon_dimensions(FvwmWindow *fw)
 	fw->icon_g.picture_w_g.y = py;
 	fw->icon_g.title_w_g.x = tx;
 	fw->icon_g.title_w_g.y = ty;
+
+	return;
 }
 
 /* erase all traces of the last used icon in the window structure */
@@ -103,10 +105,13 @@ clear_icon(FvwmWindow *fw)
 	fw->icon_nalloc_pixels = 0;
 	fw->icon_alloc_pixels = NULL;
 	fw->icon_no_limit = 0;
-	if (IS_ICON_MOVED(fw))
+	if (IS_ICON_MOVED(fw)) {
 		clear_icon_dimensions(fw);
-	else
+	} else {
 		memset(&fw->icon_g, 0, sizeof(fw->icon_g));
+	}
+
+	return;
 }
 
 int
@@ -114,14 +119,15 @@ get_visible_icon_window_count(FvwmWindow *fw)
 {
 	int             count = 0;
 
-	if (fw == NULL || !IS_ICONIFIED(fw) || IS_ICON_SUPPRESSED(fw))
+	if (fw == NULL || !IS_ICONIFIED(fw) || IS_ICON_SUPPRESSED(fw)) {
 		return 0;
-
-	if (FW_W_ICON_PIXMAP(fw) != None)
+	}
+	if (FW_W_ICON_PIXMAP(fw) != None) {
 		count++;
-
-	if (FW_W_ICON_TITLE(fw) != None)
+	}
+	if (FW_W_ICON_TITLE(fw) != None) {
 		count++;
+	}
 
 	return count;
 }
@@ -156,6 +162,8 @@ setup_icon_title_size(FvwmWindow *fw)
 			    fw->icon_g.picture_w_g.width;
 		}
 	}
+
+	return;
 }
 
 /*
@@ -180,8 +188,9 @@ SetIconPixmapSize(Pixmap *icon, int width, int height, int depth,
 	/*
 	 * Check for invalid dimensions
 	 */
-	if (newWidth == 0 || newHeight == 0)
+	if (newWidth == 0 || newHeight == 0) {
 		return;
+	}
 
 	/*
 	 * Save the existing Pixmap
@@ -504,6 +513,8 @@ GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 			fw->icon_g.picture_w_g.height = newHeight;
 		}
 	}
+
+	return;
 }
 
 /*
@@ -570,8 +581,9 @@ CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 	fw->iconPixmap = None;
 	fw->iconDepth = 0;
 
-	if (IS_ICON_SUPPRESSED(fw))
+	if (IS_ICON_SUPPRESSED(fw)) {
 		return;
+	}
 
 	/*
 	 * set up the icon picture
@@ -782,6 +794,8 @@ CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 		XConfigureWindow(dpy, FW_W_ICON_PIXMAP(fw),
 		    CWSibling | CWStackMode, &xwc);
 	}
+
+	return;
 }
 
 /*
@@ -915,8 +929,9 @@ DrawIconTitleWindow(FvwmWindow *fw, XEvent *pev, Pixel BackColor, GC Shadow,
 		SetWindowBackground(dpy, FW_W_ICON_TITLE(fw), w_title_w,
 		    ICON_HEIGHT(fw), &Colorset[title_cs], Pdepth,
 		    Scr.TitleGC, False);
-	} else
+	} else {
 		XSetWindowBackground(dpy, FW_W_ICON_TITLE(fw), BackColor);
+	}
 
 	/*
 	 * text position
@@ -1061,6 +1076,8 @@ DrawIconTitleWindow(FvwmWindow *fw, XEvent *pev, Pixel BackColor, GC Shadow,
 			    ICON_TITLE_STICK_HEIGHT);
 		}
 	}
+
+	return;
 }
 
 static void
@@ -1140,10 +1157,10 @@ DrawIconPixmapWindow(FvwmWindow *fw, Bool reset_bg, XEvent *pev, GC Shadow,
 		} else {
 			/*
 			 * it's a client pixmap and fvwm is not using
-			 * the root visual The icon window has no 3d
-			 * border so copy to (0,0) install the root
-			 * colormap temporarily to help the Exceed
-			 * server
+			 * * the root visual The icon window has no 3d
+			 * * border so copy to (0,0) install the root
+			 * * colormap temporarily to help the Exceed
+			 * * server
 			 */
 			if (bo.do_install_root_cmap)
 				InstallRootColormap();
@@ -1284,9 +1301,9 @@ DrawIconWindow(FvwmWindow *fw, Bool draw_title, Bool draw_pixmap,
 				    Relief, cs, title_cs);
 			}
 		} else {
-			if (!pev)
+			if (!pev) {
 				flush_expose(FW_W_ICON_TITLE(fw));
-
+			}
 			DrawIconTitleWindow(fw, pev, BackColor, Shadow,
 			    Relief, cs, title_cs);
 		}
@@ -1361,8 +1378,10 @@ DrawIconWindow(FvwmWindow *fw, Bool draw_title, Bool draw_pixmap,
 			    (Colorset[co_cs].icon_alpha_percent < 100);
 			tint_change = (Colorset[co_cs].icon_tint_percent > 0);
 		}
-		if (alpha_change || tint_change || relief_change || color_change)
+		if (alpha_change || tint_change || relief_change ||
+		    color_change) {
 			draw_pixmap = True;
+		}
 	}
 
 	if (draw_pixmap && FW_W_ICON_PIXMAP(fw) != None) {
@@ -1395,11 +1414,14 @@ DrawIconWindow(FvwmWindow *fw, Bool draw_title, Bool draw_pixmap,
 		xwc.sibling = FW_W_FRAME(fw);
 		xwc.stack_mode = Below;
 		mask = CWSibling | CWStackMode;
-		if (FW_W_ICON_TITLE(fw) != None)
-			XConfigureWindow(dpy, FW_W_ICON_TITLE(fw), mask, &xwc);
-
-		if (FW_W_ICON_PIXMAP(fw) != None)
-			XConfigureWindow(dpy, FW_W_ICON_PIXMAP(fw), mask, &xwc);
+		if (FW_W_ICON_TITLE(fw) != None) {
+			XConfigureWindow(dpy, FW_W_ICON_TITLE(fw), mask,
+			    &xwc);
+		}
+		if (FW_W_ICON_PIXMAP(fw) != None) {
+			XConfigureWindow(dpy, FW_W_ICON_PIXMAP(fw), mask,
+			    &xwc);
+		}
 	}
 	/*
 	 * wait for pending EnterNotify/LeaveNotify events to suppress race
@@ -1450,16 +1472,19 @@ ChangeIconPixmap(FvwmWindow *fw)
 			LowerWindow(fw, False);
 			AutoPlaceIcon(fw, NULL, True);
 			if (fw->Desk == fw->m->virtual_scr.CurrentDesk) {
-				if (FW_W_ICON_TITLE(fw))
+				if (FW_W_ICON_TITLE(fw)) {
 					XMapWindow(dpy, FW_W_ICON_TITLE(fw));
-
-				if (FW_W_ICON_PIXMAP(fw) != None)
+				}
+				if (FW_W_ICON_PIXMAP(fw) != None) {
 					XMapWindow(dpy, FW_W_ICON_PIXMAP(fw));
+				}
 			}
 		}
 		SET_ICONIFIED(fw, 1);
 		DrawIconWindow(fw, False, True, False, False, NULL);
 	}
+
+	return;
 }
 
 /*
@@ -1471,12 +1496,12 @@ ChangeIconPixmap(FvwmWindow *fw)
 void
 RedoIconName(FvwmWindow *fw)
 {
-	if (IS_ICON_SUPPRESSED(fw))
+	if (IS_ICON_SUPPRESSED(fw)) {
 		return;
-
-	if (FW_W_ICON_TITLE(fw) == None)
+	}
+	if (FW_W_ICON_TITLE(fw) == None) {
 		return;
-
+	}
 	setup_icon_title_size(fw);
 	/*
 	 * clear the icon window, and trigger a re-draw via an expose event
@@ -1485,6 +1510,8 @@ RedoIconName(FvwmWindow *fw)
 		DrawIconWindow(fw, True, False, False, False, NULL);
 		XClearArea(dpy, FW_W_ICON_TITLE(fw), 0, 0, 0, 0, True);
 	}
+
+	return;
 }
 
 /*
@@ -1507,6 +1534,16 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 	int             new_x, new_y;
 	Bool            do_move_icon = False;
 
+#if 0
+	/*
+	 * dv (16-Mar-2003):  We need to place the icon even if there is no icon so
+	 * * the 'position' can be communicated to the modules to decide whether to show
+	 * * the icon or not.
+	 */
+	if (FW_W_ICON_PIXMAP(t) == None && FW_W_ICON_TITLE(t) == None) {
+		return;
+	}
+#endif
 	/*
 	 * New! Put icon in same page as the center of the window
 	 */
@@ -1514,9 +1551,9 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 	 * Not a good idea for StickyIcons. Neither for icons of windows that are
 	 * * visible on the current page.
 	 */
-	if (IS_ICON_STICKY_ACROSS_DESKS(t) || IS_STICKY_ACROSS_DESKS(t))
+	if (IS_ICON_STICKY_ACROSS_DESKS(t) || IS_STICKY_ACROSS_DESKS(t)) {
 		t->Desk = t->m->virtual_scr.CurrentDesk;
-
+	}
 	if (IS_ICON_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_PAGES(t)) {
 		base_x = 0;
 		base_y = 0;
@@ -1576,12 +1613,12 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 		 */
 		g.x = g.x % t->m->coord.w + base_x;
 		g.y = g.y % t->m->coord.h + base_y;
-		if (g.x < 0)
+		if (g.x < 0) {
 			g.x += t->m->coord.w;
-
-		if (g.y < 0)
+		}
+		if (g.y < 0) {
 			g.y += t->m->coord.h;
-
+		}
 		dx = g.x - dx;
 		dy = g.y - dy;
 		modify_icon_position(t, dx, dy);
@@ -1625,14 +1662,14 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 		 */
 		typedef struct dimension_struct
 		{
-			int             step; /* grid size (may be negative) */
-			int             start_at; /* starting edge */
-			int             real_start; /* on screen starting edge */
+			int             step;	/* grid size (may be negative) */
+			int             start_at;	/* starting edge */
+			int             real_start;	/* on screen starting edge */
 			int             end_at;	/* ending edge */
 			int             base;	/* base for screen */
 			int             icon_dimension;	/* height or width */
-			int             nom_dimension; /* nonminal height or width */
-			int             screen_dimension; /* screen height or width */
+			int             nom_dimension;	/* nonminal height or width */
+			int             screen_dimension;	/* screen height or width */
 			int             screen_offset;	/* screen offset */
 		} dimension;
 		dimension       dim[3];	/* space for work, 1st, 2nd dimen */
@@ -1679,9 +1716,12 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 		 */
 		icon_boxes_ptr = NULL;	/* init */
 		while (do_all_iconboxes(t, &icon_boxes_ptr)) {
-			if (loc_ok == True)
+			if (loc_ok == True) {
+				/*
+				 * leave for loop
+				 */
 				break;
-
+			}
 			/*
 			 * get the screen dimensions for the icon box
 			 */
@@ -1769,13 +1809,11 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 				/*
 				 * for dimensions 1 and 2
 				 */
-
 				/*
 				 * If the window is taller than the icon box, ignore the icon height
-				 * when figuring where to put it. Same goes for the width
-				 * This should permit reasonably graceful handling of big icons.
+				 * * when figuring where to put it. Same goes for the width
+				 * * This should permit reasonably graceful handling of big icons.
 				 */
-				
 				dim[i].nom_dimension = dim[i].icon_dimension;
 				if (dim[i].icon_dimension >=
 				    dim[i].end_at - dim[i].start_at) {
@@ -2000,8 +2038,9 @@ AutoPlaceIcon(FvwmWindow *t, initial_window_options_t *win_opts,
 						}	/* end if same desk */
 						test_fw = test_fw->next;
 					}	/* end while icons that may overlap */
-					if (loc_ok_wrong_screen2)
+					if (loc_ok_wrong_screen2) {
 						loc_ok_wrong_screen = True;
+					}
 					/*
 					 * Grid inner value & direction
 					 */
@@ -2136,15 +2175,15 @@ GetIconFromFile(FvwmWindow *fw)
 	FvwmPictureAttributes fpa;
 
 	fpa.mask = 0;
-	if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
+	if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon) {
 		fpa.mask |= FPAM_DITHER;
-
+	}
 	fw->icon_g.picture_w_g.width = 0;
 	fw->icon_g.picture_w_g.height = 0;
 	path = PictureFindImageFile(fw->icon_bitmap_file, NULL, R_OK);
-	if (path == NULL)
+	if (path == NULL) {
 		return;
-
+	}
 	if (!PImageLoadPixmapFromFile(dpy, Scr.NoFocusWin, path,
 		&fw->iconPixmap, &fw->icon_maskPixmap, &fw->icon_alphaPixmap,
 		&fw->icon_g.picture_w_g.width, &fw->icon_g.picture_w_g.height,
@@ -2156,8 +2195,11 @@ GetIconFromFile(FvwmWindow *fw)
 	}
 	SET_PIXMAP_OURS(fw, 1);
 	free(path);
-	if (FShapesSupported && fw->icon_maskPixmap)
+	if (FShapesSupported && fw->icon_maskPixmap) {
 		SET_ICON_SHAPED(fw, 1);
+	}
+
+	return;
 }
 
 /*
@@ -2216,6 +2258,8 @@ GetIconWindow(FvwmWindow *fw)
 	 */
 	XReparentWindow(dpy, FW_W_ICON_PIXMAP(fw), Scr.Root, 0, 0);
 	SET_ICON_OURS(fw, 0);
+
+	return;
 }
 
 /*
@@ -2275,6 +2319,8 @@ GetIconBitmap(FvwmWindow *fw)
 		}
 	}
 	SET_PIXMAP_OURS(fw, 0);
+
+	return;
 }
 
 /*
@@ -2312,14 +2358,15 @@ DeIconify(FvwmWindow *fw)
 	}
 	for (ofw = NULL; fw != ofw && IS_ICONIFIED_BY_PARENT(fw);) {
 		t = get_transientfor_fvwmwindow(fw);
-		if (t == NULL)
+		if (t == NULL) {
 			break;
-
+		}
 		ofw = fw;
 		fw = t;
 	}
-	if (IS_ICONIFIED_BY_PARENT(fw))
+	if (IS_ICONIFIED_BY_PARENT(fw)) {
 		SET_ICONIFIED_BY_PARENT(fw, 0);
+	}
 
 	/*
 	 * AS dje  RaiseWindow(fw);
@@ -2352,12 +2399,12 @@ DeIconify(FvwmWindow *fw)
 			/*
 			 * AS stuff starts here dje
 			 */
-			if (FW_W_ICON_PIXMAP(t))
+			if (FW_W_ICON_PIXMAP(t)) {
 				XUnmapWindow(dpy, FW_W_ICON_PIXMAP(t));
-
-			if (FW_W_ICON_TITLE(t))
+			}
+			if (FW_W_ICON_TITLE(t)) {
 				XUnmapWindow(dpy, FW_W_ICON_TITLE(t));
-
+			}
 			XFlush(dpy);
 			/*
 			 * End AS
@@ -2447,9 +2494,9 @@ DeIconify(FvwmWindow *fw)
 		}
 	}
 
-
+#if 1
 	RaiseWindow(fw, False);	/* moved dje */
-
+#endif
 	if (sf == fw) {
 		/*
 		 * update the focus to make sure the application knows its
@@ -2463,6 +2510,8 @@ DeIconify(FvwmWindow *fw)
 		SetFocusWindow(fw, True, FOCUS_SET_FORCE);
 	}
 	focus_grab_buttons_on_layer(fw->layer);
+
+	return;
 }
 
 /*
@@ -2479,17 +2528,19 @@ Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	unsigned long   eventMask;
 	rectangle       icon_rect;
 
-	if (!fw)
+	if (!fw) {
 		return;
-
-	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs))
+	}
+	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs)) {
 		return;
+	}
 
 	/*
 	 * make sure fw->flags.is_map_pending is OK
 	 */
-	if ((winattrs.map_state == IsViewable) && IS_MAP_PENDING(fw))
+	if ((winattrs.map_state == IsViewable) && IS_MAP_PENDING(fw)) {
 		SET_MAP_PENDING(fw, 0);
+	}
 
 	if (IS_MAP_PENDING(fw)) {
 		/*
@@ -2531,11 +2582,12 @@ Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 			XUnmapWindow(dpy, FW_W_FRAME(t));
 			border_undraw_decorations(t);
 			t->DeIconifyDesk = t->Desk;
-			if (FW_W_ICON_TITLE(t))
+			if (FW_W_ICON_TITLE(t)) {
 				XUnmapWindow(dpy, FW_W_ICON_TITLE(t));
-
-			if (FW_W_ICON_PIXMAP(t))
+			}
+			if (FW_W_ICON_PIXMAP(t)) {
 				XUnmapWindow(dpy, FW_W_ICON_PIXMAP(t));
+			}
 
 			SetMapStateProp(t, IconicState);
 			border_draw_decorations(t, PART_ALL, False, False,
@@ -2562,8 +2614,9 @@ Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	/*
 	 * necessary during a recapture
 	 */
-	if (IS_ICONIFIED_BY_PARENT(fw))
+	if (IS_ICONIFIED_BY_PARENT(fw)) {
 		return;
+	}
 
 	if (FW_W_ICON_TITLE(fw) == None || HAS_ICON_CHANGED(fw)) {
 		if (IS_ICON_MOVED(fw) || win_opts->flags.use_initial_icon_xy) {
@@ -2629,14 +2682,16 @@ Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 		fw->Desk = fw->m->virtual_scr.CurrentDesk;
 	}
 	if (fw->Desk == fw->m->virtual_scr.CurrentDesk) {
-		if (FW_W_ICON_TITLE(fw) != None)
+		if (FW_W_ICON_TITLE(fw) != None) {
 			XMapWindow(dpy, FW_W_ICON_TITLE(fw));
-
-		if (FW_W_ICON_PIXMAP(fw) != None)
+		}
+		if (FW_W_ICON_PIXMAP(fw) != None) {
 			XMapWindow(dpy, FW_W_ICON_PIXMAP(fw));
-
+		}
 	}
 	focus_grab_buttons_on_layer(fw->layer);
+
+	return;
 }
 
 /*
@@ -2662,6 +2717,8 @@ SetMapStateProp(const FvwmWindow *fw, int state)
 
 	XChangeProperty(dpy, FW_W(fw), _XA_WM_STATE, _XA_WM_STATE, 32,
 	    PropModeReplace, (unsigned char *) data, 2);
+
+	return;
 }
 
 void
@@ -2673,16 +2730,18 @@ CMD_Iconify(F_CMD_ARGS)
 	toggle = ParseToggleArgument(action, NULL, -1, 0);
 	if (toggle == -1) {
 		if (GetIntegerArguments(action, NULL, &toggle, 1) > 0) {
-			if (toggle > 0)
+			if (toggle > 0) {
 				toggle = 1;
-			else if (toggle < 0)
+			} else if (toggle < 0) {
 				toggle = 0;
-			else
+			} else {
 				toggle = -1;
+			}
 		}
 	}
-	if (toggle == -1)
+	if (toggle == -1) {
 		toggle = (IS_ICONIFIED(fw)) ? 0 : 1;
+	}
 
 	if (IS_ICONIFIED(fw)) {
 		if (toggle == 0) {
@@ -2707,4 +2766,6 @@ CMD_Iconify(F_CMD_ARGS)
 			EWMH_SetWMState(fw, False);
 		}
 	}
+
+	return;
 }

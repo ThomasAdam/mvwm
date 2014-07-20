@@ -119,7 +119,7 @@ extern void     StartupStuff(void);
 
 /* ---------------------------- local types -------------------------------- */
 
-typedef void    (*PFEH) (const evh_args_t *);
+typedef void    (*PFEH) (const evh_args_t *ea);
 
 typedef struct
 {
@@ -168,9 +168,9 @@ fake_map_unmap_notify(const FvwmWindow *fw, int event_type)
 	XEvent          client_event;
 	XWindowAttributes winattrs = { 0 };
 
-	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs))
+	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs)) {
 		return;
-
+	}
 	XSelectInput(dpy, FW_W(fw),
 	    winattrs.your_event_mask & ~StructureNotifyMask);
 	client_event.type = event_type;
@@ -193,6 +193,8 @@ fake_map_unmap_notify(const FvwmWindow *fw, int event_type)
 	FSendEvent(dpy, FW_W(fw), False, StructureNotifyMask, &client_event);
 	XSelectInput(dpy, FW_W(fw), winattrs.your_event_mask);
 	XFlush(dpy);
+
+	return;
 }
 
 static Bool
@@ -246,8 +248,9 @@ test_withdraw_request(Display *display, XEvent *event, XPointer arg)
 Bool
 test_button_event(Display *display, XEvent *event, XPointer arg)
 {
-	if (event->type == ButtonPress || event->type == ButtonRelease)
+	if (event->type == ButtonPress || event->type == ButtonRelease) {
 		return True;
+	}
 
 	return False;
 }
@@ -275,9 +278,9 @@ test_resizing_event(Display *display, XEvent *event, XPointer arg)
 
 	cie_args = (check_if_event_args *) arg;
 	cie_args->ret_does_match = False;
-	if (event->xany.window != cie_args->w)
+	if (event->xany.window != cie_args->w) {
 		return False;
-
+	}
 	rc = False;
 	switch (event->type) {
 	case ConfigureRequest:
@@ -317,6 +320,8 @@ __handle_cr_on_unmanaged(XConfigureRequestEvent * cre)
 	xwc.height = cre->height;
 	xwc.border_width = cre->border_width;
 	XConfigureWindow(dpy, cre->window, xwcm, &xwc);
+
+	return;
 }
 
 static inline void
@@ -366,6 +371,8 @@ __handle_cr_on_icon(XConfigureRequestEvent * cre, FvwmWindow *fw)
 		xwcm = cre->value_mask & (CWX | CWY);
 		XConfigureWindow(dpy, FW_W_ICON_TITLE(fw), xwcm, &xwc);
 	}
+
+	return;
 }
 
 static inline void
@@ -382,8 +389,11 @@ __handle_cr_on_shaped(FvwmWindow *fw)
 	if (FShapeQueryExtents(dpy, FW_W(fw), &boundingShaped, &i, &i, &u, &u,
 		&b, &i, &i, &u, &u)) {
 		fw->wShaped = boundingShaped;
-	} else
+	} else {
 		fw->wShaped = 0;
+	}
+
+	return;
 }
 
 static inline void
@@ -399,8 +409,9 @@ __handle_cr_restack(int *ret_do_send_event, XConfigureRequestEvent * cre,
 			(caddr_t *) & fw2) == XCNOENT) {
 			fw2 = NULL;
 		}
-		if (fw2 == fw)
+		if (fw2 == fw) {
 			fw2 = NULL;
+		}
 	}
 	if (cre->detail != Above && cre->detail != Below) {
 		HandleUnusualStackmodes(cre->detail, fw, cre->window, fw2,
@@ -475,21 +486,26 @@ __handle_cr_restack(int *ret_do_send_event, XConfigureRequestEvent * cre,
 	 * * raise, otherwise it would hang for two seconds
 	 */
 	*ret_do_send_event = 1;
+
+	return;
 }
 
 static inline void
 __cr_get_static_position(rectangle *ret_g, FvwmWindow *fw,
     XConfigureRequestEvent * cre, size_borders *b)
 {
-	if (cre->value_mask & CWX)
+	if (cre->value_mask & CWX) {
 		ret_g->x = cre->x - b->top_left.width;
-	else
+	} else {
 		ret_g->x = fw->g.frame.x;
-
-	if (cre->value_mask & CWY)
+	}
+	if (cre->value_mask & CWY) {
 		ret_g->y = cre->y - b->top_left.height;
-	else
+	} else {
 		ret_g->y = fw->g.frame.y;
+	}
+
+	return;
 }
 
 static inline void
@@ -502,13 +518,14 @@ __cr_get_grav_position(rectangle *ret_g, FvwmWindow *fw,
 	gravity_get_offsets(fw->hints.win_gravity, &grav_x, &grav_y);
 	if (cre->value_mask & CWX) {
 		ret_g->x = cre->x - ((grav_x + 1) * b->total_size.width) / 2;
-	} else
+	} else {
 		ret_g->x = fw->g.frame.x;
-
-	if (cre->value_mask & CWY)
+	}
+	if (cre->value_mask & CWY) {
 		ret_g->y = cre->y - ((grav_y + 1) * b->total_size.height) / 2;
-	else
+	} else {
 		ret_g->y = fw->g.frame.y;
+	}
 
 	return;
 }
@@ -725,6 +742,8 @@ __cr_detect_icccm_move(FvwmWindow *fw, XConfigureRequestEvent * cre,
 		fprintf(stderr, "--- not detected %p '%s'\n", fw,
 		    fw->visible_name);
 	}
+
+	return;
 }
 
 #define EXPERIMENTAL_ANTI_RACE_CONDITION_CODE
@@ -807,21 +826,21 @@ __merge_cr_moveresize(const evh_args_t *ea, XConfigureRequestEvent * cre,
 		/*
 		 * collect the size/position changes
 		 */
-		if (ecre->value_mask & CWX)
+		if (ecre->value_mask & CWX) {
 			cre->x = ecre->x;
-
-		if (ecre->value_mask & CWY)
+		}
+		if (ecre->value_mask & CWY) {
 			cre->y = ecre->y;
-
-		if (ecre->value_mask & CWWidth)
+		}
+		if (ecre->value_mask & CWWidth) {
 			cre->width = ecre->width;
-
-		if (ecre->value_mask & CWHeight)
+		}
+		if (ecre->value_mask & CWHeight) {
 			cre->height = ecre->height;
-
-		if (ecre->value_mask & CWBorderWidth)
+		}
+		if (ecre->value_mask & CWBorderWidth) {
 			cre->border_width = ecre->border_width;
-
+		}
 		cre->value_mask |= (ecre->value_mask & CR_MOVERESIZE_MASK);
 		cn_count++;
 	}
@@ -843,11 +862,12 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 	int             cn_count = 0;
 	int             gravity;
 
-	if (ea)
+	if (ea) {
 		cre = ea->exc->x.etrigger->xconfigurerequest;
-
-	if ((cre.value_mask & (CWWidth | CWHeight | CWX | CWY)) == 0)
+	}
+	if ((cre.value_mask & (CWWidth | CWHeight | CWX | CWY)) == 0) {
 		return 0;
+	}
 
 	get_window_borders(fw, &b);
 #ifdef EXPERIMENTAL_ANTI_RACE_CONDITION_CODE
@@ -857,8 +877,20 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 	 * * method autodetection because the merged event might confuse the
 	 * * detection code.
 	 */
-	if (ea && CR_MOTION_METHOD(fw) != CR_MOTION_METHOD_AUTO)
+	if (ea && CR_MOTION_METHOD(fw) != CR_MOTION_METHOD_AUTO) {
 		cn_count = __merge_cr_moveresize(ea, &cre, fw, &b);
+	}
+#endif
+#if 0
+	fprintf(stderr,
+	    "cre: %d(%d) %d(%d) %d(%d)x%d(%d) fw 0x%08x w 0x%08x "
+	    "ew 0x%08x  '%s'\n",
+	    cre.x, (int) (cre.value_mask & CWX),
+	    cre.y, (int) (cre.value_mask & CWY),
+	    cre.width, (int) (cre.value_mask & CWWidth),
+	    cre.height, (int) (cre.value_mask & CWHeight),
+	    (int) FW_W_FRAME(fw), (int) FW_W(fw), (int) cre.window,
+	    (fw->name.name) ? fw->name.name : "");
 #endif
 	/*
 	 * Don't modify frame_g fields before calling SetupWindow!
@@ -934,14 +966,14 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 		 */
 		fw->attr_backup.border_width = cre.border_width;
 	}
-	if (!force && CR_MOTION_METHOD(fw) == CR_MOTION_METHOD_AUTO)
+	if (!force && CR_MOTION_METHOD(fw) == CR_MOTION_METHOD_AUTO) {
 		__cr_detect_icccm_move(fw, &cre, &b);
-
-	if (force_gravity > ForgetGravity && force_gravity <= StaticGravity)
+	}
+	if (force_gravity > ForgetGravity && force_gravity <= StaticGravity) {
 		gravity = force_gravity;
-	else
+	} else {
 		gravity = fw->hints.win_gravity;
-
+	}
 	if (IS_SHADED(fw)) {
 		direction_t     gravity_dir;
 
@@ -953,9 +985,9 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 		gravity_dir =
 		    gravity_override_dir(gravity_dir, SHADED_DIR(fw));
 		gravity = gravity_dir_to_grav(gravity_dir);
-	} else
+	} else {
 		current_g = fw->g.frame;
-
+	}
 	if (!(cre.value_mask & (CWX | CWY))) {
 		/*
 		 * nothing
@@ -984,11 +1016,12 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 		/*
 		 * default: traditional cr handling
 		 */
-		if (cre.value_mask & CWX)
+		if (cre.value_mask & CWX) {
 			d_g.x = cre.x - current_g.x - b.top_left.width;
-
-		if (cre.value_mask & CWY)
+		}
+		if (cre.value_mask & CWY) {
 			d_g.y = cre.y - current_g.y - b.top_left.height;
+		}
 	}
 
 	if (cre.value_mask & CWHeight) {
@@ -1075,9 +1108,9 @@ __handle_cr_on_client(int *ret_do_send_event, XConfigureRequestEvent cre,
 		 */
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
-	} else if (DO_FORCE_NEXT_CR(fw))
+	} else if (DO_FORCE_NEXT_CR(fw)) {
 		*ret_do_send_event = 1;
-
+	}
 	SET_FORCE_NEXT_CR(fw, 0);
 	SET_FORCE_NEXT_PN(fw, 0);
 
@@ -1106,9 +1139,9 @@ __handle_configure_request(XConfigureRequestEvent cre, const evh_args_t *ea,
 	    cre.window == FW_W_ICON_PIXMAP(fw)) {
 		__handle_cr_on_icon(&cre, fw);
 	}
-	if (FShapesSupported)
+	if (FShapesSupported) {
 		__handle_cr_on_shaped(fw);
-
+	}
 	if (fw != NULL && cre.window == FW_W(fw)) {
 		cn_count =
 		    __handle_cr_on_client(&do_send_event, cre, ea, fw, force,
@@ -1122,7 +1155,7 @@ __handle_configure_request(XConfigureRequestEvent cre, const evh_args_t *ea,
 	    (!DO_IGNORE_RESTACK(fw) || force)) {
 		__handle_cr_restack(&do_send_event, &cre, fw);
 	}
-
+#if 1
 	/*
 	 * This causes some ddd windows not to be drawn properly. Reverted back
 	 * * to the old method in frame_setup_window.
@@ -1140,8 +1173,12 @@ __handle_configure_request(XConfigureRequestEvent cre, const evh_args_t *ea,
 		SendConfigureNotify(fw, fw->g.frame.x, fw->g.frame.y,
 		    fw->g.frame.width, fw->g.frame.height, 0, True);
 	}
-	if (do_send_event)
+	if (do_send_event) {
 		XFlush(dpy);
+	}
+#endif
+
+	return;
 }
 
 static Bool
@@ -1170,15 +1207,15 @@ __test_for_motion(int x0, int y0)
 
 	/*
 	 * However, some special mouse (e.g., a touchpad with the
-	 * synaptic driver) may handle a double click in a special way
-	 * (for dragging through short touching and holding down the
-	 * finger on the touchpad). Bascially, when you execute a
-	 * double click the first button release is queued after the
-	 * second _physical_ mouse release happen. It seems that
-	 * FQueryPointer may not work as expected: it does not see
-	 * that the button is released on a double click.  So, we need
-	 * to check for a button press in the future to avoid a fvwm
-	 * lockup! (olicha 2004-01-31)
+	 * * synaptic driver) may handle a double click in a special way
+	 * * (for dragging through short touching and holding down the
+	 * * finger on the touchpad). Bascially, when you execute a
+	 * * double click the first button release is queued after the
+	 * * second _physical_ mouse release happen. It seems that
+	 * * FQueryPointer may not work as expected: it does not see
+	 * * that the button is released on a double click.  So, we need
+	 * * to check for a button press in the future to avoid a fvwm
+	 * * lockup! (olicha 2004-01-31)
 	 */
 
 	for (x = x0, y = y0;
@@ -1245,9 +1282,9 @@ __check_click_to_focus_or_raise(hfrc_ret_t * ret_args,
 		 */
 		ret_args->do_focus = 1;
 	}
-	if (ret_args->do_focus && focus_is_focused(fw))
+	if (ret_args->do_focus && focus_is_focused(fw)) {
 		ret_args->do_focus = 0;
-
+	}
 	ret_args->do_raise =
 	    focus_query_click_to_raise(fw, f.is_focused, exc->w.wcontext);
 #define EXPERIMENTAL_ROU_HANDLING_V2
@@ -1295,6 +1332,8 @@ __check_click_to_focus_or_raise(hfrc_ret_t * ret_args,
 			ret_args->do_swallow_click = 1;
 		}
 	}
+
+	return;
 }
 
 /* Finds out if the click on a window must be used to focus or raise it. */
@@ -1302,9 +1341,9 @@ static void
 __handle_focus_raise_click(hfrc_ret_t * ret_args, const exec_context_t *exc)
 {
 	memset(ret_args, 0, sizeof(*ret_args));
-	if (exc->w.fw == NULL)
+	if (exc->w.fw == NULL) {
 		return;
-
+	}
 	/*
 	 * check for proper click button and modifiers
 	 */
@@ -1323,8 +1362,11 @@ __handle_focus_raise_click(hfrc_ret_t * ret_args, const exec_context_t *exc)
 		 * right button but wrong modifiers, handle click normally
 		 */
 		return;
-	} else
+	} else {
 		__check_click_to_focus_or_raise(ret_args, exc);
+	}
+
+	return;
 }
 
 /* Helper function for HandleButtonPress */
@@ -1343,15 +1385,16 @@ __is_bpress_window_handled(const exec_context_t *exc)
 			 * * a client
 			 */
 			return False;
-		} else
+		} else {
 			return True;
+		}
 	}
 	eventw = (te->xbutton.subwindow != None &&
 	    te->xany.window != FW_W(exc->w.fw)) ?
 	    te->xbutton.subwindow : te->xany.window;
-	if (is_frame_hide_window(eventw) || eventw == FW_W_FRAME(exc->w.fw))
+	if (is_frame_hide_window(eventw) || eventw == FW_W_FRAME(exc->w.fw)) {
 		return False;
-
+	}
 	if (!XGetGeometry(dpy, eventw, &JunkRoot, &JunkX, &JunkY,
 		(unsigned int *) &JunkWidth, (unsigned int *) &JunkHeight,
 		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth)) {
@@ -1400,8 +1443,9 @@ __handle_click_to_raise(const exec_context_t *exc)
 	int             is_focused;
 
 	is_focused = focus_is_focused(exc->w.fw);
-	if (focus_query_click_to_raise(exc->w.fw, is_focused, True))
+	if (focus_query_click_to_raise(exc->w.fw, is_focused, True)) {
 		rc = True;
+	}
 
 	return rc;
 }
@@ -1478,6 +1522,8 @@ __handle_bpress_on_root(const exec_context_t *exc)
 		exc_destroy_context(exc2);
 		WaitForButtonsUp(True);
 	}
+
+	return;
 }
 
 /* Handles button presses on unmanaged windows */
@@ -1489,6 +1535,8 @@ __handle_bpress_on_unmanaged(const exec_context_t *exc)
 	 */
 	XAllowEvents(dpy, ReplayPointer, CurrentTime);
 	XFlush(dpy);
+
+	return;
 }
 
 /* Handles button presses on managed windows */
@@ -1538,8 +1586,9 @@ __handle_bpress_on_managed(const exec_context_t *exc)
 		    e->xbutton.state, GetUnusedModifiers(),
 		    exc->w.wcontext, BIND_BUTTONPRESS, &fw->class,
 		    fw->name.name);
-		if (__handle_bpress_action(exc, action))
+		if (__handle_bpress_action(exc, action)) {
 			f.do_swallow_click = 1;
+		}
 	}
 	/*
 	 * raise the window
@@ -1564,9 +1613,11 @@ __handle_bpress_on_managed(const exec_context_t *exc)
 		 */
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		XFlush(dpy);
-	} else if (f.do_focus || f.do_raise)
+	} else if (f.do_focus || f.do_raise) {
 		WaitForButtonsUp(True);
+	}
 
+	return;
 }
 
 /* restore focus stolen by unmanaged */
@@ -1580,6 +1631,8 @@ __refocus_stolen_focus_win(const evh_args_t *ea)
 	Scr.StolenFocusWin = None;
 	Scr.StolenFocusFvwmWin = NULL;
 	dispatch_event(ea->exc->x.etrigger);
+
+	return;
 }
 
 /* ---------------------------- event handlers ----------------------------- */
@@ -1590,15 +1643,61 @@ HandleButtonPress(const evh_args_t *ea)
 	DBUG("HandleButtonPress", "Routine Entered");
 
 	GrabEm(CRS_NONE, GRAB_PASSIVE);
-	if (__is_bpress_window_handled(ea->exc) == False)
+	if (__is_bpress_window_handled(ea->exc) == False) {
 		__handle_bpress_on_unmanaged(ea->exc);
-	else if (ea->exc->w.fw != NULL)
+	} else if (ea->exc->w.fw != NULL) {
 		__handle_bpress_on_managed(ea->exc);
-	else
+	} else {
 		__handle_bpress_on_root(ea->exc);
-
+	}
 	UngrabEm(GRAB_PASSIVE);
+
+	return;
 }
+
+#ifdef HAVE_STROKE
+void
+HandleButtonRelease(const evh_args_t *ea)
+{
+	char           *action;
+	char           *name;
+	int             real_modifier;
+	const XEvent   *te = ea->exc->x.etrigger;
+	XClassHint     *class;
+
+	DBUG("HandleButtonRelease", "Routine Entered");
+	send_motion = False;
+	stroke_trans(sequence);
+	DBUG("HandleButtonRelease", sequence);
+	/*
+	 * Allows modifier to work (Only R context works here).
+	 */
+	real_modifier = te->xbutton.state - (1 << (7 + te->xbutton.button));
+	if (ea->exc->w.fw == NULL) {
+		class = NULL;
+		name = NULL;
+	} else {
+		class = &ea->exc->w.fw->class;
+		name = ea->exc->w.fw->name.name;
+	}
+	/*
+	 * need to search for an appropriate stroke binding
+	 */
+	action =
+	    CheckBinding(Scr.AllBindings, sequence, te->xbutton.button,
+	    real_modifier, GetUnusedModifiers(), ea->exc->w.wcontext,
+	    BIND_STROKE, class, name);
+	/*
+	 * got a match, now process it
+	 */
+	if (action != NULL && (action[0] != 0)) {
+		execute_function(NULL, ea->exc, action, 0);
+		WaitForButtonsUp(True);
+	}
+
+	return;
+}
+#endif /* HAVE_STROKE */
 
 void
 HandleClientMessage(const evh_args_t *ea)
@@ -1608,8 +1707,9 @@ HandleClientMessage(const evh_args_t *ea)
 
 	DBUG("HandleClientMessage", "Routine Entered");
 
-	if (EWMH_ProcessClientMessage(ea->exc))
+	if (EWMH_ProcessClientMessage(ea->exc)) {
 		return;
+	}
 
 	/*
 	 * handle deletion of tear out menus
@@ -1673,6 +1773,8 @@ void
 HandleColormapNotify(const evh_args_t *ea)
 {
 	colormap_handle_colormap_notify(ea);
+
+	return;
 }
 
 void
@@ -1694,6 +1796,8 @@ HandleConfigureRequest(const evh_args_t *ea)
 		fw = NULL;
 	}
 	__handle_configure_request(cre, ea, fw, False, ForgetGravity);
+
+	return;
 }
 
 void
@@ -1761,9 +1865,9 @@ HandleEnterNotify(const evh_args_t *ea)
 			 */
 			InstallWindowColormaps(NULL);
 		}
-	} else if (!fw)
+	} else if (!fw) {
 		EnterSubWindowColormap(ewp->window);
-
+	}
 	if (scr_flags.is_wire_frame_displayed) {
 		ENTER_DBG((stderr, "en: exit: iwfd\n"));
 		/*
@@ -1864,8 +1968,9 @@ HandleEnterNotify(const evh_args_t *ea)
 			}
 		}
 	}
-	if (fw)
+	if (fw) {
 		is_initial_ungrab_pending = False;
+	}
 
 	/*
 	 * look for a matching leaveNotify which would nullify this EnterNotify
@@ -1916,8 +2021,9 @@ HandleEnterNotify(const evh_args_t *ea)
 		}
 		focus_grab_buttons(lf);
 		return;
-	} else
+	} else {
 		scr_flags.is_pointer_on_this_screen = 1;
+	}
 
 	/*
 	 * An EnterEvent in one of the PanFrameWindows activates the Paging or
@@ -1972,9 +2078,9 @@ HandleEnterNotify(const evh_args_t *ea)
 			return;
 		}
 	}
-	if (!fw)
+	if (!fw) {
 		return;
-
+	}
 	if (IS_EWMH_DESKTOP(FW_W(fw))) {
 		BroadcastPacket(MX_ENTER_WINDOW, 3, (long) Scr.Root,
 		    (long) NULL, (long) NULL);
@@ -2048,8 +2154,11 @@ HandleEnterNotify(const evh_args_t *ea)
 	/*
 	 * Check for tear off menus
 	 */
-	if (is_tear_off_menu)
+	if (is_tear_off_menu) {
 		menu_enter_tear_off_menu(ea->exc);
+	}
+
+	return;
 }
 
 void
@@ -2059,12 +2168,22 @@ HandleExpose(const evh_args_t *ea)
 	FvwmWindow     *const fw = ea->exc->w.fw;
 
 	e = *ea->exc->x.etrigger;
-
+#if 0
+	/*
+	 * This doesn't work well. Sometimes, the expose count is zero although
+	 * * dozens of expose events are pending.  This happens all the time
+	 * * during a shading animation.  Simply flush expose events
+	 * * unconditionally.
+	 */
+	if (e.xexpose.count != 0) {
+		flush_accumulate_expose(e.xexpose.window, &e);
+	}
+#else
 	flush_accumulate_expose(e.xexpose.window, &e);
-
-	if (fw == NULL)
+#endif
+	if (fw == NULL) {
 		return;
-
+	}
 	if (e.xany.window == FW_W_ICON_TITLE(fw) ||
 	    e.xany.window == FW_W_ICON_PIXMAP(fw)) {
 		DrawIconWindow(fw, True, True, False, False, &e);
@@ -2075,6 +2194,8 @@ HandleExpose(const evh_args_t *ea)
 		 */
 		menu_expose(&e, NULL);
 	}
+
+	return;
 }
 
 void
@@ -2101,22 +2222,23 @@ HandleFocusIn(const evh_args_t *ea)
 	/*
 	 * This is a hack to make the PointerKey command work
 	 */
-	if (ea->exc->x.etrigger->xfocus.detail != NotifyPointer)
+	if (ea->exc->x.etrigger->xfocus.detail != NotifyPointer) {
 		 /**/ w = ea->exc->x.etrigger->xany.window;
-
+	}
 	while (FCheckTypedEvent(dpy, FocusIn, &d)) {
 		/*
 		 * dito
 		 */
-		if (d.xfocus.detail != NotifyPointer)
+		if (d.xfocus.detail != NotifyPointer) {
 			 /**/ w = d.xany.window;
+		}
 	}
 	/*
 	 * dito
 	 */
-	if (w == None)
+	if (w == None) {
 		return;
-
+	}
 	/**/ if (XFindContext(dpy, w, FvwmContext,
 		(caddr_t *) & fw) == XCNOENT) {
 		fw = NULL;
@@ -2136,6 +2258,8 @@ HandleFocusIn(const evh_args_t *ea)
 		}
 		Scr.focus_in_requested_window = NULL;
 		__refocus_stolen_focus_win(ea);
+
+		return;
 	}
 	Scr.focus_in_pending_window = NULL;
 	if (!fw) {
@@ -2199,14 +2323,15 @@ HandleFocusIn(const evh_args_t *ea)
 		bc = fw->hicolors.back;
 		set_focus_window(fw);
 		if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
-			if ((Scr.Hilite) && (!IS_ICONIFIED(Scr.Hilite)))
+			if ((Scr.Hilite) && (!IS_ICONIFIED(Scr.Hilite))) {
 				InstallWindowColormaps(Scr.Hilite);
-			else
+			} else {
 				InstallWindowColormaps(NULL);
+			}
 		}
-	} else
+	} else {
 		return;
-
+	}
 	if (was_nothing_ever_focused || last_focus_fw == None ||
 	    focus_w != last_focus_w || focus_fw != last_focus_fw ||
 	    do_force_broadcast) {
@@ -2226,6 +2351,8 @@ HandleFocusIn(const evh_args_t *ea)
 		focus_grab_buttons(sf);
 		focus_grab_buttons(ffw_old);
 	}
+
+	return;
 }
 
 void
@@ -2235,6 +2362,8 @@ HandleFocusOut(const evh_args_t *ea)
 	    ea->exc->x.etrigger->xfocus.window == Scr.UnknownWinFocused) {
 		__refocus_stolen_focus_win(ea);
 	}
+
+	return;
 }
 
 void
@@ -2309,9 +2438,9 @@ __handle_key(const evh_args_t *ea, Bool is_press)
 			    ECC_FW | ECC_WCONTEXT);
 		}
 		execute_function(NULL, exc, action, 0);
-		if (is_second_binding == False)
+		if (is_second_binding == False) {
 			exc_destroy_context(exc);
-
+		}
 		XAllowEvents(dpy, AsyncKeyboard, CurrentTime);
 		return;
 	}
@@ -2337,6 +2466,8 @@ __handle_key(const evh_args_t *ea, Bool is_press)
 		    (is_press) ? KeyPressMask : KeyReleaseMask, &e);
 	}
 	XAllowEvents(dpy, AsyncKeyboard, CurrentTime);
+
+	return;
 }
 
 void
@@ -2385,9 +2516,9 @@ HandleLeaveNotify(const evh_args_t *ea)
 	 * Ignore LeaveNotify events while a window is resized or moved as a
 	 * * wire frame; otherwise the window list may be screwed up.
 	 */
-	if (scr_flags.is_wire_frame_displayed)
+	if (scr_flags.is_wire_frame_displayed) {
 		return;
-
+	}
 	if (lwp->mode != NotifyNormal) {
 		/*
 		 * Ignore events generated by grabbing or ungrabbing the
@@ -2433,22 +2564,24 @@ HandleLeaveNotify(const evh_args_t *ea)
 		/*
 		 * check for edge commands
 		 */
-		if (lwp->window == Scr.PanFrameTop.win)
+		if (lwp->window == Scr.PanFrameTop.win) {
 			edge_command_leave = Scr.PanFrameTop.command_leave;
-		else if (lwp->window == Scr.PanFrameBottom.win)
+		} else if (lwp->window == Scr.PanFrameBottom.win) {
 			edge_command_leave = Scr.PanFrameBottom.command_leave;
-		else if (lwp->window == Scr.PanFrameLeft.win)
+		} else if (lwp->window == Scr.PanFrameLeft.win) {
 			edge_command_leave = Scr.PanFrameLeft.command_leave;
-		else if (lwp->window == Scr.PanFrameRight.win)
+		} else if (lwp->window == Scr.PanFrameRight.win) {
 			edge_command_leave = Scr.PanFrameRight.command_leave;
-	
+		}
 		if (edge_command_leave && lwp->mode == NotifyUngrab &&
 		    lwp->detail == NotifyAncestor) {
 			/*
 			 * nothing
 			 */
-		} else if (edge_command_leave)
-			execute_function(NULL, ea->exc, edge_command_leave, 0);
+		} else if (edge_command_leave) {
+			execute_function(NULL, ea->exc, edge_command_leave,
+			    0);
+		}
 	}
 
 	/*
@@ -2470,9 +2603,9 @@ HandleLeaveNotify(const evh_args_t *ea)
 
 				scr_flags.is_pointer_on_this_screen = 0;
 				set_last_screen_focus_window(sf);
-				if (sf != NULL)
+				if (sf != NULL) {
 					DeleteFocus(True);
-
+				}
 				if (Scr.Hilite != NULL) {
 					border_draw_decorations(Scr.Hilite,
 					    PART_ALL, False, True, CLEAR_ALL,
@@ -2493,6 +2626,8 @@ HandleLeaveNotify(const evh_args_t *ea)
 		BroadcastPacket(MX_LEAVE_WINDOW, 3, (long) FW_W(fw),
 		    (long) FW_W_FRAME(fw), (unsigned long) fw);
 	}
+
+	return;
 }
 
 void
@@ -2529,15 +2664,16 @@ HandleMapNotify(const evh_args_t *ea)
 	 * * don't need or want windows associated with the
 	 * * SubstructureNotifyMask
 	 */
-	if (te->xmap.event != te->xmap.window)
+	if (te->xmap.event != te->xmap.window) {
 		return;
-
+	}
 	SET_MAP_PENDING(fw, 0);
 	/*
 	 * don't map if the event was caused by a de-iconify
 	 */
-	if (IS_ICONIFY_PENDING(fw))
+	if (IS_ICONIFY_PENDING(fw)) {
 		return;
+	}
 
 	/*
 	 * Make sure at least part of window is on this page before giving it
@@ -2553,16 +2689,16 @@ HandleMapNotify(const evh_args_t *ea)
 	 * when it really isn't.
 	 */
 	MyXGrabServer(dpy);
-	if (FW_W_ICON_TITLE(fw))
+	if (FW_W_ICON_TITLE(fw)) {
 		XUnmapWindow(dpy, FW_W_ICON_TITLE(fw));
-
-	if (FW_W_ICON_PIXMAP(fw) != None)
+	}
+	if (FW_W_ICON_PIXMAP(fw) != None) {
 		XUnmapWindow(dpy, FW_W_ICON_PIXMAP(fw));
-
+	}
 	XMapSubwindows(dpy, FW_W_FRAME(fw));
-	if (fw->Desk == fw->m->virtual_scr.CurrentDesk)
+	if (fw->Desk == fw->m->virtual_scr.CurrentDesk) {
 		XMapWindow(dpy, FW_W_FRAME(fw));
-
+	}
 	if (IS_ICONIFIED(fw)) {
 		BroadcastPacket(M_DEICONIFY, 3, (long) FW_W(fw),
 		    (long) FW_W_FRAME(fw), (unsigned long) fw);
@@ -2594,12 +2730,16 @@ HandleMapNotify(const evh_args_t *ea)
 		SET_ICONIFY_AFTER_MAP(fw, 0);
 	}
 	focus_grab_buttons_on_layer(fw->layer);
+
+	return;
 }
 
 void
 HandleMappingNotify(const evh_args_t *ea)
 {
 	XRefreshKeyboardMapping(&ea->exc->x.etrigger->xmapping);
+
+	return;
 }
 
 void
@@ -2616,6 +2756,8 @@ HandleMapRequest(const evh_args_t *ea)
 		return;
 	}
 	HandleMapRequestKeepRaised(ea, None, NULL, NULL);
+
+	return;
 }
 
 void
@@ -2650,20 +2792,22 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 			 */
 			return;
 		}
-	} else
+	} else {
 		fw = ReuseWin;
+	}
 
 	if (fw == NULL && EWMH_IsKdeSysTrayWindow(ew)) {
 		/*
 		 * This means that the window is swallowed by kicker and that
-		 * kicker restart or exit. As we should assume that kicker
-		 * restart we should return here, if not we go into trouble
-		 * ...
+		 * * kicker restart or exit. As we should assume that kicker
+		 * * restart we should return here, if not we go into trouble
+		 * * ...
 		 */
 		return;
 	}
-	if (!win_opts->flags.do_override_ppos)
+	if (!win_opts->flags.do_override_ppos) {
 		XFlush(dpy);
+	}
 
 	/*
 	 * If the window has never been mapped before ...
@@ -2679,11 +2823,11 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 			(XPointer) &args)) {
 			/*
 			 * The window is moved back to the WithdrawnState
-			 * immideately. Don't map it.
-			 * 
-			 * However, send make sure that a WM_STATE
-			 * PropertyNotify event is sent to the window.
-			 * QT needs this.
+			 * * immideately. Don't map it.
+			 * *
+			 * * However, send make sure that a WM_STATE
+			 * * PropertyNotify event is sent to the window.
+			 * * QT needs this.
 			 */
 			Atom            atype;
 			int             aformat;
@@ -2720,9 +2864,9 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 		 */
 		fw = AddWindow(&initial_map_command, ea->exc, ReuseWin,
 		    win_opts);
-		if (fw == AW_NO_WINDOW)
+		if (fw == AW_NO_WINDOW) {
 			return;
-		else if (fw == AW_UNMANAGED) {
+		} else if (fw == AW_UNMANAGED) {
 			XMapWindow(dpy, ew);
 			return;
 		}
@@ -2779,14 +2923,14 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 				SetMapStateProp(fw, NormalState);
 				if (scr_flags.is_map_desk_in_progress) {
 					do_grab_focus = False;
-				} else if (!is_on_this_page)
+				} else if (!is_on_this_page) {
 					do_grab_focus = False;
-				else if (focus_query_open_grab_focus(fw,
-					get_focus_window()) == True)
+				} else if (focus_query_open_grab_focus(fw,
+					get_focus_window()) == True) {
 					do_grab_focus = True;
-				else
+				} else {
 					do_grab_focus = False;
-
+				}
 				if (do_grab_focus) {
 					SetFocusWindow(fw, True,
 					    FOCUS_SET_FORCE);
@@ -2886,9 +3030,9 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 	 * * ClickToFocusRaises and MouseFocusClickRaises work again.
 	 */
 	sf = get_focus_window();
-	if (sf != NULL)
+	if (sf != NULL) {
 		focus_grab_buttons(sf);
-
+	}
 	if (win_opts->flags.is_menu) {
 		SET_MAPPED(fw, 1);
 		SET_MAP_PENDING(fw, 0);
@@ -2897,7 +3041,24 @@ HandleMapRequestKeepRaised(const evh_args_t *ea, Window KeepRaised,
 	fw->m = monitor_by_xy(fw->g.frame.x, fw->g.frame.y);
 	EWMH_SetClientList(fw->m);
 	EWMH_SetClientListStacking(fw->m);
+
+	return;
 }
+
+#ifdef HAVE_STROKE
+void
+HandleMotionNotify(const evh_args_t *ea)
+{
+	DBUG("HandleMotionNotify", "Routine Entered");
+
+	if (send_motion == True) {
+		stroke_record(ea->exc->x.etrigger->xmotion.x,
+		    ea->exc->x.etrigger->xmotion.y);
+	}
+
+	return;
+}
+#endif /* HAVE_STROKE */
 
 void
 HandlePropertyNotify(const evh_args_t *ea)
@@ -2928,11 +3089,11 @@ HandlePropertyNotify(const evh_args_t *ea)
 		 */
 		/*
 		 * _XA_XSETROOT_ID is used by fvwm-root, xli and more (xv sends
-		 * no property  notify?).  _XA_XROOTPMAP_ID is used by Esetroot
-		 * compatible program: the problem here is that with some
-		 * Esetroot compatible program we get the message _before_ the
-		 * background change. This is fixed with Esetroot 9.2 (not yet
-		 * released, 2002-01-14)
+		 * * no property  notify?).  _XA_XROOTPMAP_ID is used by Esetroot
+		 * * compatible program: the problem here is that with some
+		 * * Esetroot compatible program we get the message _before_ the
+		 * * background change. This is fixed with Esetroot 9.2 (not yet
+		 * * released, 2002-01-14)
 		 */
 
 		/*
@@ -2956,15 +3117,17 @@ HandlePropertyNotify(const evh_args_t *ea)
 				continue;
 			}
 			if (Scr.Hilite == t) {
-				if (t->icon_title_cs_hi >= 0)
+				if (t->icon_title_cs_hi >= 0) {
 					t_cs = cs = t->icon_title_cs_hi;
-				else
+				} else {
 					cs = t->cs_hi;
+				}
 			} else {
-				if (t->icon_title_cs >= 0)
+				if (t->icon_title_cs >= 0) {
 					t_cs = cs = t->icon_title_cs;
-				else
+				} else {
 					cs = t->cs;
+				}
 			}
 			if (t->icon_alphaPixmap != None ||
 			    (cs >= 0 &&
@@ -2990,13 +3153,12 @@ HandlePropertyNotify(const evh_args_t *ea)
 		return;
 	}
 
-	if (!fw)
+	if (!fw) {
 		return;
-
+	}
 	if (XGetGeometry(dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
 		(unsigned int *) &JunkWidth, (unsigned int *) &JunkHeight,
 		(unsigned int *) &JunkBW, (unsigned int *) &JunkDepth) == 0) {
-
 		return;
 	}
 
@@ -3066,7 +3228,17 @@ HandlePropertyNotify(const evh_args_t *ea)
 		 * if the icon name is NoName, set the name of the icon to be
 		 * the same as the window
 		 */
-		if (!WAS_ICON_NAME_PROVIDED(fw)) {
+		if (!WAS_ICON_NAME_PROVIDED(fw)
+#if 0
+		    /*
+		     * dje, reported as causing various dumps.
+		     * I tried to debug, but so far haven't even figured out
+		     * how to exercise this logic. Mov 9, 2013.
+		     */
+		    || (fw->icon_name.name &&
+			(fw->icon_name.name != fw->name.name))
+#endif
+		    ) {
 			fw->icon_name = fw->name;
 			setup_visible_name(fw, True);
 			BroadcastWindowIconNames(fw, False, True);
@@ -3135,8 +3307,9 @@ HandlePropertyNotify(const evh_args_t *ea)
 			XFree((char *) fw->wmhints);
 		}
 		setup_wm_hints(fw);
-		if (fw->wmhints == NULL)
+		if (fw->wmhints == NULL) {
 			return;
+		}
 
 		/*
 		 * rebuild icon if the client either provides an icon
@@ -3211,23 +3384,24 @@ HandlePropertyNotify(const evh_args_t *ea)
 				has_icon_changed = True;
 			}
 
-			if (USE_EWMH_ICON(fw))
+			if (USE_EWMH_ICON(fw)) {
 				has_icon_changed = False;
+			}
 
 			if (has_icon_changed) {
 				ICON_DBG((stderr, "hpn: icon changed '%s'\n",
 					fw->name));
 				/*
 				 * Okay, the icon hint has changed and style
-				 * options tell us to honour this change.  Now
-				 * let's see if we have to use the application
-				 * provided pixmap or window (if any), the icon
-				 * file provided by the window's style or the
-				 * default style's icon.
+				 * * options tell us to honour this change.  Now
+				 * * let's see if we have to use the application
+				 * * provided pixmap or window (if any), the icon
+				 * * file provided by the window's style or the
+				 * * default style's icon.
 				 */
-				if (fw->icon_bitmap_file == Scr.DefaultIcon)
+				if (fw->icon_bitmap_file == Scr.DefaultIcon) {
 					fw->icon_bitmap_file = NULL;
-
+				}
 				if (!fw->icon_bitmap_file &&
 				    !(fw->wmhints->flags &
 					(IconPixmapHint | IconWindowHint))) {
@@ -3242,10 +3416,10 @@ HandlePropertyNotify(const evh_args_t *ea)
 
 		/*
 		 * clasen@mathematik.uni-freiburg.de - 02/01/1998 - new -
-		 * the urgency flag is an ICCCM 2.0 addition to the WM_HINTS.
-		 * Treat urgency changes by calling user-settable functions.
-		 * These could e.g. deiconify and raise the window or
-		 * temporarily change the decor.
+		 * * the urgency flag is an ICCCM 2.0 addition to the WM_HINTS.
+		 * * Treat urgency changes by calling user-settable functions.
+		 * * These could e.g. deiconify and raise the window or
+		 * * temporarily change the decor.
 		 */
 		if (!(old_wmhints_flags & XUrgencyHint) &&
 		    (fw->wmhints->flags & XUrgencyHint)) {
@@ -3278,13 +3452,13 @@ HandlePropertyNotify(const evh_args_t *ea)
 
 		/*
 		 * TA:  20120317:  Always set the size hints here, regardless
-		 * of them possibly being modified by a ConfigureNotify
-		 * request, due to XSizeHints disallowing resize -- FVWM would
-		 * always use old values if the application decided to toggle
-		 * such things, and FVWM would then never resize the window.
-		 * 
-		 * Note that SET_HAS_NEW_WM_NORMAL_HINTS being set here to
-		 * true is still valid.
+		 * * of them possibly being modified by a ConfigureNotify
+		 * * request, due to XSizeHints disallowing resize -- FVWM would
+		 * * always use old values if the application decided to toggle
+		 * * such things, and FVWM would then never resize the window.
+		 * *
+		 * * Note that SET_HAS_NEW_WM_NORMAL_HINTS being set here to
+		 * * true is still valid.
 		 */
 		GetWindowSizeHints(fw);
 		break;
@@ -3302,9 +3476,9 @@ HandlePropertyNotify(const evh_args_t *ea)
 				 */
 				focus_force_refresh_focus(fw);
 			}
-		} else
+		} else {
 			EWMH_ProcessPropertyNotify(ea->exc);
-
+		}
 		break;
 	}
 }
@@ -3344,18 +3518,24 @@ HandleReparentNotify(const evh_args_t *ea)
 		EWMH_ManageKdeSysTray(te->xreparent.window, te->type);
 		EWMH_WindowDestroyed();
 	}
+
+	return;
 }
 
 void
 HandleSelectionRequest(const evh_args_t *ea)
 {
 	icccm2_handle_selection_request(ea->exc->x.etrigger);
+
+	return;
 }
 
 void
 HandleSelectionClear(const evh_args_t *ea)
 {
 	icccm2_handle_selection_clear();
+
+	return;
 }
 
 void
@@ -3369,19 +3549,21 @@ HandleShapeNotify(const evh_args_t *ea)
 		const FShapeEvent *sev =
 		    (const FShapeEvent *) (ea->exc->x.etrigger);
 
-		if (!fw)
+		if (!fw) {
 			return;
-
-		if (sev->kind != FShapeBounding)
+		}
+		if (sev->kind != FShapeBounding) {
 			return;
-
+		}
 		frame_setup_shape(fw, fw->g.frame.width, fw->g.frame.height,
 		    sev->shaped);
 		EWMH_SetFrameStrut(fw);
-
-		if (!IS_ICONIFIED(fw))
+		if (!IS_ICONIFIED(fw)) {
 			border_redraw_decorations(fw);
+		}
 	}
+
+	return;
 }
 
 void
@@ -3431,8 +3613,9 @@ HandleUnmapNotify(const evh_args_t *ea)
 		SET_ICONIFY_PENDING(fw, 0);
 		return;
 	}
-	if (must_return)
+	if (must_return) {
 		return;
+	}
 
 	if (weMustUnmap) {
 		Bool            is_map_request_pending;
@@ -3458,17 +3641,18 @@ HandleUnmapNotify(const evh_args_t *ea)
 		 * * structure and returns False unconditionally.
 		 */
 		is_map_request_pending = (args.ret_does_match == True);
-		if (!is_map_request_pending)
+		if (!is_map_request_pending) {
 			XUnmapWindow(dpy, te->xunmap.window);
-
+		}
 	}
-	if (fw == Scr.Hilite)
+	if (fw == Scr.Hilite) {
 		Scr.Hilite = NULL;
-
+	}
 	focus_grabbed = focus_query_close_release_focus(fw);
 	restore_focus_after_unmap(fw, False);
-	if (!IS_MAPPED(fw) && !IS_ICONIFIED(fw))
+	if (!IS_MAPPED(fw) && !IS_ICONIFIED(fw)) {
 		return;
+	}
 
 	/*
 	 * The program may have unmapped the client window, from either
@@ -3496,9 +3680,9 @@ HandleUnmapNotify(const evh_args_t *ea)
 				(fw->wmhints->flags & IconWindowHint))) {
 				XUnmapWindow(dpy, fw->wmhints->icon_window);
 			}
-		} else
+		} else {
 			RestoreWithdrawnLocation(fw, False, Scr.Root);
-
+		}
 		if (!IS_TEAR_OFF_MENU(fw)) {
 			XRemoveFromSaveSet(dpy, te->xunmap.window);
 			XSelectInput(dpy, te->xunmap.window, NoEventMask);
@@ -3514,9 +3698,9 @@ HandleUnmapNotify(const evh_args_t *ea)
 		}
 	}
 	destroy_window(fw);
-	if (focus_grabbed == True)
+	if (focus_grabbed == True) {
 		CoerceEnterNotifyOnCurrentWindow();
-
+	}
 	EWMH_ManageKdeSysTray(te->xunmap.window, te->type);
 	EWMH_WindowDestroyed();
 	if (do_map == True) {
@@ -3528,6 +3712,8 @@ HandleUnmapNotify(const evh_args_t *ea)
 		 * * events for that window in a loop here
 		 */
 	}
+
+	return;
 }
 
 void
@@ -3557,6 +3743,8 @@ HandleVisibilityNotify(const evh_args_t *ea)
 		 */
 		focus_grab_buttons(fw);
 	}
+
+	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -3572,9 +3760,9 @@ SendConfigureNotify(FvwmWindow *fw, int x, int y, int w, int h, int bw,
 	XEvent          client_event;
 	size_borders    b;
 
-	if (!fw || IS_SHADED(fw))
+	if (!fw || IS_SHADED(fw)) {
 		return;
-
+	}
 	client_event.type = ConfigureNotify;
 	client_event.xconfigure.display = dpy;
 	client_event.xconfigure.event = FW_W(fw);
@@ -3587,7 +3775,15 @@ SendConfigureNotify(FvwmWindow *fw, int x, int y, int w, int h, int bw,
 	client_event.xconfigure.border_width = bw;
 	client_event.xconfigure.above = FW_W_FRAME(fw);
 	client_event.xconfigure.override_redirect = False;
-
+#if 0
+	fprintf(stderr,
+	    "send cn: %d %d %dx%d fw 0x%08x w 0x%08x ew 0x%08x  '%s'\n",
+	    client_event.xconfigure.x, client_event.xconfigure.y,
+	    client_event.xconfigure.width, client_event.xconfigure.height,
+	    (int) FW_W_FRAME(fw), (int) FW_W(fw),
+	    (int) client_event.xconfigure.window,
+	    (fw->name.name) ? fw->name.name : "");
+#endif
 	FSendEvent(dpy, FW_W(fw), False, StructureNotifyMask, &client_event);
 	if (send_for_frame_too) {
 		/*
@@ -3601,6 +3797,8 @@ SendConfigureNotify(FvwmWindow *fw, int x, int y, int w, int h, int bw,
 		FSendEvent(dpy, FW_W_FRAME(fw), False, StructureNotifyMask,
 		    &client_event);
 	}
+
+	return;
 }
 
 /* Add an event group to the event handler */
@@ -3635,10 +3833,11 @@ register_event_group(int event_base, int event_count, PFEH * jump_table)
 	group->count = event_count;
 	group->jump_table = jump_table;
 	group->next = position;
-	if (prev_position != NULL)
+	if (prev_position != NULL) {
 		prev_position->next = group;
-	else
+	} else {
 		base_event_group = group;
+	}
 
 	return 0;
 }
@@ -3653,9 +3852,9 @@ InitEventHandlerJumpTable(void)
 	static PFEH     EventHandlerJumpTable[LASTEvent];
 	int             i;
 
-	for (i = 0; i < LASTEvent; i++)
+	for (i = 0; i < LASTEvent; i++) {
 		EventHandlerJumpTable[i] = NULL;
-
+	}
 	EventHandlerJumpTable[Expose] = HandleExpose;
 	EventHandlerJumpTable[DestroyNotify] = HandleDestroyNotify;
 	EventHandlerJumpTable[MapRequest] = HandleMapRequest;
@@ -3699,6 +3898,8 @@ InitEventHandlerJumpTable(void)
 			    "Faild to init Shape event handler");
 		}
 	}
+
+	return;
 }
 
 /* handle a single X event */
@@ -3716,8 +3917,9 @@ dispatch_event(XEvent *e)
 		switch (e->type) {
 		case ButtonPress:
 		case ButtonRelease:
-			if (e->xbutton.subwindow != None)
+			if (e->xbutton.subwindow != None) {
 				w = e->xbutton.subwindow;
+			}
 		case MapRequest:
 			w = e->xmaprequest.window;
 			break;
@@ -3757,11 +3959,13 @@ dispatch_event(XEvent *e)
 #ifdef C_ALLOCA
 	/*
 	 * If we're using the C version of alloca, see if anything needs to be
-	 * freed up.
+	 * * freed up.
 	 */
 	alloca(0);
 #endif
 	DBUG("dispatch_event", "Leaving Routine");
+
+	return;
 }
 
 /* ewmh configure request */
@@ -3782,18 +3986,21 @@ HandleEvents(void)
 	DBUG("HandleEvents", "Routine Entered");
 	while (!isTerminated) {
 		last_event_type = 0;
-		if (scr_flags.is_window_scheduled_for_destroy)
+		if (scr_flags.is_window_scheduled_for_destroy) {
 			destroy_scheduled_windows();
-
-		if (scr_flags.do_need_window_update)
+		}
+		if (scr_flags.do_need_window_update) {
 			flush_window_updates();
-
-		if (My_XNextEvent(dpy, &ev))
+		}
+		if (My_XNextEvent(dpy, &ev)) {
 			dispatch_event(&ev);
-
-		if (scr_flags.do_need_style_list_update)
+		}
+		if (scr_flags.do_need_style_list_update) {
 			simplify_style_list();
+		}
 	}
+
+	return;
 }
 
 /*
@@ -3888,8 +4095,9 @@ My_XNextEvent(Display *dpy, XEvent *event)
 			 * * get_next_schedule_queue_ms() can't return 0 after a
 			 * * call to execute_schedule_queue().
 			 */
-			if (ms == 0)
+			if (ms == 0) {
 				ms = 1;
+			}
 		}
 		if (ms < 0) {
 			timeout.tv_sec = 42;
@@ -3923,14 +4131,16 @@ My_XNextEvent(Display *dpy, XEvent *event)
 		num_fd =
 		    fvwmSelect(fvwmlib_max_fd, &in_fdset, &out_fdset, 0,
 		    timeoutP);
-		if (is_waiting_for_scheduled_command)
+		if (is_waiting_for_scheduled_command) {
 			timeoutP = old_timeoutP;
+		}
 
 		/*
 		 * Express route out of fvwm ...
 		 */
-		if (isTerminated)
+		if (isTerminated) {
 			return 0;
+		}
 	} while (num_fd < 0);
 
 	if (num_fd > 0) {
@@ -4064,23 +4274,24 @@ GetContext(FvwmWindow **ret_fw, FvwmWindow *t, const XEvent *e, Window *w)
 		XFindContext(dpy, win, FvwmContext, (caddr_t *) & t);
 		break;
 	}
-	if (ret_fw != NULL)
+	if (ret_fw != NULL) {
 		*ret_fw = t;
-
-	if (!t)
-		return C_ROOT;
-
-	*w = win;
-	if (*w == Scr.NoFocusWin)
-		return C_ROOT;
-
-	if (subw != None) {
-		if (win == FW_W_PARENT(t))
-			*w = subw;
 	}
-	if (*w == Scr.Root)
+	if (!t) {
 		return C_ROOT;
-
+	}
+	*w = win;
+	if (*w == Scr.NoFocusWin) {
+		return C_ROOT;
+	}
+	if (subw != None) {
+		if (win == FW_W_PARENT(t)) {
+			*w = subw;
+		}
+	}
+	if (*w == Scr.Root) {
+		return C_ROOT;
+	}
 	context = frame_window_id_to_context(t, *w, &Button);
 
 	return context;
@@ -4097,8 +4308,9 @@ flush_expose(Window w)
 	XEvent          dummy;
 	int             i = 0;
 
-	while (FCheckTypedWindowEvent(dpy, w, Expose, &dummy))
+	while (FCheckTypedWindowEvent(dpy, w, Expose, &dummy)) {
 		i++;
+	}
 
 	return i;
 }
@@ -4146,6 +4358,8 @@ handle_all_expose(void)
 		dispatch_event(&evdummy);
 	}
 	fev_restore_event(saved_event);
+
+	return;
 }
 
 /* CoerceEnterNotifyOnCurrentWindow()
@@ -4167,9 +4381,9 @@ CoerceEnterNotifyOnCurrentWindow(void)
 
 	f = FQueryPointer(dpy, Scr.Root, &root, &child, &e.xcrossing.x_root,
 	    &e.xcrossing.y_root, &e.xcrossing.x, &e.xcrossing.y, &JunkMask);
-	if (f == False || child == None)
+	if (f == False || child == None) {
 		return;
-
+	}
 	e.xcrossing.type = EnterNotify;
 	e.xcrossing.window = child;
 	e.xcrossing.subwindow = None;
@@ -4183,11 +4397,12 @@ CoerceEnterNotifyOnCurrentWindow(void)
 		XTranslateCoordinates(dpy, Scr.Root, child,
 		    e.xcrossing.x_root, e.xcrossing.y_root, &JunkX, &JunkY,
 		    &child);
-		if (child == FW_W_PARENT(fw))
+		if (child == FW_W_PARENT(fw)) {
 			child = FW_W(fw);
-
-		if (child != None)
+		}
+		if (child != None) {
 			e.xany.window = child;
+		}
 	}
 	e.xcrossing.focus = (fw == get_focus_window())? True : False;
 	ecc.type = EXCT_NULL;
@@ -4195,6 +4410,8 @@ CoerceEnterNotifyOnCurrentWindow(void)
 	ea.exc = exc_create_context(&ecc, ECC_TYPE | ECC_ETRIGGER);
 	HandleEnterNotify(&ea);
 	exc_destroy_context(ea.exc);
+
+	return;
 }
 
 /* This function discards all queued up ButtonPress, ButtonRelease and
@@ -4339,16 +4556,18 @@ sync_server(int toggle)
 {
 	static Bool     synced = False;
 
-	if (toggle == -1)
+	if (toggle == -1) {
 		toggle = (synced == False);
-
-	if (toggle == 1)
+	}
+	if (toggle == 1) {
 		synced = True;
-	else
+	} else {
 		synced = False;
-
+	}
 	XSynchronize(dpy, synced);
 	XFlush(dpy);
+
+	return;
 }
 
 Bool
@@ -4377,10 +4596,14 @@ CMD_XSynchronize(F_CMD_ARGS)
 
 	toggle = ParseToggleArgument(action, NULL, -1, 0);
 	sync_server(toggle);
+
+	return;
 }
 
 void
 CMD_XSync(F_CMD_ARGS)
 {
 	XSync(dpy, 0);
+
+	return;
 }

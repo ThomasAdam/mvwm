@@ -84,6 +84,8 @@ fpol_init_default_fp(focus_policy_t *fp)
 	FPS_RELEASE_FOCUS_TRANSIENT(*fp, DEF_FP_RELEASE_FOCUS_TRANSIENT);
 	FPS_OVERRIDE_RELEASE_FOCUS(*fp, DEF_FP_OVERRIDE_RELEASE_FOCUS);
 	FPS_SORT_WINDOWLIST_BY(*fp, DEF_FP_SORT_WINDOWLIST_BY);
+
+	return;
 }
 
 int
@@ -126,44 +128,45 @@ fpol_query_allow_user_focus(focus_policy_t *fpol)
 int
 fpol_is_policy_changed(focus_policy_t *fpol)
 {
-	if (FP_DO_FOCUS_ENTER(*fpol))
+	if (FP_DO_FOCUS_ENTER(*fpol)) {
 		return 1;
-
-	if (FP_DO_UNFOCUS_LEAVE(*fpol))
+	}
+	if (FP_DO_UNFOCUS_LEAVE(*fpol)) {
 		return 1;
-
-	if (FP_DO_FOCUS_CLICK_CLIENT(*fpol))
+	}
+	if (FP_DO_FOCUS_CLICK_CLIENT(*fpol)) {
 		return 1;
-
-	if (FP_DO_FOCUS_CLICK_DECOR(*fpol))
+	}
+	if (FP_DO_FOCUS_CLICK_DECOR(*fpol)) {
 		return 1;
-
-	if (FP_DO_FOCUS_BY_PROGRAM(*fpol))
+	}
+	if (FP_DO_FOCUS_BY_PROGRAM(*fpol)) {
 		return 1;
-
-	if (FP_DO_FOCUS_BY_FUNCTION(*fpol))
+	}
+	if (FP_DO_FOCUS_BY_FUNCTION(*fpol)) {
 		return 1;
-
-	if (FP_IS_LENIENT(*fpol))
+	}
+	if (FP_IS_LENIENT(*fpol)) {
 		return 1;
-
-	if (FP_DO_RAISE_FOCUSED_CLIENT_CLICK(*fpol))
+	}
+	if (FP_DO_RAISE_FOCUSED_CLIENT_CLICK(*fpol)) {
 		return 1;
-
-	if (FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(*fpol))
+	}
+	if (FP_DO_RAISE_UNFOCUSED_CLIENT_CLICK(*fpol)) {
 		return 1;
-
-	if (FP_DO_RAISE_FOCUSED_DECOR_CLICK(*fpol))
+	}
+	if (FP_DO_RAISE_FOCUSED_DECOR_CLICK(*fpol)) {
 		return 1;
-
-	if (FP_DO_RAISE_UNFOCUSED_DECOR_CLICK(*fpol))
+	}
+	if (FP_DO_RAISE_UNFOCUSED_DECOR_CLICK(*fpol)) {
 		return 1;
-
-	if (FP_USE_MOUSE_BUTTONS(*fpol))
+	}
+	if (FP_USE_MOUSE_BUTTONS(*fpol)) {
 		return 1;
-
-	if (FP_USE_MODIFIERS(*fpol))
+	}
+	if (FP_USE_MODIFIERS(*fpol)) {
 		return 1;
+	}
 
 	return 0;
 }

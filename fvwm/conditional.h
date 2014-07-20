@@ -18,10 +18,11 @@
 /* ---------------------------- interface functions ------------------------ */
 
 /* Condition matching routines */
-char           *CreateFlagString(char *, char **);
-void            DefaultConditionMask(WindowConditionMask *);
-void            CreateConditionMask(char *, WindowConditionMask *);
-void            FreeConditionMask(WindowConditionMask *);
-Bool            MatchesConditionMask(FvwmWindow *, WindowConditionMask *);
+char           *CreateFlagString(char *string, char **restptr);
+void            DefaultConditionMask(WindowConditionMask *mask);
+void            CreateConditionMask(char *flags, WindowConditionMask *mask);
+void            FreeConditionMask(WindowConditionMask *mask);
+Bool            MatchesConditionMask(FvwmWindow *fw,
+    WindowConditionMask *mask);
 
 #endif /* CONDITIONAL_H */

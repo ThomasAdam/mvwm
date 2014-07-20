@@ -71,6 +71,8 @@ void
 set_client_controls_colormaps(Bool flag)
 {
 	client_controls_colormaps = flag;
+
+	return;
 }
 
 /* HandleColormapNotify - colormap notify event handler
@@ -88,9 +90,9 @@ colormap_handle_colormap_notify(const evh_args_t *ea)
 	XWindowAttributes attr;
 	FvwmWindow     *fw = ea->exc->w.fw;
 
-	if (!fw)
+	if (!fw) {
 		return;
-
+	}
 	if (cevent->new) {
 		if (XGetWindowAttributes(dpy, FW_W(fw), &attr) != 0) {
 			fw->attr_backup.colormap = attr.colormap;
@@ -149,6 +151,8 @@ colormap_handle_colormap_notify(const evh_args_t *ea)
 	    !client_controls_colormaps) {
 		XInstallColormap(dpy, last_cmap);
 	}
+
+	return;
 }
 
 /* Re-Install the active colormap */
@@ -156,6 +160,8 @@ void
 ReInstallActiveColormap(void)
 {
 	InstallWindowColormaps(colormap_win);
+
+	return;
 }
 
 /*  Procedure:
@@ -177,8 +183,9 @@ InstallWindowColormaps(const FvwmWindow *fw)
 	/*
 	 * If no window, then install fvwm colormap
 	 */
-	if (!fw)
+	if (!fw) {
 		fw = &Scr.FvwmRoot;
+	}
 
 	colormap_win = fw;
 	/*
@@ -190,17 +197,19 @@ InstallWindowColormaps(const FvwmWindow *fw)
 	 * Don't load any new colormap if root/fvwm colormap(s) has been
 	 * * force loaded.
 	 */
-	if (Scr.root_pushes || Scr.fvwm_pushes || client_controls_colormaps)
+	if (Scr.root_pushes || Scr.fvwm_pushes || client_controls_colormaps) {
 		return;
+	}
 
 	if (fw->number_cmap_windows > 0) {
 		for (i = fw->number_cmap_windows - 1; i >= 0; i--) {
 			w = fw->cmap_windows[i];
-			if (w == FW_W(fw))
+			if (w == FW_W(fw)) {
 				ThisWinInstalled = True;
-
-			if (!XGetWindowAttributes(dpy, w, &attributes))
+			}
+			if (!XGetWindowAttributes(dpy, w, &attributes)) {
 				attributes.colormap = last_cmap;
+			}
 
 			/*
 			 * On Sun X servers, don't install 24 bit TrueColor
@@ -229,6 +238,8 @@ InstallWindowColormaps(const FvwmWindow *fw)
 			XInstallColormap(dpy, last_cmap);
 		}
 	}
+
+	return;
 }
 
 /* Force (un)loads root colormap(s)
@@ -250,6 +261,8 @@ InstallRootColormap(void)
 		XInstallColormap(dpy, last_cmap);
 	}
 	Scr.root_pushes++;
+
+	return;
 }
 
 /* Unstacks one layer of root colormap pushing
@@ -259,8 +272,9 @@ InstallRootColormap(void)
 void
 UninstallRootColormap(void)
 {
-	if (Scr.root_pushes)
+	if (Scr.root_pushes) {
 		Scr.root_pushes--;
+	}
 
 	if (!Scr.root_pushes) {
 		if (!Scr.fvwm_pushes) {
@@ -270,6 +284,8 @@ UninstallRootColormap(void)
 			XInstallColormap(dpy, last_cmap);
 		}
 	}
+
+	return;
 }
 
 /*  Procedures:
@@ -285,13 +301,16 @@ InstallFvwmColormap(void)
 		XInstallColormap(dpy, last_cmap);
 	}
 	Scr.fvwm_pushes++;
+
+	return;
 }
 
 void
 UninstallFvwmColormap(void)
 {
-	if (Scr.fvwm_pushes)
+	if (Scr.fvwm_pushes) {
 		Scr.fvwm_pushes--;
+	}
 
 	if (!Scr.fvwm_pushes) {
 		if (!Scr.root_pushes) {
@@ -301,6 +320,8 @@ UninstallFvwmColormap(void)
 			XInstallColormap(dpy, last_cmap);
 		}
 	}
+
+	return;
 }
 
 /* Gets the WM_COLORMAP_WINDOWS property from the window
@@ -316,8 +337,9 @@ FetchWmColormapWindows(FvwmWindow *fw)
 	long            i;
 	unsigned long   valuemask;
 
-	if (fw->cmap_windows != NULL)
+	if (fw->cmap_windows != (Window *) NULL) {
 		XFree((void *) fw->cmap_windows);
+	}
 
 	if (!XGetWMColormapWindows(dpy, FW_W(fw), &(fw->cmap_windows),
 		&(fw->number_cmap_windows))) {
@@ -342,6 +364,7 @@ FetchWmColormapWindows(FvwmWindow *fw)
 			}
 		}
 	}
+	return;
 }
 
 /* Looks through the window list for any matching COLORMAP_WINDOWS
@@ -369,6 +392,8 @@ EnterSubWindowColormap(Window win)
 			}
 		}
 	}
+
+	return;
 }
 
 void
@@ -383,19 +408,23 @@ LeaveSubWindowColormap(Window win)
 			bWinInList = 0;
 			bParentInList = 0;
 			for (i = 0; i < t->number_cmap_windows; i++) {
-				if (t->cmap_windows[i] == win)
+				if (t->cmap_windows[i] == win) {
 					bWinInList = 1;
-
-				if (t->cmap_windows[i] == FW_W(t))
+				}
+				if (t->cmap_windows[i] == FW_W(t)) {
 					bParentInList = 1;
+				}
 			}
-			if (bWinInList)
-				if (bParentInList)
+			if (bWinInList) {
+				if (bParentInList) {
 					InstallWindowColormaps(t);
-				else
+				} else {
 					InstallWindowColormaps(NULL);
-	
+				}
 				return;
+			}
 		}
 	}
+
+	return;
 }

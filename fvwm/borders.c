@@ -76,25 +76,23 @@ typedef struct
 {
 	struct
 	{
-		unsigned	 use_pixmap:1;
+		unsigned        use_pixmap:1;
 	} flags;
-
 	Pixel           pixel;
-	
 	struct
 	{
-		Pixmap			 p;
-		Pixmap			 shape;
-		Pixmap			 alpha;
-		int			 depth;
-		FvwmRenderAttributes	 fra;
-		rectangle		 g;
-		int			 stretch_w;
-		int			 stretch_h;
+		Pixmap          p;
+		Pixmap          shape;
+		Pixmap          alpha;
+		int             depth;
+		FvwmRenderAttributes fra;
+		rectangle       g;
+		int             stretch_w;
+		int             stretch_h;
 		struct
 		{
-			unsigned	 is_tiled:1;
-			unsigned         is_stretched:1;
+			unsigned        is_tiled:1;
+			unsigned        is_stretched:1;
 		} flags;
 	} pixmap;
 } pixmap_background_type;
@@ -123,141 +121,143 @@ typedef struct
 
 typedef struct
 {
-	int				 relief_width;
-	GC				 relief_gc;
-	GC				 shadow_gc;
-	Pixel				 fore_color;
-	Pixel				 back_color;
-	int				 cs;
-	int				 border_cs;	/* for UseBorderStyle */
-	int				 bg_border_cs;	/* for UseBorderStyle */
-	Pixmap				 back_pixmap;
-	XSetWindowAttributes		 attributes;
-	unsigned long			 valuemask;
-	Pixmap				 texture_pixmap;
-	int				 texture_pixmap_width;
-	int				 texture_pixmap_height;
-	XSetWindowAttributes		 notex_attributes;
-	unsigned long			 notex_valuemask;
-	dynamic_common_decorations	 dynamic_cd;
+	int             relief_width;
+	GC              relief_gc;
+	GC              shadow_gc;
+	Pixel           fore_color;
+	Pixel           back_color;
+	int             cs;
+	int             border_cs;	/* for UseBorderStyle */
+	int             bg_border_cs;	/* for UseBorderStyle */
+	Pixmap          back_pixmap;
+	XSetWindowAttributes attributes;
+	unsigned long   valuemask;
+	Pixmap          texture_pixmap;
+	int             texture_pixmap_width;
+	int             texture_pixmap_height;
+	XSetWindowAttributes notex_attributes;
+	unsigned long   notex_valuemask;
+	dynamic_common_decorations dynamic_cd;
 } common_decorations_type;
 
 typedef struct
 {
-	GC		 relief;
-	GC               shadow;
-	GC               transparent;
+	GC              relief;
+	GC              shadow;
+	GC              transparent;
 } draw_border_gcs;
 
 typedef struct
 {
-	int              offset_tl;
-	int              offset_br;
-	int              thickness;
-	int              length;
-	unsigned         has_x_marks:1;
-	unsigned         has_y_marks:1;
+	int             offset_tl;
+	int             offset_br;
+	int             thickness;
+	int             length;
+	unsigned        has_x_marks:1;
+	unsigned        has_y_marks:1;
 } border_marks_descr;
 
 typedef struct
 {
-	int              w_dout;
-	int              w_hiout;
-	int              w_trout;
-	int              w_c;
-	int              w_trin;
-	int              w_shin;
-	int              w_din;
-	int              sum;
-	int              trim;
-	unsigned         is_flat:1;
+	int             w_dout;
+	int             w_hiout;
+	int             w_trout;
+	int             w_c;
+	int             w_trin;
+	int             w_shin;
+	int             w_din;
+	int             sum;
+	int             trim;
+	unsigned        is_flat:1;
 } border_relief_size_descr;
 
 typedef struct
 {
-	rectangle			 sidebar_g;
-	border_relief_size_descr	 relief;
-	border_marks_descr		 marks;
-	draw_border_gcs			 gcs;
+	rectangle       sidebar_g;
+	border_relief_size_descr relief;
+	border_marks_descr marks;
+	draw_border_gcs gcs;
 } border_relief_descr;
 
 typedef struct
 {
-	unsigned         pressed_bmask:NUMBER_OF_TITLE_BUTTONS;
-	unsigned         lit_bmask:NUMBER_OF_TITLE_BUTTONS;
-	unsigned         toggled_bmask:NUMBER_OF_TITLE_BUTTONS;
-	unsigned         clear_bmask:NUMBER_OF_TITLE_BUTTONS;
-	unsigned         draw_bmask:NUMBER_OF_TITLE_BUTTONS;
-	unsigned         max_bmask:NUMBER_OF_TITLE_BUTTONS;
-	ButtonState      bstate[NUMBER_OF_TITLE_BUTTONS];
-	unsigned         is_title_pressed:1;
-	unsigned         is_title_lit:1;
-	unsigned         do_clear_title:1;
-	ButtonState      tstate;
+	unsigned        pressed_bmask:NUMBER_OF_TITLE_BUTTONS;
+	unsigned        lit_bmask:NUMBER_OF_TITLE_BUTTONS;
+	unsigned        toggled_bmask:NUMBER_OF_TITLE_BUTTONS;
+	unsigned        clear_bmask:NUMBER_OF_TITLE_BUTTONS;
+	unsigned        draw_bmask:NUMBER_OF_TITLE_BUTTONS;
+	unsigned        max_bmask:NUMBER_OF_TITLE_BUTTONS;
+	ButtonState     bstate[NUMBER_OF_TITLE_BUTTONS];
+	unsigned        is_title_pressed:1;
+	unsigned        is_title_lit:1;
+	unsigned        do_clear_title:1;
+	ButtonState     tstate;
 } border_titlebar_state;
 
 typedef struct
 {
-	GC			 rgc;
-	GC			 sgc;
-	FlocaleWinString	 fstr;
-	DecorFaceStyle		*tstyle;
-	DecorFace		*df;
-	unsigned		 is_toggled:1;
+	GC              rgc;
+	GC              sgc;
+	FlocaleWinString fstr;
+	DecorFaceStyle *tstyle;
+	DecorFace      *df;
+	unsigned        is_toggled:1;
 } title_draw_descr;
 
 typedef struct
 {
-	common_decorations_type		*cd;
-	rectangle			 frame_g;
-	rectangle			 bar_g;	/* titlebar geo vs the frame */
-	rectangle			 left_buttons_g; /* vs the frame */
-	rectangle			 right_buttons_g; /* vs the frame */
-	frame_title_layout_t		 layout;
-	frame_title_layout_t		 old_layout;
-	border_titlebar_state		 tbstate;
-	int				 length;	/* text */
-	int				 offset;	/* text offset */
+	common_decorations_type *cd;
+	rectangle       frame_g;
+	rectangle       bar_g;	/* titlebar geo vs the frame */
+	rectangle       left_buttons_g;	/* vs the frame */
+	rectangle       right_buttons_g;	/* vs the frame */
+	frame_title_layout_t layout;
+	frame_title_layout_t old_layout;
+	border_titlebar_state tbstate;
+	int             length;	/* text */
+	int             offset;	/* text offset */
 	/*
 	 * MultiPixmap Geometries
 	 */
-	rectangle			 under_text_g;	/* vs the titlebar */
-	rectangle			 left_main_g;	/* vs the titlebar */
-	rectangle			 right_main_g;	/* vs the titlebar */
-	rectangle			 full_left_main_g; /* vs the frame */
-	rectangle			 full_right_main_g; /* vs the frame */
-	int				 left_end_length;
-	int				 left_of_text_length;
-	int				 right_end_length;
-	int				 right_of_text_length;
-	rotation_t			 draw_rotation;
-	rotation_t			 restore_rotation;
-	unsigned			 td_is_rotated:1;
-	unsigned			 has_been_saved:1;
-	unsigned			 has_vt:1;	/* vertical title ? */
-	unsigned			 has_an_upsidedown_rotation:1;
+	rectangle       under_text_g;	/* vs the titlebar */
+	rectangle       left_main_g;	/* vs the titlebar */
+	rectangle       right_main_g;	/* vs the titlebar */
+	rectangle       full_left_main_g;	/* vs the frame */
+	rectangle       full_right_main_g;	/* vs the frame */
+	int             left_end_length;
+	int             left_of_text_length;
+	int             right_end_length;
+	int             right_of_text_length;
+	rotation_t      draw_rotation;
+	rotation_t      restore_rotation;
+	unsigned        td_is_rotated:1;
+	unsigned        has_been_saved:1;
+	unsigned        has_vt:1;	/* vertical title ? */
+	unsigned        has_an_upsidedown_rotation:1;	/* 270 || 180 */
 } titlebar_descr;
 
 /* ---------------------------- forward declarations ----------------------- */
 /*  forward declarations are not so good */
 
 /* for grouping titlebar_descr computation */
-static void     border_rotate_titlebar_descr(FvwmWindow *, titlebar_descr *);
+static void     border_rotate_titlebar_descr(FvwmWindow *fw,
+    titlebar_descr *td);
 
 /* for grouping the MultiPixmap stuff */
 static Bool
-border_mp_get_use_title_style_parts_and_geometry(titlebar_descr *,
-    FvwmPicture **, FvwmAcs *, unsigned short, int, rectangle *, int *);
+border_mp_get_use_title_style_parts_and_geometry(titlebar_descr *td,
+    FvwmPicture **pm, FvwmAcs *acs, unsigned short sf, int is_left,
+    rectangle *g, int *part);
 
 /* ---------------------------- local variables ---------------------------- */
 
-static const char	 ulgc[] = { 1, 0, 0, 0x7f, 2, 1, 1 };
-static const char	 brgc[] = { 1, 1, 2, 0x7f, 0, 0, 3 };
+static const char ulgc[] = { 1, 0, 0, 0x7f, 2, 1, 1 };
+static const char brgc[] = { 1, 1, 2, 0x7f, 0, 0, 3 };
 
 /* ---------------------------- exported variables (globals) --------------- */
 
-XGCValues	 Globalgcv;
-unsigned long	 Globalgcm;
+XGCValues       Globalgcv;
+unsigned long   Globalgcm;
 
 /* ---------------------------- local functions ---------------------------- */
 
@@ -266,23 +266,24 @@ is_button_toggled(FvwmWindow *fw, int button)
 {
 	mwm_flags       mf;
 
-	if (!HAS_MWM_BUTTONS(fw))
+	if (!HAS_MWM_BUTTONS(fw)) {
 		return False;
-
+	}
 	mf = TB_MWM_DECOR_FLAGS(GetDecor(fw, buttons[button]));
-	if ((mf & MWM_DECOR_MAXIMIZE) && IS_MAXIMIZED(fw))
+	if ((mf & MWM_DECOR_MAXIMIZE) && IS_MAXIMIZED(fw)) {
 		return True;
-
-	if ((mf & MWM_DECOR_SHADE) && IS_SHADED(fw))
+	}
+	if ((mf & MWM_DECOR_SHADE) && IS_SHADED(fw)) {
 		return True;
-
+	}
 	if ((mf & MWM_DECOR_STICK) &&
-	    (IS_STICKY_ACROSS_PAGES(fw) || IS_STICKY_ACROSS_DESKS(fw)))
+	    (IS_STICKY_ACROSS_PAGES(fw) || IS_STICKY_ACROSS_DESKS(fw))) {
 		return True;
-
+	}
 	if (TB_FLAGS(fw->decor->buttons[button]).has_layer &&
-	    fw->layer == TB_LAYER(fw->decor->buttons[button]))
+	    fw->layer == TB_LAYER(fw->decor->buttons[button])) {
 		return True;
+	}
 
 	return False;
 }
@@ -360,9 +361,9 @@ get_common_decorations(common_decorations_type *cd, FvwmWindow *t,
 		}
 		if (IS_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_DESKS(t)) {
 			cd->back_pixmap = Scr.sticky_gray_pixmap;
-		} else
+		} else {
 			cd->back_pixmap = Scr.light_gray_pixmap;
-
+		}
 		if (is_border) {
 			draw_colors = &(t->border_colors);
 			cd->cs = t->border_cs;
@@ -407,6 +408,8 @@ get_common_decorations(common_decorations_type *cd, FvwmWindow *t,
 		cd->notex_attributes.background_pixel = cd->back_color;
 		cd->notex_valuemask = CWBackPixel;
 	}
+
+	return;
 }
 
 static window_parts
@@ -427,12 +430,12 @@ border_get_changed_border_parts(FvwmWindow *fw, rectangle *old_sidebar_g,
 		changed_parts |= PART_FRAME;
 		return changed_parts;
 	}
-	if (old_sidebar_g->x != new_sidebar_g->x)
+	if (old_sidebar_g->x != new_sidebar_g->x) {
 		changed_parts |= (PART_FRAME & (~PART_BORDER_W));
-
-	if (old_sidebar_g->y != new_sidebar_g->y)
+	}
+	if (old_sidebar_g->y != new_sidebar_g->y) {
 		changed_parts |= (PART_FRAME & (~PART_BORDER_N));
-
+	}
 	if (old_sidebar_g->width != new_sidebar_g->width) {
 		changed_parts |= PART_BORDER_N | PART_BORDER_S;
 		if (DFS_FACE_TYPE(GetDecor(fw, BorderStyle.active.style)) ==
@@ -459,15 +462,15 @@ border_get_parts_and_pos_to_draw(common_decorations_type *cd, FvwmWindow *fw,
     rectangle *old_g, rectangle *new_g, Bool do_hilight,
     border_relief_descr * br)
 {
-	window_parts		 draw_parts;
-	window_parts		 parts_to_light;
-	rectangle		 sidebar_g_old;
-	DecorFaceStyle		*borderstyle;
-	Bool			 has_x_marks;
-	Bool			 has_x_marks_old;
-	Bool			 has_y_marks;
-	Bool			 has_y_marks_old;
-	int			 cs = cd->bg_border_cs;
+	window_parts    draw_parts;
+	window_parts    parts_to_light;
+	rectangle       sidebar_g_old;
+	DecorFaceStyle *borderstyle;
+	Bool            has_x_marks;
+	Bool            has_x_marks_old;
+	Bool            has_y_marks;
+	Bool            has_y_marks_old;
+	int             cs = cd->bg_border_cs;
 
 	draw_parts = 0;
 	borderstyle = (do_hilight) ?
@@ -478,41 +481,37 @@ border_get_parts_and_pos_to_draw(common_decorations_type *cd, FvwmWindow *fw,
 	if (has_x_marks == True) {
 		draw_parts |= PART_X_HANDLES;
 		br->marks.has_x_marks = 1;
-	} else
+	} else {
 		br->marks.has_x_marks = 0;
-
+	}
 	if (has_y_marks == True) {
 		draw_parts |= PART_Y_HANDLES;
 		br->marks.has_y_marks = 1;
-	} else
+	} else {
 		br->marks.has_y_marks = 0;
-
+	}
 	draw_parts |= (pressed_parts ^ fw->decor_state.parts_inverted);
 	parts_to_light = (do_hilight == True) ? PART_FRAME : PART_NONE;
 	draw_parts |= (parts_to_light ^ fw->decor_state.parts_lit);
 	draw_parts |= (~(fw->decor_state.parts_drawn) & PART_FRAME);
 	draw_parts |= force_draw_parts;
-
-	if (old_g == NULL)
+	if (old_g == NULL) {
 		old_g = &fw->g.frame;
-
+	}
 	if ((draw_parts & PART_FRAME) == PART_FRAME) {
 		draw_parts |= PART_FRAME;
 		return draw_parts;
 	}
 	frame_get_sidebar_geometry(fw, borderstyle, old_g, &sidebar_g_old,
 	    &has_x_marks_old, &has_y_marks_old);
-
 	if (has_x_marks_old != has_x_marks) {
 		draw_parts |=
 		    (PART_FRAME & (~(PART_BORDER_N | PART_BORDER_S)));
 	}
-
 	if (has_y_marks_old != has_y_marks) {
 		draw_parts |=
 		    (PART_FRAME & (~(PART_BORDER_W | PART_BORDER_E)));
 	}
-
 	draw_parts |=
 	    border_get_changed_border_parts(fw, &sidebar_g_old,
 	    &br->sidebar_g, cs);
@@ -548,10 +547,9 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 	old_state = border_flags_to_button_state(
 	    (fw->decor_state.parts_inverted & PART_TITLE),
 	    (fw->decor_state.parts_lit & PART_TITLE), 0);
-
-	if (old_state != td->tbstate.tstate)
+	if (old_state != td->tbstate.tstate) {
 		draw_parts |= PART_TITLE;
-
+	}
 	/*
 	 * size changed?
 	 */
@@ -566,9 +564,9 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
 		unsigned int    mask = (1 << i);
 
-		if (FW_W_BUTTON(fw, i) == None)
+		if (FW_W_BUTTON(fw, i) == None) {
 			continue;
-
+		}
 		old_state = border_flags_to_button_state(
 		    (fw->decor_state.buttons_inverted & mask),
 		    (fw->decor_state.buttons_lit & mask),
@@ -624,8 +622,8 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 		}
 	}
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
-		unsigned int	 mask;
-		DecorFaceStyle	*bs;
+		unsigned int    mask;
+		DecorFaceStyle *bs;
 
 		mask = (1 << i);
 		bs = &TB_STATE(GetDecor(fw,
@@ -691,9 +689,9 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 				}
 			}
 		}
-		if (td->tbstate.draw_bmask & mask)
+		if (td->tbstate.draw_bmask & mask) {
 			continue;
-
+		}
 		if (old_g->x != new_g->x || old_g->y != new_g->y) {
 			df = &TB_STATE(GetDecor(fw,
 				buttons[i]))[td->tbstate.bstate[i]];
@@ -709,9 +707,9 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 	}
 	td->tbstate.max_bmask = 0;
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
-		if (FW_W_BUTTON(fw, i) == None)
+		if (FW_W_BUTTON(fw, i) == None) {
 			continue;
-
+		}
 		if ((i & 1) == 1 && i / 2 < Scr.nr_right_buttons) {
 			td->tbstate.max_bmask |= (1 << i);
 		} else if ((i & 1) == 0 && i / 2 < Scr.nr_left_buttons) {
@@ -723,11 +721,11 @@ border_get_tb_parts_to_draw(FvwmWindow *fw, titlebar_descr *td,
 	td->tbstate.lit_bmask &= td->tbstate.max_bmask;
 	td->tbstate.toggled_bmask &= td->tbstate.max_bmask;
 	td->tbstate.clear_bmask &= td->tbstate.max_bmask;
-	if (td->tbstate.draw_bmask == 0)
+	if (td->tbstate.draw_bmask == 0) {
 		draw_parts &= ~PART_BUTTONS;
-	else
+	} else {
 		draw_parts |= PART_BUTTONS;
-
+	}
 	draw_parts &= PART_TITLEBAR;
 
 	return draw_parts;
@@ -743,7 +741,7 @@ border_get_border_gcs(draw_border_gcs *ret_gcs, common_decorations_type *cd,
 
 	if (transparent_gc == None && !HAS_NO_BORDER(fw)
 	    && !HAS_MWM_BORDER(fw)) {
-		XGCValues	 xgcv;
+		XGCValues       xgcv;
 
 		xgcv.function = GXnoop;
 		xgcv.plane_mask = 0;
@@ -758,10 +756,9 @@ border_get_border_gcs(draw_border_gcs *ret_gcs, common_decorations_type *cd,
 	borderstyle = (do_hilight) ?
 	    &GetDecor(fw, BorderStyle.active.style) :
 	    &GetDecor(fw, BorderStyle.inactive.style);
-
-	if (borderstyle->flags.button_relief == DFS_BUTTON_IS_SUNK)
+	if (borderstyle->flags.button_relief == DFS_BUTTON_IS_SUNK) {
 		is_reversed = True;
-
+	}
 	if (is_reversed) {
 		ret_gcs->shadow = cd->relief_gc;
 		ret_gcs->relief = cd->shadow_gc;
@@ -769,6 +766,8 @@ border_get_border_gcs(draw_border_gcs *ret_gcs, common_decorations_type *cd,
 		ret_gcs->relief = cd->relief_gc;
 		ret_gcs->shadow = cd->shadow_gc;
 	}
+
+	return;
 }
 
 static void
@@ -781,12 +780,12 @@ trim_border_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 	 * * colour is visible. We make an exception for windows with a border
 	 * * width of 2, though.
 	 */
-	if ((!IS_SHADED(fw) || HAS_TITLE(fw)) && fw->boundary_width == 2)
+	if ((!IS_SHADED(fw) || HAS_TITLE(fw)) && fw->boundary_width == 2) {
 		ret_size_descr->trim--;
-
-	if (ret_size_descr->trim < 0)
+	}
+	if (ret_size_descr->trim < 0) {
 		ret_size_descr->trim = 0;
-
+	}
 	for (; ret_size_descr->trim > 0; ret_size_descr->trim--) {
 		if (ret_size_descr->w_hiout > 1) {
 			ret_size_descr->w_hiout--;
@@ -803,15 +802,17 @@ trim_border_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 		ret_size_descr->sum--;
 	}
 	ret_size_descr->w_c = fw->boundary_width - ret_size_descr->sum;
+
+	return;
 }
 
 static void
 check_remove_inset(DecorFaceStyle *borderstyle,
     border_relief_size_descr *ret_size_descr)
 {
-	if (!DFS_HAS_NO_INSET(*borderstyle))
+	if (!DFS_HAS_NO_INSET(*borderstyle)) {
 		return;
-
+	}
 	ret_size_descr->w_shin = 0;
 	ret_size_descr->sum--;
 	ret_size_descr->trim--;
@@ -823,6 +824,8 @@ check_remove_inset(DecorFaceStyle *borderstyle,
 		ret_size_descr->sum -= 2;
 		ret_size_descr->trim -= 2;
 	}
+
+	return;
 }
 
 static void
@@ -831,22 +834,22 @@ border_fetch_mwm_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 {
 	/*
 	 * MWM borders look like this:
-	 *
-	 * HHCCCCS  from outside to inside on the left and top border
-	 * SSCCCCH  from outside to inside on the bottom and right border
-	 * |||||||
-	 * |||||||__ w_shin   (inner shadow area)
-	 * ||||||___ w_c      (transparent area)
-	 * |||||____ w_c      (transparent area)
-	 * ||||_____ w_c      (transparent area)
-	 * |||______ w_c      (transparent area)
-	 * ||_______ w_hiout  (outer hilight area)
-	 * |________ w_hiout  (outer hilight area)
-	 *
-	 *
-	 * C = original colour
-	 * H = hilight
-	 * S = shadow
+	 * *
+	 * * HHCCCCS  from outside to inside on the left and top border
+	 * * SSCCCCH  from outside to inside on the bottom and right border
+	 * * |||||||
+	 * * |||||||__ w_shin   (inner shadow area)
+	 * * ||||||___ w_c      (transparent area)
+	 * * |||||____ w_c      (transparent area)
+	 * * ||||_____ w_c      (transparent area)
+	 * * |||______ w_c      (transparent area)
+	 * * ||_______ w_hiout  (outer hilight area)
+	 * * |________ w_hiout  (outer hilight area)
+	 * *
+	 * *
+	 * * C = original colour
+	 * * H = hilight
+	 * * S = shadow
 	 */
 	ret_size_descr->w_dout = 0;
 	ret_size_descr->w_hiout = 2;
@@ -858,6 +861,8 @@ border_fetch_mwm_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 	ret_size_descr->trim = ret_size_descr->sum - fw->boundary_width + 1;
 	check_remove_inset(borderstyle, ret_size_descr);
 	trim_border_layout(fw, borderstyle, ret_size_descr);
+
+	return;
 }
 
 static void
@@ -866,32 +871,32 @@ border_fetch_fvwm_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 {
 	/*
 	 * Fvwm borders look like this:
-	 *
-	 * SHHCCSS  from outside to inside on the left and top border
-	 * SSCCHHS  from outside to inside on the bottom and right border
-	 * |||||||
-	 * |||||||__ w_din    (inner dark area)
-	 * ||||||___ w_shin   (inner shadow area)
-	 * |||||____ w_trin   (inner transparent/shadow area)
-	 * ||||_____ w_c      (transparent area)
-	 * |||______ w_trout  (outer transparent/hilight area)
-	 * ||_______ w_hiout  (outer hilight area)
-	 * |________ w_dout   (outer dark area)
-	 *
-	 * C = original colour
-	 * H = hilight
-	 * S = shadow
-	 *
-	 * reduced to 5 pixels it looks like this:
-	 *
-	 * SHHCS
-	 * SSCHS
-	 * |||||
-	 * |||||__ w_din      (inner dark area)
-	 * ||||___ w_trin     (inner transparent/shadow area)
-	 * |||____ w_trout    (outer transparent/hilight area)
-	 * ||_____ w_hiout    (outer hilight area)
-	 * |______ w_dout     (outer dark area)
+	 * *
+	 * * SHHCCSS  from outside to inside on the left and top border
+	 * * SSCCHHS  from outside to inside on the bottom and right border
+	 * * |||||||
+	 * * |||||||__ w_din    (inner dark area)
+	 * * ||||||___ w_shin   (inner shadow area)
+	 * * |||||____ w_trin   (inner transparent/shadow area)
+	 * * ||||_____ w_c      (transparent area)
+	 * * |||______ w_trout  (outer transparent/hilight area)
+	 * * ||_______ w_hiout  (outer hilight area)
+	 * * |________ w_dout   (outer dark area)
+	 * *
+	 * * C = original colour
+	 * * H = hilight
+	 * * S = shadow
+	 * *
+	 * * reduced to 5 pixels it looks like this:
+	 * *
+	 * * SHHCS
+	 * * SSCHS
+	 * * |||||
+	 * * |||||__ w_din      (inner dark area)
+	 * * ||||___ w_trin     (inner transparent/shadow area)
+	 * * |||____ w_trout    (outer transparent/hilight area)
+	 * * ||_____ w_hiout    (outer hilight area)
+	 * * |______ w_dout     (outer dark area)
 	 */
 	ret_size_descr->w_dout = 1;
 	ret_size_descr->w_hiout = 1;
@@ -901,7 +906,7 @@ border_fetch_fvwm_layout(FvwmWindow *fw, DecorFaceStyle *borderstyle,
 	ret_size_descr->w_din = 1;
 	/*
 	 * w_trout + w_trin counts only as one pixel of border because
-	 * they let one pixel of the original colour shine through.
+	 * * they let one pixel of the original colour shine through.
 	 */
 	ret_size_descr->sum = 6;
 	ret_size_descr->trim = ret_size_descr->sum - fw->boundary_width;
@@ -935,10 +940,13 @@ border_get_border_relief_size_descr(border_relief_size_descr *ret_size_descr,
 	/*
 	 * get the relief layout
 	 */
-	if (HAS_MWM_BORDER(fw))
+	if (HAS_MWM_BORDER(fw)) {
 		border_fetch_mwm_layout(fw, borderstyle, ret_size_descr);
-	else
+	} else {
 		border_fetch_fvwm_layout(fw, borderstyle, ret_size_descr);
+	}
+
+	return;
 }
 
 static void
@@ -958,15 +966,17 @@ border_get_border_marks_descr(common_decorations_type *cd,
 		return;
 	}
 	br->marks.thickness = cd->relief_width;
-	if (br->marks.thickness > br->marks.length)
+	if (br->marks.thickness > br->marks.length) {
 		br->marks.thickness = br->marks.length;
-
+	}
 	/*
 	 * get offsets from outer side of window
 	 */
 	br->marks.offset_tl = br->relief.w_dout;
 	br->marks.offset_br =
 	    -br->relief.w_dout - br->marks.length - br->marks.offset_tl;
+
+	return;
 }
 
 static Pixmap
@@ -1019,6 +1029,8 @@ border_draw_part_relief(border_relief_descr * br, rectangle *frame_g,
 		width -= 2 * w[i];
 		height -= 2 * w[i];
 	}
+
+	return;
 }
 
 static void
@@ -1029,9 +1041,9 @@ border_draw_x_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 	int             length;
 	GC              gc;
 
-	if (br->marks.has_x_marks == 0)
+	if (br->marks.has_x_marks == 0) {
 		return;
-
+	}
 	x += br->marks.offset_tl;
 	gc = (do_draw_shadow) ? br->gcs.shadow : br->gcs.relief;
 	/*
@@ -1044,9 +1056,9 @@ border_draw_x_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 		int             y1;
 		int             y2;
 
-		if (length < 0)
+		if (length < 0) {
 			break;
-
+		}
 		if (do_draw_shadow) {
 			x1 = x + k;
 			y1 = y - 1 - k;
@@ -1058,6 +1070,8 @@ border_draw_x_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 		y2 = y1;
 		XDrawLine(dpy, dest_pix, gc, x1, y1, x2, y2);
 	}
+
+	return;
 }
 
 static void
@@ -1068,9 +1082,9 @@ border_draw_y_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 	int             length;
 	GC              gc;
 
-	if (br->marks.has_y_marks == 0)
+	if (br->marks.has_y_marks == 0) {
 		return;
-
+	}
 	y += br->marks.offset_tl;
 	gc = (do_draw_shadow) ? br->gcs.shadow : br->gcs.relief;
 	/*
@@ -1083,9 +1097,9 @@ border_draw_y_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 		int             y1;
 		int             y2;
 
-		if (length <= 0)
+		if (length <= 0) {
 			break;
-
+		}
 		if (do_draw_shadow) {
 			x1 = x - 1 - k;
 			y1 = y + k;
@@ -1097,6 +1111,8 @@ border_draw_y_mark(border_relief_descr * br, int x, int y, Pixmap dest_pix,
 		y2 = y1 + length - 1;
 		XDrawLine(dpy, dest_pix, gc, x1, y1, x2, y2);
 	}
+
+	return;
 }
 
 static void
@@ -1150,6 +1166,8 @@ border_draw_part_marks(border_relief_descr * br, rectangle *part_g,
 	default:
 		return;
 	}
+
+	return;
 }
 
 inline static void
@@ -1159,6 +1177,8 @@ border_set_part_background(Window w, Pixmap pix)
 
 	xswa.background_pixmap = pix;
 	XChangeWindowAttributes(dpy, w, CWBackPixmap, &xswa);
+
+	return;
 }
 
 /* render the an image into the pixmap */
@@ -1260,14 +1280,16 @@ border_fill_pixmap_background(Pixmap dest_pix, rectangle *dest_g,
 		    dest_g->width - dest_g->x,
 		    dest_g->height - dest_g->y, True);
 	}
-	if (p && p != bg->pixmap.p)
+	if (p && p != bg->pixmap.p) {
 		XFreePixmap(dpy, p);
-
-	if (shape && shape != bg->pixmap.shape)
+	}
+	if (shape && shape != bg->pixmap.shape) {
 		XFreePixmap(dpy, shape);
-
-	if (alpha && alpha != bg->pixmap.alpha)
+	}
+	if (alpha && alpha != bg->pixmap.alpha) {
 		XFreePixmap(dpy, alpha);
+	}
+	return;
 }
 
 /* create a root transparent colorset bg, we take in account a possible
@@ -1279,9 +1301,9 @@ border_create_root_transparent_pixmap(titlebar_descr *td, Window w, int width,
 	int             my_w, my_h;
 	Pixmap          p;
 
-	if (!CSET_IS_TRANSPARENT_ROOT(cs))
+	if (!CSET_IS_TRANSPARENT_ROOT(cs)) {
 		return None;
-
+	}
 	if (td->td_is_rotated &&
 	    (td->draw_rotation == ROTATION_90 ||
 		td->draw_rotation == ROTATION_270)) {
@@ -1328,6 +1350,7 @@ border_get_frame_pixmap(common_decorations_type *cd, rectangle *frame_g)
 		    &Colorset[cd->bg_border_cs], Pdepth, Scr.BordersGC,
 		    False);
 	}
+	return;
 }
 
 static void
@@ -1394,6 +1417,8 @@ border_get_border_background(pixmap_background_type *bg,
 		bg->flags.use_pixmap = 0;
 		bg->pixel = cd->attributes.background_pixel;
 	}
+
+	return;
 }
 
 static void
@@ -1402,21 +1427,21 @@ border_draw_one_border_part(common_decorations_type *cd, FvwmWindow *fw,
     window_parts part, window_parts draw_handles, Bool is_inverted,
     Bool do_clear)
 {
-	pixmap_background_type		 bg;
-	rectangle			 part_g;
-	rectangle			 pix_g;
-	rectangle			 relative_g;
-	Pixmap				 p;
-	Window				 w;
-	Bool				 free_bg_pixmap = False;
+	pixmap_background_type bg;
+	rectangle       part_g;
+	rectangle       pix_g;
+	rectangle       relative_g;
+	Pixmap          p;
+	Window          w;
+	Bool            free_bg_pixmap = False;
 
 	/*
 	 * make a pixmap
 	 */
 	border_get_part_geometry(fw, part, sidebar_g, &part_g, &w);
-	if (part_g.width <= 0 || part_g.height <= 0)
+	if (part_g.width <= 0 || part_g.height <= 0) {
 		return;
-
+	}
 	p = border_create_decor_pixmap(cd, &part_g);
 	/*
 	 * set the background tile
@@ -1473,9 +1498,9 @@ border_draw_one_border_part(common_decorations_type *cd, FvwmWindow *fw,
 	pix_g.width = part_g.width;
 	pix_g.height = part_g.height;
 	border_fill_pixmap_background(p, &pix_g, &bg, cd);
-	if (free_bg_pixmap && bg.pixmap.p)
+	if (free_bg_pixmap && bg.pixmap.p) {
 		XFreePixmap(dpy, bg.pixmap.p);
-
+	}
 	/*
 	 * draw the relief over the background
 	 */
@@ -1492,10 +1517,12 @@ border_draw_one_border_part(common_decorations_type *cd, FvwmWindow *fw,
 	 * apply the pixmap and destroy it
 	 */
 	border_set_part_background(w, p);
-	if (do_clear == True)
+	if (do_clear == True) {
 		XClearWindow(dpy, w);
-
+	}
 	XFreePixmap(dpy, p);
+
+	return;
 }
 
 static void
@@ -1503,8 +1530,8 @@ border_draw_all_border_parts(common_decorations_type *cd, FvwmWindow *fw,
     border_relief_descr * br, rectangle *frame_g, window_parts draw_parts,
     window_parts pressed_parts, Bool do_hilight, Bool do_clear)
 {
-	window_parts	 part;
-	window_parts	 draw_handles;
+	window_parts    part;
+	window_parts    draw_handles;
 
 	/*
 	 * get the description of the drawing directives
@@ -1528,6 +1555,8 @@ border_draw_all_border_parts(common_decorations_type *cd, FvwmWindow *fw,
 			    (pressed_parts & part) ? True : False, do_clear);
 		}
 	}
+
+	return;
 }
 
 /*
@@ -1574,6 +1603,8 @@ border_draw_vector_to_pixmap(Pixmap dest_pix, common_decorations_type *cd,
 		    coords->xoff[i],
 		    pixmap_g->height * coords->y[i] / 100 + coords->yoff[i]);
 	}
+
+	return;
 }
 
 /*
@@ -1589,8 +1620,12 @@ border_setup_bar_pixmaps(titlebar_descr *td, dynamic_common_decorations *dcd,
 	DecorFace      *tsdf;
 	int             i, j, mp_part_left, mp_part_right;
 
-	if (count != 0)
+	if (count != 0) {
+		/*
+		 * ok
+		 */
 		return;
+	}
 
 	for (tsdf = df; tsdf != NULL; tsdf = tsdf->next) {
 		if (DFS_FACE_TYPE(tsdf->style) == ColorsetButton) {
@@ -1604,11 +1639,10 @@ border_setup_bar_pixmaps(titlebar_descr *td, dynamic_common_decorations *dcd,
 			    tsdf->u.mp.pixmaps, tsdf->u.mp.acs,
 			    tsdf->u.mp.solid_flags, False, NULL,
 			    &mp_part_right);
-
 			for (j = 0; j < UTS_TBMP_NUM_PIXMAPS; j++) {
-				if (j != mp_part_left && j != mp_part_right)
+				if (j != mp_part_left && j != mp_part_right) {
 					continue;
-
+				}
 				if (tsdf->u.mp.acs[j].cs >= 0 ||
 				    tsdf->u.mp.pixmaps[j]) {
 					count++;
@@ -1619,9 +1653,10 @@ border_setup_bar_pixmaps(titlebar_descr *td, dynamic_common_decorations *dcd,
 	if (count == 0) {
 		dcd->bar_pixmaps[bs].count = -1;
 		return;
-	} else
-		dcd->bar_pixmaps[bs].bps = xmalloc(count * sizeof(bar_pixmap));
-
+	} else {
+		dcd->bar_pixmaps[bs].bps =
+		    xmalloc(count * sizeof(bar_pixmap));
+	}
 	dcd->bar_pixmaps[bs].count = count;
 	i = 0;
 	for (tsdf = df; tsdf != NULL; tsdf = tsdf->next) {
@@ -1643,9 +1678,9 @@ border_setup_bar_pixmaps(titlebar_descr *td, dynamic_common_decorations *dcd,
 			    tsdf->u.mp.solid_flags, False, NULL,
 			    &mp_part_right);
 			for (j = 0; j < UTS_TBMP_NUM_PIXMAPS; j++) {
-				if (j != mp_part_left && j != mp_part_right)
+				if (j != mp_part_left && j != mp_part_right) {
 					continue;
-
+				}
 				if (tsdf->u.mp.acs[j].cs >= 0 ||
 				    tsdf->u.mp.pixmaps[j]) {
 					dcd->bar_pixmaps[bs].bps[i].p = None;
@@ -1675,8 +1710,9 @@ border_get_bar_pixmaps(dynamic_common_decorations *dcd, rectangle *bar_g,
 	int             i, j;
 	int             count = dcd->bar_pixmaps[bs].count;
 
-	if (count <= 0)
+	if (count <= 0) {
 		return None;
+	}
 
 	i = 0;
 	while (i < count &&
@@ -1685,12 +1721,12 @@ border_get_bar_pixmaps(dynamic_common_decorations *dcd, rectangle *bar_g,
 		dcd->bar_pixmaps[bs].bps[i].mp_pic != mp_pic)) {
 		i++;
 	}
-	if (i == count)
+	if (i == count) {
 		return None;
-
-	if (mp_ret_pic)
+	}
+	if (mp_ret_pic) {
 		*mp_ret_pic = dcd->bar_pixmaps[bs].bps[i].mp_created_pic;
-
+	}
 	if (dcd->bar_pixmaps[bs].bps[i].p == None) {
 		/*
 		 * see if we have it
@@ -1800,11 +1836,13 @@ border_mp_render_into_pixmap(titlebar_descr *td, common_decorations_type *cd,
     Pixmap dest, Window w, rectangle *full_g, rectangle *title_g,
     ButtonState bs, rectangle *g)
 {
-	int				 x = 0;
-	int				 y = 0;
-	pixmap_background_type		 bg;
-	rectangle			 dest_g;
-	dynamic_common_decorations	*dcd = &cd->dynamic_cd;
+	int             x = 0;
+	int             y = 0;
+	pixmap_background_type bg;
+	rectangle       dest_g;
+	dynamic_common_decorations *dcd;
+
+	dcd = &cd->dynamic_cd;
 	/*
 	 * setup some default
 	 */
@@ -1824,16 +1862,15 @@ border_mp_render_into_pixmap(titlebar_descr *td, common_decorations_type *cd,
 		bg.flags.use_pixmap = 0;
 		bg.pixel = pixels[part];
 		border_fill_pixmap_background(dest, &dest_g, &bg, cd);
-
 		return;
 	} else if (acs[part].cs >= 0) {
 		Pixmap          p = None;
 
 		bg.pixmap.fra.mask = FRAM_HAVE_ADDED_ALPHA;
 		bg.pixmap.fra.added_alpha_percent = acs[part].alpha_percent;
-		if (CSET_IS_TRANSPARENT_PR(acs[part].cs))
+		if (CSET_IS_TRANSPARENT_PR(acs[part].cs)) {
 			return;
-
+		}
 		if (CSET_IS_TRANSPARENT_ROOT(acs[part].cs)) {
 			p = border_create_root_transparent_pixmap(td, w,
 			    g->width + g->x, g->height + g->y, acs[part].cs);
@@ -1878,12 +1915,12 @@ border_mp_render_into_pixmap(titlebar_descr *td, common_decorations_type *cd,
 			bg.pixmap.depth = Pdepth;
 			bg.pixmap.flags.is_tiled = 1;
 		}
-		if (bg.pixmap.p)
+		if (bg.pixmap.p) {
 			border_fill_pixmap_background(dest, &dest_g, &bg, cd);
-
-		if (p)
+		}
+		if (p) {
 			XFreePixmap(dpy, p);
-
+		}
 	} else if (src[part]) {
 		FvwmPicture    *full_pic = NULL;
 		Pixmap          p;
@@ -1911,11 +1948,11 @@ border_mp_render_into_pixmap(titlebar_descr *td, common_decorations_type *cd,
 			}
 		}
 		if (!bg.pixmap.p) {
-			if (stretch_flags & (1 << part))
+			if (stretch_flags & (1 << part)) {
 				bg.pixmap.flags.is_stretched = 1;
-			else
+			} else {
 				bg.pixmap.flags.is_tiled = 1;
-
+			}
 			bg.pixmap.p = src[part]->picture;
 			bg.pixmap.shape = src[part]->mask;
 			bg.pixmap.alpha = src[part]->alpha;
@@ -1926,9 +1963,12 @@ border_mp_render_into_pixmap(titlebar_descr *td, common_decorations_type *cd,
 			bg.pixmap.stretch_h = dest_g.height - dest_g.y;
 
 		}
-		if (bg.pixmap.p)
+		if (bg.pixmap.p) {
 			border_fill_pixmap_background(dest, &dest_g, &bg, cd);
+		}
 	}
+
+	return;
 }
 
 static int
@@ -1939,17 +1979,19 @@ border_mp_get_length(titlebar_descr *td, FvwmPicture **pm, FvwmAcs *acs,
 		/*
 		 * arbitrary
 		 */
-		if (td->has_vt)
+		if (td->has_vt) {
 			return td->bar_g.width / 2;
-		else
+		} else {
 			return td->bar_g.height / 2;
+		}
 	}
-	if (pm[part] == NULL)
+	if (pm[part] == NULL) {
 		return 0;
-	else if (td->has_vt)
+	} else if (td->has_vt) {
 		return pm[part]->height;
-	else
+	} else {
 		return pm[part]->width;
+	}
 }
 
 /* geometries relatively to the frame */
@@ -1957,39 +1999,38 @@ static void
 border_mp_get_titlebar_descr(FvwmWindow *fw, titlebar_descr *td,
     DecorFace *df)
 {
-	DecorFace		*tsdf;
-	FvwmPicture		**pm;
-	FvwmAcs			*acs;
-	int			 add, tmpi;
-	int			 left_of_text = 0;
-	int			 right_of_text = 0;
-	int			 left_end = 0;
-	int			 right_end = 0;
-	int			 before_space, after_space;
-	int			 under_offset, under_width;
-	Bool			 has_mp = False;
-	JustificationType	 just;
-	unsigned short		 sf;
-	int			 is_start = 0;
+	DecorFace      *tsdf;
+	FvwmPicture   **pm;
+	FvwmAcs        *acs;
+	int             add, tmpi;
+	int             left_of_text = 0;
+	int             right_of_text = 0;
+	int             left_end = 0;
+	int             right_end = 0;
+	int             before_space, after_space, under_offset, under_width;
+	Bool            has_mp = False;
+	JustificationType just;
+	unsigned short  sf;
+	int             is_start = 0;
 
 	just = TB_JUSTIFICATION(GetDecor(fw, titlebar));
 	/*
 	 * first compute under text width
 	 */
-	if (td->length > 0)
+	if (td->length > 0) {
 		under_width = td->length + 2 * TBMP_TITLE_PADDING;
-	else
+	} else {
 		under_width = 0;
-
+	}
 	if (under_width > fw->title_length) {
 		under_width = fw->title_length;
 		td->offset = (fw->title_length - td->length) / 2;
 		just = JUST_CENTER;
 	}
 	for (tsdf = df; tsdf != NULL; tsdf = tsdf->next) {
-		if (tsdf->style.face_type != MultiPixmap)
+		if (tsdf->style.face_type != MultiPixmap) {
 			continue;
-
+		}
 		has_mp = True;
 		acs = tsdf->u.mp.acs;
 		pm = tsdf->u.mp.pixmaps;
@@ -2002,7 +2043,6 @@ border_mp_get_titlebar_descr(FvwmWindow *fw, titlebar_descr *td,
 		    fw->title_length) {
 			left_of_text = add;
 		}
-
 		add =
 		    border_mp_get_length(td, pm, acs, sf, TBMP_RIGHT_OF_TEXT);
 		if (add > right_of_text
@@ -2027,8 +2067,9 @@ border_mp_get_titlebar_descr(FvwmWindow *fw, titlebar_descr *td,
 		}
 	}
 
-	if (!has_mp)
+	if (!has_mp) {
 		return;
+	}
 
 	switch (just) {
 	case JUST_LEFT:
@@ -2302,6 +2343,8 @@ border_mp_get_extreme_geometry(titlebar_descr *td, FvwmPicture **pm,
 		right_end_g->width = 0;
 		right_end_g->height = 0;
 	}
+
+	return;
 }
 
 static Bool
@@ -2346,14 +2389,14 @@ static void
 border_mp_draw_mp_titlebar(FvwmWindow *fw, titlebar_descr *td, DecorFace *df,
     Pixmap dest_pix, Window w)
 {
-	FvwmPicture	**pm;
-	FvwmAcs		*acs;
-	Pixel		*pixels;
-	unsigned short   solid_flags;
-	unsigned short   stretch_flags;
-	rectangle        tmp_g, left_of_text_g, left_end_g, right_of_text_g;
-	rectangle	 right_end_g;
-	ButtonState      bs;
+	FvwmPicture   **pm;
+	FvwmAcs        *acs;
+	Pixel          *pixels;
+	unsigned short  solid_flags;
+	unsigned short  stretch_flags;
+	rectangle       tmp_g, left_of_text_g, left_end_g, right_of_text_g,
+	    right_end_g;
+	ButtonState     bs;
 
 	bs = td->tbstate.tstate;
 	pm = df->u.mp.pixmaps;
@@ -2428,6 +2471,8 @@ border_mp_draw_mp_titlebar(FvwmWindow *fw, titlebar_descr *td, DecorFace *df,
 		    solid_flags, stretch_flags, TBMP_RIGHT_END, dest_pix, w,
 		    NULL, &td->layout.title_g, bs, &right_end_g);
 	}
+
+	return;
 }
 
 /*
@@ -2441,14 +2486,14 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
     DecorFace *df, titlebar_descr *td, ButtonState bs,
     int use_title_style, int is_toggled, int left1right0)
 {
-	register		 DecorFaceType type = DFS_FACE_TYPE(df->style);
-	pixmap_background_type	 bg;
-	rectangle		 dest_g;
-	FvwmPicture		*p;
-	int			 width, height;
-	int			 border;
-	int			 lr_just, tb_just;
-	common_decorations_type	*cd;
+	register DecorFaceType type = DFS_FACE_TYPE(df->style);
+	pixmap_background_type bg;
+	rectangle       dest_g;
+	FvwmPicture    *p;
+	int             width, height;
+	int             border;
+	int             lr_just, tb_just;
+	common_decorations_type *cd;
 
 	cd = td->cd;
 	/*
@@ -2461,11 +2506,11 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 	bg.pixmap.g.x = 0;
 	bg.pixmap.g.y = 0;
 
-	if (DFS_BUTTON_RELIEF(df->style) == DFS_BUTTON_IS_FLAT)
+	if (DFS_BUTTON_RELIEF(df->style) == DFS_BUTTON_IS_FLAT) {
 		border = 0;
-	else
+	} else {
 		border = HAS_MWM_BORDER(fw) ? 1 : 2;
-
+	}
 	dest_g.width = w_g->width;
 	dest_g.height = w_g->height;
 	dest_g.x = border;
@@ -2667,9 +2712,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 			break;
 		}
 		p = df->u.p;
-		if (type == TiledPixmapButton)
+		if (type == TiledPixmapButton) {
 			bg.pixmap.flags.is_tiled = 1;
-		else {
+		} else {
 			bg.pixmap.stretch_w = width =
 			    w_g->width - 2 * dest_g.x;
 			bg.pixmap.stretch_h = height =
@@ -2712,8 +2757,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 				g.y = 0;
 			}
 
-			if (part == TBMP_NONE)
+			if (part == TBMP_NONE) {
 				break;
+			}
 
 			if (sf & (1 << part)) {
 				bg.flags.use_pixmap = 0;
@@ -2724,9 +2770,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 			}
 			cs = acs[part].cs;
 			ap = acs[part].alpha_percent;
-			if (CSET_IS_TRANSPARENT_PR(cs))
+			if (CSET_IS_TRANSPARENT_PR(cs)) {
 				break;
-
+			}
 			if (cs >= 0) {
 				bg.pixmap.fra.mask = FRAM_HAVE_ADDED_ALPHA;
 				bg.pixmap.fra.added_alpha_percent = ap;
@@ -2789,11 +2835,11 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 				bg.pixmap.g.y = w_g->y - g.y;
 			} else if (pm[part]) {
 				p = pm[part];
-				if (df->u.mp.stretch_flags & (1 << part))
+				if (df->u.mp.stretch_flags & (1 << part)) {
 					bg.pixmap.flags.is_stretched = 1;
-				else
+				} else {
 					bg.pixmap.flags.is_tiled = 1;
-
+				}
 				bg.pixmap.p = p->picture;
 				bg.pixmap.shape = p->mask;
 				bg.pixmap.alpha = p->alpha;
@@ -2803,16 +2849,19 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 				bg.pixmap.stretch_w = dest_g.width - dest_g.x;
 				bg.pixmap.stretch_h =
 				    dest_g.height - dest_g.y;
-			} else
+			} else {
+				/*
+				 * should not happen
+				 */
 				return;
-
+			}
 			if (bg.pixmap.p != None) {
 				border_fill_pixmap_background(dest_pix,
 				    &dest_g, &bg, cd);
 			}
-			if (tmp != None)
+			if (tmp != None) {
 				XFreePixmap(dpy, tmp);
-
+			}
 			break;
 		}
 	case ColorsetButton:
@@ -2822,9 +2871,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 			Pixmap          tmp = None;
 			int             bg_w, bg_h;
 
-			if (CSET_IS_TRANSPARENT_PR(cs))
+			if (CSET_IS_TRANSPARENT_PR(cs)) {
 				break;
-
+			}
 			dest_g.x = 0;
 			dest_g.y = 0;
 			if (use_title_style &&
@@ -2842,9 +2891,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 				tmp =
 				    border_create_root_transparent_pixmap(td,
 				    w, w_g->width, w_g->height, cs);
-				if (tmp == None)
+				if (tmp == None) {
 					break;
-
+				}
 				bg.pixmap.p = tmp;
 				bg.pixmap.g.width = w_g->width;
 				bg.pixmap.g.height = w_g->height;
@@ -2856,9 +2905,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 				    CreateBackgroundPixmap(dpy, w, w_g->width,
 				    w_g->height, cs_t, Pdepth, Scr.BordersGC,
 				    False);
-				if (tmp == None)
+				if (tmp == None) {
 					break;
-
+				}
 				bg.pixmap.p = tmp;
 				GetWindowBackgroundPixmapSize(cs_t,
 				    w_g->width, w_g->height, &bg_w, &bg_h);
@@ -2877,9 +2926,9 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 			    df->u.acs.alpha_percent;
 			border_fill_pixmap_background(dest_pix, &dest_g, &bg,
 			    cd);
-			if (tmp)
+			if (tmp) {
 				XFreePixmap(dpy, tmp);
-
+			}
 			break;
 		}
 	case GradientButton:
@@ -2898,33 +2947,35 @@ border_draw_decor_to_pixmap(FvwmWindow *fw, Pixmap dest_pix, Window w,
 		fvwm_msg(ERR, "DrawButton", "unknown button type: %i", type);
 		break;
 	}
+
+	return;
 }
 
 static void
 border_set_button_pixmap(FvwmWindow *fw, titlebar_descr *td, int button,
     Pixmap *dest_pix, Window w)
 {
-	pixmap_background_type	 bg;
-	unsigned int		 mask;
-	int			 is_left_button;
-	int			 do_reverse_relief;
-	ButtonState		 bs;
-	DecorFace		*df;
-	rectangle		*button_g;
-	GC			 rgc;
-	GC			 sgc;
-	Bool			 free_bg_pixmap = False;
-	rectangle		 pix_g;
+	pixmap_background_type bg;
+	unsigned int    mask;
+	int             is_left_button;
+	int             do_reverse_relief;
+	ButtonState     bs;
+	DecorFace      *df;
+	rectangle      *button_g;
+	GC              rgc;
+	GC              sgc;
+	Bool            free_bg_pixmap = False;
+	rectangle       pix_g;
 
 	/*
 	 * prepare variables
 	 */
 	mask = (1 << button);
-	if (td->has_an_upsidedown_rotation)
+	if (td->has_an_upsidedown_rotation) {
 		is_left_button = (button & 1);
-	else
+	} else {
 		is_left_button = !(button & 1);
-
+	}
 	button_g = &td->layout.button_g[button];
 	bs = td->tbstate.bstate[button];
 	df = &TB_STATE(GetDecor(fw, buttons[button]))[bs];
@@ -3011,11 +3062,11 @@ border_set_button_pixmap(FvwmWindow *fw, titlebar_descr *td, int button,
 			*dest_pix = tmp;
 			border_rotate_titlebar_descr(fw, td);
 			button_g = &td->layout.button_g[button];
-
-			if (td->has_an_upsidedown_rotation)
+			if (td->has_an_upsidedown_rotation) {
 				is_left_button = (button & 1);
-			else
+			} else {
 				is_left_button = !(button & 1);
+			}
 		}
 	}
 	/*
@@ -3054,6 +3105,8 @@ border_set_button_pixmap(FvwmWindow *fw, titlebar_descr *td, int button,
 		 */
 		break;
 	}
+
+	return;
 }
 
 static void
@@ -3065,8 +3118,9 @@ border_draw_one_button(FvwmWindow *fw, titlebar_descr *td, int button)
 	 * make a pixmap
 	 */
 	if (td->layout.button_g[button].x < 0 ||
-	    td->layout.button_g[button].y < 0)
+	    td->layout.button_g[button].y < 0) {
 		return;
+	}
 
 	p = border_create_decor_pixmap(td->cd,
 	    &(td->layout.button_g[button]));
@@ -3079,8 +3133,11 @@ border_draw_one_button(FvwmWindow *fw, titlebar_descr *td, int button)
 	 */
 	border_set_part_background(FW_W_BUTTON(fw, button), p);
 	XFreePixmap(dpy, p);
-	if ((td->tbstate.clear_bmask & (1 << button)) != 0)
+	if ((td->tbstate.clear_bmask & (1 << button)) != 0) {
 		XClearWindow(dpy, FW_W_BUTTON(fw, button));
+	}
+
+	return;
 }
 
 static void
@@ -3107,11 +3164,11 @@ border_draw_title_stick_lines(FvwmWindow *fw, titlebar_descr *td,
 		|| HAS_STIPPLED_TITLE(fw))) {
 		return;
 	}
-	if (td->td_is_rotated)
+	if (td->td_is_rotated) {
 		rotation = td->restore_rotation;
-	else
+	} else {
 		rotation = ROTATION_0;
-
+	}
 	if (td->has_vt && td->under_text_g.height > 0) {
 		under_text_length = td->under_text_g.height;
 		under_text_offset = td->under_text_g.y;
@@ -3136,8 +3193,9 @@ border_draw_title_stick_lines(FvwmWindow *fw, titlebar_descr *td,
 	 * * return immediately. -- Thomas Adam
 	 */
 	if ((IS_STICKY_ACROSS_PAGES(fw) || IS_STICKY_ACROSS_DESKS(fw)) &&
-	    (!HAS_STICKY_STIPPLED_TITLE(fw) && HAS_STIPPLED_TITLE(fw)))
+	    (!HAS_STICKY_STIPPLED_TITLE(fw) && HAS_STIPPLED_TITLE(fw))) {
 		return;
+	}
 
 	num = (int) (fw->title_thickness / WINDOW_TITLE_STICK_VERT_DIST / 2) *
 	    2 - 1;
@@ -3182,6 +3240,8 @@ border_draw_title_stick_lines(FvwmWindow *fw, titlebar_descr *td,
 			    tdd->sgc, tdd->rgc, 1, False, rotation);
 		}
 	}
+
+	return;
 }
 
 static void
@@ -3213,6 +3273,8 @@ border_draw_title_mono(FvwmWindow *fw, titlebar_descr *td,
 	    SWAP_ARGS(has_vt, 0, td->offset + td->length + 1),
 	    SWAP_ARGS(has_vt, td->offset + td->length + 1,
 		fw->title_thickness));
+
+	return;
 }
 
 static void
@@ -3222,11 +3284,11 @@ border_draw_title_relief(FvwmWindow *fw, titlebar_descr *td,
 	int             reverse = 0;
 	rotation_t      rotation;
 
-	if (td->td_is_rotated)
+	if (td->td_is_rotated) {
 		rotation = td->restore_rotation;
-	else
+	} else {
 		rotation = ROTATION_0;
-
+	}
 	/*
 	 * draw title relief
 	 */
@@ -3247,20 +3309,22 @@ border_draw_title_relief(FvwmWindow *fw, titlebar_descr *td,
 		 */
 		break;
 	}
+
+	return;
 }
 
 static void
 border_draw_title_deep(FvwmWindow *fw, titlebar_descr *td,
     title_draw_descr * tdd, FlocaleWinString *fstr, Pixmap dest_pix, Window w)
 {
-	DecorFace		*df;
-	pixmap_background_type	 bg;
+	DecorFace      *df;
+	pixmap_background_type bg;
 
 	bg.flags.use_pixmap = 0;
 	for (df = tdd->df; df != NULL; df = df->next) {
-		if (df->style.face_type == MultiPixmap)
+		if (df->style.face_type == MultiPixmap) {
 			border_mp_draw_mp_titlebar(fw, td, df, dest_pix, w);
-		else {
+		} else {
 			bg.pixel = df->u.back;
 			border_draw_decor_to_pixmap(fw, dest_pix, w, &bg,
 			    &td->layout.title_g, df, td, td->tbstate.tstate,
@@ -3268,6 +3332,8 @@ border_draw_title_deep(FvwmWindow *fw, titlebar_descr *td,
 		}
 	}
 	FlocaleDrawString(dpy, fw->title_font, &tdd->fstr, 0);
+
+	return;
 }
 
 static void
@@ -3296,12 +3362,11 @@ border_get_titlebar_draw_descr(FvwmWindow *fw, titlebar_descr *td,
 	 */
 	tdd->fstr.str = fw->visible_name;
 	tdd->fstr.win = dest_pix;
-
-	if (td->td_is_rotated)
+	if (td->td_is_rotated) {
 		tdd->fstr.flags.text_rotation = ROTATION_0;
-	else
+	} else {
 		tdd->fstr.flags.text_rotation = fw->title_text_rotation;
-
+	}
 	if (td->has_vt) {
 		tdd->fstr.y = td->offset;
 		tdd->fstr.x = fw->title_text_offset + 1;
@@ -3314,17 +3379,19 @@ border_get_titlebar_draw_descr(FvwmWindow *fw, titlebar_descr *td,
 		tdd->fstr.flags.has_colorset = 1;
 	}
 	tdd->fstr.gc = Scr.TitleGC;
+
+	return;
 }
 
 static void
 border_set_title_pixmap(FvwmWindow *fw, titlebar_descr *td, Pixmap *dest_pix,
     Window w)
 {
-	pixmap_background_type	 bg;
-	title_draw_descr	 tdd;
-	FlocaleWinString	 fstr;
-	Bool			 free_bg_pixmap = False;
-	rectangle		 pix_g;
+	pixmap_background_type bg;
+	title_draw_descr tdd;
+	FlocaleWinString fstr;
+	Bool            free_bg_pixmap = False;
+	rectangle       pix_g;
 
 	border_get_titlebar_draw_descr(fw, td, &tdd, *dest_pix);
 	/*
@@ -3389,13 +3456,15 @@ border_set_title_pixmap(FvwmWindow *fw, titlebar_descr *td, Pixmap *dest_pix,
 		}
 	}
 
-	if (Pdepth < 2)
+	if (Pdepth < 2) {
 		border_draw_title_mono(fw, td, &tdd, &fstr, *dest_pix);
-	else
+	} else {
 		border_draw_title_deep(fw, td, &tdd, &fstr, *dest_pix, w);
-
+	}
 	border_draw_title_relief(fw, td, &tdd, *dest_pix);
 	border_draw_title_stick_lines(fw, td, &tdd, *dest_pix);
+
+	return;
 }
 
 static void
@@ -3403,20 +3472,22 @@ border_draw_title(FvwmWindow *fw, titlebar_descr *td)
 {
 	Pixmap          p;
 
-	if (td->layout.title_g.x < 0 || td->layout.title_g.y < 0)
+	if (td->layout.title_g.x < 0 || td->layout.title_g.y < 0) {
 		return;
-
-	if (td->draw_rotation != ROTATION_0)
+	}
+	if (td->draw_rotation != ROTATION_0) {
 		border_rotate_titlebar_descr(fw, td);
-
+	}
 	/*
 	 * make a pixmap
 	 */
 	p = border_create_decor_pixmap(td->cd, &(td->layout.title_g));
-
 	/*
 	 * set the background tile
 	 */
+#if 0
+	fprintf(stderr, "drawing title\n");
+#endif
 	border_set_title_pixmap(fw, td, &p, FW_W_TITLE(fw));
 	if (td->draw_rotation != ROTATION_0) {
 		Pixmap          tmp;
@@ -3433,24 +3504,30 @@ border_draw_title(FvwmWindow *fw, titlebar_descr *td)
 	 */
 	border_set_part_background(FW_W_TITLE(fw), p);
 	XFreePixmap(dpy, p);
-
-	if (td->tbstate.do_clear_title)
+	if (td->tbstate.do_clear_title) {
 		XClearWindow(dpy, FW_W_TITLE(fw));
+	}
+
+	return;
 }
 
 static void
 border_draw_buttons(FvwmWindow *fw, titlebar_descr *td)
 {
-	int	 i;
+	int             i;
 
 	/*
 	 * draw everything in a big loop
 	 */
+#if 0
+	fprintf(stderr, "drawing buttons 0x%04x\n", td->tbstate.draw_bmask);
+#endif
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
 		unsigned int    mask = (1 << i);
 
-		if ((td->tbstate.draw_bmask & mask) != 0)
+		if ((td->tbstate.draw_bmask & mask) != 0) {
 			border_draw_one_button(fw, td, i);
+		}
 	}
 	/*
 	 * update the button states
@@ -3459,6 +3536,8 @@ border_draw_buttons(FvwmWindow *fw, titlebar_descr *td)
 	fw->decor_state.buttons_inverted = td->tbstate.pressed_bmask;
 	fw->decor_state.buttons_lit = td->tbstate.lit_bmask;
 	fw->decor_state.buttons_toggled = td->tbstate.toggled_bmask;
+
+	return;
 }
 
 static void
@@ -3494,23 +3573,23 @@ border_setup_use_title_style(FvwmWindow *fw, titlebar_descr *td)
 			}
 		}
 	}
+	return;
 }
 
 static void
 border_rotate_titlebar_descr(FvwmWindow *fw, titlebar_descr *td)
 {
-	rotation_t		 rotation;
-	int			 i, tmpi;
-	static titlebar_descr	 saved_td;
+	rotation_t      rotation;
+	int             i, tmpi;
+	static titlebar_descr saved_td;
 
-	if (td->draw_rotation == ROTATION_0)
+	if (td->draw_rotation == ROTATION_0) {
 		return;
-
+	}
 	if (!td->has_been_saved) {
 		td->has_been_saved = True;
 		memcpy(&saved_td, td, sizeof(titlebar_descr));
 	}
-
 	if (!td->td_is_rotated) {
 		/*
 		 * make the bar horizontal
@@ -3679,38 +3758,38 @@ border_get_titlebar_descr_state(FvwmWindow *fw, window_parts pressed_parts,
     int pressed_button, clear_window_parts clear_parts, Bool do_hilight,
     border_titlebar_state *tbstate)
 {
-	int	 i;
+	int             i;
 
 	if ((pressed_parts & PART_BUTTONS) != PART_NONE
 	    && pressed_button >= 0) {
 		tbstate->pressed_bmask = (1 << pressed_button);
-	} else
+	} else {
 		tbstate->pressed_bmask = 0;
-
+	}
 	if ((clear_parts & CLEAR_BUTTONS) != CLEAR_NONE) {
 		tbstate->clear_bmask = ~0;
-	} else
+	} else {
 		tbstate->clear_bmask = 0;
-
+	}
 	tbstate->lit_bmask = (do_hilight == True) ? ~0 : 0;
 	if ((pressed_parts & PART_TITLE) != PART_NONE) {
 		tbstate->is_title_pressed = 1;
-	} else
+	} else {
 		tbstate->is_title_pressed = 0;
-
+	}
 	if ((clear_parts & CLEAR_TITLE) != CLEAR_NONE) {
 		tbstate->do_clear_title = 1;
-	} else
+	} else {
 		tbstate->do_clear_title = 0;
-
+	}
 	tbstate->is_title_lit = (do_hilight == True) ? 1 : 0;
 	tbstate->toggled_bmask = 0;
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
 		unsigned int    mask = (1 << i);
 
-		if (is_button_toggled(fw, i))
+		if (is_button_toggled(fw, i)) {
 			tbstate->toggled_bmask |= mask;
-
+		}
 		tbstate->bstate[i] =
 		    border_flags_to_button_state(tbstate->
 		    pressed_bmask & mask, tbstate->lit_bmask & mask,
@@ -3728,20 +3807,19 @@ border_get_titlebar_descr(common_decorations_type *cd, FvwmWindow *fw,
     rectangle *old_g, rectangle *new_g, Bool do_hilight,
     titlebar_descr *ret_td)
 {
-	window_parts		 draw_parts;
-	int			 i;
-	DecorFace		*df;
-	int			 is_start = 0;
-	JustificationType	 just;
-	int			 lbl = 0;
-	int			 rbl = 0;
+	window_parts    draw_parts;
+	int             i;
+	DecorFace      *df;
+	int             is_start = 0;
+	JustificationType just;
+	int             lbl = 0;
+	int             rbl = 0;
 
 	ret_td->cd = cd;
 	ret_td->frame_g = *new_g;
-
-	if (old_g == NULL)
+	if (old_g == NULL) {
 		old_g = &fw->g.frame;
-
+	}
 	frame_get_titlebar_dimensions(fw, old_g, NULL, &ret_td->old_layout);
 	frame_get_titlebar_dimensions(fw, new_g, NULL, &ret_td->layout);
 
@@ -3793,19 +3871,21 @@ border_get_titlebar_descr(common_decorations_type *cd, FvwmWindow *fw,
 	}
 
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
-		if (FW_W_BUTTON(fw, i) == None)
+		if (FW_W_BUTTON(fw, i) == None) {
 			continue;
-
+		}
 		if (ret_td->has_vt) {
-			if (i & 1)
+			if (i & 1) {
 				rbl += ret_td->layout.button_g[i].height;
-			else
+			} else {
 				lbl += ret_td->layout.button_g[i].height;
+			}
 		} else {
-			if (i & 1)
+			if (i & 1) {
 				rbl += ret_td->layout.button_g[i].width;
-			else
+			} else {
 				lbl += ret_td->layout.button_g[i].width;
+			}
 		}
 	}
 
@@ -3871,15 +3951,15 @@ border_get_titlebar_descr(common_decorations_type *cd, FvwmWindow *fw,
 			    2 * MIN_WINDOW_TITLE_TEXT_OFFSET;
 			just = JUST_CENTER;
 		}
-
-		if (ret_td->length < 0)
+		if (ret_td->length < 0) {
 			ret_td->length = 0;
-	} else
+		}
+	} else {
 		ret_td->length = 0;
-
-	if (ret_td->length == 0)
+	}
+	if (ret_td->length == 0) {
 		just = JUST_CENTER;
-
+	}
 	df = &TB_STATE(GetDecor(fw, titlebar))[ret_td->tbstate.tstate];
 	switch (just) {
 	case JUST_LEFT:
@@ -3910,8 +3990,9 @@ border_get_titlebar_descr(common_decorations_type *cd, FvwmWindow *fw,
 		break;
 	}
 
-	if (ret_td->offset < MIN_WINDOW_TITLE_TEXT_OFFSET)
+	if (ret_td->offset < MIN_WINDOW_TITLE_TEXT_OFFSET) {
 		ret_td->offset = MIN_WINDOW_TITLE_TEXT_OFFSET;
+	}
 
 	/*
 	 * setup MultiPixmap
@@ -3934,8 +4015,8 @@ border_draw_titlebar(common_decorations_type *cd, FvwmWindow *fw,
     window_parts force_draw_parts, clear_window_parts clear_parts,
     rectangle *old_g, rectangle *new_g, Bool do_hilight)
 {
-	window_parts	 draw_parts;
-	titlebar_descr	 td;
+	window_parts    draw_parts;
+	titlebar_descr  td;
 
 	if (!HAS_TITLE(fw)) {
 		/*
@@ -3948,7 +4029,6 @@ border_draw_titlebar(common_decorations_type *cd, FvwmWindow *fw,
 		fw->decor_state.buttons_lit = 0;
 		fw->decor_state.buttons_inverted = 0;
 		fw->decor_state.buttons_toggled = 0;
-
 		return;
 	}
 	memset(&td, 0, sizeof(td));
@@ -3962,23 +4042,23 @@ border_draw_titlebar(common_decorations_type *cd, FvwmWindow *fw,
 		 */
 		border_setup_use_title_style(fw, &td);
 	}
-	if ((draw_parts & PART_TITLE) != PART_NONE)
+	if ((draw_parts & PART_TITLE) != PART_NONE) {
 		border_draw_title(fw, &td);
-
-	if ((draw_parts & PART_BUTTONS) != PART_NONE)
+	}
+	if ((draw_parts & PART_BUTTONS) != PART_NONE) {
 		border_draw_buttons(fw, &td);
-
+	}
 	border_free_bar_pixmaps(&(td.cd->dynamic_cd));
 
 	/*
 	 * update the decor states
 	 */
 	fw->decor_state.parts_drawn |= draw_parts;
-	if (do_hilight)
+	if (do_hilight) {
 		fw->decor_state.parts_lit |= draw_parts;
-	else
+	} else {
 		fw->decor_state.parts_lit &= ~draw_parts;
-
+	}
 	fw->decor_state.parts_inverted &= ~draw_parts;
 	fw->decor_state.parts_inverted |= (draw_parts & pressed_parts);
 	if (draw_parts & PART_BUTTONS) {
@@ -3995,6 +4075,8 @@ border_draw_titlebar(common_decorations_type *cd, FvwmWindow *fw,
 		    (fw->decor_state.buttons_toggled &
 		    ~td.tbstate.max_bmask) | td.tbstate.toggled_bmask;
 	}
+
+	return;
 }
 
 /*
@@ -4008,9 +4090,9 @@ border_draw_border_parts(common_decorations_type *cd, FvwmWindow *fw,
     clear_window_parts clear_parts, rectangle *old_g, rectangle *new_g,
     Bool do_hilight)
 {
-	border_relief_descr	 br;
-	window_parts		 draw_parts;
-	Bool			 do_clear;
+	border_relief_descr br;
+	window_parts    draw_parts;
+	Bool            do_clear;
 
 	if (HAS_NO_BORDER(fw)) {
 		/*
@@ -4020,18 +4102,17 @@ border_draw_border_parts(common_decorations_type *cd, FvwmWindow *fw,
 		fw->decor_state.parts_lit &= ~(PART_FRAME | PART_HANDLES);
 		fw->decor_state.parts_inverted &=
 		    ~(PART_FRAME | PART_HANDLES);
-
 		return;
 	}
 	do_clear = (clear_parts & CLEAR_FRAME) ? True : False;
 	/*
 	 * determine the parts to draw and the position to place them
 	 */
-	if (HAS_DEPRESSABLE_BORDER(fw))
+	if (HAS_DEPRESSABLE_BORDER(fw)) {
 		pressed_parts &= PART_FRAME;
-	else
+	} else {
 		pressed_parts = PART_NONE;
-
+	}
 	force_draw_parts &= PART_FRAME;
 	memset(&br, 0, sizeof(br));
 	draw_parts =
@@ -4041,18 +4122,19 @@ border_draw_border_parts(common_decorations_type *cd, FvwmWindow *fw,
 		border_draw_all_border_parts(cd, fw, &br, new_g, draw_parts,
 		    pressed_parts, do_hilight, do_clear);
 	}
-
 	/*
 	 * update the decor states
 	 */
 	fw->decor_state.parts_drawn |= draw_parts;
-	if (do_hilight)
+	if (do_hilight) {
 		fw->decor_state.parts_lit |= draw_parts;
-	else
+	} else {
 		fw->decor_state.parts_lit &= ~draw_parts;
-
+	}
 	fw->decor_state.parts_inverted &= ~draw_parts;
 	fw->decor_state.parts_inverted |= (draw_parts & pressed_parts);
+
+	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -4062,10 +4144,11 @@ border_get_border_style(FvwmWindow *fw, Bool has_focus)
 {
 	DecorFace      *df;
 
-	if (has_focus == True)
+	if (has_focus == True) {
 		df = &(GetDecor(fw, BorderStyle.active));
-	else
+	} else {
 		df = &(GetDecor(fw, BorderStyle.inactive));
+	}
 
 	return df;
 }
@@ -4083,14 +4166,13 @@ border_is_using_border_style(FvwmWindow *fw, Bool has_focus)
 	 */
 	is_pressed = (FW_W_TITLE(fw) == PressedW);
 	bs = border_flags_to_button_state(is_pressed, has_focus, 0);
-
-	if (DFS_USE_BORDER_STYLE(TB_STATE(GetDecor(fw, titlebar))[bs].style))
+	if (DFS_USE_BORDER_STYLE(TB_STATE(GetDecor(fw, titlebar))[bs].style)) {
 		return 1;
-
+	}
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
-		if (FW_W_BUTTON(fw, i) == None)
+		if (FW_W_BUTTON(fw, i) == None) {
 			continue;
-
+		}
 		is_pressed = (FW_W_BUTTON(fw, i) == PressedW);
 		is_toggled = (is_button_toggled(fw, i) == True);
 		bs = border_flags_to_button_state(is_pressed,
@@ -4110,26 +4192,27 @@ border_context_to_parts(int context)
 	if (context == C_FRAME || context == C_SIDEBAR ||
 	    context == (C_FRAME | C_SIDEBAR)) {
 		return PART_FRAME;
-	} else if (context == C_F_TOPLEFT)
+	} else if (context == C_F_TOPLEFT) {
 		return PART_BORDER_NW;
-	else if (context == C_F_TOPRIGHT)
+	} else if (context == C_F_TOPRIGHT) {
 		return PART_BORDER_NE;
-	else if (context == C_F_BOTTOMLEFT)
+	} else if (context == C_F_BOTTOMLEFT) {
 		return PART_BORDER_SW;
-	else if (context == C_F_BOTTOMRIGHT)
+	} else if (context == C_F_BOTTOMRIGHT) {
 		return PART_BORDER_SE;
-	else if (context == C_SB_LEFT)
+	} else if (context == C_SB_LEFT) {
 		return PART_BORDER_W;
-	else if (context == C_SB_RIGHT)
+	} else if (context == C_SB_RIGHT) {
 		return PART_BORDER_E;
-	else if (context == C_SB_TOP)
+	} else if (context == C_SB_TOP) {
 		return PART_BORDER_N;
-	else if (context == C_SB_BOTTOM)
+	} else if (context == C_SB_BOTTOM) {
 		return PART_BORDER_S;
-	else if (context == C_TITLE)
+	} else if (context == C_TITLE) {
 		return PART_TITLE;
-	else if (context & (C_LALL | C_RALL))
+	} else if (context & (C_LALL | C_RALL)) {
 		return PART_BUTTONS;
+	}
 
 	return PART_NONE;
 }
@@ -4211,6 +4294,8 @@ border_get_part_geometry(FvwmWindow *fw, window_parts part,
 	default:
 		return;
 	}
+
+	return;
 }
 
 int
@@ -4219,8 +4304,9 @@ get_button_number(int context)
 	int             i;
 
 	for (i = 0; (C_L1 << i) & (C_LALL | C_RALL); i++) {
-		if (context & (C_L1 << i))
+		if (context & (C_L1 << i)) {
 			return i;
+		}
 	}
 
 	return -1;
@@ -4231,16 +4317,17 @@ border_draw_decorations(FvwmWindow *fw, window_parts draw_parts,
     Bool has_focus, Bool do_force, clear_window_parts clear_parts,
     rectangle *old_g, rectangle *new_g)
 {
-	common_decorations_type	 cd;
-	Bool			 do_redraw_titlebar = False;
-	window_parts		 pressed_parts;
-	window_parts		 force_parts;
-	int			 context;
-	int			 item;
-	struct monitor		*m = NULL;
+	common_decorations_type cd;
+	Bool            do_redraw_titlebar = False;
+	window_parts    pressed_parts;
+	window_parts    force_parts;
+	int             context;
+	int             item;
+	struct monitor *m = NULL;
 
-	if (fw == NULL)
+	if (fw == NULL) {
 		return;
+	}
 
 	m = fw->m != NULL ? fw->m : monitor_get_current();
 
@@ -4257,11 +4344,11 @@ border_draw_decorations(FvwmWindow *fw, window_parts draw_parts,
 	/*
 	 * can't compare with True here, old code calls this with value "2"
 	 */
-	if (do_force != False)
+	if (do_force != False) {
 		force_parts = draw_parts;
-	else
+	} else {
 		force_parts = PART_NONE;
-
+	}
 	if (has_focus) {
 		/*
 		 * don't re-draw just for kicks
@@ -4278,12 +4365,12 @@ border_draw_decorations(FvwmWindow *fw, window_parts draw_parts,
 			    CLEAR_ALL, NULL, NULL);
 		}
 		Scr.Hilite = fw;
-	} else if (fw == Scr.Hilite)
+	} else if (fw == Scr.Hilite) {
 		Scr.Hilite = NULL;
-
-	if (fw->Desk != m->virtual_scr.CurrentDesk)
+	}
+	if (fw->Desk != m->virtual_scr.CurrentDesk) {
 		return;
-
+	}
 	if (IS_ICONIFIED(fw)) {
 		DrawIconWindow(fw, True, True, True, False, NULL);
 		return;
@@ -4291,22 +4378,22 @@ border_draw_decorations(FvwmWindow *fw, window_parts draw_parts,
 	/*
 	 * calculate some values and flags
 	 */
-	if ((draw_parts & PART_TITLEBAR) && HAS_TITLE(fw))
+	if ((draw_parts & PART_TITLEBAR) && HAS_TITLE(fw)) {
 		do_redraw_titlebar = True;
-
+	}
 	get_common_decorations(&cd, fw, draw_parts, has_focus, False,
 	    do_redraw_titlebar);
 	/*
 	 * redraw
 	 */
 	context = frame_window_id_to_context(fw, PressedW, &item);
-	if ((context & (C_LALL | C_RALL)) == 0)
+	if ((context & (C_LALL | C_RALL)) == 0) {
 		item = -1;
-
+	}
 	pressed_parts = border_context_to_parts(context);
-	if (new_g == NULL)
+	if (new_g == NULL) {
 		new_g = &fw->g.frame;
-
+	}
 	if (do_redraw_titlebar) {
 		border_draw_titlebar(&cd, fw, pressed_parts & PART_TITLEBAR,
 		    item, force_parts & PART_TITLEBAR, clear_parts, old_g,
@@ -4324,15 +4411,18 @@ border_draw_decorations(FvwmWindow *fw, window_parts draw_parts,
 		    (force_parts & (PART_FRAME | PART_HANDLES)),
 		    clear_parts, old_g, new_g, has_focus);
 	}
-
-	if (cd.dynamic_cd.frame_pixmap != None)
+	if (cd.dynamic_cd.frame_pixmap != None) {
 		XFreePixmap(dpy, cd.dynamic_cd.frame_pixmap);
+	}
+	return;
 }
 
 void
 border_undraw_decorations(FvwmWindow *fw)
 {
 	memset(&fw->decor_state, 0, sizeof(fw->decor_state));
+
+	return;
 }
 
 /*
@@ -4353,6 +4443,8 @@ border_redraw_decorations(FvwmWindow *fw)
 	border_draw_decorations(fw, PART_ALL, (Scr.Hilite == fw), True,
 	    CLEAR_ALL, NULL, NULL);
 	Scr.Hilite = u;
+
+	return;
 }
 
 /*
@@ -4375,9 +4467,9 @@ border_get_transparent_decorations_part(FvwmWindow *fw)
 	Bool            buttons_use_titlestyle = False;
 
 	context = frame_window_id_to_context(fw, PressedW, &item);
-	if ((context & (C_LALL | C_RALL)) == 0)
+	if ((context & (C_LALL | C_RALL)) == 0) {
 		item = -1;
-
+	}
 	pressed_parts = border_context_to_parts(context);
 
 	memset(&tbstate, 0, sizeof(tbstate));
@@ -4387,12 +4479,12 @@ border_get_transparent_decorations_part(FvwmWindow *fw)
 	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
 		df = &TB_STATE(GetDecor(fw, buttons[i]))[tbstate.bstate[i]];
 
-		if (DFS_USE_TITLE_STYLE(df->style))
+		if (DFS_USE_TITLE_STYLE(df->style)) {
 			buttons_use_titlestyle = True;
-
-		if (DFS_USE_BORDER_STYLE(df->style))
+		}
+		if (DFS_USE_BORDER_STYLE(df->style)) {
 			buttons_use_borderstyle = True;
-
+		}
 		for (tdf = df; tdf != NULL; tdf = tdf->next) {
 			if (DFS_FACE_TYPE(tdf->style) == ColorsetButton &&
 			    CSET_IS_TRANSPARENT_ROOT(tdf->u.acs.cs)) {
@@ -4403,9 +4495,9 @@ border_get_transparent_decorations_part(FvwmWindow *fw)
 	}
 
 	df = &TB_STATE(GetDecor(fw, titlebar))[tbstate.tstate];
-	if (DFS_USE_BORDER_STYLE(df->style))
+	if (DFS_USE_BORDER_STYLE(df->style)) {
 		title_use_borderstyle = True;
-
+	}
 	for (tdf = df; tdf != NULL; tdf = tdf->next) {
 		if (DFS_FACE_TYPE(tdf->style) == ColorsetButton &&
 		    CSET_IS_TRANSPARENT_ROOT(tdf->u.acs.cs)) {
@@ -4430,15 +4522,19 @@ border_get_transparent_decorations_part(FvwmWindow *fw)
 		draw_parts |= PART_FRAME | PART_HANDLES;
 	}
 	if (draw_parts & PART_FRAME) {
-		if (title_use_borderstyle)
+		if (title_use_borderstyle) {
 			draw_parts |= PART_TITLE;
-
-		if (buttons_use_borderstyle)
+		}
+		if (buttons_use_borderstyle) {
 			draw_parts |= PART_BUTTONS;
+		}
 	}
-	if ((draw_parts & PART_TITLE) && buttons_use_titlestyle)
+	if ((draw_parts & PART_TITLE) && buttons_use_titlestyle) {
 		draw_parts |= PART_BUTTONS;
-
+	}
+#if 0
+	fprintf(stderr, "Transparant Part: %u\n", draw_parts);
+#endif
 	return draw_parts;
 }
 
@@ -4490,6 +4586,8 @@ CMD_ButtonState(F_CMD_ARGS)
 			return;
 		}
 	}
+
+	return;
 }
 
 /*
@@ -4517,18 +4615,18 @@ CMD_BorderStyle(F_CMD_ARGS)
 			memset(&tmpdf.style, 0, sizeof(tmpdf.style));
 			DFS_FACE_TYPE(tmpdf.style) = SimpleButton;
 			tmpdf.next = NULL;
-			if (FMiniIconsSupported)
+			if (FMiniIconsSupported) {
 				tmpdf.u.p = NULL;
-
-			if (StrEquals(parm, "active"))
+			}
+			if (StrEquals(parm, "active")) {
 				df = &decor->BorderStyle.active;
-			else
+			} else {
 				df = &decor->BorderStyle.inactive;
-
+			}
 			df->flags.has_changed = 1;
-			while (isspace(*action))
+			while (isspace(*action)) {
 				++action;
-	
+			}
 			if (*action != '(') {
 				if (!*action) {
 					fvwm_msg(ERR, "SetBorderStyle",
@@ -4536,9 +4634,9 @@ CMD_BorderStyle(F_CMD_ARGS)
 					    " specification", parm);
 					return;
 				}
-				while (isspace(*action))
+				while (isspace(*action)) {
 					++action;
-
+				}
 				if (ReadDecorFace(action, &tmpdf, -1, True)) {
 					FreeDecorFace(dpy, df);
 					*df = tmpdf;
@@ -4575,9 +4673,9 @@ CMD_BorderStyle(F_CMD_ARGS)
 			memset(&tmpdf.style, 0, sizeof(tmpdf.style));
 			DFS_FACE_TYPE(tmpdf.style) = SimpleButton;
 			tmpdf.next = NULL;
-			if (FMiniIconsSupported)
+			if (FMiniIconsSupported) {
 				tmpdf.u.p = NULL;
-
+			}
 			if (ReadDecorFace(prev, &tmpdf, -1, True)) {
 				FreeDecorFace(dpy,
 				    &decor->BorderStyle.active);
@@ -4592,4 +4690,6 @@ CMD_BorderStyle(F_CMD_ARGS)
 			break;
 		}
 	}
+
+	return;
 }

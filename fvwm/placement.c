@@ -247,24 +247,24 @@ typedef struct pl_ret_t
 
 /* ---------------------------- forward declarations ----------------------- */
 
-static pl_loop_rc_t __pl_minoverlap_get_first_pos(position *,
-    struct pl_ret_t *, const struct pl_arg_t *);
-static pl_loop_rc_t __pl_minoverlap_get_next_pos(position *,
-    struct pl_ret_t *, const struct pl_arg_t *, position);
-static pl_penalty_t __pl_minoverlap_get_pos_penalty(position *,
-    struct pl_ret_t *, const pl_arg_t *);
+static pl_loop_rc_t __pl_minoverlap_get_first_pos(position * ret_p,
+    struct pl_ret_t *ret, const struct pl_arg_t *arg);
+static pl_loop_rc_t __pl_minoverlap_get_next_pos(position * ret_p,
+    struct pl_ret_t *ret, const struct pl_arg_t *arg, position hint_p);
+static pl_penalty_t __pl_minoverlap_get_pos_penalty(position * ret_hint_p,
+    struct pl_ret_t *ret, const pl_arg_t * arg);
 
-static pl_penalty_t __pl_smart_get_pos_penalty(position *,
-    struct pl_ret_t *, const pl_arg_t *);
+static pl_penalty_t __pl_smart_get_pos_penalty(position * ret_hint_p,
+    struct pl_ret_t *ret, const pl_arg_t * arg);
 
-static pl_penalty_t __pl_position_get_pos_simple(position *,
-    struct pl_ret_t *, const struct pl_arg_t *);
+static pl_penalty_t __pl_position_get_pos_simple(position * ret_p,
+    struct pl_ret_t *ret, const struct pl_arg_t *arg);
 
-static pl_penalty_t __pl_cascade_get_pos_simple(position *,
-    struct pl_ret_t *, const struct pl_arg_t *);
+static pl_penalty_t __pl_cascade_get_pos_simple(position * ret_p,
+    struct pl_ret_t *ret, const struct pl_arg_t *arg);
 
-static pl_penalty_t __pl_manual_get_pos_simple(position *,
-    struct pl_ret_t *, const struct pl_arg_t *);
+static pl_penalty_t __pl_manual_get_pos_simple(position * ret_p,
+    struct pl_ret_t *ret, const struct pl_arg_t *arg);
 
 /* ---------------------------- local variables ---------------------------- */
 
@@ -336,9 +336,9 @@ __pl_position_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 		spos = DEFAULT_PLACEMENT_POS_MOUSE_STRING;
 		i = 1;
 		is_under_mouse = True;
-	} else
+	} else {
 		i = 0;
-
+	}
 	arg->reason->pos.pl_position_string = spos;
 	for (n = -1; i < 2 && n < 2; i++) {
 		fPointer = False;
@@ -353,21 +353,23 @@ __pl_position_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 		}
 	}
 	if (n < 2) {
-		/* bug */
+		/*
+		 * bug
+		 */
 		abort();
 	}
 	if (is_under_mouse) {
 		/*
 		 * TA:  20090218:  Try and keep the window on-screen if we
-		 * can.
+		 * * can.
 		 */
 
 		/*
 		 * TA:  20120316:  Imply the working-area when under the mouse -- this
-		 * brings it in-line with making the EWMH working area the default.
-		 * Note that "UnderMouse" is a special case, deliberately.  All other
-		 * PositionPlacement commands are deliberately NOT subject to ewmhiwa
-		 * options.
+		 * * brings it in-line with making the EWMH working area the default.
+		 * * Note that "UnderMouse" is a special case, deliberately.  All other
+		 * * PositionPlacement commands are deliberately NOT subject to ewmhiwa
+		 * * options.
 		 */
 		EWMH_GetWorkAreaIntersection(arg->place_fw,
 		    (int *) &arg->screen_g.x, (int *) &arg->screen_g.y,
@@ -388,12 +390,12 @@ __pl_position_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 	/*
 	 * Don't let the upper left corner be offscreen.
 	 */
-	if (ret_p->x < arg->screen_g.x)
+	if (ret_p->x < arg->screen_g.x) {
 		ret_p->x = arg->screen_g.x;
-
-	if (ret_p->y < arg->screen_g.y)
+	}
+	if (ret_p->y < arg->screen_g.y) {
 		ret_p->y = arg->screen_g.y;
-
+	}
 	if (arg->flags.do_honor_starts_on_page) {
 		ret_p->x -= arg->pdelta_p.x;
 		ret_p->y -= arg->pdelta_p.y;
@@ -414,11 +416,12 @@ __pl_cascade_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 
 	t = (Scr.cascade_window != NULL) ? Scr.cascade_window : arg->place_fw;
 	w = t->title_thickness;
-	if (w == 0)
+	if (w == 0) {
 		w = t->boundary_width;
-
-	if (w == 0)
+	}
+	if (w == 0) {
 		w = PLACEMENT_FALLBACK_CASCADE_STEP;
+	}
 
 	if (Scr.cascade_window != NULL) {
 
@@ -478,11 +481,12 @@ __pl_cascade_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 	/*
 	 * the left and top sides are more important in huge windows
 	 */
-	if (ret_p->x < arg->page_p1.x)
+	if (ret_p->x < arg->page_p1.x) {
 		ret_p->x = arg->page_p1.x;
-
-	if (ret_p->y < arg->page_p1.y)
+	}
+	if (ret_p->y < arg->page_p1.y) {
 		ret_p->y = arg->page_p1.y;
+	}
 
 	return 0;
 }
@@ -520,17 +524,17 @@ __pl_manual_get_pos_simple(position * ret_p, struct pl_ret_t *ret,
 		DragWidth = arg->place_g.width;
 		DragHeight = arg->place_g.height;
 
-		if (Scr.SizeWindow != None)
+		if (Scr.SizeWindow != None) {
 			XMapRaised(dpy, Scr.SizeWindow);
-
+		}
 		FScreenGetScrRect(NULL, FSCREEN_GLOBAL, &mx, &my, NULL, NULL);
 		if (__move_loop(arg->exc, mx, my, DragWidth, DragHeight,
 			&ret_p->x, &ret_p->y, False, CRS_POSITION)) {
 			ret->flags.do_resize_too = 1;
 		}
-		if (Scr.SizeWindow != None)
+		if (Scr.SizeWindow != None) {
 			XUnmapWindow(dpy, Scr.SizeWindow);
-
+		}
 		MyXUngrabKeyboard(dpy);
 		MyXUngrabServer(dpy);
 		UngrabEm(GRAB_NORMAL);
@@ -580,32 +584,33 @@ __pl_minoverlap_get_next_x(const pl_arg_t * arg)
 
 	m = monitor_by_xy(x, y);
 
-	if (arg->flags.use_percent == 1)
+	if (arg->flags.use_percent == 1) {
 		start = 0;
-	else
+	} else {
 		start = CP_GET_NEXT_STEP;
+	}
 
 	/*
 	 * Test window at far right of screen
 	 */
 	xnew = arg->page_p2.x;
 	xtest = arg->page_p2.x - arg->place_g.width;
-	if (xtest > x)
+	if (xtest > x) {
 		xnew = xtest;
-
+	}
 	/*
 	 * test the borders of the working area
 	 */
 	xtest = arg->page_p1.x + m->Desktops->ewmh_working_area.x;
-	if (xtest > x)
+	if (xtest > x) {
 		xnew = MIN(xnew, xtest);
-
+	}
 	xtest = arg->page_p1.x +
 	    (m->Desktops->ewmh_working_area.x +
 	    m->Desktops->ewmh_working_area.width) - arg->place_g.width;
-	if (xtest > x)
+	if (xtest > x) {
 		xnew = MIN(xnew, xtest);
-
+	}
 	/*
 	 * Test the values of the right edges of every window
 	 */
@@ -637,15 +642,17 @@ __pl_minoverlap_get_next_x(const pl_arg_t * arg)
 					xtest = win_left + g.width *
 					    (CP_GET_NEXT_STEP - i) /
 					    CP_GET_NEXT_STEP;
-					if (xtest > x)
+					if (xtest > x) {
 						xnew = MIN(xnew, xtest);
+					}
 				}
 				win_left = arg->page_p1.x + g.x - stickyx;
 				for (i = start; i <= CP_GET_NEXT_STEP; i++) {
 					xtest = (win_left) + g.width * i /
 					    CP_GET_NEXT_STEP;
-					if (xtest > x)
+					if (xtest > x) {
 						xnew = MIN(xnew, xtest);
+					}
 				}
 			}
 		} else if (y <
@@ -654,19 +661,23 @@ __pl_minoverlap_get_next_x(const pl_arg_t * arg)
 		    && arg->page_p1.x <
 		    other_fw->g.frame.width + other_fw->g.frame.x - stickyx
 		    && other_fw->g.frame.x - stickyx < arg->page_p2.x) {
-			win_left = other_fw->g.frame.x - stickyx - arg->place_g.width;
+			win_left =
+			    other_fw->g.frame.x - stickyx -
+			    arg->place_g.width;
 			for (i = start; i <= CP_GET_NEXT_STEP; i++) {
 				xtest = win_left + other_fw->g.frame.width *
 				    (CP_GET_NEXT_STEP - i) / CP_GET_NEXT_STEP;
-				if (xtest > x)
+				if (xtest > x) {
 					xnew = MIN(xnew, xtest);
+				}
 			}
 			win_left = other_fw->g.frame.x - stickyx;
 			for (i = start; i <= CP_GET_NEXT_STEP; i++) {
 				xtest = win_left + other_fw->g.frame.width *
 				    i / CP_GET_NEXT_STEP;
-				if (xtest > x)
+				if (xtest > x) {
 					xnew = MIN(xnew, xtest);
+				}
 			}
 		}
 	}
@@ -692,31 +703,33 @@ __pl_minoverlap_get_next_y(const pl_arg_t * arg)
 	y = arg->place_g.y;
 	m = monitor_by_xy(x, y);
 
-	if (arg->flags.use_percent == 1)
+	if (arg->flags.use_percent == 1) {
 		start = 0;
-	else
+	} else {
 		start = CP_GET_NEXT_STEP;
+	}
 
 	/*
 	 * Test window at far bottom of screen
 	 */
 	ynew = arg->page_p2.y;
 	ytest = arg->page_p2.y - arg->place_g.height;
-	if (ytest > y)
+	if (ytest > y) {
 		ynew = ytest;
+	}
 	/*
 	 * test the borders of the working area
 	 */
 	ytest = arg->page_p1.y + m->Desktops->ewmh_working_area.y;
-	if (ytest > y)
+	if (ytest > y) {
 		ynew = MIN(ynew, ytest);
-
+	}
 	ytest = arg->screen_g.y +
 	    (m->Desktops->ewmh_working_area.y +
 	    m->Desktops->ewmh_working_area.height) - arg->place_g.height;
-	if (ytest > y)
+	if (ytest > y) {
 		ynew = MIN(ynew, ytest);
-
+	}
 	/*
 	 * Test the values of the bottom edge of every window
 	 */
@@ -731,10 +744,11 @@ __pl_minoverlap_get_next_y(const pl_arg_t * arg)
 			continue;
 		}
 
-		if (IS_STICKY_ACROSS_PAGES(other_fw))
+		if (IS_STICKY_ACROSS_PAGES(other_fw)) {
 			stickyy = arg->pdelta_p.y;
-		else
+		} else {
 			stickyy = 0;
+		}
 
 		if (IS_ICONIFIED(other_fw)) {
 			get_visible_icon_geometry(other_fw, &g);
@@ -742,16 +756,18 @@ __pl_minoverlap_get_next_y(const pl_arg_t * arg)
 			for (i = start; i <= CP_GET_NEXT_STEP; i++) {
 				ytest =
 				    win_top + g.height * i / CP_GET_NEXT_STEP;
-				if (ytest > y)
+				if (ytest > y) {
 					ynew = MIN(ynew, ytest);
+				}
 			}
 			win_top = g.y - stickyy - arg->place_g.height;
 			for (i = start; i <= CP_GET_NEXT_STEP; i++) {
 				ytest =
 				    win_top + g.height *
 				    (CP_GET_NEXT_STEP - i) / CP_GET_NEXT_STEP;
-				if (ytest > y)
+				if (ytest > y) {
 					ynew = MIN(ynew, ytest);
+				}
 			}
 		} else {
 			win_top = other_fw->g.frame.y - stickyy;
@@ -759,8 +775,9 @@ __pl_minoverlap_get_next_y(const pl_arg_t * arg)
 				ytest =
 				    win_top + other_fw->g.frame.height *
 				    i / CP_GET_NEXT_STEP;
-				if (ytest > y)
+				if (ytest > y) {
 					ynew = MIN(ynew, ytest);
+				}
 			}
 			win_top = other_fw->g.frame.y - stickyy -
 			    arg->place_g.height;
@@ -768,8 +785,9 @@ __pl_minoverlap_get_next_y(const pl_arg_t * arg)
 				ytest =
 				    win_top + other_fw->g.frame.height *
 				    (CP_GET_NEXT_STEP - i) / CP_GET_NEXT_STEP;
-				if (ytest > y)
+				if (ytest > y) {
 					ynew = MIN(ynew, ytest);
+				}
 			}
 		}
 	}
@@ -848,18 +866,18 @@ __pl_minoverlap_get_avoidance_penalty(const pl_arg_t * arg,
 		 */
 		anew = (x2 - x1) * (y2 - y1);
 	}
-	if (IS_ICONIFIED(other_fw))
+	if (IS_ICONIFIED(other_fw)) {
 		avoidance_factor = ICON_PLACEMENT_PENALTY(opp);
-	else if (compare_window_layers(other_fw, arg->place_fw) > 0)
+	} else if (compare_window_layers(other_fw, arg->place_fw) > 0) {
 		avoidance_factor = ONTOP_PLACEMENT_PENALTY(opp);
-	else if (compare_window_layers(other_fw, arg->place_fw) < 0)
+	} else if (compare_window_layers(other_fw, arg->place_fw) < 0) {
 		avoidance_factor = BELOW_PLACEMENT_PENALTY(opp);
-	else if (IS_STICKY_ACROSS_PAGES(other_fw) ||
-		IS_STICKY_ACROSS_DESKS(other_fw)) {
+	} else if (IS_STICKY_ACROSS_PAGES(other_fw) ||
+	    IS_STICKY_ACROSS_DESKS(other_fw)) {
 		avoidance_factor = STICKY_PLACEMENT_PENALTY(opp);
-	} else
+	} else {
 		avoidance_factor = NORMAL_PLACEMENT_PENALTY(opp);
-
+	}
 	if (arg->flags.use_percent == 1) {
 		pl_penalty_t    cover_factor;
 		long            other_area;
@@ -881,8 +899,9 @@ __pl_minoverlap_get_avoidance_penalty(const pl_arg_t * arg,
 				cover_factor = PERCENTAGE_75_PENALTY(oppp);
 			}
 		}
-		if (avoidance_factor >= 1)
+		if (avoidance_factor >= 1) {
 			avoidance_factor += cover_factor;
+		}
 	}
 	if (arg->flags.use_ewmh_dynamic_working_areapercent == 1 &&
 	    DO_EWMH_IGNORE_STRUT_HINTS(other_fw) == 0 &&
@@ -954,14 +973,14 @@ __pl_minoverlap_get_pos_penalty(position * ret_hint_p, struct pl_ret_t *ret,
 			    ret->best_penalty != -1) {
 				/*
 				 * TA:  20091230:  Fix over-zealous penalties
-				 * by explicitly forcing the window on-screen
-				 * here.  The y-axis is only affected here,
-				 * due to how the xoffset calculations happen
-				 * prior to setting the x-axis.  When we get
-				 * penalties which are "over-zealous" -- and
-				 * by not taking into account the size of the
-				 * window borders, the window was being placed
-				 * off screen.
+				 * * by explicitly forcing the window on-screen
+				 * * here.  The y-axis is only affected here,
+				 * * due to how the xoffset calculations happen
+				 * * prior to setting the x-axis.  When we get
+				 * * penalties which are "over-zealous" -- and
+				 * * by not taking into account the size of the
+				 * * window borders, the window was being placed
+				 * * off screen.
 				 */
 				if (ret->best_p.y + arg->place_g.height >
 				    arg->page_p2.y) {
@@ -1022,8 +1041,9 @@ __pl_smart_get_pos_penalty(position * ret_hint_p, struct pl_ret_t *ret,
 	arg->scratch->pp = &default_pl_penalty;
 	arg->scratch->ppp = &default_pl_percent_penalty;
 	p = __pl_minoverlap_get_pos_penalty(ret_hint_p, ret, arg);
-	if (p != 0)
+	if (p != 0) {
 		p = -1;
+	}
 
 	return p;
 }
@@ -1076,15 +1096,16 @@ placement_loop(pl_ret_t * ret, pl_arg_t * arg)
 			ret->best_p.y = arg->place_g.y;
 			ret->best_penalty = penalty;
 		}
-		if (penalty == 0)
+		if (penalty == 0) {
 			break;
-
+		}
 		loop_rc = arg->algo->get_next_pos(&next_p, ret, arg, hint_p);
 		arg->place_g.x = next_p.x;
 		arg->place_g.y = next_p.y;
 	}
-	if (ret->best_penalty < 0)
+	if (ret->best_penalty < 0) {
 		ret->best_penalty = -1;
+	}
 
 	return (ret->best_penalty == -1) ? -1 : 0;
 }
@@ -1101,16 +1122,16 @@ __place_get_placement_flags(pl_flags_t * ret_flags, FvwmWindow *fw,
 
 	/*
 	 * Windows use the position hint if these conditions are met:
-	 *
-	 *  The program specified a USPosition hint and it is not overridden
-	 *  with the No(Transient)USPosition style.
-	 *
-	 * OR
-	 *
-	 *  The program specified a PPosition hint and it is not overridden
-	 *  with the No(Transient)PPosition style.
-	 *
-	 * Windows without a position hint are placed using wm placement.
+	 * *
+	 * *  The program specified a USPosition hint and it is not overridden
+	 * *  with the No(Transient)USPosition style.
+	 * *
+	 * * OR
+	 * *
+	 * *  The program specified a PPosition hint and it is not overridden
+	 * *  with the No(Transient)PPosition style.
+	 * *
+	 * * Windows without a position hint are placed using wm placement.
 	 */
 	if (IS_TRANSIENT(fw)) {
 		override_ppos = SUSE_NO_TRANSIENT_PPOSITION(&pstyle->flags);
@@ -1123,22 +1144,24 @@ __place_get_placement_flags(pl_flags_t * ret_flags, FvwmWindow *fw,
 		if (!override_ppos) {
 			has_ppos = True;
 			reason->pos.reason = PR_POS_USE_PPOS;
-		} else
+		} else {
 			reason->pos.reason = PR_POS_IGNORE_PPOS;
+		}
 	}
 	if (fw->hints.flags & USPosition) {
 		if (!override_uspos) {
 			has_uspos = True;
 			reason->pos.reason = PR_POS_USE_USPOS;
-		} else if (reason->pos.reason != PR_POS_USE_PPOS)
+		} else if (reason->pos.reason != PR_POS_USE_PPOS) {
 			reason->pos.reason = PR_POS_IGNORE_USPOS;
+		}
 	}
 	if (mode == PLACE_AGAIN) {
 		ret_flags->do_not_use_wm_placement = 0;
 		reason->pos.reason = PR_POS_PLACE_AGAIN;
-	} else if (has_ppos || has_uspos)
+	} else if (has_ppos || has_uspos) {
 		ret_flags->do_not_use_wm_placement = 1;
-	else if (win_opts->flags.do_override_ppos) {
+	} else if (win_opts->flags.do_override_ppos) {
 		ret_flags->do_not_use_wm_placement = 1;
 		reason->pos.reason = PR_POS_CAPTURE;
 	} else if (!ret_flags->do_honor_starts_on_page &&
@@ -1147,15 +1170,17 @@ __place_get_placement_flags(pl_flags_t * ret_flags, FvwmWindow *fw,
 		ret_flags->do_forbid_manual_placement = 1;
 		reason->pos.do_not_manual_icon_placement = 1;
 	}
+
+	return;
 }
 
 static int
 __add_algo(const pl_algo_t ** algos, int num_algos,
     const pl_algo_t * new_algo)
 {
-	if (num_algos >= MAX_NUM_PLACEMENT_ALGOS)
+	if (num_algos >= MAX_NUM_PLACEMENT_ALGOS) {
 		return MAX_NUM_PLACEMENT_ALGOS;
-
+	}
 	algos[num_algos] = new_algo;
 	num_algos++;
 
@@ -1302,9 +1327,9 @@ __place_get_nowm_pos(const exec_context_t *exc, window_style *pstyle,
 	struct monitor *mon = fw->m;
 	size_borders    b;
 
-	if (!win_opts->flags.do_override_ppos)
+	if (!win_opts->flags.do_override_ppos) {
 		SET_PLACED_BY_FVWM(fw, False);
-
+	}
 	/*
 	 * the USPosition was specified, or the window is a transient, or it
 	 * * starts iconic so place it automatically
@@ -1313,28 +1338,28 @@ __place_get_nowm_pos(const exec_context_t *exc, window_style *pstyle,
 	    flags.do_honor_starts_on_screen) {
 		/*
 		 * If StartsOnScreen has been given for a window, translate its
-		 * USPosition so that it is relative to that particular screen.
-		 * If we don't do this, then a geometry would completely
-		 * cancel the effect of the StartsOnScreen style. However, some
-		 * applications try to remember their position.  This would
-		 * break if these were translated to screen coordinates.  There
-		 * is no reliable way to do it.  Currently, if the desired
-		 * place does not intersect the target screen, we assume the
-		 * window position must be adjusted to the screen origin. So
-		 * there are two ways to get a window to pop up on a particular
-		 * Xinerama screen.  1: The intuitive way giving a geometry
-		 * hint relative to the desired screen's 0,0 along with the
-		 * appropriate StartsOnScreen style (or *wmscreen resource), or
-		 * 2: Do NOT specify a Xinerama screen (or specify it to be
-		 * 'g') and give the geometry hint in terms of the global
-		 * screen.
+		 * * USPosition so that it is relative to that particular screen.
+		 * *  If we don't do this, then a geometry would completely
+		 * * cancel the effect of the StartsOnScreen style. However, some
+		 * * applications try to remember their position.  This would
+		 * * break if these were translated to screen coordinates.  There
+		 * * is no reliable way to do it.  Currently, if the desired
+		 * * place does not intersect the target screen, we assume the
+		 * * window position must be adjusted to the screen origin. So
+		 * * there are two ways to get a window to pop up on a particular
+		 * * Xinerama screen.  1: The intuitive way giving a geometry
+		 * * hint relative to the desired screen's 0,0 along with the
+		 * * appropriate StartsOnScreen style (or *wmscreen resource), or
+		 * * 2: Do NOT specify a Xinerama screen (or specify it to be
+		 * * 'g') and give the geometry hint in terms of the global
+		 * * screen.
 		 */
 		int             mangle_screen =
 		    FScreenFetchMangledScreenFromUSPosHints(&(fw->hints));
 		if (mangle_screen != 0) {
 			/*
 			 * whoever set this hint knew exactly what he was
-			 * doing; so ignore the StartsOnScreen style
+			 * * doing; so ignore the StartsOnScreen style
 			 */
 			flags.do_honor_starts_on_screen = 0;
 			reason->pos.reason = PR_POS_USPOS_OVERRIDE_SOS;
@@ -1345,8 +1370,8 @@ __place_get_nowm_pos(const exec_context_t *exc, window_style *pstyle,
 		    attr_g->y >= screen_g.y + screen_g.height) {
 			/*
 			 * desired coordinates do not intersect the target
-			 * screen.  Let's assume the application specified
-			 * global coordinates and translate them to the screen.
+			 * * screen.  Let's assume the application specified
+			 * * global coordinates and translate them to the screen.
 			 */
 			fscreen_scr_arg arg;
 			arg.mouse_ev = NULL;
@@ -1362,7 +1387,27 @@ __place_get_nowm_pos(const exec_context_t *exc, window_style *pstyle,
 	 */
 	if (DO_NOT_SHOW_ON_MAP(fw) && flags.do_honor_starts_on_page &&
 	    (!IS_TRANSIENT(fw) ||
-		SUSE_START_ON_PAGE_FOR_TRANSIENT(&pstyle->flags))) {
+		SUSE_START_ON_PAGE_FOR_TRANSIENT(&pstyle->flags))
+#if 0
+	    /*
+	     * dv 08-Jul-2003:  Do not use this.  Instead, force the window on
+	     * * the requested page even if the application requested a different
+	     * * position.
+	     */
+	    && (SUSE_NO_PPOSITION(&pstyle->flags) ||
+		!(fw->hints.flags & PPosition))
+	    /*
+	     * dv 08-Jul-2003:  This condition is always true because we
+	     * * already checked for flags.do_honor_starts_on_page above.
+	     */
+	    /*
+	     * RBW - allow StartsOnPage to go through, even if iconic.
+	     */
+	    && ((!(fw->wmhints && (fw->wmhints->flags & StateHint) &&
+			fw->wmhints->initial_state == IconicState))
+		|| flags.do_honor_starts_on_page)
+#endif
+	    ) {
 		int             old_x;
 		int             old_y;
 
@@ -1370,32 +1415,33 @@ __place_get_nowm_pos(const exec_context_t *exc, window_style *pstyle,
 		old_y = attr_g->y;
 		/*
 		 * We're placing a SkipMapping window - either capturing one
-		 * that's previously been mapped, or overriding USPosition - so
-		 * what we have here is its actual untouched coordinates. In
-		 * case it was a StartsOnPage window, we have to 1) convert the
-		 * existing x,y offsets relative to the requested page (i.e.,
-		 * as though there were only one page, no virtual desktop),
-		 * then 2) readjust relative to the current page.
+		 * * that's previously been mapped, or overriding USPosition - so
+		 * * what we have here is its actual untouched coordinates. In
+		 * * case it was a StartsOnPage window, we have to 1) convert the
+		 * * existing x,y offsets relative to the requested page (i.e.,
+		 * * as though there were only one page, no virtual desktop),
+		 * * then 2) readjust relative to the current page.
 		 */
-		if (attr_g->x < 0)
+		if (attr_g->x < 0) {
 			attr_g->x += mon->coord.w;
-	
+		}
 		attr_g->x %= mon->coord.h;
 		attr_g->x -= pdeltax;
 		/*
 		 * Noticed a quirk here. With some apps (e.g., xman), we find
-		 * the placement has moved 1 pixel away from where we
-		 * originally put it when we come through here.  Why is this
-		 * happening? Probably attr_backup.border_width, try xclock
-		 * -borderwidth 100
+		 * * the placement has moved 1 pixel away from where we
+		 * * originally put it when we come through here.  Why is this
+		 * * happening? Probably attr_backup.border_width, try xclock
+		 * * -borderwidth 100
 		 */
-		if (attr_g->y < 0)
+		if (attr_g->y < 0) {
 			attr_g->y += mon->coord.h;
-
+		}
 		attr_g->y %= mon->coord.h;
 		attr_g->y -= pdeltay;
-		if (attr_g->x != old_x || attr_g->y != old_y)
+		if (attr_g->x != old_x || attr_g->y != old_y) {
 			reason->pos.do_adjust_off_page = 1;
+		}
 	}
 	/*
 	 * put it where asked, mod title bar
@@ -1467,12 +1513,12 @@ __place_window(const exec_context_t *exc, window_style *pstyle,
 
 	/*
 	 * Select a desk to put the window on (in list of priority):
-	 * 1. Sticky Windows stay on the current desk.
-	 * 2. Windows specified with StartsOnDesk go where specified
-	 * 3. Put it on the desk it was on before the restart.
-	 * 4. Transients go on the same desk as their parents.
-	 * 5. Window groups stay together (if the KeepWindowGroupsOnDesk style
-	 *    is used).
+	 * * 1. Sticky Windows stay on the current desk.
+	 * * 2. Windows specified with StartsOnDesk go where specified
+	 * * 3. Put it on the desk it was on before the restart.
+	 * * 4. Transients go on the same desk as their parents.
+	 * * 5. Window groups stay together (if the KeepWindowGroupsOnDesk style
+	 * * is used).
 	 */
 
 	/*
@@ -1523,9 +1569,9 @@ __place_window(const exec_context_t *exc, window_style *pstyle,
 			break;
 		}
 		if (win_opts->flags.do_override_ppos ||
-		    !DO_NOT_SHOW_ON_MAP(fw))
+		    !DO_NOT_SHOW_ON_MAP(fw)) {
 			is_skipmapping_forbidden = 0;
-
+		}
 		if (is_skipmapping_forbidden == 1) {
 			flags.do_honor_starts_on_page = 0;
 			reason->page.reason = PR_PAGE_IGNORE_INVALID;
@@ -1653,6 +1699,29 @@ __place_window(const exec_context_t *exc, window_style *pstyle,
 				}
 			}
 		}
+
+		{
+			/*
+			 * migo - I am not sure this block is ever needed
+			 */
+
+			Atom            atype;
+			int             aformat;
+			unsigned long   nitems, bytes_remain;
+			unsigned char  *prop;
+
+			if (XGetWindowProperty(dpy, FW_W(fw), _XA_WM_DESKTOP,
+				0L, 1L, True, _XA_WM_DESKTOP, &atype,
+				&aformat, &nitems, &bytes_remain,
+				&prop) == Success) {
+				if (prop != NULL) {
+					fw->Desk = *(unsigned long *) prop;
+					XFree(prop);
+					reason->desk.reason =
+					    PR_DESK_XPROP_XA_WM_DESKTOP;
+				}
+			}
+		}
 	}
 	reason->desk.desk = fw->Desk;
 	/*
@@ -1663,9 +1732,9 @@ __place_window(const exec_context_t *exc, window_style *pstyle,
 	 * RBW - 11/02/1998  --  I dont.
 	 */
 	if (!win_opts->flags.do_override_ppos && !DO_NOT_SHOW_ON_MAP(fw)) {
-		if (mon->virtual_scr.CurrentDesk != fw->Desk)
+		if (mon->virtual_scr.CurrentDesk != fw->Desk) {
 			reason->desk.do_switch_desk = 1;
-
+		}
 		goto_desk(fw->Desk, fw->m);
 	}
 	/*
@@ -1749,12 +1818,12 @@ __place_handle_x_resources(FvwmWindow *fw, window_style *pstyle,
 	 * * line.
 	 * *  RBW - 11/20/1998 - allow a desk of -1 to work.
 	 */
-	if (XGetCommand(dpy, FW_W(fw), &client_argv, &client_argc) == 0)
+	if (XGetCommand(dpy, FW_W(fw), &client_argv, &client_argc) == 0) {
 		return;
-
-	if (client_argc <= 0 || client_argv == NULL)
+	}
+	if (client_argc <= 0 || client_argv == NULL) {
 		return;
-
+	}
 	/*
 	 * Get global X resources
 	 */
@@ -1820,6 +1889,8 @@ __place_handle_x_resources(FvwmWindow *fw, window_style *pstyle,
 	}
 	XFreeStringList(client_argv);
 	XrmDestroyDatabase(db);
+
+	return;
 }
 
 static void
@@ -1910,9 +1981,9 @@ __explain_placement(FvwmWindow *fw, pl_reason_t * reason)
 		r = "bug";
 		break;
 	}
-	if (do_show_page == 0)
+	if (do_show_page == 0) {
 		sprintf(s, "  %s\n", r);
-	else {
+	} else {
 		sprintf(s, "  page %d %d (%s)\n", reason->page.px - 1,
 		    reason->page.py - 1, r);
 	}
@@ -2070,6 +2141,8 @@ __explain_placement(FvwmWindow *fw, pl_reason_t * reason)
 	sprintf(s, "MONITOR: %s\n", fw->m ? fw->m->name : "(UNKNOWN)");
 	fvwm_msg(INFO, "__explain_placement", explanation, (int) FW_W(fw),
 	    fw->name.name);
+
+	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -2096,9 +2169,9 @@ setup_window_placement(FvwmWindow *fw, window_style *pstyle,
 		reason.screen.screen = SGET_START_SCREEN(*pstyle);
 	}
 	__place_handle_x_resources(fw, pstyle, &reason);
-	if (pstyle->flags.do_start_iconic)
+	if (pstyle->flags.do_start_iconic) {
 		win_opts->initial_state = IconicState;
-
+	}
 	ecc.type = EXCT_NULL;
 	ecc.w.fw = fw;
 	exc = exc_create_context(&ecc, ECC_TYPE | ECC_FW);
@@ -2109,8 +2182,9 @@ setup_window_placement(FvwmWindow *fw, window_style *pstyle,
 	rc = __place_window(exc, pstyle, attr_g, start_style, mode, win_opts,
 	    &reason);
 	exc_destroy_context(exc);
-	if (bo.do_explain_window_placement == 1)
+	if (bo.do_explain_window_placement == 1) {
 		__explain_placement(fw, &reason);
+	}
 
 	return (rc == 0) ? False : True;
 }
@@ -2130,9 +2204,9 @@ CMD_PlaceAgain(F_CMD_ARGS)
 	Bool            do_place_icon = False;
 	FvwmWindow     *const fw = exc->w.fw;
 
-	if (!XGetWindowAttributes(dpy, FW_W(fw), &attr))
+	if (!XGetWindowAttributes(dpy, FW_W(fw), &attr)) {
 		return;
-
+	}
 	while ((token = PeekToken(action, &action)) != NULL) {
 		if (StrEquals("Anim", token)) {
 			ppctMovement = NULL;
@@ -2181,4 +2255,6 @@ CMD_PlaceAgain(F_CMD_ARGS)
 		fw->Desk = old_desk;
 		do_move_window_to_desk(fw, new_desk);
 	}
+
+	return;
 }

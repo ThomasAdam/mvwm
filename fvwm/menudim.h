@@ -79,7 +79,7 @@ struct MenuDimensions
 
 /* ---------------------------- interface functions ------------------------ */
 
-int             menudim_middle_x_offset(struct MenuDimensions *);
+int             menudim_middle_x_offset(struct MenuDimensions *mdim);
 
 /* ---------------------------- builtin commands --------------------------- */
 

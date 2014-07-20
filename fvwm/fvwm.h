@@ -568,19 +568,19 @@ typedef struct style_flags
 #define PLACE_RANDOM          0x4
 	/*
 	 * new placements value, try to get a minimal backward compatibility
-	 * with the old flags:
-	 * Dumb+Active = Manual,
-	 * Dumb+Random = Cascade,
-	 * Smart+Random = TileCascade,
-	 * Smart+Active = TileManual,
-	 * Random+Smart+Clever = MINOVERLAP which is the original Clever
-	 * placement code,
-	 * Active+Smart+Clever = MINOVERLAPPERCENT which is the "new" Clever
-	 * placement code and was the original Clever placement code. Now the
-	 * original placement code said:
-	 * Active/Random+Dumb+Clever = Active/Random+Dumb (with Dumb Clever is
-	 * ignored); These represent the not use value: 0x2=Active+Dumb+Clever,
-	 * 0x6=Random+Dumb+Clever
+	 * * with the old flags:
+	 * * Dumb+Active = Manual,
+	 * * Dumb+Random = Cascade,
+	 * * Smart+Random = TileCascade,
+	 * * Smart+Active = TileManual,
+	 * * Random+Smart+Clever = MINOVERLAP which is the original Clever
+	 * * placement code,
+	 * * Active+Smart+Clever = MINOVERLAPPERCENT which is the "new" Clever
+	 * * placement code and was the original Clever placement code. Now the
+	 * * original placement code said:
+	 * * Active/Random+Dumb+Clever = Active/Random+Dumb (with Dumb Clever is
+	 * * ignored); These represent the not use value: 0x2=Active+Dumb+Clever,
+	 * * 0x6=Random+Dumb+Clever
 	 */
 #define PLACE_MANUAL            0x0
 #define PLACE_TILEMANUAL        0x1
@@ -916,7 +916,7 @@ typedef struct FvwmWindow
 
 	/*
 	 * Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h too!
+	 * * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h too!
 	 */
 	short           boundary_width;
 	short           unshaped_boundary_width;
@@ -934,7 +934,7 @@ typedef struct FvwmWindow
 	short           title_length;
 	/*
 	 * Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
 	 */
 	short           title_thickness;
 	rotation_t      title_text_rotation;
@@ -1005,7 +1005,7 @@ typedef struct FvwmWindow
 	 */
 	/*
 	 * Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
 	 */
 	int             Desk;
 	/*
@@ -1055,7 +1055,7 @@ typedef struct FvwmWindow
 	int             default_layer;
 	/*
 	 * Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
 	 */
 	int             layer;
 
@@ -1075,7 +1075,7 @@ typedef struct FvwmWindow
 	int             max_window_height;
 	int             shade_anim_steps;
 	unsigned char   grabbed_buttons;
-				/*!!! */
+#if 1				/*!!! */
 	snap_attraction_t snap_attraction;
 	/*
 	 * snap grid size
@@ -1086,6 +1086,7 @@ typedef struct FvwmWindow
 	int             edge_delay_ms_resize;
 	int             edge_resistance_move;
 	int             edge_resistance_xinerama_move;
+#endif
 
 #define FM_NO_INPUT        0
 #define FM_PASSIVE         1

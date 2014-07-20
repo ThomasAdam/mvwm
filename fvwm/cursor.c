@@ -86,8 +86,11 @@ static const unsigned int default_cursors[CRS_MAX] = {
 static void
 SafeDefineCursor(Window w, Cursor cursor)
 {
-	if (w)
+	if (w) {
 		XDefineCursor(dpy, w, cursor);
+	}
+
+	return;
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -101,8 +104,9 @@ CreateCursors(Display *dpy)
 	 * define cursors
 	 */
 	cursors[0] = None;
-	for (i = 1; i < CRS_MAX; i++)
+	for (i = 1; i < CRS_MAX; i++) {
 		cursors[i] = XCreateFontCursor(dpy, default_cursors[i]);
+	}
 
 	return cursors;
 }
@@ -132,55 +136,55 @@ CMD_CursorStyle(F_CMD_ARGS)
 
 		return;
 	}
-	if (StrEquals("POSITION", cname))
+	if (StrEquals("POSITION", cname)) {
 		index = CRS_POSITION;
-	else if (StrEquals("DEFAULT", cname))
+	} else if (StrEquals("DEFAULT", cname)) {
 		index = CRS_DEFAULT;
-	else if (StrEquals("SYS", cname))
+	} else if (StrEquals("SYS", cname)) {
 		index = CRS_SYS;
-	else if (StrEquals("TITLE", cname))
+	} else if (StrEquals("TITLE", cname)) {
 		index = CRS_TITLE;
-	else if (StrEquals("MOVE", cname))
+	} else if (StrEquals("MOVE", cname)) {
 		index = CRS_MOVE;
-	else if (StrEquals("RESIZE", cname))
+	} else if (StrEquals("RESIZE", cname)) {
 		index = CRS_RESIZE;
-	else if (StrEquals("MENU", cname))
+	} else if (StrEquals("MENU", cname)) {
 		index = CRS_MENU;
-	else if (StrEquals("WAIT", cname))
+	} else if (StrEquals("WAIT", cname)) {
 		index = CRS_WAIT;
-	else if (StrEquals("SELECT", cname))
+	} else if (StrEquals("SELECT", cname)) {
 		index = CRS_SELECT;
-	else if (StrEquals("DESTROY", cname))
+	} else if (StrEquals("DESTROY", cname)) {
 		index = CRS_DESTROY;
-	else if (StrEquals("LEFT", cname))
+	} else if (StrEquals("LEFT", cname)) {
 		index = CRS_LEFT;
-	else if (StrEquals("RIGHT", cname))
+	} else if (StrEquals("RIGHT", cname)) {
 		index = CRS_RIGHT;
-	else if (StrEquals("TOP", cname))
+	} else if (StrEquals("TOP", cname)) {
 		index = CRS_TOP;
-	else if (StrEquals("BOTTOM", cname))
+	} else if (StrEquals("BOTTOM", cname)) {
 		index = CRS_BOTTOM;
-	else if (StrEquals("TOP_LEFT", cname))
+	} else if (StrEquals("TOP_LEFT", cname)) {
 		index = CRS_TOP_LEFT;
-	else if (StrEquals("TOP_RIGHT", cname))
+	} else if (StrEquals("TOP_RIGHT", cname)) {
 		index = CRS_TOP_RIGHT;
-	else if (StrEquals("BOTTOM_LEFT", cname))
+	} else if (StrEquals("BOTTOM_LEFT", cname)) {
 		index = CRS_BOTTOM_LEFT;
-	else if (StrEquals("BOTTOM_RIGHT", cname))
+	} else if (StrEquals("BOTTOM_RIGHT", cname)) {
 		index = CRS_BOTTOM_RIGHT;
-	else if (StrEquals("LEFT_EDGE", cname))
+	} else if (StrEquals("LEFT_EDGE", cname)) {
 		index = CRS_LEFT_EDGE;
-	else if (StrEquals("RIGHT_EDGE", cname))
+	} else if (StrEquals("RIGHT_EDGE", cname)) {
 		index = CRS_RIGHT_EDGE;
-	else if (StrEquals("TOP_EDGE", cname))
+	} else if (StrEquals("TOP_EDGE", cname)) {
 		index = CRS_TOP_EDGE;
-	else if (StrEquals("BOTTOM_EDGE", cname))
+	} else if (StrEquals("BOTTOM_EDGE", cname)) {
 		index = CRS_BOTTOM_EDGE;
-	else if (StrEquals("ROOT", cname))
+	} else if (StrEquals("ROOT", cname)) {
 		index = CRS_ROOT;
-	else if (StrEquals("STROKE", cname))
+	} else if (StrEquals("STROKE", cname)) {
 		index = CRS_STROKE;
-	else { 
+	} else {
 		fvwm_msg(ERR, "CursorStyle", "Unknown cursor name %s", cname);
 
 		return;
@@ -191,17 +195,20 @@ CMD_CursorStyle(F_CMD_ARGS)
 	 * check if the cursor is given by X11 name
 	 */
 	action = GetNextToken(action, &newcursor);
-	if (newcursor)
+	if (newcursor) {
 		my_nc = fvwmCursorNameToIndex(newcursor);
-	else
+	} else {
 		my_nc = default_cursors[index];
+	}
 
 	if (my_nc == -1) {
 		nc = strtol(newcursor, &errpos, 10);
-		if (errpos && *errpos == '\0')
+		if (errpos && *errpos == '\0') {
 			my_nc = 0;
-	} else
+		}
+	} else {
 		nc = my_nc;
+	}
 
 	if (my_nc > -1) {
 		/*
@@ -245,9 +252,10 @@ CMD_CursorStyle(F_CMD_ARGS)
 
 				return;
 			}
-			if (GetIntegerArguments(action, &tmp, hotspot, 2) == 2)
+			if (GetIntegerArguments(action, &tmp, hotspot,
+				2) == 2) {
 				action = tmp;
-
+			}
 			cursor =
 			    PImageLoadCursorFromFile(dpy, Scr.Root, path,
 			    hotspot[0], hotspot[1]);
@@ -267,9 +275,9 @@ CMD_CursorStyle(F_CMD_ARGS)
 	/*
 	 * replace the cursor defn
 	 */
-	if (Scr.FvwmCursors[index])
+	if (Scr.FvwmCursors[index]) {
 		XFreeCursor(dpy, Scr.FvwmCursors[index]);
-
+	}
 	Scr.FvwmCursors[index] = cursor;
 
 	/*
@@ -284,8 +292,12 @@ CMD_CursorStyle(F_CMD_ARGS)
 		XRecolorCursor(dpy, Scr.FvwmCursors[index], &(colors[0]),
 		    &(colors[1]));
 	}
-	free(fore);
-	free(back);
+	if (fore) {
+		free(fore);
+	}
+	if (back) {
+		free(back);
+	}
 
 	/*
 	 * redefine all the windows using cursors
@@ -346,8 +358,11 @@ CMD_CursorStyle(F_CMD_ARGS)
 	/*
 	 * migo (04/Nov/1999): don't annoy users which use xsetroot
 	 */
-	if (index == CRS_ROOT)
+	if (index == CRS_ROOT) {
 		SafeDefineCursor(Scr.Root, Scr.FvwmCursors[CRS_ROOT]);
+	}
+
+	return;
 }
 
 /* Defines in which cases fvwm "grab" the cursor during execution of certain
@@ -367,8 +382,9 @@ CMD_BusyCursor(F_CMD_ARGS)
 		action =
 		    GetQuotedString(action, &optstring, ",", NULL, NULL,
 		    NULL);
-		if (!optstring)
+		if (!optstring) {
 			break;
+		}
 
 		args = GetNextToken(optstring, &option);
 		if (!option) {
@@ -387,43 +403,43 @@ CMD_BusyCursor(F_CMD_ARGS)
 
 		switch (GetTokenIndex(option, optlist, 0, NULL)) {
 		case 0:	/* read */
-			if (flag)
+			if (flag) {
 				Scr.BusyCursor |= BUSY_READ;
-			else
+			} else {
 				Scr.BusyCursor &= ~BUSY_READ;
-
+			}
 			break;
 
 		case 1:	/* wait */
-			if (flag)
+			if (flag) {
 				Scr.BusyCursor |= BUSY_WAIT;
-			else
+			} else {
 				Scr.BusyCursor &= ~BUSY_WAIT;
-
+			}
 			break;
 
 		case 2:	/* modulesynchronous */
-			if (flag)
+			if (flag) {
 				Scr.BusyCursor |= BUSY_MODULESYNCHRONOUS;
-			else
+			} else {
 				Scr.BusyCursor &= ~BUSY_MODULESYNCHRONOUS;
-
+			}
 			break;
 
 		case 3:	/* dynamicmenu */
-			if (flag)
+			if (flag) {
 				Scr.BusyCursor |= BUSY_DYNAMICMENU;
-			else
+			} else {
 				Scr.BusyCursor &= ~BUSY_DYNAMICMENU;
-
+			}
 			break;
 
 		case 4:	/* "*" */
-			if (flag)
+			if (flag) {
 				Scr.BusyCursor |= BUSY_ALL;
-			else
+			} else {
 				Scr.BusyCursor &= ~(BUSY_ALL);
-
+			}
 			break;
 
 		default:
@@ -433,4 +449,6 @@ CMD_BusyCursor(F_CMD_ARGS)
 		}
 		free(option);
 	}
+
+	return;
 }

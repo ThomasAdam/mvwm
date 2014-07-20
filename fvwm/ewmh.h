@@ -7,10 +7,10 @@
 /* Extended window manager hints support */
 
 /* ewmh_conf.c */
-Bool            EWMH_BugOpts(char *, Bool);
+Bool            EWMH_BugOpts(char *opt, Bool toggle);
 void            CMD_EwmhNumberOfDesktops(F_CMD_ARGS);
 void            CMD_EwmhBaseStrut(F_CMD_ARGS);
-Bool            EWMH_CMD_Style(char *, window_style *, int);
+Bool            EWMH_CMD_Style(char *token, window_style *ptmpstyle, int on);
 
 /* for maximize and placement ewmh style */
 #define EWMH_IGNORE_WORKING_AREA      0
@@ -27,30 +27,30 @@ void            EWMH_SetNumberOfDesktops(struct monitor *);
 void            EWMH_SetDesktopViewPort(struct monitor *);
 void            EWMH_SetDesktopGeometry(struct monitor *);
 
-void            EWMH_SetActiveWindow(Window);
-void            EWMH_SetWMDesktop(FvwmWindow *);
-void            EWMH_SetWMState(FvwmWindow *, Bool);
+void            EWMH_SetActiveWindow(Window w);
+void            EWMH_SetWMDesktop(FvwmWindow *fw);
+void            EWMH_SetWMState(FvwmWindow *fw, Bool do_restore);
 
-int             EWMH_IsKdeSysTrayWindow(Window);
-void            EWMH_ManageKdeSysTray(Window, int);
+int             EWMH_IsKdeSysTrayWindow(Window w);
+void            EWMH_ManageKdeSysTray(Window w, int type);
 void            EWMH_SetClientList(struct monitor *);
 void            EWMH_SetClientListStacking(struct monitor *);
 void            EWMH_UpdateWorkArea(void);
-void            EWMH_GetWorkAreaIntersection(FvwmWindow *fw, int *, int *,
-    int *, int *, int);
-float           EWMH_GetBaseStrutIntersection(struct monitor *, int,
-    int, int, int, Bool);
-float           EWMH_GetStrutIntersection(struct monitor *, int, int,
-    int, int, Bool);
-void            EWMH_SetFrameStrut(FvwmWindow *);
-void            EWMH_SetAllowedActions(FvwmWindow *);
+void            EWMH_GetWorkAreaIntersection(FvwmWindow *fw, int *x, int *y,
+    int *w, int *h, int type);
+float           EWMH_GetBaseStrutIntersection(struct monitor *, int x11,
+    int y11, int x12, int y12, Bool use_percent);
+float           EWMH_GetStrutIntersection(struct monitor *, int x11, int y11,
+    int x12, int y12, Bool use_percent);
+void            EWMH_SetFrameStrut(FvwmWindow *fw);
+void            EWMH_SetAllowedActions(FvwmWindow *fw);
 
-void            EWMH_GetIconGeometry(FvwmWindow *, rectangle *);
+void            EWMH_GetIconGeometry(FvwmWindow *fw, rectangle *icon_rect);
 
-void            EWMH_GetStyle(FvwmWindow *, window_style *);
-void            EWMH_WindowInit(FvwmWindow *);
-void            EWMH_RestoreInitialStates(FvwmWindow *, int);
-void            EWMH_DestroyWindow(FvwmWindow *);
+void            EWMH_GetStyle(FvwmWindow *fw, window_style *style);
+void            EWMH_WindowInit(FvwmWindow *fw);
+void            EWMH_RestoreInitialStates(FvwmWindow *fw, int event_type);
+void            EWMH_DestroyWindow(FvwmWindow *fw);
 void            EWMH_WindowDestroyed(void);
 
 void            EWMH_Init(struct monitor *);
@@ -59,21 +59,23 @@ void            EWMH_ExitStuff(void);
 /* ewmh_conf.c */
 
 /* ewmh_events.c */
-Bool            EWMH_ProcessClientMessage(const exec_context_t *);
-void            EWMH_ProcessPropertyNotify(const exec_context_t *);
+Bool            EWMH_ProcessClientMessage(const exec_context_t *exc);
+void            EWMH_ProcessPropertyNotify(const exec_context_t *exc);
 
 /* ewmh_icon.c */
-void            EWMH_DeleteWmIcon(FvwmWindow *, Bool, Bool);
-int             EWMH_SetIconFromWMIcon(FvwmWindow *, CARD32 *, int, Bool);
-void            EWMH_DoUpdateWmIcon(FvwmWindow *, Bool, Bool);
+void            EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon);
+int             EWMH_SetIconFromWMIcon(FvwmWindow *fw, CARD32 *list, int size,
+    Bool is_mini_icon);
+void            EWMH_DoUpdateWmIcon(FvwmWindow *fw, Bool mini_icon,
+    Bool icon);
 
 /* ewmh_name.c */
-void            EWMH_SetVisibleName(FvwmWindow *, Bool);
-int             EWMH_WMName(FvwmWindow *, XEvent *, window_style *,
-    unsigned long);
-int             EWMH_WMIconName(FvwmWindow *, XEvent *,
-    window_style *, unsigned long);
+void            EWMH_SetVisibleName(FvwmWindow *fw, Bool is_icon_name);
+int             EWMH_WMName(FvwmWindow *fw, XEvent *ev, window_style *style,
+    unsigned long any);
+int             EWMH_WMIconName(FvwmWindow *fw, XEvent *ev,
+    window_style *style, unsigned long any);
 void            EWMH_SetDesktopNames(struct monitor *);
-void            EWMH_fullscreen(FvwmWindow *);
+void            EWMH_fullscreen(FvwmWindow *fw);
 
 #endif /* _EWMH_ */

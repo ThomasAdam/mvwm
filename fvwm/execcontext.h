@@ -97,8 +97,8 @@ typedef struct
  *   mask
  *     The mask of members in ecc to use.
  */
-const exec_context_t *exc_create_context(exec_context_changes_t *,
-    exec_context_change_mask_t);
+const exec_context_t *exc_create_context(exec_context_changes_t *ecc,
+    exec_context_change_mask_t mask);
 
 /* Similar to exc_create_context(), but the created context contains only dummy
  * information. */
@@ -106,11 +106,11 @@ const exec_context_t *exc_create_null_context(void);
 
 /* Works like exc_create_context(), but initialises all values with the data
  * from excin.  The ecc/mask pair overrides these values. */
-const exec_context_t *exc_clone_context(const exec_context_t *,
-    exec_context_changes_t *, exec_context_change_mask_t);
+const exec_context_t *exc_clone_context(const exec_context_t *excin,
+    exec_context_changes_t *ecc, exec_context_change_mask_t mask);
 
 /* Destroys an exec_context structure that was created with
  * exc_create_context(). */
-void            exc_destroy_context(const exec_context_t *);
+void            exc_destroy_context(const exec_context_t *exc);
 
 #endif /* EXECCONTEXT_H */

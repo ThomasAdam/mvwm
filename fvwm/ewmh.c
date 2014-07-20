@@ -74,7 +74,8 @@
 #include "geometry.h"
 #include "window_flags.h"
 
-typedef struct kst_item {
+typedef struct kst_item
+{
 	Window          w;
 	struct kst_item *next;
 } KstItem;
@@ -90,7 +91,7 @@ ewmhInfo        ewmhc = {
 	0,	/* MaxDesktops limit the number of desktops */
 	0,	/* CurrentNumberOfDesktops */
 	False,	/* NeedsToCheckDesk */
-	{0, 0, 0, 0}	/* BaseStrut */
+	{0, 0, 0, 0},	/* BaseStrut */
 };
 
 /*
@@ -272,8 +273,9 @@ get_ewmh_atom_by_name(const char *atom_name, ewmh_atom_list_name list_name)
 			a = (ewmh_atom *) bsearch(atom_name,
 			    atom_list[i].list, atom_list[i].size - 1,
 			    sizeof(ewmh_atom), compare);
-			if (a != NULL || list_name != EWMH_ATOM_LIST_ALL)
+			if (a != NULL || list_name != EWMH_ATOM_LIST_ALL) {
 				done = 1;
+			}
 		}
 		i++;
 	}
@@ -292,12 +294,14 @@ ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name)
 		    list_name == EWMH_ATOM_LIST_ALL) {
 			ewmh_atom      *list = atom_list[i].list;
 			while (list->name != NULL) {
-				if (atom == list->atom)
+				if (atom == list->atom) {
 					return list;
+				}
 				list++;
 			}
-			if (atom_list[i].name == list_name)
+			if (atom_list[i].name == list_name) {
 				return NULL;
+			}
 		}
 		i++;
 	}
@@ -308,10 +312,11 @@ ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name)
 static int
 atom_size(int format)
 {
-	if (format == 32)
+	if (format == 32) {
 		return sizeof(long);
-	else
+	} else {
 		return (format >> 3);
+	}
 }
 
 void
@@ -325,8 +330,9 @@ ewmh_ChangeProperty(Window w, const char *atom_name, ewmh_atom_list_name list,
 		int             asize;
 		int             free_data = 0;
 
-		if (a->atom_type == XA_UTF8_STRING)
+		if (a->atom_type == XA_UTF8_STRING) {
 			format = 8;
+		}
 
 		asize = atom_size(format);
 		if (format == 32 && asize * 8 != format &&
@@ -334,18 +340,21 @@ ewmh_ChangeProperty(Window w, const char *atom_name, ewmh_atom_list_name list,
 			long           *datacopy = xmalloc(asize * length);
 			int             i;
 
-			for (i = 0; i < length; i++)
+			for (i = 0; i < length; i++) {
 				datacopy[i] = ((CARD32 *) data)[i];
-
+			}
 			data = (unsigned char *) datacopy;
 			free_data = 1;
 		}
 		XChangeProperty(dpy, w, a->atom, a->atom_type, format,
 		    PropModeReplace, data, length);
 
-		if (free_data)
+		if (free_data) {
 			free(data);
+		}
 	}
+
+	return;
 }
 
 void
@@ -353,8 +362,11 @@ ewmh_DeleteProperty(Window w, const char *atom_name, ewmh_atom_list_name list)
 {
 	ewmh_atom      *a;
 
-	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL)
+	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL) {
 		XDeleteProperty(dpy, w, a->atom);
+	}
+
+	return;
 }
 
 static void    *
@@ -381,19 +393,22 @@ atom_get(Window win, Atom to_get, Atom type, int *size)
 		if (format_ret == 32 && asize * 8 != format_ret) {
 			int             i;
 
-			for (i = 0; i < num_ret; i++)
+			for (i = 0; i < num_ret; i++) {
 				((CARD32 *) data)[i] = ((long *) retval)[i];
+			}
 		} else {
-			if (data)
+			if (data) {
 				memcpy(data, retval, num_ret * asize);
+			}
 		}
 		XFree(retval);
 		*size = num_ret * (format_ret >> 3);
 
 		return data;
 	}
-	if (retval)
+	if (retval) {
 		XFree(retval);
+	}
 
 	return NULL;
 }
@@ -405,8 +420,9 @@ ewmh_AtomGetByName(Window win, const char *atom_name,
 	ewmh_atom      *a;
 	void           *data = NULL;
 
-	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL)
+	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL) {
 		data = atom_get(win, a->atom, a->atom_type, size);
+	}
 
 	return data;
 }
@@ -421,8 +437,9 @@ check_desk(void)
 	FvwmWindow     *fw;
 
 	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next) {
-		if (!IS_STICKY_ACROSS_DESKS(fw))
+		if (!IS_STICKY_ACROSS_DESKS(fw)) {
 			d = max(d, fw->Desk);
+		}
 	}
 
 	return d;
@@ -435,8 +452,9 @@ EWMH_SetCurrentDesktop(struct monitor *m)
 
 	val = m->virtual_scr.CurrentDesk;
 
-	if (val < 0 || (val >= ewmhc.MaxDesktops && ewmhc.MaxDesktops != 0))
+	if (val < 0 || (val >= ewmhc.MaxDesktops && ewmhc.MaxDesktops != 0)) {
 		return;
+	}
 
 	if (val >= ewmhc.CurrentNumberOfDesktops ||
 	    (ewmhc.NumberOfDesktops != ewmhc.CurrentNumberOfDesktops &&
@@ -479,6 +497,8 @@ EWMH_SetNumberOfDesktops(struct monitor *m)
 	ewmh_ChangeProperty(Scr.Root, "_NET_NUMBER_OF_DESKTOPS",
 	    EWMH_ATOM_LIST_CLIENT_ROOT, (unsigned char *) &val, 1);
 	ewmh_SetWorkArea();
+
+	return;
 }
 
 void
@@ -515,6 +535,8 @@ EWMH_SetActiveWindow(Window w)
 {
 	ewmh_ChangeProperty(Scr.Root, "_NET_ACTIVE_WINDOW",
 	    EWMH_ATOM_LIST_CLIENT_WIN, (unsigned char *) &w, 1);
+
+	return;
 }
 
 void
@@ -530,6 +552,8 @@ EWMH_SetWMDesktop(FvwmWindow *fw)
 	}
 	ewmh_ChangeProperty(FW_W(fw), "_NET_WM_DESKTOP",
 	    EWMH_ATOM_LIST_CLIENT_WIN, (unsigned char *) &desk, 1);
+
+	return;
 }
 
 /*
@@ -557,6 +581,8 @@ EWMH_SetWMState(FvwmWindow *fw, Bool do_restore)
 		ewmh_DeleteProperty(FW_W(fw), "_NET_WM_STATE",
 		    EWMH_ATOM_LIST_CLIENT_WIN);
 	}
+
+	return;
 }
 
 /*
@@ -564,6 +590,7 @@ EWMH_SetWMState(FvwmWindow *fw, Bool do_restore)
  */
 
 /*** kde system tray ***/
+/* #define DEBUG_KST */
 static void
 add_kst_item(Window w)
 {
@@ -579,6 +606,8 @@ add_kst_item(Window w)
 	*prev = xmalloc(sizeof(KstItem));
 	(*prev)->w = w;
 	(*prev)->next = NULL;
+
+	return;
 }
 
 static void
@@ -592,13 +621,15 @@ delete_kst_item(Window w)
 		prev = &(t->next);
 		t = t->next;
 	}
-	if (t == NULL)
+	if (t == NULL) {
 		return;
-
-	if (prev != NULL)
+	}
+	if (prev != NULL) {
 		*prev = t->next;
-
+	}
 	free(t);
+
+	return;
 }
 
 static void
@@ -614,14 +645,24 @@ set_kde_sys_tray(void)
 		t = t->next;
 	}
 
-	if (nbr > 0)
+	if (nbr > 0) {
 		wins = xmalloc(sizeof(Window) * nbr);
+	}
 
 	t = ewmh_KstWinList;
+#ifdef DEBUG_KST
+	fprintf(stderr, "ADD_TO_KST: ");
+#endif
 	while (t != NULL) {
+#ifdef DEBUG_KST
+		fprintf(stderr, "0x%lx ", t->w);
+#endif
 		wins[i++] = t->w;
 		t = t->next;
 	}
+#ifdef DEBUG_KST
+	fprintf(stderr, "\n");
+#endif
 
 	ewmh_ChangeProperty(Scr.Root, "_KDE_NET_SYSTEM_TRAY_WINDOWS",
 	    EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *) wins, i);
@@ -662,17 +703,40 @@ ewmh_AddToKdeSysTray(FvwmWindow *fw)
 	return;
 }
 
+#if 0
+/* not used at present time */
+void
+ewmh_FreeKdeSysTray(void)
+{
+	KstItem        *t;
+
+	t = ewmh_KstWinList;
+	while (t != NULL) {
+		XSelectInput(dpy, t->w, NoEventMask);
+		delete_kst_item(t->w);
+		t = ewmh_KstWinList;
+	}
+	set_kde_sys_tray();
+
+	return;
+}
+#endif
+
 int
 EWMH_IsKdeSysTrayWindow(Window w)
 {
 	KstItem        *t;
 
 	t = ewmh_KstWinList;
-	while (t != NULL && t->w != w)
+	while (t != NULL && t->w != w) {
 		t = t->next;
-
-	if (t == NULL)
+	}
+	if (t == NULL) {
 		return 0;
+	}
+#ifdef DEBUG_KST
+	fprintf(stderr, "IsKdeSysTrayWindow: 0x%lx\n", w);
+#endif
 
 	return 1;
 }
@@ -683,29 +747,44 @@ EWMH_ManageKdeSysTray(Window w, int type)
 	KstItem        *t;
 
 	t = ewmh_KstWinList;
-	while (t != NULL && t->w != w)
+	while (t != NULL && t->w != w) {
 		t = t->next;
-
-	if (t == NULL)
+	}
+	if (t == NULL) {
 		return;
+	}
 	switch (type) {
 	case UnmapNotify:
+#ifdef DEBUG_KST
+		fprintf(stderr, "KST_UNMAP: 0x%lx\n", w);
+#endif
 		XSelectInput(dpy, w, StructureNotifyMask);
 		XFlush(dpy);
 		break;
 	case DestroyNotify:
+#ifdef DEBUG_KST
+		fprintf(stderr, "KST_DESTROY: 0x%lx\n", w);
+#endif
 		XSelectInput(dpy, t->w, NoEventMask);
 		XFlush(dpy);
 		delete_kst_item(w);
 		set_kde_sys_tray();
 		break;
 	case ReparentNotify:
+#ifdef DEBUG_KST
+		fprintf(stderr, "KST_Reparent: 0x%lx\n", w);
+#endif
 		XSelectInput(dpy, w, StructureNotifyMask);
 		XFlush(dpy);
 		break;
 	default:
+#ifdef DEBUG_KST
+		fprintf(stderr, "KST_NO: 0x%lx\n", w);
+#endif
 		break;
 	}
+
+	return;
 }
 
 /**** Client lists ****/
@@ -718,18 +797,22 @@ EWMH_SetClientList(struct monitor *m)
 	int             nbr = 0;
 	int             i = 0;
 
-	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next) {
 		nbr++;
-
+	}
 	if (nbr != 0) {
 		wl = xmalloc(sizeof(Window) * nbr);
-		for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+		for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next) {
 			wl[i++] = FW_W(fw);
+		}
 	}
 	ewmh_ChangeProperty(Scr.Root, "_NET_CLIENT_LIST",
 	    EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *) wl, nbr);
-	if (wl != NULL)
+	if (wl != NULL) {
 		free(wl);
+	}
+
+	return;
 }
 
 void
@@ -754,7 +837,11 @@ EWMH_SetClientListStacking(struct monitor *m)
 	}
 	ewmh_ChangeProperty(Scr.Root, "_NET_CLIENT_LIST_STACKING",
 	    EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *) wl, nbr);
-	free(wl);
+	if (wl != NULL) {
+		free(wl);
+	}
+
+	return;
 }
 
 /**** Working Area stuff ****/
@@ -784,6 +871,8 @@ ewmh_SetWorkArea(void)
 		ewmh_ChangeProperty(Scr.Root, "_NET_WORKAREA",
 		    EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *) &val, i * 4);
 	}
+
+	return;
 }
 
 void
@@ -920,6 +1009,8 @@ EWMH_GetWorkAreaIntersection(FvwmWindow *fw, int *x, int *y, int *w, int *h,
 	*y = ny;
 	*w = nw;
 	*h = nh;
+
+	return;
 }
 
 static float
@@ -1148,6 +1239,8 @@ EWMH_SetAllowedActions(FvwmWindow *fw)
 		ewmh_DeleteProperty(FW_W(fw), "_NET_WM_ALLOWED_ACTIONS",
 		    EWMH_ATOM_LIST_FVWM_WIN);
 	}
+
+	return;
 }
 
 /*
@@ -1457,6 +1550,8 @@ ewmh_HandleWindowType(FvwmWindow *fw, window_style *style)
 		i++;
 	}
 	free(val);
+
+	return;
 }
 
 /*
@@ -1505,6 +1600,8 @@ EWMH_GetStyle(FvwmWindow *fw, window_style *style)
 	 * the window type override the state hint
 	 */
 	ewmh_HandleWindowType(fw, style);
+
+	return;
 }
 
 static void
@@ -1525,12 +1622,17 @@ ewmh_check_wm_pid(FvwmWindow *fw)
 			SET_CR_MOTION_METHOD_DETECTED(fw, 1);
 		}
 	}
+
+	return;
 }
 
 /* see also EWMH_WMName and EWMH_WMIconName in add_window */
 void
 EWMH_WindowInit(FvwmWindow *fw)
 {
+	/*
+	 * EWMH_DLOG("Init window 0x%lx",FW_W(fw));
+	 */
 	EWMH_SetWMState(fw, False);
 	EWMH_SetWMDesktop(fw);
 	EWMH_SetAllowedActions(fw);
@@ -1538,14 +1640,19 @@ EWMH_WindowInit(FvwmWindow *fw)
 	ewmh_WMIconGeometry(fw, NULL, NULL, 0);
 	ewmh_AddToKdeSysTray(fw);
 	EWMH_SetFrameStrut(fw);
-	if (IS_EWMH_DESKTOP(FW_W(fw)))
+	if (IS_EWMH_DESKTOP(FW_W(fw))) {
 		return;
-
-	if (ksmserver_workarround(fw))
+	}
+	if (ksmserver_workarround(fw)) {
 		return;
-
+	}
 	ewmh_WMIcon(fw, NULL, NULL, 0);
 	ewmh_check_wm_pid(fw);
+	/*
+	 * EWMH_DLOG("window 0x%lx initialised",FW_W(fw));
+	 */
+
+	return;
 }
 
 /* unmap or reparent: restore state */
@@ -1573,11 +1680,14 @@ EWMH_RestoreInitialStates(FvwmWindow *fw, int event_type)
 void
 EWMH_DestroyWindow(FvwmWindow *fw)
 {
-	if (IS_EWMH_DESKTOP(FW_W(fw)))
+	if (IS_EWMH_DESKTOP(FW_W(fw))) {
 		Scr.EwmhDesktop = NULL;
-
-	if (fw->Desk >= ewmhc.NumberOfDesktops)
+	}
+	if (fw->Desk >= ewmhc.NumberOfDesktops) {
 		ewmhc.NeedsToCheckDesk = True;
+	}
+
+	return;
 }
 
 /* a window has been destroyed (unmap/reparent/destroy) */
@@ -1587,11 +1697,13 @@ EWMH_WindowDestroyed(void)
 	struct monitor *m = monitor_get_current();
 	EWMH_SetClientList(m);
 	EWMH_SetClientListStacking(m);
-	if (ewmhc.NeedsToCheckDesk)
+	if (ewmhc.NeedsToCheckDesk) {
 		EWMH_SetNumberOfDesktops(m);
-
+	}
 	ewmh_ComputeAndSetWorkArea(m);
 	ewmh_HandleDynamicWorkArea(m);
+
+	return;
 }
 
 /*
@@ -1604,12 +1716,13 @@ set_all_atom_in_list(ewmh_atom * list)
 
 	while (list->name != NULL) {
 		list->atom = XInternAtom(dpy, list->name, False);
-		if (list->atom_type == None)
+		if (list->atom_type == None) {
 			list->atom_type = XA_UTF8_STRING;
-
+		}
 		l++;
 		list++;
 	}
+
 	return l;
 }
 
@@ -1631,6 +1744,8 @@ set_net_supported(int l)
 	ewmh_ChangeProperty(Scr.Root, "_NET_SUPPORTED",
 	    EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *) supported, k);
 	free(supported);
+
+	return;
 }
 
 static void
@@ -1638,6 +1753,8 @@ clean_up(void)
 {
 	ewmh_ChangeProperty(Scr.Root, "_KDE_NET_SYSTEM_TRAY_WINDOWS",
 	    EWMH_ATOM_LIST_FVWM_ROOT, NULL, 0);
+
+	return;
 }
 
 void
@@ -1655,8 +1772,9 @@ EWMH_Init(struct monitor *m)
 	 * initialisation of all the atoms
 	 */
 	XA_UTF8_STRING = XInternAtom(dpy, "UTF8_STRING", False);
-	for (i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
+	for (i = 0; i < NUMBER_OF_ATOM_LISTS; i++) {
 		supported_count += set_all_atom_in_list(atom_list[i].list);
+	}
 
 	/*
 	 * the laws that we respect
@@ -1703,6 +1821,8 @@ EWMH_Init(struct monitor *m)
 	EWMH_SetClientList(m);
 	EWMH_SetClientListStacking(m);
 	ewmh_ComputeAndSetWorkArea(m);
+
+	return;
 }
 
 /*
@@ -1713,9 +1833,53 @@ EWMH_ExitStuff(void)
 {
 	FvwmWindow     *fw;
 
-	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next) {
 		EWMH_RestoreInitialStates(fw, 0);
+	}
+
+	return;
 }
+
+#ifdef EWMH_DEBUG
+void
+EWMH_DLOG(char *msg, ...)
+{
+	va_list         args;
+	clock_t         time_val, time_taken;
+	static clock_t  start_time = 0;
+	static clock_t  prev_time = 0;
+	struct tms      not_used_tms;
+	char            buffer[200];	/* oversized */
+	time_t          mytime;
+	struct tm      *t_ptr;
+
+	time(&mytime);
+	t_ptr = localtime(&mytime);
+	if (start_time == 0) {
+		/*
+		 * get clock ticks
+		 */
+		prev_time = start_time = (unsigned int) times(&not_used_tms);
+	}
+	/*
+	 * get clock ticks
+	 */
+	time_val = (unsigned int) times(&not_used_tms);
+	time_taken = time_val - prev_time;
+	prev_time = time_val;
+	sprintf(buffer, "%.2d:%.2d:%.2d %6ld",
+	    t_ptr->tm_hour, t_ptr->tm_min, t_ptr->tm_sec, time_taken);
+
+	fprintf(stderr, "EWMH DEBUG: ");
+	va_start(args, msg);
+	vfprintf(stderr, msg, args);
+	va_end(args);
+	fprintf(stderr, "\n");
+	fprintf(stderr, "            [time]: %s\n", buffer);
+
+	return;
+}
+#endif
 
 void
 EWMH_fullscreen(FvwmWindow *fw)
@@ -1780,14 +1944,17 @@ EWMH_fullscreen(FvwmWindow *fw)
 		int             sl = fw->ewmh_normal_layer;
 
 		new_layer(fw, Scr.TopLayer);
-		if (sl == 0)
+		if (sl == 0) {
 			fw->ewmh_normal_layer = Scr.DefaultLayer;
-		else
+		} else {
 			fw->ewmh_normal_layer = sl;
+		}
 	}
 	if (cmd[0] != 0) {
 		SET_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw, 1);
 		execute_function_override_window(NULL, NULL, cmd, 0, fw);
 		SET_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw, 0);
 	}
+
+	return;
 }

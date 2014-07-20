@@ -115,15 +115,15 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		if (t == focus_w &&
 		    !fpol_query_allow_user_focus(&FW_FOCUS_POLICY(t))) {
 			focus_w = NULL;
-			if (Scr.Hilite == t)
+			if (Scr.Hilite == t) {
 				Scr.Hilite = NULL;
-
+			}
 			flags->do_redraw_decoration = True;
 		}
 	}
-	if (flags->do_update_window_grabs)
+	if (flags->do_update_window_grabs) {
 		focus_grab_buttons(t);
-
+	}
 	if (IS_TRANSIENT(t) && flags->do_redecorate_transient) {
 		flags->do_redecorate = True;
 		flags->do_update_window_font = True;
@@ -299,18 +299,18 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 				    t, &t->g.max, CS_UPDATE_MAX_DEFECT);
 			}
 			new_g = &t->g.max;
-		} else
+		} else {
 			new_g = &t->g.normal;
-
+		}
 		if (IS_SHADED(t)) {
 			get_unshaded_geometry(t, new_g);
-			if (USED_TITLE_DIR_FOR_SHADING(t))
+			if (USED_TITLE_DIR_FOR_SHADING(t)) {
 				SET_SHADED_DIR(t, GET_TITLE_DIR(t));
-
+			}
 			get_shaded_geometry(t, &frame_g, new_g);
-		} else
+		} else {
 			get_relative_geometry(t->m, &frame_g, new_g);
-
+		}
 		flags->do_setup_frame = True;
 		flags->do_redraw_decoration = True;
 	}
@@ -356,31 +356,34 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		EWMH_SetFrameStrut(t);
 	}
 	if (flags->do_update_window_color) {
-		if (t != focus_w)
+		if (t != focus_w) {
 			flags->do_redraw_decoration = True;
-
+		}
 		update_window_color_style(t, pstyle);
-		if (t != Scr.Hilite)
+		if (t != Scr.Hilite) {
 			flags->do_broadcast_focus = True;
+		}
 	}
 	if (flags->do_update_window_color_hi) {
-		if (t == focus_w)
+		if (t == focus_w) {
 			flags->do_redraw_decoration = True;
-
+		}
 		update_window_color_hi_style(t, pstyle);
 		flags->do_broadcast_focus = True;
-		if (t == Scr.Hilite)
+		if (t == Scr.Hilite) {
 			flags->do_broadcast_focus = True;
+		}
 	}
 	if (flags->do_update_icon_title_cs_hi) {
-		if (t == focus_w && IS_ICONIFIED(t))
+		if (t == focus_w && IS_ICONIFIED(t)) {
 			flags->do_redraw_icon = True;
+		}
 		update_icon_title_cs_hi_style(t, pstyle);
 	}
 	if (flags->do_update_icon_title_cs) {
-		if (t != focus_w && IS_ICONIFIED(t))
+		if (t != focus_w && IS_ICONIFIED(t)) {
 			flags->do_redraw_icon = True;
-
+		}
 		update_icon_title_cs_style(t, pstyle);
 	}
 	if (flags->do_update_icon_background_cs) {
@@ -390,8 +393,9 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		if ((old_cs < 0 && t->icon_background_cs >= 0) ||
 		    (old_cs >= 0 && t->icon_background_cs < 0)) {
 			flags->do_update_icon = True;
-		} else
+		} else {
 			flags->do_redraw_icon = True;
+		}
 	}
 	if (flags->do_update_icon_size_limits) {
 		setup_icon_size_limits(t, pstyle);
@@ -405,9 +409,9 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		setup_icon_font(t, pstyle, flags->do_update_icon_font);
 		flags->do_update_icon_title = True;
 	}
-	if (flags->do_update_icon_boxes)
+	if (flags->do_update_icon_boxes) {
 		change_icon_boxes(t, pstyle);
-
+	}
 	if (flags->do_update_icon) {
 		setup_icon_background_parameters(t, pstyle);
 		setup_icon_title_parameters(t, pstyle);
@@ -425,9 +429,9 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		flags->do_redraw_decoration = False;
 		flags->do_update_icon_title = False;
 	}
-	if (flags->do_update_icon_title)
+	if (flags->do_update_icon_title) {
 		RedoIconName(t);
-
+	}
 	if (flags->do_update_icon_placement) {
 		if (IS_ICONIFIED(t)) {
 			initial_window_options_t win_opts;
@@ -443,35 +447,36 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 
 		/*
 		 * frame_redraw_decorations needs to know if the window is
-		 * hilighted
+		 * * hilighted
 		 */
 		tmp = get_focus_window();
 		set_focus_window(focus_w);
-		if (IS_ICONIFIED(t))
+		if (IS_ICONIFIED(t)) {
 			DrawIconWindow(t, True, True, False, False, NULL);
-		else
+		} else {
 			border_redraw_decorations(t);
+		}
 		set_focus_window(tmp);
 	}
-	if (flags->do_update_frame_attributes)
+	if (flags->do_update_frame_attributes) {
 		setup_frame_attributes(t, pstyle);
-
-	if (flags->do_update_ewmh_state_hints)
+	}
+	if (flags->do_update_ewmh_state_hints) {
 		EWMH_SetWMState(t, False);
-
-	if (flags->do_update_modules_flags)
+	}
+	if (flags->do_update_modules_flags) {
 		BroadcastConfig(M_CONFIGURE_WINDOW, t);
-
+	}
 	if (flags->do_update_ewmh_mini_icon || flags->do_update_ewmh_icon) {
 		EWMH_DoUpdateWmIcon(t, flags->do_update_ewmh_mini_icon,
 		    flags->do_update_ewmh_icon);
 	}
-	if (flags->do_update_placement_penalty)
+	if (flags->do_update_placement_penalty) {
 		setup_placement_penalty(t, pstyle);
-
-	if (flags->do_update_working_area)
+	}
+	if (flags->do_update_working_area) {
 		EWMH_UpdateWorkArea();
-
+	}
 	if (flags->do_update_ewmh_stacking_hints) {
 		if (DO_EWMH_USE_STACKING_HINTS(t)) {
 			if (t->ewmh_hint_layer > 0 &&
@@ -481,16 +486,17 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 			}
 		} else {
 			if (t->ewmh_hint_layer > 0 && t->ewmh_normal_layer) {
-				if (t->ewmh_normal_layer)
+				if (t->ewmh_normal_layer) {
 					new_layer(t, t->ewmh_normal_layer);
-				else
+				} else {
 					new_layer(t, Scr.DefaultLayer);
+				}
 			}
 		}
 	}
-	if (flags->do_update_ewmh_allowed_actions)
+	if (flags->do_update_ewmh_allowed_actions) {
 		EWMH_SetAllowedActions(t);
-
+	}
 	if (flags->do_broadcast_focus) {
 		if (Scr.Hilite != NULL && t == Scr.Hilite) {
 			BroadcastPacket(M_FOCUS_CHANGE, 5,
@@ -501,8 +507,9 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		}
 	}
 	if (flags->do_refresh) {
-		if (!IS_ICONIFIED(t))
+		if (!IS_ICONIFIED(t)) {
 			refresh_window(FW_W_FRAME(t), False);
+		}
 	}
 	setup_numeric_vals(t, pstyle);
 	if (flags->do_update_cr_motion_method) {
@@ -541,6 +548,8 @@ apply_window_updates(FvwmWindow *t, update_win *flags, window_style *pstyle,
 		 */
 		new_layer(t, layer);
 	}
+
+	return;
 }
 
 /* ---------------------------- builtin commands --------------------------- */
@@ -560,23 +569,26 @@ destroy_scheduled_windows(void)
 	/*
 	 * Grab the server during the style update!
 	 */
-	if (GrabEm(CRS_WAIT, GRAB_BUSY))
+	if (GrabEm(CRS_WAIT, GRAB_BUSY)) {
 		do_need_ungrab = True;
-
+	}
 	MyXGrabServer(dpy);
 	scr_flags.is_window_scheduled_for_destroy = 0;
 	/*
 	 * need to destroy one or more windows before looking at the window
 	 * * list
 	 */
-	for (t = Scr.FWScheduledForDestroy; t != NULL; t = t->next)
+	for (t = Scr.FWScheduledForDestroy; t != NULL; t = t->next) {
 		destroy_window(t->object);
-
+	}
 	Scr.FWScheduledForDestroy =
 	    flist_free_list(Scr.FWScheduledForDestroy);
 	MyXUngrabServer(dpy);
-	if (do_need_ungrab)
+	if (do_need_ungrab) {
 		UngrabEm(GRAB_BUSY);
+	}
+
+	return;
 }
 
 /* similar to the flush_window_updates() function, but does only the updates
@@ -592,6 +604,8 @@ apply_decor_change(FvwmWindow *fw)
 	flags.do_redecorate = True;
 	flags.do_update_window_font_height = True;
 	apply_window_updates(fw, &flags, &style, get_focus_window());
+
+	return;
 }
 
 /* Check and apply new style to each window if the style has changed. */
@@ -607,9 +621,9 @@ flush_window_updates(void)
 	/*
 	 * Grab the server during the style update!
 	 */
-	if (GrabEm(CRS_WAIT, GRAB_BUSY))
+	if (GrabEm(CRS_WAIT, GRAB_BUSY)) {
 		do_need_ungrab = True;
-
+	}
 	MyXGrabServer(dpy);
 
 	/*
@@ -637,9 +651,9 @@ flush_window_updates(void)
 			flags.do_update_icon_boxes = True;
 			flags.do_update_icon_placement = True;
 		}
-		if (scr_flags.has_nr_buttons_changed)
+		if (scr_flags.has_nr_buttons_changed) {
 			flags.do_redecorate = True;
-
+		}
 		/*
 		 * TODO: this is not optimised for minimal redrawing yet
 		 */
@@ -647,18 +661,18 @@ flush_window_updates(void)
 			flags.do_redecorate = True;
 			flags.do_update_window_font_height = True;
 		}
-		if (scr_flags.has_default_font_changed && !HAS_ICON_FONT(t))
+		if (scr_flags.has_default_font_changed && !HAS_ICON_FONT(t)) {
 			flags.do_update_icon_font = True;
-
-		if (scr_flags.has_default_font_changed && !HAS_WINDOW_FONT(t))
+		}
+		if (scr_flags.has_default_font_changed && !HAS_WINDOW_FONT(t)) {
 			flags.do_update_window_font = True;
-
-		if (t->decor->flags.has_title_height_changed)
+		}
+		if (t->decor->flags.has_title_height_changed) {
 			flags.do_update_window_font_height = True;
-
-		if (scr_flags.has_mouse_binding_changed)
+		}
+		if (scr_flags.has_mouse_binding_changed) {
 			flags.do_update_window_grabs = True;
-
+		}
 		/*
 		 * now apply the changes
 		 */
@@ -671,11 +685,12 @@ flush_window_updates(void)
 	 */
 	if (focus_fw) {
 		SetFocusWindow(focus_fw, False, FOCUS_SET_FORCE);
-		if (scr_flags.has_mouse_binding_changed)
+		if (scr_flags.has_mouse_binding_changed) {
 			focus_grab_buttons(focus_fw);
-
-	} else
+		}
+	} else {
 		DeleteFocus(True);
+	}
 
 	/*
 	 * finally clean up the change flags
@@ -690,13 +705,19 @@ flush_window_updates(void)
 	scr_flags.has_xinerama_state_changed = 0;
 
 	MyXUngrabServer(dpy);
-	if (do_need_ungrab)
+	if (do_need_ungrab) {
 		UngrabEm(GRAB_BUSY);
+	}
+
+	return;
 }
 
 void
 CMD_UpdateStyles(F_CMD_ARGS)
 {
-	if (scr_flags.do_need_window_update)
+	if (scr_flags.do_need_window_update) {
 		flush_window_updates();
+	}
+
+	return;
 }
