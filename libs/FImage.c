@@ -22,7 +22,7 @@
 
 #include <X11/Xlib.h>
 
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include "libs/PictureBase.h"
 #include "libs/FImage.h"
 

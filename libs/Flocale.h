@@ -11,7 +11,7 @@
 #include <X11/Xlocale.h>
 #include <X11/Xutil.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "gravity.h"
 #include "Fft.h"
 #include "Colorset.h"
@@ -143,9 +143,9 @@ typedef struct _FlocaleFont
 	int             count;
 	XFontStruct    *font;	/* font structure */
 	XFontSet        fontset;	/* font set */
-	FftFontType     fftf;	/* fvwm xft font */
-	FlocaleCharset *fc;	/* fvwm charset of the font */
-	FlocaleCharset *str_fc;	/* fvwm charset of the strings to be displayed */
+	FftFontType     fftf;	/* mvwm xft font */
+	FlocaleCharset *fc;	/* mvwm charset of the font */
+	FlocaleCharset *str_fc;	/* mvwm charset of the strings to be displayed */
 	int             height;	/* height of the font: ascent + descent */
 	int             ascent;
 	int             descent;
@@ -216,7 +216,7 @@ typedef struct
  * i18n X initialization
  * category: the usual category LC_CTYPE, LC_CTIME, ...
  * modifier: "" or NULL if NULL XSetLocaleModifiers is not called
- * module: the name of the fvwm module that call the function for reporting
+ * module: the name of the mvwm module that call the function for reporting
  * errors message
  * The locale and the modifiers is sotred in Flocale and Fmodifiers.
  * Flocale is set to NULL if the locale is not supported by the Xlib.
@@ -237,7 +237,7 @@ void            FlocaleInit(int category, const char *local,
  * either "xft:" followed by a  Xft font name. Examples:
  * "xft:Verdana:Bold:pixelsize=14:rgba=rgb"
  * "xft:Verdana:size=12;-adobe-courier-medium-r-normal--14-*,fixed"
- * module: name of the fvwm module for errors msg
+ * module: name of the mvwm module for errors msg
  * If fontname is NULL the "default font" is loaded (2,3,4).
  * The following logic is used:
  * 0) If fontname has been has been already loaded the cache is used

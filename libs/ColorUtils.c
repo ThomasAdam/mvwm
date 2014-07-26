@@ -35,7 +35,7 @@
 
 #include <stdio.h>
 #include <X11/Xproto.h>	/* for X functions in general */
-#include "fvwmlib.h"	/* prototype GetShadow GetHilit */
+#include "mvwmlib.h"	/* prototype GetShadow GetHilit */
 #include "Parse.h"
 #include "Colorset.h"
 #include "PictureBase.h"
@@ -68,7 +68,7 @@
 
 static XColor   color;
 
-/**** This part is the old fvwm way to calculate colours. Still used for
+/**** This part is the old mvwm way to calculate colours. Still used for
  **** 'medium' brigness colours. */
 #define DARKNESS_FACTOR 0.5
 #define BRIGHTNESS_FACTOR 1.4
@@ -218,7 +218,7 @@ color_mult(unsigned short *red,
 	}
 }
 
-/**** End of original fvwm code. ****/
+/**** End of original mvwm code. ****/
 
 static XColor  *
 GetShadowOrHiliteColor(Pixel background, float light, float dark,
@@ -528,7 +528,7 @@ GetColor(char *name)
 
 /* Allocates the color from the input Pixel again */
 Pixel
-fvwmlib_clone_color(Pixel p)
+mvwmlib_clone_color(Pixel p)
 {
 	XColor          c;
 
@@ -544,7 +544,7 @@ fvwmlib_clone_color(Pixel p)
 
 /* Free an array of colours (n colours), never free black */
 void
-fvwmlib_free_colors(Display *dpy, Pixel *pixels, int n, Bool no_limit)
+mvwmlib_free_colors(Display *dpy, Pixel *pixels, int n, Bool no_limit)
 {
 	int             i;
 
@@ -567,13 +567,13 @@ fvwmlib_free_colors(Display *dpy, Pixel *pixels, int n, Bool no_limit)
 
 /* Copy one color and reallocate it */
 void
-fvwmlib_copy_color(Display *dpy, Pixel *dst_color, Pixel *src_color,
+mvwmlib_copy_color(Display *dpy, Pixel *dst_color, Pixel *src_color,
     Bool do_free_dest, Bool do_copy_src)
 {
 	if (do_free_dest) {
-		fvwmlib_free_colors(dpy, dst_color, 1, True);
+		mvwmlib_free_colors(dpy, dst_color, 1, True);
 	}
 	if (do_copy_src) {
-		*dst_color = fvwmlib_clone_color(*src_color);
+		*dst_color = mvwmlib_clone_color(*src_color);
 	}
 }

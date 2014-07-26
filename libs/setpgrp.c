@@ -25,7 +25,7 @@
 #include "setpgrp.h"
 
 int
-fvwm_setpgrp(void)
+mvwm_setpgrp(void)
 {
 	int             rc;
 

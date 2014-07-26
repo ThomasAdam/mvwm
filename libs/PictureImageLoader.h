@@ -23,7 +23,7 @@
 Bool            PImageCreatePixmapFromArgbData(Display *dpy, Window win,
     CARD32 *data, int start, int width, int height, Pixmap *pixmap,
     Pixmap *mask, Pixmap *alpha, int *nalloc_pixels, Pixel **alloc_pixels,
-    int *no_limit, FvwmPictureAttributes fpa);
+    int *no_limit, MvwmPictureAttributes fpa);
 /*
  * <pubfunc>PImageLoadPixmapFromFile
  * <description>
@@ -33,16 +33,16 @@ Bool            PImageCreatePixmapFromArgbData(Display *dpy, Window win,
 Bool            PImageLoadPixmapFromFile(Display *dpy, Window win, char *file,
     Pixmap *pixmap, Pixmap *mask, Pixmap *alpha, int *width, int *height,
     int *depth, int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
-    FvwmPictureAttributes fpa);
+    MvwmPictureAttributes fpa);
 
 /*
  * <pubfunc>PImageLoadPixmapFromFile
  * <description>
- * Create a FvwmPicture from a file.
+ * Create a MvwmPicture from a file.
  * </description>
  */
-FvwmPicture    *PImageLoadFvwmPictureFromFile(Display *dpy, Window win,
-    char *path, FvwmPictureAttributes fpa);
+MvwmPicture    *PImageLoadMvwmPictureFromFile(Display *dpy, Window win,
+    char *path, MvwmPictureAttributes fpa);
 
 /*
  * <pubfunc>PImageLoadPixmapFromFile

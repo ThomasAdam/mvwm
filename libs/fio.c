@@ -28,7 +28,7 @@
 /* ---------------------------- interface functions ------------------------ */
 
 ssize_t
-fvwm_send(int s, const void *buf, size_t len, int flags)
+mvwm_send(int s, const void *buf, size_t len, int flags)
 {
 	int             rc;
 	size_t          offset;
@@ -47,7 +47,7 @@ fvwm_send(int s, const void *buf, size_t len, int flags)
 }
 
 ssize_t
-fvwm_recv(int s, void *buf, size_t len, int flags)
+mvwm_recv(int s, void *buf, size_t len, int flags)
 {
 	int             rc;
 

@@ -1,6 +1,6 @@
 /* -*-c-*- */
-#ifndef FVWMLIB_ENVVAR_H
-#define FVWMLIB_ENVVAR_H
+#ifndef MVWMLIB_ENVVAR_H
+#define MVWMLIB_ENVVAR_H
 
 /*
  *  SYNOPSIS      #include "envvar.h"
@@ -62,7 +62,7 @@ char           *envDupExpand(const char *s, int extra);
  *                occurrences are skipped.
  *                If nothing is found returns NULL and sets beg and end to 0.
  *
- *  EXAMPLE       getFirstEnv("echo $HOME/.fvwm/config", &beg, &end)
+ *  EXAMPLE       getFirstEnv("echo $HOME/.mvwm/config", &beg, &end)
  *                returns "/home/username" and beg=5, end=10.
  *
  */

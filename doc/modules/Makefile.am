@@ -1,6 +1,6 @@
 # Author: Scott Smedley
 
-docdir = @FVWM_DOCDIR@/modules
+docdir = @MVWM_DOCDIR@/modules
 XSLTPROC = @XSLTPROC@
 
 XSL_FILE = $(srcdir)/../fvwm.xsl
@@ -16,7 +16,7 @@ HTML_FILES = @DOC_MODULES_HTML@ todo.html
 XML_FILES = todo.xml
 EXTRA_DIST = $(XML_FILES)
 
-if FVWM_BUILD_HTMLDOC
+if MVWM_BUILD_HTMLDOC
 doc_DATA = $(HTML_FILES)
 endif
 

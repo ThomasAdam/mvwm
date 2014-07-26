@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 #include <X11/Xlib.h>
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Parse.h"
 #include "Strings.h"
 #include "gravity.h"

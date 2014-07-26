@@ -23,7 +23,7 @@
 
 #include <X11/Xlib.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "PictureBase.h"
 #include "FRenderInit.h"
 

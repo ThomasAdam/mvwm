@@ -1,11 +1,11 @@
 /* -*-c-*- */
-#ifndef FVWMLIB_FSCRREN_H
-#define FVWMLIB_FSCRREN_H
+#ifndef MVWMLIB_FSCRREN_H
+#define MVWMLIB_FSCRREN_H
 
-#include "fvwm/fvwm.h"
-#include "fvwm/execcontext.h"
-#include "fvwm/misc.h"
-#include "fvwm/screen.h"
+#include "mvwm/mvwm.h"
+#include "mvwm/execcontext.h"
+#include "mvwm/misc.h"
+#include "mvwm/screen.h"
 
 typedef union
 {
@@ -80,9 +80,9 @@ int             monitor_should_ignore_global(struct monitor *);
 Bool            FScreenIsEnabled(void);
 void            FScreenInit(Display *dpy);
 /* Intended to be called by modules.  Simply pass in the parameter from the
- * config string sent by fvwm. */
+ * config string sent by mvwm. */
 void            FScreenConfigureModule(char *args);
-const char     *FScreenGetConfiguration(void);	/* For use by fvwm */
+const char     *FScreenGetConfiguration(void);	/* For use by mvwm */
 void            FScreenSetDefaultModuleScreen(char *scr_spec);
 
 void            FScreenSetPrimaryScreen(int scr);
@@ -119,4 +119,4 @@ void            FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen,
     XSizeHints * hints);
 int             FScreenFetchMangledScreenFromUSPosHints(XSizeHints * hints);
 
-#endif /* FVWMLIB_FSCRREN_H */
+#endif /* MVWMLIB_FSCRREN_H */

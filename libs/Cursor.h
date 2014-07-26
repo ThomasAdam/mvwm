@@ -1,1 +1,1 @@
-int             fvwmCursorNameToIndex(char *cursor_name);
+int             mvwmCursorNameToIndex(char *cursor_name);

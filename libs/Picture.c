@@ -58,25 +58,25 @@
 #include <X11/Xutil.h>
 #include <X11/Intrinsic.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "System.h"
 #include "Colorset.h"
 #include "Picture.h"
 #include "PictureUtils.h"
 
-static FvwmPicture *FvwmPictureList = NULL;
+static MvwmPicture *MvwmPictureList = NULL;
 
-FvwmPicture    *
-PGetFvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
-    FvwmPictureAttributes fpa)
+MvwmPicture    *
+PGetMvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
+    MvwmPictureAttributes fpa)
 {
 	char           *path = PictureFindImageFile(name, ImagePath, R_OK);
-	FvwmPicture    *p;
+	MvwmPicture    *p;
 
 	if (path == NULL) {
 		return NULL;
 	}
-	p = PImageLoadFvwmPictureFromFile(dpy, win, path, fpa);
+	p = PImageLoadMvwmPictureFromFile(dpy, win, path, fpa);
 	if (p == NULL) {
 		free(path);
 	}
@@ -85,7 +85,7 @@ PGetFvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
 }
 
 void
-PFreeFvwmPictureData(FvwmPicture *p)
+PFreeMvwmPictureData(MvwmPicture *p)
 {
 	if (!p) {
 		return;
@@ -101,13 +101,13 @@ PFreeFvwmPictureData(FvwmPicture *p)
 	return;
 }
 
-FvwmPicture    *
-PCacheFvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
-    FvwmPictureAttributes fpa)
+MvwmPicture    *
+PCacheMvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
+    MvwmPictureAttributes fpa)
 {
 	char           *path;
 	char           *real_path;
-	FvwmPicture    *p = FvwmPictureList;
+	MvwmPicture    *p = MvwmPictureList;
 
 	/*
 	 * First find the full pathname
@@ -144,10 +144,10 @@ PCacheFvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
 	/*
 	 * Not previously cached, have to load it ourself. Put it first in list
 	 */
-	p = PImageLoadFvwmPictureFromFile(dpy, win, path, fpa);
+	p = PImageLoadMvwmPictureFromFile(dpy, win, path, fpa);
 	if (p) {
-		p->next = FvwmPictureList;
-		FvwmPictureList = p;
+		p->next = MvwmPictureList;
+		MvwmPictureList = p;
 	} else {
 		free(path);
 	}
@@ -156,9 +156,9 @@ PCacheFvwmPicture(Display *dpy, Window win, char *ImagePath, const char *name,
 }
 
 void
-PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
+PDestroyMvwmPicture(Display *dpy, MvwmPicture *p)
 {
-	FvwmPicture    *q = FvwmPictureList;
+	MvwmPicture    *q = MvwmPictureList;
 
 	if (!p) {
 		return;
@@ -199,7 +199,7 @@ PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 	 * Link it out of the list (it might not be there)
 	 */
 	if (p == q) {	/* in head? simple */
-		FvwmPictureList = p->next;
+		MvwmPictureList = p->next;
 	} else {
 		while (q && q->next != p) {	/* fast forward until end or found */
 			q = q->next;
@@ -213,14 +213,14 @@ PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 	return;
 }
 
-FvwmPicture    *
-PLoadFvwmPictureFromPixmap(Display *dpy, Window win, char *name,
+MvwmPicture    *
+PLoadMvwmPictureFromPixmap(Display *dpy, Window win, char *name,
     Pixmap pixmap, Pixmap mask, Pixmap alpha, int width, int height,
     int nalloc_pixels, Pixel *alloc_pixels, int no_limit)
 {
-	FvwmPicture    *q;
+	MvwmPicture    *q;
 
-	q = xcalloc(1, sizeof(FvwmPicture));
+	q = xcalloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = name;
 	q->next = NULL;
@@ -237,12 +237,12 @@ PLoadFvwmPictureFromPixmap(Display *dpy, Window win, char *name,
 	return q;
 }
 
-FvwmPicture    *
-PCacheFvwmPictureFromPixmap(Display *dpy, Window win, char *name,
+MvwmPicture    *
+PCacheMvwmPictureFromPixmap(Display *dpy, Window win, char *name,
     Pixmap pixmap, Pixmap mask, Pixmap alpha, int width, int height,
     int nalloc_pixels, Pixel *alloc_pixels, int no_limit)
 {
-	FvwmPicture    *p = FvwmPictureList;
+	MvwmPicture    *p = MvwmPictureList;
 
 	/*
 	 * See if the picture is already cached
@@ -262,18 +262,18 @@ PCacheFvwmPictureFromPixmap(Display *dpy, Window win, char *name,
 	/*
 	 * Not previously cached, have to load. Put it first in list
 	 */
-	p = PLoadFvwmPictureFromPixmap(dpy, win, name, pixmap, mask, alpha,
+	p = PLoadMvwmPictureFromPixmap(dpy, win, name, pixmap, mask, alpha,
 	    width, height, nalloc_pixels, alloc_pixels, no_limit);
 	if (p) {
-		p->next = FvwmPictureList;
-		FvwmPictureList = p;
+		p->next = MvwmPictureList;
+		MvwmPictureList = p;
 	}
 
 	return p;
 }
 
-FvwmPicture    *
-PCloneFvwmPicture(FvwmPicture *pic)
+MvwmPicture    *
+PCloneMvwmPicture(MvwmPicture *pic)
 {
 	if (pic != NULL) {
 		pic->count++;
@@ -285,7 +285,7 @@ PCloneFvwmPicture(FvwmPicture *pic)
 void
 PicturePrintImageCache(int verbose)
 {
-	FvwmPicture    *p;
+	MvwmPicture    *p;
 	unsigned int    count = 0;
 	unsigned int    hits = 0;
 	unsigned int    num_alpha = 0;
@@ -293,9 +293,9 @@ PicturePrintImageCache(int verbose)
 
 	fflush(stderr);
 	fflush(stdout);
-	fprintf(stderr, "fvwm info on Image cache:\n");
+	fprintf(stderr, "mvwm info on Image cache:\n");
 
-	for (p = FvwmPictureList; p != NULL; p = p->next) {
+	for (p = MvwmPictureList; p != NULL; p = p->next) {
 		int             num_pixmaps = 1;
 		if (p->mask != None) {
 			num_mask++;

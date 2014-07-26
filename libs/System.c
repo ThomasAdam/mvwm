@@ -19,7 +19,7 @@
  */
 
 #include "config.h"
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "envvar.h"
 #include "System.h"
 #include "Strings.h"
@@ -27,7 +27,7 @@
 #if HAVE_UNAME
 #include <sys/utsname.h>
 #endif
-#include "libs/fvwm_sys_stat.h"
+#include "libs/mvwm_sys_stat.h"
 
 #if HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -40,7 +40,7 @@
 #define FD_SETSIZE 2048
 #endif
 
-fd_set_size_t   fvwmlib_max_fd = (fd_set_size_t) - 9999999;
+fd_set_size_t   mvwmlib_max_fd = (fd_set_size_t) - 9999999;
 
 fd_set_size_t
 GetFdWidth(void)
@@ -53,9 +53,9 @@ GetFdWidth(void)
 }
 
 void
-fvwmlib_init_max_fd(void)
+mvwmlib_init_max_fd(void)
 {
-	fvwmlib_max_fd = GetFdWidth();
+	mvwmlib_max_fd = GetFdWidth();
 
 	return;
 }
@@ -273,7 +273,7 @@ isFileStampChanged(const FileStamp * stamp, const char *name)
 
 #ifdef HAVE_SAFETY_MKSTEMP
 int
-fvwm_mkstemp(char *TEMPLATE)
+mvwm_mkstemp(char *TEMPLATE)
 {
 	return mkstemp(TEMPLATE);
 }
@@ -304,7 +304,7 @@ static const char letters[] =
    Then open the file and return a fd. */
 
 int
-fvwm_mkstemp(char *template)
+mvwm_mkstemp(char *template)
 {
 	int             len;
 	char           *XXXXXX;
@@ -349,7 +349,7 @@ fvwm_mkstemp(char *template)
 		XXXXXX[5] = letters[v % 62];
 
 		fd = open(template, O_RDWR | O_CREAT | O_EXCL,
-		    FVWM_S_IRUSR | FVWM_S_IWUSR);
+		    MVWM_S_IRUSR | MVWM_S_IWUSR);
 		if (fd >= 0) {
 			__set_errno(save_errno);
 			return fd;

@@ -35,7 +35,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 #include "System.h"
 #include "Strings.h"
 #include "Picture.h"
@@ -153,7 +153,7 @@ PImageLoadPng(FIMAGE_CMD_ARGS)
 		bit_depth = 0;
 
 		fprintf(stderr, "[PImageLoadPng]: Tried to load PNG file "
-		    "when FVWM has not been compiled with PNG support.\n");
+		    "when MVWM has not been compiled with PNG support.\n");
 
 		return False;
 	}
@@ -301,7 +301,7 @@ PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage * fimage)
 	if (depth == Pdepth) {
 		gc = PictureDefaultGC(dpy, win);
 	} else {
-		gc = fvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
+		gc = mvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
 	}
 	FPutFImage(dpy, pixmap, gc, fimage, 0, 0, 0, 0, w, h);
 	if (depth != Pdepth) {
@@ -322,7 +322,7 @@ Bool
 PImageCreatePixmapFromArgbData(Display *dpy, Window win, CARD32 *data,
     int start, int width, int height, Pixmap *pixmap, Pixmap *mask,
     Pixmap *alpha, int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
-    FvwmPictureAttributes fpa)
+    MvwmPictureAttributes fpa)
 {
 	FImage         *fim;
 	FImage         *m_fim = NULL;
@@ -431,7 +431,7 @@ Bool
 PImageLoadPixmapFromFile(Display *dpy, Window win, char *path, Pixmap *pixmap,
     Pixmap *mask, Pixmap *alpha, int *width, int *height, int *depth,
     int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
-    FvwmPictureAttributes fpa)
+    MvwmPictureAttributes fpa)
 {
 	CARD32         *data;
 
@@ -470,11 +470,11 @@ PImageLoadPixmapFromFile(Display *dpy, Window win, char *path, Pixmap *pixmap,
 	return False;
 }
 
-FvwmPicture    *
-PImageLoadFvwmPictureFromFile(Display *dpy, Window win, char *path,
-    FvwmPictureAttributes fpa)
+MvwmPicture    *
+PImageLoadMvwmPictureFromFile(Display *dpy, Window win, char *path,
+    MvwmPictureAttributes fpa)
 {
-	FvwmPicture    *p;
+	MvwmPicture    *p;
 	Pixmap          pixmap = None;
 	Pixmap          mask = None;
 	Pixmap          alpha = None;
@@ -492,7 +492,7 @@ PImageLoadFvwmPictureFromFile(Display *dpy, Window win, char *path,
 		return NULL;
 	}
 
-	p = xcalloc(1, sizeof(FvwmPicture));
+	p = xcalloc(1, sizeof(MvwmPicture));
 	p->count = 1;
 	p->name = path;
 	p->fpa_mask = fpa.mask;
@@ -545,7 +545,7 @@ PImageLoadCursorFromFile(Display *dpy, Window win, char *path, int x_hot,
 		&height)) {
 		Pixmap          src;
 		Pixmap          msk = None;
-		FvwmPictureAttributes fpa;
+		MvwmPictureAttributes fpa;
 
 		fpa.mask = FPAM_NO_ALPHA | FPAM_MONOCHROME;
 

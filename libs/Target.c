@@ -15,8 +15,8 @@
  */
 
 /*
-** fvwmlib_get_target_window and fvwmlib_keyboard_shortcuts - handle window
-** selection from modules and fvwm.
+** mvwmlib_get_target_window and mvwmlib_keyboard_shortcuts - handle window
+** selection from modules and mvwm.
 */
 
 #include "config.h"
@@ -31,12 +31,12 @@
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Grab.h"
 #include "Target.h"
 
 void
-fvwmlib_keyboard_shortcuts(Display *dpy, int screen, XEvent *Event,
+mvwmlib_keyboard_shortcuts(Display *dpy, int screen, XEvent *Event,
     int x_move_size, int y_move_size, int *x_defect, int *y_defect,
     int ReturnEvent)
 {
@@ -204,7 +204,7 @@ fvwmlib_keyboard_shortcuts(Display *dpy, int screen, XEvent *Event,
 }
 
 void
-fvwmlib_get_target_window(Display *dpy, int screen, char *MyName,
+mvwmlib_get_target_window(Display *dpy, int screen, char *MyName,
     Window *app_win, Bool return_subwindow)
 {
 	XEvent          eventp;
@@ -267,7 +267,7 @@ fvwmlib_get_target_window(Display *dpy, int screen, char *MyName,
 				finished = True;
 				break;
 			default:
-				fvwmlib_keyboard_shortcuts(dpy, screen,
+				mvwmlib_keyboard_shortcuts(dpy, screen,
 				    &eventp, 0, 0, NULL, NULL, 0);
 				break;
 			}
@@ -297,7 +297,7 @@ fvwmlib_get_target_window(Display *dpy, int screen, char *MyName,
 }
 
 Window
-fvwmlib_client_window(Display *dpy, Window input)
+mvwmlib_client_window(Display *dpy, Window input)
 {
 	Atom            _XA_WM_STATE;
 	unsigned int    nchildren;
@@ -323,7 +323,7 @@ fvwmlib_client_window(Display *dpy, Window input)
 		return None;
 
 	for (i = 0; i < nchildren; i++) {
-		target = fvwmlib_client_window(dpy, children[i]);
+		target = mvwmlib_client_window(dpy, children[i]);
 		if (target != None) {
 			XFree((char *) children);
 			return target;

@@ -3,14 +3,14 @@
 #define LIBS_MODULE_H
 
 /*
-** Module.c: code for modules to communicate with fvwm
+** Module.c: code for modules to communicate with mvwm
 */
 
 #include <X11/X.h>
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 
 /**
- * fvwm sends packets of this type to modules.
+ * mvwm sends packets of this type to modules.
  **/
 
 typedef struct
@@ -32,38 +32,38 @@ typedef struct
 	 */
 	unsigned long   timestamp;
 	/*
-	 * variable size -- use FvwmPacketBodySize to get size
+	 * variable size -- use MvwmPacketBodySize to get size
 	 */
 	unsigned long   body[1];
-} FvwmPacket;
+} MvwmPacket;
 
 typedef struct
 {
 	Window          w;
 	Window          frame;
-	void           *fvwmwin;
-} FvwmWinPacketBodyHeader;
+	void           *mvwmwin;
+} MvwmWinPacketBodyHeader;
 
 /*
  * If you modify constants here, please regenerate Constants.pm in perllib.
  */
 
 /** All size values in units of "unsigned long" **/
-#define FvwmPacketHeaderSize        4
-#define FvwmPacketBodySize(p)       ((p).size - FvwmPacketHeaderSize)
-#define FvwmPacketMaxSize           256
-#define FvwmPacketBodyMaxSize       (FvwmPacketMaxSize - FvwmPacketHeaderSize)
+#define MvwmPacketHeaderSize        4
+#define MvwmPacketBodySize(p)       ((p).size - MvwmPacketHeaderSize)
+#define MvwmPacketMaxSize           256
+#define MvwmPacketBodyMaxSize       (MvwmPacketMaxSize - MvwmPacketHeaderSize)
 
 /** There seems to be some movement afoot to measure packet sizes in bytes.
-    See fvwm/module_interface.c **/
-#define FvwmPacketHeaderSize_byte  \
-	(FvwmPacketHeaderSize * sizeof(unsigned long))
-#define FvwmPacketBodySize_byte(p) \
-	(FvwmPacketBodySize(p) * sizeof(unsigned long))
-#define FvwmPacketMaxSize_byte \
-	(FvwmPacketMaxSize * sizeof(unsigned long))
-#define FvwmPacketBodyMaxSize_byte \
-	(FvwmPacketBodyMaxSize * sizeof(unsigned long))
+    See mvwm/module_interface.c **/
+#define MvwmPacketHeaderSize_byte  \
+	(MvwmPacketHeaderSize * sizeof(unsigned long))
+#define MvwmPacketBodySize_byte(p) \
+	(MvwmPacketBodySize(p) * sizeof(unsigned long))
+#define MvwmPacketMaxSize_byte \
+	(MvwmPacketMaxSize * sizeof(unsigned long))
+#define MvwmPacketBodyMaxSize_byte \
+	(MvwmPacketBodyMaxSize * sizeof(unsigned long))
 
 /* Value of start_pattern */
 #define START_FLAG 0xffffffff
@@ -92,7 +92,7 @@ typedef struct
 
 /* It turns out this is defined by <sys/stream.h> on Solaris 2.6.
    I suspect that simply redefining this will lead to trouble;
-   at some point, these should probably be renamed (FVWM_MSG_ERROR?). */
+   at some point, these should probably be renamed (MVWM_MSG_ERROR?). */
 #ifdef M_ERROR
 #undef M_ERROR
 #endif
@@ -139,16 +139,16 @@ typedef struct
 #define MX_PROPERTY_CHANGE_SWALLOW     2
 
 /**
- * Reads a single packet of info from fvwm.
+ * Reads a single packet of info from mvwm.
  * The packet is stored into static memory that is reused during
- * the next call to ReadFvwmPacket.  Callers, therefore, must copy
- * needed data before the next call to ReadFvwmPacket.
+ * the next call to ReadMvwmPacket.  Callers, therefore, must copy
+ * needed data before the next call to ReadMvwmPacket.
  **/
-FvwmPacket     *ReadFvwmPacket(int fd);
+MvwmPacket     *ReadMvwmPacket(int fd);
 
 /*
  *
- * SendFinishedStartupNotification - informs fvwm that the module has
+ * SendFinishedStartupNotification - informs mvwm that the module has
  * finished its startup procedures and is fully operational now.
  *
  */
@@ -156,7 +156,7 @@ void            SendFinishedStartupNotification(int *fd);
 
 /*
  *
- * SendText - Sends arbitrary text/command back to fvwm
+ * SendText - Sends arbitrary text/command back to mvwm
  *
  */
 void            SendText(int *fd, const char *message, unsigned long window);
@@ -166,15 +166,15 @@ void            SendText(int *fd, const char *message, unsigned long window);
 
 /*
  *
- * SendUnlockNotification - informs fvwm that the module has
- * finished it's procedures and fvwm may proceed.
+ * SendUnlockNotification - informs mvwm that the module has
+ * finished it's procedures and mvwm may proceed.
  *
  */
 void            SendUnlockNotification(int *fd);
 
 /*
  *
- * SendQuitNotification - informs fvwm that the module has
+ * SendQuitNotification - informs mvwm that the module has
  * finished and may be killed.
  *
  */
@@ -182,13 +182,13 @@ void            SendQuitNotification(int *fd);
 
 /*
  *
- * SendFvwmPipe - Sends message to fvwm:  The message is a comma-delimited
- * string separated into its component sections and sent one by one to fvwm.
+ * SendMvwmPipe - Sends message to mvwm:  The message is a comma-delimited
+ * string separated into its component sections and sent one by one to mvwm.
  * It is discouraged to use this function with a "synchronous" module.
- * (Form FvwmIconMan)
+ * (Form MvwmIconMan)
  *
  */
-void            SendFvwmPipe(int *fd, const char *message,
+void            SendMvwmPipe(int *fd, const char *message,
     unsigned long window);
 
 /*
@@ -220,7 +220,7 @@ void            SetNoGrabMask(int *fd, unsigned long mask);
 void            InitGetConfigLine(int *fd, char *match);
 
 /**
- * Gets a module configuration line from fvwm. Returns NULL if there are
+ * Gets a module configuration line from mvwm. Returns NULL if there are
  * no more lines to be had. "line" is a pointer to a char *.
  **/
 void            GetConfigLine(int *fd, char **line);
@@ -230,7 +230,7 @@ char           *module_expand_action(Display *dpy, int screen,
     char *in_action, rectangle *r, char *forecolor, char *backcolor);
 
 /**
- * Parse the command line arguments given to the module by fvwm.
+ * Parse the command line arguments given to the module by mvwm.
  * Input is the argc & argv from main(), and a flag to indicate
  * if we accept a module alias as argument #6.
  *
@@ -249,13 +249,13 @@ typedef struct
 	 */
 	int             namelen;
 	/*
-	 * file descriptor to send info back to fvwm
+	 * file descriptor to send info back to mvwm
 	 */
-	int             to_fvwm;
+	int             to_mvwm;
 	/*
-	 * file descriptor to read packets from fvwm
+	 * file descriptor to read packets from mvwm
 	 */
-	int             from_fvwm;
+	int             from_mvwm;
 	/*
 	 * window context of module
 	 */

@@ -25,7 +25,7 @@
 #include <math.h>
 
 #include "defaults.h"
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include "libs/Parse.h"
 #include "libs/PictureBase.h"
 #include "libs/PictureUtils.h"
@@ -71,7 +71,7 @@
  * Draws end points assuming CAP_NOT_LAST style in GC
  * Draws anti-clockwise in case CAP_BUTT is the style and the end points overlap
  * Top and bottom lines come out full length, the sides come out 1 pixel less
- * This is so FvwmBorder windows have a correct bottom edge and the sticky lines
+ * This is so MvwmBorder windows have a correct bottom edge and the sticky lines
  * look like just lines
  * rotation rotate the relief and shadow part
  */
@@ -215,7 +215,7 @@ CreateStretchXPixmap(Display *dpy, Pixmap src, int src_width, int src_height,
 		return None;
 	}
 	if (gc == None) {
-		my_gc = fvwmlib_XCreateGC(dpy, pixmap, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, pixmap, 0, 0);
 	}
 	for (i = 0; i < dest_width; i++) {
 		XCopyArea(dpy, src, pixmap, (gc == None) ? my_gc : gc,
@@ -246,7 +246,7 @@ CreateStretchYPixmap(Display *dpy, Pixmap src, int src_width, int src_height,
 		return None;
 	}
 	if (gc == None) {
-		my_gc = fvwmlib_XCreateGC(dpy, pixmap, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, pixmap, 0, 0);
 	}
 	for (i = 0; i < dest_height; i++) {
 		XCopyArea(dpy, src, pixmap, (gc == None) ? my_gc : gc,
@@ -274,7 +274,7 @@ CreateStretchPixmap(Display *dpy, Pixmap src, int src_width, int src_height,
 		return None;
 	}
 	if (gc == None) {
-		my_gc = fvwmlib_XCreateGC(dpy, src, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, src, 0, 0);
 	}
 	temp_pixmap =
 	    CreateStretchXPixmap(dpy, src, src_width, src_height, src_depth,
@@ -359,7 +359,7 @@ CreateRotatedPixmap(Display *dpy, Pixmap src, int src_width, int src_height,
 		return None;
 	}
 	if (gc == None) {
-		my_gc = fvwmlib_XCreateGC(dpy, src, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, src, 0, 0);
 	}
 	if (rotation == ROTATION_0) {
 		XCopyArea(dpy, src, pixmap, (gc == None) ? my_gc : gc,
@@ -1478,7 +1478,7 @@ DrawTrianglePattern(Display *dpy, Drawable d, GC ReliefGC, GC ShadowGC,
 }
 
 GC
-fvwmlib_XCreateGC(Display *display, Drawable drawable,
+mvwmlib_XCreateGC(Display *display, Drawable drawable,
     unsigned long valuemask, XGCValues * values)
 {
 	GC              gc;

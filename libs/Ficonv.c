@@ -222,13 +222,13 @@ convert_charsets(const char *in_charset, const char *out_charset,
 		error_count++;
 		if (errno == EINVAL) {
 			fprintf(stderr,
-			    "[fvwm][convert_charsets]: WARNING -\n\t");
+			    "[mvwm][convert_charsets]: WARNING -\n\t");
 			fprintf(stderr,
 			    "conversion from `%s' to `%s' not available\n",
 			    in_charset, out_charset);
 		} else {
 			fprintf(stderr,
-			    "[fvwm][convert_charsets]: WARNING -\n\t");
+			    "[mvwm][convert_charsets]: WARNING -\n\t");
 			fprintf(stderr,
 			    "conversion from `%s' to `%s' fail (init)\n",
 			    in_charset, out_charset);
@@ -287,7 +287,7 @@ convert_charsets(const char *in_charset, const char *out_charset,
 				if (error_count <=
 				    FICONV_CONVERSION_MAX_NUMBER_OF_WARNING) {
 					fprintf(stderr,
-					    "[fvwm][convert_charsets]:"
+					    "[mvwm][convert_charsets]:"
 					    " WARNING -\n\t");
 					fprintf(stderr,
 					    "Invalid byte sequence during"
@@ -301,7 +301,7 @@ convert_charsets(const char *in_charset, const char *out_charset,
 				if (error_count <=
 				    FICONV_CONVERSION_MAX_NUMBER_OF_WARNING) {
 					fprintf(stderr,
-					    "[fvwm][convert_charsets]:"
+					    "[mvwm][convert_charsets]:"
 					    " WARNING -\n\t");
 					fprintf(stderr,
 					    "Error during conversion from"
@@ -321,7 +321,7 @@ convert_charsets(const char *in_charset, const char *out_charset,
 
 	if (Ficonv_close(cd) != 0) {
 		fprintf(stderr,
-		    "[fvwm][convert_charsets]: WARNING - iconv_close"
+		    "[mvwm][convert_charsets]: WARNING - iconv_close"
 		    " fail\n");
 	}
 
@@ -383,7 +383,7 @@ FiconvSetupConversion(Display *dpy, FlocaleCharset * fc)
 	}
 
 	if (!FiconvInitialized) {
-		FiconvInit(dpy, "fvwm");
+		FiconvInit(dpy, "mvwm");
 	}
 
 	if (FLCIconvUtf8Charset == NULL) {
@@ -409,7 +409,7 @@ FiconvSetupConversion(Display *dpy, FlocaleCharset * fc)
 #endif
 		if (!FLC_HAVE_ICONV_CHARSET(my_fc)) {
 			fprintf(stderr,
-			    "[fvwmlibs] cannot get iconv converter "
+			    "[mvwmlibs] cannot get iconv converter "
 			    "for charset %s\n",
 			    FLC_DEBUG_GET_X_CHARSET(my_fc));
 			return NULL;

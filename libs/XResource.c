@@ -27,7 +27,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "XResource.h"
 
 /*
@@ -36,7 +36,7 @@
  *
  *** EXAMPLE */
 #if 0
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 
 void
 main(int argc, char **argv)
@@ -77,7 +77,7 @@ main(int argc, char **argv)
 		} else {
 			/*
 			 * You may still have to parse the line here yourself (e.g.
-			 * * FvwmButtons may have multiple lines for the same resource).
+			 * * MvwmButtons may have multiple lines for the same resource).
 			 */
 		}
 	}
@@ -227,7 +227,7 @@ MergeConfigLineResource(XrmDatabase * pdb, char *line, char *prefix,
 
 	/*
 	 * translate "*(prefix)(suffix)" to "(prefix)(binding)(suffix)",
-	 * * e.g. "*FvwmPagerGeometry" to "FvwmPager.Geometry"
+	 * * e.g. "*MvwmPagerGeometry" to "MvwmPager.Geometry"
 	 */
 	if (!line || *line != '*')
 		return False;

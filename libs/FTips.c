@@ -27,7 +27,7 @@
 #include <X11/Xatom.h>
 
 #include "defaults.h"
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Strings.h"
 #include "PictureBase.h"
 #include "Flocale.h"
@@ -38,9 +38,9 @@
 
 /* ---------------------------- local definitions -------------------------- */
 
-#define FVWM_TIPS_NOTHING 0
-#define FVWM_TIPS_WAITING 1
-#define FVWM_TIPS_MAPPED  2
+#define MVWM_TIPS_NOTHING 0
+#define MVWM_TIPS_WAITING 1
+#define MVWM_TIPS_MAPPED  2
 
 /* ---------------------------- local macros ------------------------------- */
 
@@ -61,7 +61,7 @@ static Window   win_for;
 static ftips_config *current_config, *default_config;
 
 static char    *label;
-static int      state = FVWM_TIPS_NOTHING;
+static int      state = MVWM_TIPS_NOTHING;
 static void    *boxID = NULL;
 
 static FlocaleWinString fwin_string;
@@ -112,7 +112,7 @@ __initialize_window(Display *dpy)
 
 	_net_um_for = XInternAtom(dpy, "_NET_UM_FOR", False);
 
-	gc = fvwmlib_XCreateGC(dpy, win, 0, &xgcv);
+	gc = mvwmlib_XCreateGC(dpy, win, 0, &xgcv);
 	return;
 }
 
@@ -372,7 +372,7 @@ __map_window(Display *dpy)
 		    Colorset[current_config->colorset].fg);
 	}
 
-	if (state != FVWM_TIPS_MAPPED && win_f != win_for) {
+	if (state != MVWM_TIPS_MAPPED && win_f != win_for) {
 		long            l_win_for;
 
 		l_win_for = win_for;
@@ -381,7 +381,7 @@ __map_window(Display *dpy)
 		win_f = win_for;
 	}
 	XMapRaised(dpy, win);
-	state = FVWM_TIPS_MAPPED;
+	state = MVWM_TIPS_MAPPED;
 
 	return;
 }
@@ -451,13 +451,13 @@ FTipsOn(Display *dpy, Window win_f, ftips_config *fc, void *id, char *str,
 	win_for = win_f;
 
 	if (id == boxID) {
-		if (id && state == FVWM_TIPS_WAITING) {
+		if (id && state == MVWM_TIPS_WAITING) {
 			FTipsCheck(dpy);
 		}
 		return;
 	}
 	onTime = __get_time();
-	if (state == FVWM_TIPS_MAPPED) {
+	if (state == MVWM_TIPS_MAPPED) {
 		FTipsCancel(dpy);
 		delay = fc->mapped_delay;
 	} else {
@@ -465,7 +465,7 @@ FTipsOn(Display *dpy, Window win_f, ftips_config *fc, void *id, char *str,
 	}
 	boxID = id;
 	timeOut = onTime + delay;
-	state = FVWM_TIPS_WAITING;
+	state = MVWM_TIPS_WAITING;
 	if (delay == 0) {
 		FTipsCheck(dpy);
 	}
@@ -476,11 +476,11 @@ FTipsOn(Display *dpy, Window win_f, ftips_config *fc, void *id, char *str,
 void
 FTipsCancel(Display *dpy)
 {
-	if (state == FVWM_TIPS_MAPPED && win != None) {
+	if (state == MVWM_TIPS_MAPPED && win != None) {
 		XUnmapWindow(dpy, win);
 	}
 	boxID = 0;
-	state = FVWM_TIPS_NOTHING;
+	state = MVWM_TIPS_NOTHING;
 }
 
 unsigned long
@@ -488,7 +488,7 @@ FTipsCheck(Display *dpy)
 {
 	unsigned long   ct;
 
-	if (state != FVWM_TIPS_WAITING || win == None) {
+	if (state != MVWM_TIPS_WAITING || win == None) {
 		return 0;
 	}
 
@@ -497,7 +497,7 @@ FTipsCheck(Display *dpy)
 	if (ct >= timeOut) {
 		__map_window(dpy);
 		XFlush(dpy);
-		state = FVWM_TIPS_MAPPED;
+		state = MVWM_TIPS_MAPPED;
 		return 0;
 	} else {
 		XFlush(dpy);
@@ -553,7 +553,7 @@ FTipsHandleEvents(Display *dpy, XEvent *ev)
 void
 FTipsUpdateLabel(Display *dpy, char *str)
 {
-	if (state != FVWM_TIPS_MAPPED && state != FVWM_TIPS_WAITING) {
+	if (state != MVWM_TIPS_MAPPED && state != MVWM_TIPS_WAITING) {
 		return;
 	}
 
@@ -561,7 +561,7 @@ FTipsUpdateLabel(Display *dpy, char *str)
 		free(label);
 	}
 	CopyString(&label, str);
-	if (state == FVWM_TIPS_MAPPED) {
+	if (state == MVWM_TIPS_MAPPED) {
 		__map_window(dpy);
 		__draw(dpy);
 	}
@@ -570,7 +570,7 @@ FTipsUpdateLabel(Display *dpy, char *str)
 void
 FTipsColorsetChanged(Display *dpy, int cs)
 {
-	if (state != FVWM_TIPS_MAPPED || cs != current_config->colorset) {
+	if (state != MVWM_TIPS_MAPPED || cs != current_config->colorset) {
 		return;
 	}
 	__map_window(dpy);

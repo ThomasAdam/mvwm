@@ -15,7 +15,7 @@
  */
 
 /*
-** Parse.c: routines for parsing in fvwm & modules
+** Parse.c: routines for parsing in mvwm & modules
 */
 
 /* ---------------------------- included header files ---------------------- */
@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Strings.h"
 #include "Parse.h"
 
@@ -497,7 +497,7 @@ SkipNTokens(char *indata, unsigned int n)
  * If *indata begins with a "*" followed by the string module_name,
  * it returns the string following directly after module_name as the
  * new token. Otherwise NULL is returned.
- * e.g. GetModuleResource("*FvwmPagerGeometry", &token, "FvwmPager")
+ * e.g. GetModuleResource("*MvwmPagerGeometry", &token, "MvwmPager")
  * returns "Geometry" in token.
  *
  */

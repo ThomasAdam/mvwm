@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 #include <X11/Xlib.h>
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "CombineChars.h"
 
 /* ---------------------------- local types -------------------------------- */

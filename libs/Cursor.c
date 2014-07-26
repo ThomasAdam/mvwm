@@ -17,23 +17,23 @@
 /*  Modification History */
 
 /*  Created on 10/05/01 by Dan Espen (dane):
-    Extracted from fvwm/cursor.c.
+    Extracted from mvwm/cursor.c.
     Contains common routine to verify and convert a cursor name
     into a cursor number from X11/cursorfont.h.
-    Used by fvwm CursorStyle command and FvwmForm.
+    Used by mvwm CursorStyle command and MvwmForm.
 */
 #include "config.h"
 #include <stdio.h>
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include <X11/cursorfont.h>
 #include "Cursor.h"
 
 /*
- *  fvwmCursorNameToIndex: return the number of a X11 cursor from its
+ *  mvwmCursorNameToIndex: return the number of a X11 cursor from its
  *  name, if not found return -1.
  */
 int
-fvwmCursorNameToIndex(char *cursor_name)
+mvwmCursorNameToIndex(char *cursor_name)
 {
 	static const struct CursorNameIndex
 	{

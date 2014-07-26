@@ -1,5 +1,5 @@
 /* -*-c-*- */
-/* Fvwm colorset technology is Copyright (C) 1999 Joey Shutup
+/* Mvwm colorset technology is Copyright (C) 1999 Joey Shutup
  * http://www.streetmap.co.uk/streetmap.dll?Postcode2Map?BS24+9TZ
  * You may use this code for any purpose, as long as the original copyright
  * and this notice remains in the source code and all documentation
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <X11/Intrinsic.h>
 
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include "libs/FShape.h"
 #include "libs/Colorset.h"
 #include "libs/PictureBase.h"
@@ -153,7 +153,7 @@ LoadColorset(char *line)
 
 	/*
 	 * migo: if you modify this sscanf or other colorset definitions,
-	 * * please update perllib/FVWM/Tracker/Colorsets.pm too
+	 * * please update perllib/MVWM/Tracker/Colorsets.pm too
 	 */
 	if (sscanf(line,
 		"%lx %lx %lx %lx %lx %lx %lx %lx %lx "
@@ -203,7 +203,7 @@ ScrollPixmap(Display *dpy, Pixmap p, GC gc, int x_off, int y_off, int width,
 	if (p == None || p == ParentRelative || (x_off == 0 && y_off == 0)) {
 		return p;
 	}
-	tgc = fvwmlib_XCreateGC(dpy, p, 0, &xgcv);
+	tgc = mvwmlib_XCreateGC(dpy, p, 0, &xgcv);
 	if (tgc == None) {
 		return p;
 	}
@@ -372,7 +372,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 	Pixmap          cs_pixmap = None;
 	XGCValues       xgcv;
 	static GC       shape_gc = None;
-	GC              fill_gc = None;	/* not static as dpy may change (FvwmBacker) */
+	GC              fill_gc = None;	/* not static as dpy may change (MvwmBacker) */
 	int             cs_width;
 	int             cs_height;
 	Bool            cs_keep_aspect;
@@ -381,7 +381,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 
 	if (colorset->pixmap == ParentRelative && !is_shape_mask &&
 	    colorset->tint_percent > 0) {
-		FvwmRenderAttributes fra;
+		MvwmRenderAttributes fra;
 
 		fra.mask = FRAM_DEST_IS_A_WINDOW | FRAM_HAVE_TINT;
 		fra.tint = colorset->tint;
@@ -459,7 +459,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		xgcv.ts_x_origin = cs_width - sx;
 		xgcv.ts_y_origin = cs_height - sy;
 		fill_gc =
-		    fvwmlib_XCreateGC(dpy, win,
+		    mvwmlib_XCreateGC(dpy, win,
 		    GCTile | GCTileStipXOrigin | GCTileStipYOrigin |
 		    GCFillStyle, &xgcv);
 		if (fill_gc == None) {
@@ -473,7 +473,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		if (is_bad_gc == 0 &&
 		    CSETS_IS_TRANSPARENT_ROOT_PURE(colorset) &&
 		    colorset->tint_percent > 0) {
-			FvwmRenderAttributes fra;
+			MvwmRenderAttributes fra;
 
 			fra.mask = FRAM_HAVE_TINT;
 			fra.tint = colorset->tint;
@@ -516,7 +516,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 			 * create a gc for 1 bit depth
 			 */
 			shape_gc =
-			    fvwmlib_XCreateGC(dpy, win,
+			    mvwmlib_XCreateGC(dpy, win,
 			    GCForeground | GCBackground, &xgcv);
 		}
 		gc = shape_gc;
@@ -530,7 +530,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 
 	if (cs_pixmap == None) {
 		xgcv.foreground = colorset->bg;
-		fill_gc = fvwmlib_XCreateGC(dpy, win, GCForeground, &xgcv);
+		fill_gc = mvwmlib_XCreateGC(dpy, win, GCForeground, &xgcv);
 		/*
 		 * create a solid pixmap - not very useful most of the time
 		 */
@@ -713,7 +713,7 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 		last_gc = None;
 	}
 	if (last_gc == None) {
-		last_gc = fvwmlib_XCreateGC(dpy, win, 0, &xgcv);
+		last_gc = mvwmlib_XCreateGC(dpy, win, 0, &xgcv);
 	}
 	draw_gc = last_gc;
 	last_depth = depth;
@@ -730,7 +730,7 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 			xgcv.clip_y_origin = y;
 			xgcv.clip_mask = clipmask;
 			clip_gc =
-			    fvwmlib_XCreateGC(dpy, win,
+			    mvwmlib_XCreateGC(dpy, win,
 			    GCClipXOrigin | GCClipYOrigin | GCClipMask,
 			    &xgcv);
 			draw_gc = clip_gc;

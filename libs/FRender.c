@@ -23,7 +23,7 @@
 
 #include <X11/Xlib.h>
 
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 #include "PictureBase.h"
 #include "Graphics.h"
 #include "PictureGraphics.h"
@@ -69,7 +69,7 @@ FRenderVisualInit(Display *dpy)
 
 	PFrenderVisualFormat = FRenderFindVisualFormat(dpy, Pvisual);
 	if (!PFrenderVisualFormat) {
-		fprintf(stderr, "[fvwmlibs][FRenderInit] -- ERROR: "
+		fprintf(stderr, "[mvwmlibs][FRenderInit] -- ERROR: "
 		    "fail to create XRender Visual Format\n");
 		return;
 	}
@@ -82,7 +82,7 @@ FRenderVisualInit(Display *dpy)
 	    FRenderPictFormatType | FRenderPictFormatDepth |
 	    FRenderPictFormatAlpha | FRenderPictFormatAlphaMask, &pf, 0);
 	if (!PFrenderAlphaFormat) {
-		fprintf(stderr, "[fvwmlibs][FRenderInit] -- ERROR: "
+		fprintf(stderr, "[mvwmlibs][FRenderInit] -- ERROR: "
 		    "fail to create XRender Alpha Format\n");
 		return;
 	}
@@ -95,7 +95,7 @@ FRenderVisualInit(Display *dpy)
 	    FRenderPictFormatType | FRenderPictFormatDepth |
 	    FRenderPictFormatAlpha | FRenderPictFormatAlphaMask, &pf, 0);
 	if (!PFrenderMaskFormat) {
-		fprintf(stderr, "[fvwmlibs][FRenderInit] -- ERROR: "
+		fprintf(stderr, "[mvwmlibs][FRenderInit] -- ERROR: "
 		    "fail to create XRender Mask Format\n");
 		return;
 	}
@@ -117,7 +117,7 @@ FRenderVisualInit(Display *dpy)
 	    FRenderPictFormatBlue | FRenderPictFormatBlueMask |
 	    FRenderPictFormatAlpha | FRenderPictFormatAlphaMask, &pf, 0);
 	if (!PFrenderDirectFormat) {
-		fprintf(stderr, "[fvwmlibs][FRenderInit] -- ERROR: "
+		fprintf(stderr, "[mvwmlibs][FRenderInit] -- ERROR: "
 		    "fail to create XRender Direct Format\n");
 		return;
 	}
@@ -139,7 +139,7 @@ FRenderVisualInit(Display *dpy)
 	    FRenderPictFormatBlue | FRenderPictFormatBlueMask |
 	    FRenderPictFormatAlpha | FRenderPictFormatAlphaMask, &pf, 0);
 	if (!PFrenderAbsoluteFormat) {
-		fprintf(stderr, "[fvwmlibs][FRenderInit] -- ERROR: "
+		fprintf(stderr, "[mvwmlibs][FRenderInit] -- ERROR: "
 		    "fail to create XRender Absolute Format\n");
 		return;
 	}
@@ -435,7 +435,7 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 			alpha_copy = XCreatePixmap(dpy, win, src_w, src_h, 8);
 			if (!alpha_gc) {
 				alpha_gc =
-				    fvwmlib_XCreateGC(dpy, alpha, 0, NULL);
+				    mvwmlib_XCreateGC(dpy, alpha, 0, NULL);
 				free_alpha_gc = True;
 			}
 			if (alpha_copy && alpha_gc) {

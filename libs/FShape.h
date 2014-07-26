@@ -3,8 +3,8 @@
 /*
 ** FShape.h: drop in replacements for the X shape library encapsulation
 */
-#ifndef FVWMLIB_FSHAPE_H
-#define FVWMLIB_FSHAPE_H
+#ifndef MVWMLIB_FSHAPE_H
+#define MVWMLIB_FSHAPE_H
 
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
@@ -103,7 +103,7 @@ typedef struct
 #define FShapeInit(dpy)
 #endif
 
-/* fvwm replacements for shape lib */
+/* mvwm replacements for shape lib */
 #define F_ShapeQueryVersion             X_ShapeQueryVersion
 #define F_ShapeRectangles               X_ShapeRectangles
 #define F_ShapeMask                     X_ShapeMask
@@ -125,4 +125,4 @@ typedef struct
 #define FShapeNumberEvents              ShapeNumberEvents
 typedef XShapeEvent FShapeEvent;
 
-#endif /* FVWMLIB_FSHAPE_H */
+#endif /* MVWMLIB_FSHAPE_H */

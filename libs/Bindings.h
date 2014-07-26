@@ -2,8 +2,8 @@
 
 #include <X11/Xutil.h>	/* XClassHint */
 
-#ifndef FVWMLIB_BINDINGS_H_H
-#define FVWMLIB_BINDINGS_H_H
+#ifndef MVWMLIB_BINDINGS_H_H
+#define MVWMLIB_BINDINGS_H_H
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -35,7 +35,7 @@ typedef struct Binding
 	binding_t_t     type;	/* Is it a mouse, key, or stroke binding */
 	int             Button_Key;	/* Mouse Button number or Keycode */
 	char           *key_name;	/* In case of keycode, give the key_name too */
-	int             Context;	/* Fvwm context, ie titlebar, frame, etc */
+	int             Context;	/* Mvwm context, ie titlebar, frame, etc */
 	int             Modifier;	/* Modifiers for keyboard state */
 	void           *Action;	/* What to do? */
 	void           *Action2;	/* This one can be used too */
@@ -82,9 +82,9 @@ void            GrabAllWindowKeysAndButtons(Display *dpy, Window w,
 void            GrabWindowKeyOrButton(Display *dpy, Window w,
     Binding *binding, unsigned int contexts, unsigned int dead_modifiers,
     Cursor cursor, Bool fGrab);
-KeySym          FvwmStringToKeysym(Display *dpy, char *key);
+KeySym          MvwmStringToKeysym(Display *dpy, char *key);
 Bool            bindingAppliesToWindow(Binding *binding,
     const XClassHint * win_class, const char *win_name);
 Bool            is_pass_through_action(const char *action);
 
-#endif /* FVWMLIB_BINDINGS_H_H */
+#endif /* MVWMLIB_BINDINGS_H_H */

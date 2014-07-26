@@ -1,6 +1,6 @@
 /* -*-c-*- */
-#ifndef FVWMLIB_STRINGS_H
-#define FVWMLIB_STRINGS_H
+#ifndef MVWMLIB_STRINGS_H
+#define MVWMLIB_STRINGS_H
 
 /**
  * Concatenate three strings.

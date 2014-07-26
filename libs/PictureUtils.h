@@ -3,7 +3,7 @@
 #ifndef Picture_Utils_H
 #define Picture_Utils_H
 
-#define PICTURE_CALLED_BY_FVWM   0
+#define PICTURE_CALLED_BY_MVWM   0
 #define PICTURE_CALLED_BY_MODULE 1
 
 void            PictureReduceColorName(char **my_color);

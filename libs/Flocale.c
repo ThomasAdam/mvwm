@@ -30,7 +30,7 @@
  *
  * Minor modifications by Chris Cannam for wm2/wmx
  * Major modifications by Kazushi (Jam) Marukawa for wm2/wmx i18n patch
- * Simplification and complications by olicha for use with fvwm
+ * Simplification and complications by olicha for use with mvwm
  */
 
 /* ---------------------------- included header files ---------------------- */
@@ -45,7 +45,7 @@
 #include <X11/Xatom.h>
 
 #include "defaults.h"
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Graphics.h"
 #include "ColorUtils.h"
 #include "Strings.h"
@@ -115,7 +115,7 @@ FlocaleParseShadow(char *str, int *shadow_size, int *shadow_offset,
 		*shadow_size = 0;
 		fprintf(stderr, "[%s][FlocaleParseShadow]: WARNING -- bad "
 		    "shadow size in font name:\n\t'%s'\n",
-		    (module) ? module : "fvwm", fontname);
+		    (module) ? module : "mvwm", fontname);
 		return;
 	}
 	if (*shadow_size == 0) {
@@ -131,7 +131,7 @@ FlocaleParseShadow(char *str, int *shadow_size, int *shadow_offset,
 			fprintf(stderr,
 			    "[%s][FlocaleParseShadow]: WARNING -- "
 			    "bad shadow offset in font name:\n\t'%s'\n",
-			    (module) ? module : "fvwmlibs", fontname);
+			    (module) ? module : "mvwmlibs", fontname);
 		}
 		PeekToken(dir_str, &dir_str);
 	}
@@ -141,7 +141,7 @@ FlocaleParseShadow(char *str, int *shadow_size, int *shadow_offset,
 			fprintf(stderr,
 			    "[%s][FlocaleParseShadow]: WARNING -- "
 			    "bad shadow direction in font description:\n"
-			    "\t%s\n", (module) ? module : "fvwmlibs",
+			    "\t%s\n", (module) ? module : "mvwmlibs",
 			    fontname);
 			PeekToken(dir_str, &dir_str);	/* skip it */
 		} else {
@@ -632,7 +632,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 	}
 
 	if (my_gc == None) {
-		my_gc = fvwmlib_XCreateGC(dpy, fws->win, 0, NULL);
+		my_gc = mvwmlib_XCreateGC(dpy, fws->win, 0, NULL);
 	}
 	XCopyGC(dpy, fws->gc, GCForeground | GCBackground, my_gc);
 
@@ -664,7 +664,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 	 */
 	canvas_pix = XCreatePixmap(dpy, fws->win, width, height, 1);
 	if (font_gc == None) {
-		font_gc = fvwmlib_XCreateGC(dpy, canvas_pix, 0, NULL);
+		font_gc = mvwmlib_XCreateGC(dpy, canvas_pix, 0, NULL);
 	}
 	XSetBackground(dpy, font_gc, 0);
 	XSetForeground(dpy, font_gc, 0);
@@ -1030,7 +1030,7 @@ FlocaleFixNameForFontSet(Display *dpy, char *name, char *module)
 			fprintf(stderr, "[%s][FlocaleGetFontSet]: WARNING -- "
 			    "Use of a non X locale charset '%s' when "
 			    "loading font: %s\n",
-			    (module) ? module : "fvwmlibs", charset, name);
+			    (module) ? module : "mvwmlibs", charset, name);
 #endif
 		}
 		free(charset);
@@ -1117,7 +1117,7 @@ FlocaleGetFontSet(Display *dpy, char *fontname, char *encoding, char *module)
 			fprintf(stderr,
 			    "[%s][FlocaleGetFontSet]: (%s)"
 			    " Missing font charsets:\n",
-			    (module) ? module : "fvwmlibs", fontname);
+			    (module) ? module : "mvwmlibs", fontname);
 			for (i = 0; i < mc; i++) {
 				fprintf(stderr, "%s", ml[i]);
 				if (i < mc - 1)
@@ -1128,7 +1128,7 @@ FlocaleGetFontSet(Display *dpy, char *fontname, char *encoding, char *module)
 				fprintf(stderr,
 				    "[%s][FlocaleGetFontSet]: No more"
 				    " missing charset reportings\n",
-				    (module) ? module : "fvwmlibs");
+				    (module) ? module : "mvwmlibs");
 			}
 		}
 		XFreeStringList(ml);
@@ -1410,7 +1410,7 @@ FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 			fprintf(stderr, "[%s][FlocaleLoadFont]: "
 			    "WARNING -- can't load font '%s',"
 			    " trying default:\n",
-			    (module) ? module : "fvwmlibs", fontname);
+			    (module) ? module : "mvwmlibs", fontname);
 		} else {
 			/*
 			 * we already tried default fonts: try again? yes
@@ -1438,12 +1438,12 @@ FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 				fprintf(stderr,
 				    "[%s][FlocaleLoadFont]:"
 				    " ERROR -- can't load font.\n",
-				    (module) ? module : "fvwmlibs");
+				    (module) ? module : "mvwmlibs");
 			} else {
 				fprintf(stderr,
 				    "[%s][FlocaleLoadFont]: ERROR"
 				    " -- can't load default font:\n",
-				    (module) ? module : "fvwmlibs");
+				    (module) ? module : "mvwmlibs");
 				fprintf(stderr, "\t%s\n", mb_fallback_font);
 				fprintf(stderr, "\t%s\n", fallback_font);
 			}
@@ -1463,7 +1463,7 @@ FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 		if (flf->fc == FlocaleCharsetGetUnknownCharset()) {
 			fprintf(stderr, "[%s][FlocaleLoadFont]: "
 			    "WARNING -- Unknown charset for font\n\t'%s'\n",
-			    (module) ? module : "fvwmlibs", flf->name);
+			    (module) ? module : "mvwmlibs", flf->name);
 			flf->fc =
 			    FlocaleCharsetGetDefaultCharset(dpy, module);
 		} else if (flf->str_fc == FlocaleCharsetGetUnknownCharset()
@@ -1473,7 +1473,7 @@ FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 			fprintf(stderr,
 			    "[%s][FlocaleLoadFont]: "
 			    "WARNING -- Unknown string encoding for font\n"
-			    "\t'%s'\n", (module) ? module : "fvwmlibs",
+			    "\t'%s'\n", (module) ? module : "mvwmlibs",
 			    flf->name);
 		}
 		if (flf->str_fc == FlocaleCharsetGetUnknownCharset()) {
@@ -2218,7 +2218,7 @@ FlocaleFreeNameProperty(FlocaleNameString * ptext)
 	} else if (ptext->name != NULL
 	    /*
 	     * Sorry, this is pretty ugly.
-	     * in fvwm/events.c we have:
+	     * in mvwm/events.c we have:
 	     * FlocaleNameString new_name = { NoName, NULL };
 	     * NoName is a global extern I don't want to add to
 	     * to this libary module.
@@ -2277,7 +2277,7 @@ FlocalePrintLocaleInfo(Display *dpy, int verbose)
 
 	fflush(stderr);
 	fflush(stdout);
-	fprintf(stderr, "fvwm info on locale:\n");
+	fprintf(stderr, "mvwm info on locale:\n");
 	fprintf(stderr, "  locale: %s, Modifier: %s\n",
 	    (Flocale) ? Flocale : "", (Fmodifiers) ? Fmodifiers : "");
 	cs = FlocaleCharsetGetDefaultCharset(dpy, NULL);
@@ -2298,7 +2298,7 @@ FlocalePrintLocaleInfo(Display *dpy, int verbose)
 		while (flf) {
 			cs = flf->fc;
 			fprintf(stderr, "  * Font number %i\n", count);
-			fprintf(stderr, "    fvwm info:\n");
+			fprintf(stderr, "    mvwm info:\n");
 			fprintf(stderr, "      Name: %s\n",
 			    (flf->name) ? flf->name : "");
 			fprintf(stderr, "      Cache count: %i\n",

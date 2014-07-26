@@ -271,7 +271,7 @@ FGettextPrintLocalePath(int verbose)
 		return;
 	}
 
-	fprintf(stderr, "fvwm NLS gettext path:\n");
+	fprintf(stderr, "mvwm NLS gettext path:\n");
 	while (l != NULL) {
 		fprintf(stderr, "  dir: %s, domain: %s\n",
 		    FGP_DIR(l), FGP_DOMAIN(l));

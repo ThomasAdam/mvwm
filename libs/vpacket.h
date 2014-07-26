@@ -2,7 +2,7 @@
 
 #ifndef _VPACKET_
 #define _VPACKET_
-#include "fvwm/window_flags.h"
+#include "mvwm/window_flags.h"
 
 /*
   All new-style module packets (i.e., those that are not simply arrays
@@ -24,7 +24,7 @@ typedef struct ConfigWinPacket
 	/*** Put long, Window, and pointers  here ***/
 	unsigned long   w;	/* Window */
 	unsigned long   frame;	/* Window */
-	unsigned long  *fvwmwin;
+	unsigned long  *mvwmwin;
 	signed long     frame_x;
 	signed long     frame_y;
 	unsigned long   frame_width;
@@ -79,7 +79,7 @@ typedef struct MiniIconPacket
 {
 	Window          w;
 	Window          frame;
-	FvwmWindow     *fvwmwin;
+	MvwmWindow     *mvwmwin;
 	unsigned long   width;
 	unsigned long   height;
 	unsigned long   depth;

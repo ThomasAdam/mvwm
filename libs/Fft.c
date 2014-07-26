@@ -22,7 +22,7 @@
 
 #include <X11/Xlib.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "wild.h"
 #include "Strings.h"
 #include "Flocale.h"
@@ -225,7 +225,7 @@ FftGetFontWidths(FlocaleFont *flf, int *max_char_width)
 	FGlyphInfo      extents;
 
 	/*
-	 * FIXME:  max_char_width should not be use in the all fvwm!
+	 * FIXME:  max_char_width should not be use in the all mvwm!
 	 */
 	if (FftUtf8Support && FLC_ENCODING_TYPE_IS_UTF_8(flf->fc)) {
 		FftTextExtentsUtf8(fftdpy, flf->fftf.fftfont,
@@ -430,7 +430,7 @@ FftDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 		xfg.pixel = vr.foreground;
 	} else {
 #if 0
-		fprintf(stderr, "[fvwmlibs][FftDrawString]: ERROR --"
+		fprintf(stderr, "[mvwmlibs][FftDrawString]: ERROR --"
 		    " cannot find color\n");
 #endif
 		xfg.pixel = PictureBlackPixel();

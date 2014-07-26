@@ -1,7 +1,7 @@
 /* -*-c-*- */
 
-#ifndef FVWMLIB_PARSE_H
-#define FVWMLIB_PARSE_H
+#ifndef MVWMLIB_PARSE_H
+#define MVWMLIB_PARSE_H
 
 /* ---------------------------- included header files ---------------------- */
 

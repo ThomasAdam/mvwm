@@ -29,7 +29,7 @@
 
 #if HAVE_BIDI
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "BidiJoin.h"
 
 /* ---------------------------- included header files ---------------------- */

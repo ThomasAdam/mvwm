@@ -15,7 +15,7 @@
  */
 
 /*
- * This function should be used by all modules and fvwm when a X error
+ * This function should be used by all modules and mvwm when a X error
  * occurs and the module exits.
  */
 
@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <X11/Xlib.h>
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 #include "FRenderInit.h"
 #include "XError.h"
 #undef XSetErrorHandler

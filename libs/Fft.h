@@ -304,7 +304,7 @@ typedef struct _Fft1Font
 #endif
 
 /*
- * Fvwm Xft font structure
+ * Mvwm Xft font structure
  */
 
 typedef struct

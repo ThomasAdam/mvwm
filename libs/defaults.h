@@ -18,7 +18,7 @@
 #define TIME_BETWEEN_GRAB_ATTEMPTS        10	/* ms */
 
 /*** bindings and mouse buttons ***/
-/* Fvwm needs at least 3 buttons. X currently supports up to 5 buttons, so you
+/* Mvwm needs at least 3 buttons. X currently supports up to 5 buttons, so you
  * can use 3, 4 or 5 here.  Do not set this to values higher than 5!  Use the
  * next macro for that. */
 #define NUMBER_OF_MOUSE_BUTTONS            5
@@ -38,10 +38,10 @@
 /*
  * These values may be adjusted to fine tune the menu looks.
  */
-/* The first option of the default menu style must be fvwm/win/mwm/....
- * fvwm may crash if not. */
+/* The first option of the default menu style must be mvwm/win/mwm/....
+ * mvwm may crash if not. */
 #define DEFAULT_MENU_STYLE \
-        "MenuStyle * fvwm, Foreground black, Background grey, " \
+        "MenuStyle * mvwm, Foreground black, Background grey, " \
         "Greyed slategrey, MenuColorset, ActiveColorset, GreyedColorset"
 #define DEFAULT_CLICKTIME                150	/* ms */
 #define DEFAULT_POPUP_DELAY               15	/* ms*10 */
@@ -285,9 +285,9 @@
 #define DEFAULT_MODULE_TIMEOUT            30	/* seconds */
 #define MAX_MODULE_INPUT_TEXT_LEN       1000	/* bytes */
 
-/*** FvwmConsole configuration */
-/* Maximum time FvwmConsole waits for the client to connect. */
-#define FVWMCONSOLE_CONNECTION_TO_SECS    60	/* seconds */
+/*** MvwmConsole configuration */
+/* Maximum time MvwmConsole waits for the client to connect. */
+#define MVWMCONSOLE_CONNECTION_TO_SECS    60	/* seconds */
 
 /*** misc ***/
 #define DEFAULT_EMULATE_MWM            False

@@ -1,8 +1,8 @@
 /* -*-c-*- */
 /* Copyright (C) 2004  Olivier Chapuis */
 
-#ifndef FVWMLIB_FTIPS_H
-#define FVWMLIB_FTIPS_H
+#ifndef MVWMLIB_FTIPS_H
+#define MVWMLIB_FTIPS_H
 
 /* ---------------------------- included header files ---------------------- */
 
