@@ -38,7 +38,7 @@ Pixmap CreateRotatedPixmap(
 	Display *dpy, Pixmap src, int src_width, int src_height, int depth,
 	GC gc, int rotation);
 
-GC fvwmlib_XCreateGC(
+GC mvwmlib_XCreateGC(
 	Display *display, Drawable drawable, unsigned long valuemask,
 	XGCValues *values);
 

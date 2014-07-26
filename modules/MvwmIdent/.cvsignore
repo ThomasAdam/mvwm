@@ -1,0 +1,8 @@
+Makefile
+Makefile.in
+MvwmIdent
+.deps
+TAGS
+.gdb_history
+gmon.out
+MvwmIdent.1

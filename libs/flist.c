@@ -22,7 +22,7 @@
  *     copyright remains in the source code and all documentation
  */
 
-/* code for parsing the fvwm style command */
+/* code for parsing the mvwm style command */
 
 /* ---------------------------- included header files ---------------------- */
 

@@ -19,7 +19,7 @@
 #define FEVENT_C
 #define FEVENT_PRIVILEGED_ACCESS
 #include "config.h"
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include <X11/Xlib.h>
 #include "FEvent.h"
 #undef FEVENT_C

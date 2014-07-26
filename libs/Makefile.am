@@ -1,9 +1,9 @@
 ## Process this file with automake to create Makefile.in
 
-noinst_LIBRARIES = libfvwm.a
+noinst_LIBRARIES = libmvwm.a
 
 ## please keep .c files in largest first order to speed up parallel makes
-libfvwm_a_SOURCES = \
+libmvwm_a_SOURCES = \
 	BidiJoin.h Bindings.h ClientMsg.h ColorUtils.h Colorset.h \
 	CombineChars.h Cursor.h Event.h FBidi.h FEvent.h FGettext.h FImage.h \
 	FRender.h FRenderInit.h FRenderInterface.h FScreen.h \
@@ -13,7 +13,7 @@ libfvwm_a_SOURCES = \
 	PictureDitherMatrice.h PictureGraphics.h PictureImageLoader.h \
 	PictureUtils.h Rectangles.h Strings.h System.h Target.h WinMagic.h \
 	XError.h XResource.h charmap.h defaults.h envvar.h fio.h flist.h \
-	ftime.h fvwm_sys_stat.h fvwmlib.h fvwmrect.h fvwmsignal.h \
+	ftime.h mvwm_sys_stat.h mvwmlib.h mvwmrect.h mvwmsignal.h \
 	gravity.c gravity.h lang-strings.h modifiers.h fqueue.h safemalloc.h \
 	setpgrp.h strlcpy.h timeout.h vpacket.h wcontext.h wild.h \
 	\
@@ -22,13 +22,13 @@ libfvwm_a_SOURCES = \
 	PictureImageLoader.c Colorset.c ColorUtils.c CombineChars.c Module.c \
 	FRender.c Ficonv.c envvar.c Fft.c  gravity.c \
 	XResource.c FEvent.c FImage.c WinMagic.c Target.c Picture.c XError.c \
-	fqueue.c fvwmsignal.c System.c PictureBase.c Cursor.c Strings.c \
-	fvwmrect.c FRenderInit.c safemalloc.c  FBidi.c \
+	fqueue.c mvwmsignal.c System.c PictureBase.c Cursor.c Strings.c \
+	mvwmrect.c FRenderInit.c safemalloc.c  FBidi.c \
 	wild.c Grab.c Event.c ClientMsg.c setpgrp.c FShape.c \
 	FGettext.c Rectangles.c timeout.c flist.c charmap.c wcontext.c \
-	modifiers.c FTips.c fio.c fvwmlib.c strlcpy.c
+	modifiers.c FTips.c fio.c mvwmlib.c strlcpy.c
 
-libfvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
+libmvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
 
 AM_CPPFLAGS = -I$(top_srcdir) $(Xft_CFLAGS) $(X_CFLAGS) \
 	$(iconv_CFLAGS) $(Xrender_CFLAGS) $(Bidi_CFLAGS) $(png_CFLAGS) \

@@ -300,7 +300,7 @@ typedef struct _Fft1Font
 
 
 /*
- * Fvwm Xft font structure
+ * Mvwm Xft font structure
  */
 
 typedef struct

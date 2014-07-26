@@ -75,12 +75,12 @@ void setPath(char** p_path, const char* newpath, int free_old_path);
 char* searchPath(
 	const char* path, const char* filename, const char* suffix, int type);
 
-/* This routine called during modules initialization. Fvwm has its own code
- * in fvwm.c */
+/* This routine called during modules initialization. Mvwm has its own code
+ * in mvwm.c */
 void PictureInitCMap(Display *dpy);
 
 /* as above but force to use the default visual. If use_my_color_limit is True
- * also enable color limitation (independent than the fvwm one). */
+ * also enable color limitation (independent than the mvwm one). */
 void PictureInitCMapRoot(
 	Display *dpy, Bool init_color_limit, PictureColorLimitOption *opt,
 	Bool use_my_color_limit, Bool init_dither);
@@ -90,7 +90,7 @@ void PictureInitCMapRoot(
 Pixel PictureWhitePixel(void);
 Pixel PictureBlackPixel(void);
 
-/* for initialization of the white and black pixel (for fvwm as PictureInitCMap*
+/* for initialization of the white and black pixel (for mvwm as PictureInitCMap*
  * do this) */
 void PictureSetupWhiteAndBlack(void);
 
@@ -104,8 +104,8 @@ GC PictureDefaultGC(Display *dpy, Window win);
 /* these can be used to switch visuals before calling GetPicture */
 /* do NOT use with CachePicture */
 void PictureUseDefaultVisual(void);
-void PictureUseFvwmVisual(void);
-void PictureSaveFvwmVisual(void);
+void PictureUseMvwmVisual(void);
+void PictureSaveMvwmVisual(void);
 
 /** Returns current setting of the image path **/
 char* PictureGetImagePath(void);
@@ -124,9 +124,9 @@ void PictureSetImagePath(const char* newpath);
 char* PictureFindImageFile(
 	const char* filename, const char* pathlist, int mode);
 
-typedef struct FvwmPictureThing
+typedef struct MvwmPictureThing
 {
-	struct FvwmPictureThing *next;
+	struct MvwmPictureThing *next;
 	char *name;
 	unsigned long stamp;  /* should be FileStamp */
 	unsigned long fpa_mask;
@@ -140,13 +140,13 @@ typedef struct FvwmPictureThing
 	Pixel *alloc_pixels;
 	int nalloc_pixels;
 	Bool no_limit;
-} FvwmPicture;
+} MvwmPicture;
 
 typedef struct
 {
 	unsigned alpha : 1;
 	unsigned alloc_pixels : 1;
-} FvwmPictureFlags;
+} MvwmPictureFlags;
 
 #define FPAM_NO_ALLOC_PIXELS (1)       /* do not return the allocated pixels
 					* this is used only if PUseDynamicColors,
@@ -163,7 +163,7 @@ typedef struct
 	unsigned mask : 6;
 	XColor tint;
         int tint_percent;
-} FvwmPictureAttributes;
+} MvwmPictureAttributes;
 
 /* tint no yet implemented */
 #define PICTURE_FPA_AGREE(p,fpa) (p->fpa_mask == fpa.mask)
@@ -184,7 +184,7 @@ typedef struct
 	int tint_percent;
 	Pixel uniform_pixel;
 	colorset_t *colorset;
-} FvwmRenderAttributes;
+} MvwmRenderAttributes;
 
 #define PICTURE_HAS_ALPHA(picture,cset) \
     ((picture && picture->alpha != None) ||                   \

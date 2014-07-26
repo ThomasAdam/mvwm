@@ -6,11 +6,12 @@ AUTOMAKE_OPTIONS = 1.4
 
 SUBDIRS = \
 	libs \
-	fvwm \
+	mvwm \
 	modules \
-	bin \
-	$(FVWM_PERLLIB) \
+	## TA:  Ignore things in bin/ for now.
+	#bin \
 	doc \
+	$(MVWM_PERLLIB) \
 	$(POSUB)
 
 ## ---------------------------------------------------------------------------

@@ -3,4 +3,4 @@
 
 EXTRA_DIST = \
 	ANNOUNCE COMMANDS BUGS CONVENTIONS DEVELOPERS FAQ TODO error_codes\
-	fvwm.lsm
+	mvwm.lsm

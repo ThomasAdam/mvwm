@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <X11/Xlib.h>
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 #include <stdio.h>
 #include "WinMagic.h"
 

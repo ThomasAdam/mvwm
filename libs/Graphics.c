@@ -25,7 +25,7 @@
 #include <math.h>
 
 #include "defaults.h"
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include "libs/Parse.h"
 #include "libs/PictureBase.h"
 #include "libs/PictureUtils.h"
@@ -71,7 +71,7 @@
  * Draws end points assuming CAP_NOT_LAST style in GC
  * Draws anti-clockwise in case CAP_BUTT is the style and the end points overlap
  * Top and bottom lines come out full length, the sides come out 1 pixel less
- * This is so FvwmBorder windows have a correct bottom edge and the sticky lines
+ * This is so MvwmBorder windows have a correct bottom edge and the sticky lines
  * look like just lines
  * rotation rotate the relief and shadow part
  */
@@ -200,7 +200,7 @@ Pixmap CreateStretchXPixmap(
 	}
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, pixmap, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, pixmap, 0, 0);
 	}
 	for (i = 0; i < dest_width; i++)
 	{
@@ -238,7 +238,7 @@ Pixmap CreateStretchYPixmap(
 	}
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, pixmap, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, pixmap, 0, 0);
 	}
 	for (i = 0; i < dest_height; i++)
 	{
@@ -271,7 +271,7 @@ Pixmap CreateStretchPixmap(
 	}
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, src, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, src, 0, 0);
 	}
 	temp_pixmap = CreateStretchXPixmap(
 		dpy, src, src_width, src_height, src_depth, dest_width,
@@ -366,7 +366,7 @@ Pixmap CreateRotatedPixmap(
 	}
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, src, 0, 0);
+		my_gc = mvwmlib_XCreateGC(dpy, src, 0, 0);
 	}
 	if (rotation == ROTATION_0)
 	{
@@ -1474,7 +1474,7 @@ void DrawTrianglePattern(
 	return;
 }
 
-GC fvwmlib_XCreateGC(
+GC mvwmlib_XCreateGC(
 	Display *display, Drawable drawable, unsigned long valuemask,
 	XGCValues *values)
 {

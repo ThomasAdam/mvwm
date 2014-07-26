@@ -1,9 +1,9 @@
-docdir = @FVWM_DOCDIR@/modules/images/FvwmTabs
+docdir = @MVWM_DOCDIR@/modules/images/MvwmTabs
 
 EXTRA_DIST = \
-	fvwmTabsEmpty.png green.png logoFvwmTabs.png menu.png red.png \
+	mvwmTabsEmpty.png green.png logoMvwmTabs.png menu.png red.png \
 	screenshot.png yellow.png
 
-if FVWM_BUILD_HTMLDOC
+if MVWM_BUILD_HTMLDOC
 doc_DATA = $(EXTRA_DIST)
 endif

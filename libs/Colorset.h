@@ -1,5 +1,5 @@
 /* -*-c-*- */
-/* Fvwm colorset technology is Copyright (C) 1999 Joey Shutup
+/* Mvwm colorset technology is Copyright (C) 1999 Joey Shutup
    http://www.streetmap.co.uk/streetmap.dll?Postcode2Map?BS24+9TZ
    You may use this code for any purpose, as long as the original copyright
    and this notice remains in the source code and all documentation
@@ -30,8 +30,8 @@ typedef struct
 	unsigned int tint_percent : 7;
 	unsigned int icon_alpha_percent : 7;
 	unsigned int icon_tint_percent : 7;
-#ifdef FVWM_COLORSET_PRIVATE
-	/* fvwm/colorset.c use only */
+#ifdef MVWM_COLORSET_PRIVATE
+	/* mvwm/colorset.c use only */
 	Pixel fg_tint;
 	Pixel fg_saved;
 	Pixel bg_tint;
@@ -42,7 +42,7 @@ typedef struct
 	char *gradient_args;
 	char gradient_type;
 	unsigned int color_flags;
-	FvwmPicture *picture;
+	MvwmPicture *picture;
 	Pixel *pixels;
 	int nalloc_pixels;
 	int fg_tint_percent;
@@ -66,7 +66,7 @@ typedef struct
 #define SHAPE_STRETCH 1
 #define SHAPE_STRETCH_ASPECT 2
 
-#ifdef FVWM_COLORSET_PRIVATE
+#ifdef MVWM_COLORSET_PRIVATE
 #define FG_SUPPLIED 0x1
 #define BG_SUPPLIED 0x2
 #define HI_SUPPLIED 0x4
@@ -153,8 +153,8 @@ extern colorset_t *Colorset;
     (cset != NULL && cset->pixmap == ParentRelative && \
      cset->tint_percent > 0)
 
-#ifndef FVWM_COLORSET_PRIVATE
-/* Create n new colorsets, fvwm/colorset.c does its own thing (different size)
+#ifndef MVWM_COLORSET_PRIVATE
+/* Create n new colorsets, mvwm/colorset.c does its own thing (different size)
  */
 void AllocColorset(int n);
 #endif

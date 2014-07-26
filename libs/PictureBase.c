@@ -52,7 +52,7 @@
 
 #include <X11/Xlib.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Graphics.h"
 #include "PictureBase.h"
 #include "PictureUtils.h"
@@ -60,18 +60,18 @@
 
 Bool Pdefault;
 Visual *Pvisual;
-static Visual *FvwmVisual;
+static Visual *MvwmVisual;
 Colormap Pcmap;
-static Colormap FvwmCmap;
+static Colormap MvwmCmap;
 unsigned int Pdepth;
-static unsigned int FvwmDepth;
+static unsigned int MvwmDepth;
 Display *Pdpy;            /* Save area for display pointer */
 Bool PUseDynamicColors;
 
 Pixel PWhitePixel;
 Pixel PBlackPixel;
-Pixel FvwmWhitePixel;
-Pixel FvwmBlackPixel;
+Pixel MvwmWhitePixel;
+Pixel MvwmBlackPixel;
 
 void PictureSetupWhiteAndBlack(void);
 
@@ -80,8 +80,8 @@ void PictureInitCMap(Display *dpy) {
 	char *envp;
 
 	Pdpy = dpy;
-	/* if fvwm has not set this env-var it is using the default visual */
-	envp = getenv("FVWM_VISUALID");
+	/* if mvwm has not set this env-var it is using the default visual */
+	envp = getenv("MVWM_VISUALID");
 	if (envp != NULL && *envp > 0) {
 		/* convert the env-vars to a visual and colormap */
 		int viscount;
@@ -91,8 +91,8 @@ void PictureInitCMap(Display *dpy) {
 		xvi = XGetVisualInfo(dpy, VisualIDMask, &vizinfo, &viscount);
 		Pvisual = xvi->visual;
 		Pdepth = xvi->depth;
-		/* Note: if FVWM_VISUALID is set, FVWM_COLORMAP is set too */
-		sscanf(getenv("FVWM_COLORMAP"), "%lx", &Pcmap);
+		/* Note: if MVWM_VISUALID is set, MVWM_COLORMAP is set too */
+		sscanf(getenv("MVWM_COLORMAP"), "%lx", &Pcmap);
 		Pdefault = False;
 	} else {
 		int screen = DefaultScreen(dpy);
@@ -104,7 +104,7 @@ void PictureInitCMap(Display *dpy) {
 	}
 
 	PictureSetupWhiteAndBlack();
-	PictureSaveFvwmVisual();
+	PictureSaveMvwmVisual();
 
 	/* initialise color limit */
 	PUseDynamicColors = 0;
@@ -126,7 +126,7 @@ void PictureInitCMapRoot(
 	Pdefault = True;
 
 	PictureSetupWhiteAndBlack();
-	PictureSaveFvwmVisual();
+	PictureSaveMvwmVisual();
 
 	/* initialise color limit */
 	PictureInitColors(
@@ -170,23 +170,23 @@ void PictureUseDefaultVisual(void)
 	return;
 }
 
-void PictureUseFvwmVisual(void)
+void PictureUseMvwmVisual(void)
 {
-	Pvisual = FvwmVisual;
-	Pdepth = FvwmDepth;
-	Pcmap = FvwmCmap;
-	PWhitePixel = FvwmWhitePixel;
-	PBlackPixel = FvwmBlackPixel;
+	Pvisual = MvwmVisual;
+	Pdepth = MvwmDepth;
+	Pcmap = MvwmCmap;
+	PWhitePixel = MvwmWhitePixel;
+	PBlackPixel = MvwmBlackPixel;
 	return;
 }
 
-void PictureSaveFvwmVisual(void)
+void PictureSaveMvwmVisual(void)
 {
-	FvwmVisual = Pvisual;
-	FvwmDepth = Pdepth;
-	FvwmCmap = Pcmap;
-	FvwmWhitePixel = PWhitePixel;
-	FvwmBlackPixel = PBlackPixel;
+	MvwmVisual = Pvisual;
+	MvwmDepth = Pdepth;
+	MvwmCmap = Pcmap;
+	MvwmWhitePixel = PWhitePixel;
+	MvwmBlackPixel = PBlackPixel;
 	return;
 }
 
@@ -210,13 +210,13 @@ GC PictureDefaultGC(Display *dpy, Window win)
 	}
 	if (gc == None)
 	{
-		gc = fvwmlib_XCreateGC(dpy, win, 0, NULL);
+		gc = mvwmlib_XCreateGC(dpy, win, 0, NULL);
 	}
 
 	return gc;
 }
 
-static char* imagePath = FVWM_IMAGEPATH;
+static char* imagePath = MVWM_IMAGEPATH;
 
 void PictureSetImagePath( const char* newpath )
 {

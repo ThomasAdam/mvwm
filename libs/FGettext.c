@@ -300,7 +300,7 @@ void FGettextPrintLocalePath(int verbose)
 		return;
 	}
 
-	fprintf(stderr,"fvwm NLS gettext path:\n");
+	fprintf(stderr,"mvwm NLS gettext path:\n");
 	while(l != NULL)
 	{
 		fprintf(

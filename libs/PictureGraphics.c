@@ -23,7 +23,7 @@
 
 #include <X11/Xlib.h>
 
-#include <fvwmlib.h>
+#include <mvwmlib.h>
 #include "PictureBase.h"
 #include "Colorset.h"
 #include "FRenderInit.h"
@@ -83,7 +83,7 @@ void PCopyArea(Display *dpy, Pixmap pixmap, Pixmap mask, int depth,
 
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, d, 0, NULL);
+		my_gc = mvwmlib_XCreateGC(dpy, d, 0, NULL);
 	}
 	gcm = GCClipMask | GCClipXOrigin | GCClipYOrigin;
 	gcv.clip_x_origin = dest_x - src_x; /* */
@@ -151,14 +151,14 @@ void PTileRectangle(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 
 	if (gc == None)
 	{
-		my_gc = fvwmlib_XCreateGC(dpy, d, 0, NULL);
+		my_gc = mvwmlib_XCreateGC(dpy, d, 0, NULL);
 	}
 	if (mono_gc == None && (mask != None || Pdepth != depth))
 	{
 		if (mask != None)
-			my_mono_gc = fvwmlib_XCreateGC(dpy, mask, 0, NULL);
+			my_mono_gc = mvwmlib_XCreateGC(dpy, mask, 0, NULL);
 		else if (depth != Pdepth)
-			my_mono_gc = fvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
+			my_mono_gc = mvwmlib_XCreateGC(dpy, pixmap, 0, NULL);
 	}
 	gcm = 0;
 	if (mask != None)
@@ -579,7 +579,7 @@ Pixmap PCreateRenderPixmap(
 				 dpy, Pvisual, 1, ZPixmap, w, h);
 			 if (mono_gc == None)
 			 {
-				 mono_gc = fvwmlib_XCreateGC(
+				 mono_gc = mvwmlib_XCreateGC(
 					 dpy, *new_mask, 0, NULL);
 				 do_free_mono_gc = True;
 			 }
@@ -962,12 +962,12 @@ Pixmap PictureBitmapToPixmap(
 
 void PGraphicsRenderPixmaps(
 	Display *dpy, Window win, Pixmap pixmap, Pixmap mask, Pixmap alpha,
-	int depth, FvwmRenderAttributes *fra, Drawable d,
+	int depth, MvwmRenderAttributes *fra, Drawable d,
 	GC gc, GC mono_gc, GC alpha_gc,
 	int src_x, int src_y, int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h, int do_repeat)
 {
-	FvwmRenderAttributes t_fra;
+	MvwmRenderAttributes t_fra;
 	Pixmap xrs_pixmap = None;
 	Pixmap xrs_mask = None;
 	Pixmap tmp_pixmap, tmp_mask;
@@ -1070,7 +1070,7 @@ void PGraphicsRenderPixmaps(
 }
 
 void PGraphicsRenderPicture(
-	Display *dpy, Window win, FvwmPicture *p, FvwmRenderAttributes *fra,
+	Display *dpy, Window win, MvwmPicture *p, MvwmRenderAttributes *fra,
 	Drawable d, GC gc, GC mono_gc, GC alpha_gc,
 	int src_x, int src_y, int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h, int do_repeat)
@@ -1092,8 +1092,8 @@ void PGraphicsCopyPixmaps(
 		src_x, src_y, src_w, src_h, dest_x, dest_y, src_w, src_h, False);
 }
 
-void PGraphicsCopyFvwmPicture(
-	Display *dpy, FvwmPicture *p, Drawable d, GC gc,
+void PGraphicsCopyMvwmPicture(
+	Display *dpy, MvwmPicture *p, Drawable d, GC gc,
 	int src_x, int src_y, int src_w, int src_h, int dest_x, int dest_y)
 {
 	PGraphicsRenderPicture(
@@ -1113,12 +1113,12 @@ void PGraphicsTileRectangle(
 		True);
 }
 
-FvwmPicture *PGraphicsCreateStretchPicture(
-	Display *dpy, Window win, FvwmPicture *src,
+MvwmPicture *PGraphicsCreateStretchPicture(
+	Display *dpy, Window win, MvwmPicture *src,
 	int dest_width, int dest_height, GC gc, GC mono_gc, GC alpha_gc)
 {
 	Pixmap pixmap = None, mask = None, alpha = None;
-	FvwmPicture *q;
+	MvwmPicture *q;
 
 	if (src == NULL || src->picture == None)
 	{
@@ -1145,7 +1145,7 @@ FvwmPicture *PGraphicsCreateStretchPicture(
 			dest_width, dest_height, alpha_gc);
 	}
 
-	q = xcalloc(1, sizeof(FvwmPicture));
+	q = xcalloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;
@@ -1162,12 +1162,12 @@ FvwmPicture *PGraphicsCreateStretchPicture(
 	return q;
 }
 
-FvwmPicture *PGraphicsCreateTiledPicture(
-	Display *dpy, Window win, FvwmPicture *src,
+MvwmPicture *PGraphicsCreateTiledPicture(
+	Display *dpy, Window win, MvwmPicture *src,
 	int dest_width, int dest_height, GC gc, GC mono_gc, GC alpha_gc)
 {
 	Pixmap pixmap = None, mask = None, alpha = None;
-	FvwmPicture *q;
+	MvwmPicture *q;
 
 	if (src == NULL || src->picture == None)
 	{
@@ -1193,7 +1193,7 @@ FvwmPicture *PGraphicsCreateTiledPicture(
 			dest_height, FRenderGetAlphaDepth(), alpha_gc);
 	}
 
-	q = xcalloc(1, sizeof(FvwmPicture));
+	q = xcalloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;
@@ -1211,7 +1211,7 @@ FvwmPicture *PGraphicsCreateTiledPicture(
 }
 
 Pixmap PGraphicsCreateTransparency(
-	Display *dpy, Window win, FvwmRenderAttributes *fra, GC gc,
+	Display *dpy, Window win, MvwmRenderAttributes *fra, GC gc,
 	int x, int y, int width, int height, Bool parent_relative)
 {
 	Pixmap r = None, dp = None;
@@ -1316,7 +1316,7 @@ void PGraphicsTintRectangle(
 	int dest_x, int dest_y, int dest_w, int dest_h)
 {
 	Pixmap p;
-	FvwmRenderAttributes fra;
+	MvwmRenderAttributes fra;
 
 #if 0
 	/* this does not work. why? */
@@ -1359,12 +1359,12 @@ void PGraphicsTintRectangle(
 
 #if 0 /* humm... maybe useful one day with menus */
 Pixmap PGraphicsCreateTranslucent(
-	Display *dpy, Window win, FvwmRenderAttributes *fra, GC gc,
+	Display *dpy, Window win, MvwmRenderAttributes *fra, GC gc,
 	int x, int y, int width, int height)
 {
 	Pixmap r = None;
 	int gx = x, gy = y, gh = height, gw = width;
-	FvwmRenderAttributes t_fra;
+	MvwmRenderAttributes t_fra;
 	Pixmap root_pix = None;
 	Pixmap dp = None;
 	int dummy;
@@ -1426,7 +1426,7 @@ Pixmap PGraphicsCreateTranslucent(
 
 		values.subwindow_mode = IncludeInferiors;
 		root_pix = XCreatePixmap(dpy, win, gw, gh, Pdepth);
-		my_gc = fvwmlib_XCreateGC(dpy, win, 0, NULL);
+		my_gc = mvwmlib_XCreateGC(dpy, win, 0, NULL);
 		XChangeGC(dpy, my_gc, valuemask, &values);
 		MyXGrabServer(dpy);
 		XCopyArea(

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 VERSIONINFO=""
 AC_PREREQ(2.60)
-AC_INIT([fvwm/fvwm.c], [2.6.6], [thomas@xteddy.org])
+AC_INIT([mvwm], [2.6.6], [thomas@xteddy.org])
 AC_CONFIG_AUX_DIR(etc)
 AC_CONFIG_HEADER(config.h)
 
@@ -17,15 +17,15 @@ RELDATESHORT="02-Apr-2012"
 RELDATENUM="2012-04-20"
 
 # constant variable settings
-FVWMNAMELONG="F? Virtual Window Manager"
-FVWMHOMEPAGE="http://fvwm.org/"
-FVWMFTP="ftp.fvwm.org"
-FVWMFTPDIR="/pub/ftp"
-FVWMALTFTP="metalab.unc.edu"
-FVWMALTFTPDIR="/pub/Linux/X11/window-managers/"
-FVWMLIST="fvwm@fvwm.org"
-FVWMWORKERSLIST="fvwm-workers@fvwm.org"
-FVWMWORKERSLISTLONG="fvwm workers list <fvwm-workers@fvwm.org>"
+MVWMNAMELONG="F? Virtual Window Manager"
+MVWMHOMEPAGE="http://mvwm.org/"
+MVWMFTP="ftp.mvwm.org"
+MVWMFTPDIR="/pub/ftp"
+MVWMALTFTP="metalab.unc.edu"
+MVWMALTFTPDIR="/pub/Linux/X11/window-managers/"
+MVWMLIST="thomas@xteddy.org"
+MVWMWORKERSLIST="thomas@xteddy.otg.org"
+MVWMWORKERSLISTLONG="Thomas Adam <thomas@xteddy.org>"
 MANPAGE_PREAMBLE='.\" WARNING: This file was automatically generated.  Edit the .in file instead.'
 
 if test ! x"$ISRELEASED" = xyes; then
@@ -58,15 +58,15 @@ AC_SUBST(VERSIONINFO)
 AC_SUBST(RELDATELONG)
 AC_SUBST(RELDATESHORT)
 AC_SUBST(RELDATENUM)
-AC_SUBST(FVWMNAMELONG)
-AC_SUBST(FVWMHOMEPAGE)
-AC_SUBST(FVWMFTP)
-AC_SUBST(FVWMFTPDIR)
-AC_SUBST(FVWMALTFTP)
-AC_SUBST(FVWMALTFTPDIR)
-AC_SUBST(FVWMLIST)
-AC_SUBST(FVWMWORKERSLIST)
-AC_SUBST(FVWMWORKERSLISTLONG)
+AC_SUBST(MVWMNAMELONG)
+AC_SUBST(MVWMHOMEPAGE)
+AC_SUBST(MVWMFTP)
+AC_SUBST(MVWMFTPDIR)
+AC_SUBST(MVWMALTFTP)
+AC_SUBST(MVWMALTFTPDIR)
+AC_SUBST(MVWMLIST)
+AC_SUBST(MVWMWORKERSLIST)
+AC_SUBST(MVWMWORKERSLISTLONG)
 AC_SUBST(MANPAGE_PREAMBLE)
 
 AM_INIT_AUTOMAKE([foreign])
@@ -104,35 +104,35 @@ AC_MSG_RESULT([assuming $PERL as perl location])
 AC_SUBST(PERL)
 
 # installation paths
-FVWM_MODULESUBDIR=/${PACKAGE}/${VERSION}
-FVWM_DATASUBDIR=/${PACKAGE}
-FVWM_DOCSUBDIR=/doc/${PACKAGE}
+MVWM_MODULESUBDIR=/${PACKAGE}/${VERSION}
+MVWM_DATASUBDIR=/${PACKAGE}
+MVWM_DOCSUBDIR=/doc/${PACKAGE}
 
 AC_ARG_ENABLE(package-subdirs,
   AS_HELP_STRING([--disable-package-subdirs],
     [do not create subdirs for modules and data]),
-  [if test x"$enableval" = xno; then FVWM_MODULESUBDIR=""; FVWM_DATASUBDIR="";
+  [if test x"$enableval" = xno; then MVWM_MODULESUBDIR=""; MVWM_DATASUBDIR="";
   fi], [])
 
 
-FVWM_MODULEDIR='${libexecdir}'"$FVWM_MODULESUBDIR"
-FVWM_DATADIR='${datadir}'"$FVWM_DATASUBDIR"
-FVWM_DOCDIR='${datadir}'"$FVWM_DOCSUBDIR"
-FVWM_PERLLIBDIR='${datadir}'"$FVWM_DATASUBDIR/perllib"
-FVWM_CONFDIR='${sysconfdir}'dnl used _only_ to search for system.fvwm2rc
+MVWM_MODULEDIR='${libexecdir}'"$MVWM_MODULESUBDIR"
+MVWM_DATADIR='${datadir}'"$MVWM_DATASUBDIR"
+MVWM_DOCDIR='${datadir}'"$MVWM_DOCSUBDIR"
+MVWM_PERLLIBDIR='${datadir}'"$MVWM_DATASUBDIR/perllib"
+MVWM_CONFDIR='${sysconfdir}'dnl used _only_ to search for system.mvwm2rc
 
-AC_SUBST(FVWM_MODULEDIR)
-AC_SUBST(FVWM_DATADIR)
-AC_SUBST(FVWM_PERLLIBDIR)
-AC_SUBST(FVWM_CONFDIR)
-AC_SUBST(FVWM_DOCDIR)
+AC_SUBST(MVWM_MODULEDIR)
+AC_SUBST(MVWM_DATADIR)
+AC_SUBST(MVWM_PERLLIBDIR)
+AC_SUBST(MVWM_CONFDIR)
+AC_SUBST(MVWM_DOCDIR)
 
-AH_TEMPLATE([FVWM_CONFIG],
-  [Name of config filenames in FVWM_USERDIR and FVWM_DATADIR])
-AC_DEFINE(FVWM_CONFIG, "config")
+AH_TEMPLATE([MVWM_CONFIG],
+  [Name of config filenames in MVWM_USERDIR and MVWM_DATADIR])
+AC_DEFINE(MVWM_CONFIG, "config")
 
-AH_TEMPLATE([FVWM2RC],[Suffix for old (to be deprecated) config filenames])
-AC_DEFINE(FVWM2RC, ".fvwm2rc")
+AH_TEMPLATE([MVWM2RC],[Suffix for old (to be deprecated) config filenames])
+AC_DEFINE(MVWM2RC, ".mvwm2rc")
 
 # Various configure-time options
 
@@ -148,17 +148,17 @@ AC_ARG_ENABLE(efence,
   [ac_cv_efence="$enableval"],
   [ac_cv_efence="no"])
 
-smr_SWITCH(command-log, command logging, off, FVWM_COMMAND_LOG,, [Produces a log of all executed commands and their times on stderr.])
-AH_VERBATIM([_FVWM_COMMAND_LOG],
-[#ifdef FVWM_COMMAND_LOG
-#   define FVWM_DEBUG_TIME 1
+smr_SWITCH(command-log, command logging, off, MVWM_COMMAND_LOG,, [Produces a log of all executed commands and their times on stderr.])
+AH_VERBATIM([_MVWM_COMMAND_LOG],
+[#ifdef MVWM_COMMAND_LOG
+#   define MVWM_DEBUG_TIME 1
 #endif])
 
-smr_SWITCH(debug-msgs, debugging messages, off, FVWM_DEBUG_MSGS,, [if you would like to see lots of debug messages from fvwm, for debugging
+smr_SWITCH(debug-msgs, debugging messages, off, MVWM_DEBUG_MSGS,, [if you would like to see lots of debug messages from mvwm, for debugging
    purposes, uncomment the next line])
-AH_VERBATIM([_FVWM_DEBUG_MSGS],
-[#ifdef FVWM_DEBUG_MSGS
-#   define DBUG(x,y) fvwm_msg(DBG,x,y)
+AH_VERBATIM([_MVWM_DEBUG_MSGS],
+[#ifdef MVWM_DEBUG_MSGS
+#   define DBUG(x,y) mvwm_msg(DBG,x,y)
 #else
 #   define DBUG(x,y) /* no messages */
 #endif])
@@ -174,7 +174,7 @@ if test x"$no_x" = x"yes"; then
   echo "sure the X11 development package is installed on your system."
   echo "If it is definitely installed, try setting the include and library"
   echo "paths with the --x-include and --x-libraries options of configure."
-  echo "Fvwm can not be compiled without the X11 development environment."
+  echo "Mvwm can not be compiled without the X11 development environment."
   echo
   echo "Aborting."
   echo
@@ -201,11 +201,11 @@ AC_ARG_WITH(imagepath,
     val="$withval"
     ;;
   esac ])
-AH_TEMPLATE([FVWM_IMAGEPATH],[Where to search for images.])
-AC_DEFINE_UNQUOTED(FVWM_IMAGEPATH, "$val")
+AH_TEMPLATE([MVWM_IMAGEPATH],[Where to search for images.])
+AC_DEFINE_UNQUOTED(MVWM_IMAGEPATH, "$val")
 
-FVWM_IMAGEPATH="$val"
-AC_SUBST(FVWM_IMAGEPATH)
+MVWM_IMAGEPATH="$val"
+AC_SUBST(MVWM_IMAGEPATH)
 AC_MSG_RESULT($val)
 
 # Minimal checks for programs: enough to enable checking for
@@ -260,7 +260,7 @@ fi
 if test x"$size_check_failed" = x1; then
   echo "This is not supported by the module interface yet (make_new_vpacket)."
   echo "Detected type sizes are: int($ac_cv_sizeof_int), long($ac_cv_sizeof_long), void*($ac_cv_sizeof_void_p), Window($ac_cv_sizeof_Window), Pixel($ac_cv_sizeof_Pixel)"
-  echo "Please report details of your system and this message to ${FVWMWORKERSLIST}."
+  echo "Please report details of your system and this message to ${MVWMWORKERSLIST}."
   echo
   exit 1
 fi
@@ -312,7 +312,7 @@ if test ! x"$SED" = x; then
 			p
 			n
 			bfindcmd
-	' < fvwm/functable.c`
+	' < mvwm/functable.c`
 	DOC_COMMANDS=`echo $DOC_COMMANDS`
 	# with .xml suffix
 	DOC_COMMANDS_XML=`for i in $DOC_COMMANDS; do echo ${i}.xml; done`
@@ -333,7 +333,7 @@ if test ! x"$SED" = x; then
 		for i in modules/*; do echo "$i"; done |
 		sed -n '
 			:search
-			/^modules.Fvwm/bfound
+			/^modules.Mvwm/bfound
 			bnext
 		:found
 			s/modules.//
@@ -347,7 +347,7 @@ if test ! x"$SED" = x; then
 	DOC_MODULES_HTML=`for i in $DOC_MODULES; do echo ${i}.html; done`
 	DOC_MODULES_HTML=`echo $DOC_MODULES_HTML`
 	# extract man page section names
-	DOC_SECTIONS=`cat doc/fvwm/sections`
+	DOC_SECTIONS=`cat doc/mvwm/sections`
 	DOC_SECTIONS=`echo $DOC_SECTIONS`
 	DOC_SECTIONS_XML=`for i in $DOC_SECTIONS; do echo ${i}.xml; done`
 	DOC_SECTIONS_XML=`echo $DOC_SECTIONS_XML`
@@ -403,7 +403,7 @@ if test ! x"$with_mandoc" = xno; then
 		with_mandoc="yes"
 	fi
 fi
-AM_CONDITIONAL([FVWM_BUILD_MANDOC], [test x"$with_mandoc" = xyes])
+AM_CONDITIONAL([MVWM_BUILD_MANDOC], [test x"$with_mandoc" = xyes])
 
 
 problem_htmldoc=""
@@ -432,7 +432,7 @@ if test ! x"$with_htmldoc" = xno; then
 		with_htmldoc="yes"
 	fi
 fi
-AM_CONDITIONAL([FVWM_BUILD_HTMLDOC], [test x"$with_htmldoc" = xyes])
+AM_CONDITIONAL([MVWM_BUILD_HTMLDOC], [test x"$with_htmldoc" = xyes])
 
 # Checking for optional libraries
 # Default is to use them if found; can be disable using --without
@@ -1005,26 +1005,26 @@ AC_SUBST(Bidi_CFLAGS)
 # ********* perllib
 with_perllib="yes"
 problem_perllib=""
-FVWM_PERLLIB=perllib
+MVWM_PERLLIB=perllib
 AC_ARG_ENABLE(perllib,
-  AS_HELP_STRING([--disable-perllib],[disable installing fvwm perl library]),
+  AS_HELP_STRING([--disable-perllib],[disable installing mvwm perl library]),
   [ if test x"$enableval" = xno; then
     with_perllib="no"
     problem_perllib=": Explicitly disabled"
-    FVWM_PERLLIB=""
+    MVWM_PERLLIB=""
   fi ],
 )
-AC_SUBST(FVWM_PERLLIB)
+AC_SUBST(MVWM_PERLLIB)
 
 # ******* gettext
 ALL_LINGUAS="ar de fr sv_SE zh_CN ru es"
-FVWM_DOMAIN="fvwm"
-ALL_DOMAINS="$FVWM_DOMAIN"
+MVWM_DOMAIN="mvwm"
+ALL_DOMAINS="$MVWM_DOMAIN"
 
 AC_SUBST(ALL_LINGUAS)
-AC_SUBST(FVWM_DOMAIN)
-AC_SUBST(FVWMTASKBAR_DOMAIN)
-AC_SUBST(FVWMSCRIPT_DOMAIN)
+AC_SUBST(MVWM_DOMAIN)
+AC_SUBST(MVWMTASKBAR_DOMAIN)
+AC_SUBST(MVWMSCRIPT_DOMAIN)
 AC_SUBST(ALL_DOMAINS)
 
 LOCALEDIR='${datadir}'"/locale"
@@ -1087,7 +1087,7 @@ if test x$ac_cv_header_stdarg_h = xno -o \
      AC_MSG_ERROR([stdarg.h and vfprintf required])
 fi
 
-# For reaping children, fvwm needs either waitpid() or wait3()
+# For reaping children, mvwm needs either waitpid() or wait3()
 # Some extra modules may need wait4() too
 AC_CHECK_FUNCS(waitpid)
 if test x$ac_cv_func_waitpid = xno; then
@@ -1100,11 +1100,11 @@ fi
 # C89/C99 signal handling
 AC_CHECK_FUNCS(sigsetjmp siglongjmp)
 
-# Look harder for a C preprocessor for FvwmCpp
-AC_PATH_PROG(FVWM_CPP, cpp, no, $PATH:/lib:/usr/lib:/usr/ccs/lib)
-if test x"$FVWM_CPP" = xno; then
-  FVWM_CPP=
-  AC_MSG_WARN([cannot locate a C preprocessor: run FvwmCpp with -cppprog])
+# Look harder for a C preprocessor for MvwmCpp
+AC_PATH_PROG(MVWM_CPP, cpp, no, $PATH:/lib:/usr/lib:/usr/ccs/lib)
+if test x"$MVWM_CPP" = xno; then
+  MVWM_CPP=
+  AC_MSG_WARN([cannot locate a C preprocessor: run MvwmCpp with -cppprog])
 fi
 dnl FIXME: make sure the cpp we found actually works...
 
@@ -1113,7 +1113,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
-dnl lex+yacc now only needed for FvwmScript developers when syntax is changed
+dnl lex+yacc now only needed for MvwmScript developers when syntax is changed
 dnl AM_PROG_LEX
 dnl AC_PROG_YACC
 
@@ -1161,7 +1161,7 @@ AC_REPLACE_FUNCS(gethostname strcasecmp strncasecmp strdup strerror usleep atexi
 dnl dv: this is harmful with autoconf 2.53 and is done automatically anyway
 dnl AC_SUBST(LIBOBJS)
 
-# check for mkstemp, see the discution on this subject on the fvwm workers
+# check for mkstemp, see the discution on this subject on the mvwm workers
 # list (2001-02-16 and 2001-02-24)
 AM_SAFETY_CHECK_MKSTEMP
 
@@ -1335,18 +1335,18 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 
 #ifdef HAVE_LSTAT
 #define DO_USE_LSTAT 1
-#define fvwm_lstat(x,y) lstat(x,y)
+#define mvwm_lstat(x,y) lstat(x,y)
 #else
 #define DO_USE_LSTAT 0
-#define fvwm_lstat(x,y) -1
+#define mvwm_lstat(x,y) -1
 #endif
 
 #ifdef HAVE_X11_XKBLIB_H
 #include <X11/XKBlib.h>
-#define fvwm_KeycodeToKeysym(d, k, l, g) \
+#define mvwm_KeycodeToKeysym(d, k, l, g) \
 	(XkbKeycodeToKeysym((d), (k), (g), (l)))
 #else
-#define fvwm_KeycodeToKeysym(d, k, x, i) (XKeycodeToKeysym((d), (k), (i)))
+#define mvwm_KeycodeToKeysym(d, k, x, i) (XKeycodeToKeysym((d), (k), (i)))
 #endif
 
 #ifndef HAVE_STRLCPY
@@ -1355,7 +1355,7 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 
 ])
 
-# mainly for fvwm-config
+# mainly for mvwm-config
 AC_SUBST(with_bidi)
 AC_SUBST(with_gtk)
 AC_SUBST(with_gdkimlib)
@@ -1378,80 +1378,80 @@ dnl with autoconf <2.60 this is needed
 AC_SUBST(datarootdir)
 AC_SUBST(docdir)
 
-LOCAL_BUGADDR=${FVWM_BUGADDR-${USER-${LOGNAME-`whoami`}}}
+LOCAL_BUGADDR=${MVWM_BUGADDR-${USER-${LOGNAME-`whoami`}}}
 AC_SUBST(LOCAL_BUGADDR)
 
 AC_OUTPUT(
 	Makefile
 	libs/Makefile
-	fvwm/Makefile
+	mvwm/Makefile
 	modules/Makefile
 dnl
-	bin/fvwm-bug.1
-	bin/fvwm-config.1
-	bin/fvwm-convert-2.2.1
-	bin/fvwm-convert-2.4.1
-	bin/fvwm-convert-2.6.1
-	bin/fvwm-menu-desktop.1
-dnl	bin/fvwm-menu-directory.1
-dnl	bin/fvwm-perllib.1
-	bin/fvwm-root.1
-	modules/FvwmAuto/FvwmAuto.1
-	modules/FvwmBacker/FvwmBacker.1
-	modules/FvwmButtons/FvwmButtons.1
-	modules/FvwmCommand/FvwmCommand.1
-	modules/FvwmConsole/FvwmConsole.1
-	modules/FvwmConsole/FvwmConsoleC.pl.1
-	modules/FvwmEvent/FvwmEvent.1
-	modules/FvwmIconMan/FvwmIconMan.1
-	modules/FvwmIdent/FvwmIdent.1
-	modules/FvwmPager/FvwmPager.1
+dnl	bin/mvwm-bug.1
+dnl bin/mvwm-config.1
+dnl bin/mvwm-convert-2.2.1
+dnl bin/mvwm-convert-2.4.1
+dnl bin/mvwm-convert-2.6.1
+dnl bin/mvwm-menu-desktop.1
+dnl	bin/mvwm-menu-directory.1
+dnl	bin/mvwm-perllib.1
+dnl	bin/mvwm-root.1
+	modules/MvwmAuto/MvwmAuto.1
+	modules/MvwmBacker/MvwmBacker.1
+	modules/MvwmButtons/MvwmButtons.1
+	modules/MvwmCommand/MvwmCommand.1
+	modules/MvwmConsole/MvwmConsole.1
+	modules/MvwmConsole/MvwmConsoleC.pl.1
+	modules/MvwmEvent/MvwmEvent.1
+	modules/MvwmIconMan/MvwmIconMan.1
+	modules/MvwmIdent/MvwmIdent.1
+	modules/MvwmPager/MvwmPager.1
 dnl
-	bin/Makefile
-	bin/fvwm-config
-	bin/fvwm-bug
-	bin/fvwm-perllib
-	bin/fvwm-menu-directory
-	bin/fvwm-menu-desktop
-	bin/fvwm-convert-2.4
-	bin/fvwm-convert-2.6
+dnl bin/Makefile
+dnl bin/mvwm-config
+dnl bin/mvwm-bug
+dnl bin/mvwm-perllib
+dnl bin/mvwm-menu-directory
+dnl bin/mvwm-menu-desktop
+dnl bin/mvwm-convert-2.4
+dnl bin/mvwm-convert-2.6
 dnl
 	perllib/Makefile
 	perllib/General/Makefile
-	perllib/FVWM/Makefile
-	perllib/FVWM/Module/Makefile
-	perllib/FVWM/Tracker/Makefile
-	perllib/FVWM/Module.pm
-	doc/fvwm.ent
-	doc/footer.html
-	doc/Makefile
-	doc/fvwm/Makefile
-	doc/commands/Makefile
-	doc/docbook-xml/Makefile
-	doc/docbook-xml/ent/Makefile
-	doc/docbook-xsl/Makefile
-	doc/docbook-xsl/common/Makefile
-	doc/docbook-xsl/manpages/Makefile
-	doc/docbook-xsl/profiling/Makefile
-	doc/docbook-xsl/highlighting/Makefile
-	doc/docbook-xsl/lib/Makefile
-	doc/docbook-xsl/html/Makefile
-	doc/modules/Makefile
-	po/Makefile
+	perllib/MVWM/Makefile
+	perllib/MVWM/Module/Makefile
+	perllib/MVWM/Tracker/Makefile
+	perllib/MVWM/Module.pm
+dnl doc/mvwm.ent
+dnl doc/footer.html
+dnl doc/Makefile
+dnl doc/mvwm/Makefile
+dnl doc/commands/Makefile
+dnl doc/docbook-xml/Makefile
+dnl doc/docbook-xml/ent/Makefile
+dnl doc/docbook-xsl/Makefile
+dnl doc/docbook-xsl/common/Makefile
+dnl doc/docbook-xsl/manpages/Makefile
+dnl doc/docbook-xsl/profiling/Makefile
+dnl doc/docbook-xsl/highlighting/Makefile
+dnl doc/docbook-xsl/lib/Makefile
+dnl doc/docbook-xsl/html/Makefile
+dnl doc/modules/Makefile
+dnl po/Makefile
 dnl
-	modules/FvwmAuto/Makefile
-	modules/FvwmBacker/Makefile
-	modules/FvwmButtons/Makefile
-	modules/FvwmCommand/Makefile
-	modules/FvwmCommand/scripts/Makefile
-	modules/FvwmConsole/Makefile
-	modules/FvwmConsole/FvwmConsoleC.pl
-	modules/FvwmEvent/Makefile
-	modules/FvwmIconMan/Makefile
-	modules/FvwmIdent/Makefile
-	modules/FvwmPager/Makefile
-	modules/FvwmPerl/Makefile
-	modules/FvwmPerl/FvwmPerl
+	modules/MvwmAuto/Makefile
+	modules/MvwmBacker/Makefile
+	modules/MvwmButtons/Makefile
+	modules/MvwmCommand/Makefile
+	modules/MvwmCommand/scripts/Makefile
+	modules/MvwmConsole/Makefile
+	modules/MvwmConsole/MvwmConsoleC.pl
+	modules/MvwmEvent/Makefile
+	modules/MvwmIconMan/Makefile
+	modules/MvwmIdent/Makefile
+	modules/MvwmPager/Makefile
+	modules/MvwmPerl/Makefile
+	modules/MvwmPerl/MvwmPerl
 )
 
 # ---------------------------------------------------------------------------
@@ -1477,16 +1477,16 @@ chmod +x config.status
 
 eval my_bindir="`eval echo ${bindir}`"
 eval my_mandir="`eval echo ${mandir}`"
-eval my_moddir="`eval echo ${FVWM_MODULEDIR}`"; eval my_moddir="$my_moddir"
-eval my_datdir="`eval echo ${FVWM_DATADIR}`"
-eval my_docdir="`eval echo ${FVWM_DOCDIR}`"
-eval my_plldir="`eval echo ${FVWM_PERLLIBDIR}`"
-test x"$FVWM_PERLLIB" = x && my_plldir="(Not installed) $my_plldir"
+eval my_moddir="`eval echo ${MVWM_MODULEDIR}`"; eval my_moddir="$my_moddir"
+eval my_datdir="`eval echo ${MVWM_DATADIR}`"
+eval my_docdir="`eval echo ${MVWM_DOCDIR}`"
+eval my_plldir="`eval echo ${MVWM_PERLLIBDIR}`"
+test x"$MVWM_PERLLIB" = x && my_plldir="(Not installed) $my_plldir"
 eval my_localedir="`eval echo ${LOCALEDIR}`"
 test x"$USE_NLS" = xno && my_localedir="(Not installed) $my_localdir"
 
 echo "
-Fvwm Configuration:
+Mvwm Configuration:
 
   Version:     $VERSION$VERSIONINFO
 
@@ -1502,7 +1502,7 @@ Fvwm Configuration:
   With Gettext Native Lang support?   $with_gettext$problem_gettext
   With Iconv support?                 $with_iconv_type$problem_iconv
   With PNG image support?             $with_png$problem_png
-  With ReadLine sup. in FvwmConsole?  $with_readline$problem_readline
+  With ReadLine sup. in MvwmConsole?  $with_readline$problem_readline
   With Shaped window support?         $with_shape$problem_shape
   With Shared memory for XImage?      $with_shm$problem_shm
   With Xcursor support?               $with_xcursor$problem_xcursor

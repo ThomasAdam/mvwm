@@ -1,0 +1,11 @@
+Makefile
+Makefile.in
+MvwmConsole
+MvwmConsoleC
+MvwmConsoleC.pl
+.deps
+TAGS
+.gdb_history
+gmon.out
+MvwmConsole.1
+MvwmConsoleC.pl.1

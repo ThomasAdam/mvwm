@@ -3,6 +3,6 @@
 #ifndef SETPGRP_H
 #define SETPGRP_H
 
-int fvwm_setpgrp(void);
+int mvwm_setpgrp(void);
 
 #endif /* SETPGRP_H */

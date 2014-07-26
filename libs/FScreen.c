@@ -21,7 +21,7 @@
 #include <errno.h>
 
 #include "defaults.h"
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "Parse.h"
 #include "FScreen.h"
 #include "PictureBase.h"
@@ -237,7 +237,7 @@ init_monitor_contents(void)
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
- * config string sent by fvwm. */
+ * config string sent by mvwm. */
 void FScreenConfigureModule(char *args)
 {
 #if 0
@@ -266,7 +266,7 @@ void FScreenConfigureModule(char *args)
 	return;
 }
 
-/* Here's the function used by fvwm to generate the string which
+/* Here's the function used by mvwm to generate the string which
  * FScreenConfigureModule expects to receive back as its argument.
  */
 const char *FScreenGetConfiguration(void)
@@ -645,7 +645,7 @@ int FScreenParseGeometry(
  *
  *  Note2:
  *      This function's behaviour is crafted to sutisfy/emulate the
- *      FvwmWinList::MakeMeWindow()'s behaviour.
+ *      MvwmWinList::MakeMeWindow()'s behaviour.
  *
  *  Note3:
  *      A special value of `flags' when [XY]Value are there but [XY]Negative
@@ -653,12 +653,12 @@ int FScreenParseGeometry(
  *      x_r/y_r values will be promoted to the screen border, but w/h
  *      wouldn't be subtracted, so that the program can do x-=w later
  *      ([XY]Negative *will* be returned, albeit absent in `flags').
- *          This option is supposed for proggies like FvwmButtons, which
+ *          This option is supposed for proggies like MvwmButtons, which
  *      receive geometry specification long before they are able to actually
  *      use it (and which calculate w/h themselves).
  *          (The same effect can't be obtained with omitting {Width,Height}Value
  *      in the flags, since the app may wish to get the dimensions but apply
- *      some constraints later (as FvwmButtons do, BTW...).)
+ *      some constraints later (as MvwmButtons do, BTW...).)
  *          This option can be also useful in cases where dimensions are
  *      specified not in pixels but in some other units (e.g., charcells).
  */

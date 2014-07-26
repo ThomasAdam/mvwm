@@ -39,7 +39,7 @@ Pixmap PictureBitmapToPixmap(
  */
 void PGraphicsRenderPixmaps(
 	Display *dpy, Window win, Pixmap pixmap, Pixmap mask, Pixmap alpha,
-	int depth, FvwmRenderAttributes *fra, Drawable d,
+	int depth, MvwmRenderAttributes *fra, Drawable d,
 	GC gc, GC mono_gc, GC alpha_gc,
 	int src_x, int src_y, int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h, int do_repeat);
@@ -53,7 +53,7 @@ void PGraphicsRenderPixmaps(
  * <arg>
  */
 void PGraphicsRenderPicture(
-	Display *dpy, Window win, FvwmPicture *p, FvwmRenderAttributes *fra,
+	Display *dpy, Window win, MvwmPicture *p, MvwmRenderAttributes *fra,
 	Drawable d, GC gc, GC mono_gc, GC alpha_gc,
 	int src_x, int src_y, int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h, int do_repeat);
@@ -79,17 +79,17 @@ void PGraphicsCopyPixmaps(
 	int dest_x, int dest_y);
 
 /*
- * <pubfunc>PGraphicsCopyFvwmPicture
+ * <pubfunc>PGraphicsCopyMvwmPicture
  * <description>
- * PGraphicsCopyFvwmPicture copies a rectangle constituted by an FvwmPicture
+ * PGraphicsCopyMvwmPicture copies a rectangle constituted by an MvwmPicture
  * to a drawable at a given position. It is similar to PGraphicsCopyPixmaps
  * and the same remarks are valids. The only difference is that the source
- * rectangle is given by the FvwmPicture p (which contains the pixmap, the
+ * rectangle is given by the MvwmPicture p (which contains the pixmap, the
  * mask, the alpha and the depth).
  * </description>
  */
-void PGraphicsCopyFvwmPicture(
-	Display *dpy, FvwmPicture *p, Drawable d, GC gc, int src_x, int src_y,
+void PGraphicsCopyMvwmPicture(
+	Display *dpy, MvwmPicture *p, Drawable d, GC gc, int src_x, int src_y,
 	int src_w, int src_h, int dest_x, int dest_y);
 
 /*
@@ -106,16 +106,16 @@ void PGraphicsTileRectangle(
 	int src_x, int src_y,  int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h);
 
-FvwmPicture *PGraphicsCreateStretchPicture(
-	Display *dpy, Window win, FvwmPicture *src,
+MvwmPicture *PGraphicsCreateStretchPicture(
+	Display *dpy, Window win, MvwmPicture *src,
 	int dest_width, int dest_height, GC gc, GC mono_gc, GC alpha_gc);
 
-FvwmPicture *PGraphicsCreateTiledPicture(
-	Display *dpy, Window win, FvwmPicture *src,
+MvwmPicture *PGraphicsCreateTiledPicture(
+	Display *dpy, Window win, MvwmPicture *src,
 	int dest_width, int dest_height, GC gc, GC mono_gc, GC alpha_gc);
 
 Pixmap PGraphicsCreateTransparency(
-	Display *dpy, Window win, FvwmRenderAttributes *fra, GC gc,
+	Display *dpy, Window win, MvwmRenderAttributes *fra, GC gc,
 	int x, int y, int width, int height, Bool parent_relative);
 
 void PGraphicsTintRectangle(

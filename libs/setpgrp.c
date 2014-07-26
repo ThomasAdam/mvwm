@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include "setpgrp.h"
 
-int fvwm_setpgrp(void)
+int mvwm_setpgrp(void)
 {
 	int rc;
 

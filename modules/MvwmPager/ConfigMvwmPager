@@ -1,0 +1,21 @@
+########################### Pager #########################################
+DestroyModuleConfig MvwmPager: *
+*MvwmPager: Back #908090
+*MvwmPager: Fore #484048
+#*MvwmPager: Font -adobe-helvetica-bold-r-*-*-10-*-*-*-*-*-*-*
+# turn off desktop names for swallowing in above button bar example:
+*MvwmPager: Font none
+*MvwmPager: Hilight #cab3ca
+*MvwmPager: Geometry -1-1
+*MvwmPager: Label 0 Misc
+*MvwmPager: Label 1 Maker
+*MvwmPager: Label 2 Mail
+*MvwmPager: Label 3 Matlab
+*MvwmPager: SmallFont 5x8
+*MvwmPager: Balloons            All
+*MvwmPager: BalloonBack         Yellow
+*MvwmPager: BalloonFore         Black
+*MvwmPager: BalloonFont         lucidasanstypewriter-12
+*MvwmPager: BalloonYOffset      +2
+*MvwmPager: BalloonBorderWidth  1
+*MvwmPager: BalloonBorderColor  Black

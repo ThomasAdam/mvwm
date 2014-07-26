@@ -15,7 +15,7 @@
  */
 
 /*
- *  MODULE OF       fvwm
+ *  MODULE OF       mvwm
  *
  *  DESCRIPTION     Routines to expand environment-variables into strings.
  *                  Will understand both $ENV and ${ENV} -type variables.
@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "envvar.h"
 
 /* ---------------------------- local definitions -------------------------- */
@@ -356,7 +356,7 @@ char *envDupExpand(const char *s, int extra)
  *                occurrences are skipped.
  *                If nothing is found returns NULL and sets beg and end to 0.
  *
- *  EXAMPLE       getFirstEnv("echo $HOME/.fvwm/config", &beg, &end)
+ *  EXAMPLE       getFirstEnv("echo $HOME/.mvwm/config", &beg, &end)
  *                returns "/home/username" and beg=5, end=10.
  *
  */

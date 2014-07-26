@@ -22,7 +22,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 
-#include "libs/fvwmlib.h"
+#include "libs/mvwmlib.h"
 #include "libs/Strings.h"
 #include "libs/wild.h"
 #include "libs/Grab.h"
@@ -175,7 +175,7 @@ int AddBinding(
 		     m <= maxmods && tkeysym != NoSymbol; m++)
 		{
 			if (BIND_IS_MOUSE_BINDING(type) ||
-			    (tkeysym = fvwm_KeycodeToKeysym(dpy, i, m, 0)) == keysym)
+			    (tkeysym = mvwm_KeycodeToKeysym(dpy, i, m, 0)) == keysym)
 			{
 				unsigned int add_modifiers = 0;
 				unsigned int bind_mask = 1;
@@ -451,7 +451,7 @@ static Bool __compare_binding(
 }
 
 /* is_pass_through_action() - returns true if the action indicates that the
- * binding should be ignored by fvwm & passed through to the underlying
+ * binding should be ignored by mvwm & passed through to the underlying
  * window.
  * Note: it is only meaningful to check for pass-thru actions on
  * window-specific bindings. */
@@ -818,7 +818,7 @@ void GrabWindowKeyOrButton(
  *  error checking.
  *
  */
-KeySym FvwmStringToKeysym(Display *dpy, char *key)
+KeySym MvwmStringToKeysym(Display *dpy, char *key)
 {
 	KeySym keysym;
 	char *s;

@@ -236,7 +236,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 		{
 			fprintf(
 				stderr,
-				"[fvwm][convert_charsets]: WARNING -\n\t");
+				"[mvwm][convert_charsets]: WARNING -\n\t");
 			fprintf(
 				stderr,
 				"conversion from `%s' to `%s' not available\n",
@@ -246,7 +246,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 		{
 			fprintf(
 				stderr,
-				"[fvwm][convert_charsets]: WARNING -\n\t");
+				"[mvwm][convert_charsets]: WARNING -\n\t");
 			fprintf(
 				stderr,
 				"conversion from `%s' to `%s' fail (init)\n",
@@ -300,7 +300,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 				{
 					fprintf(
 						stderr,
-						"[fvwm][convert_charsets]:"
+						"[mvwm][convert_charsets]:"
 						" WARNING -\n\t");
 					fprintf(
 						stderr,
@@ -317,7 +317,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 				{
 					fprintf(
 						stderr,
-						"[fvwm][convert_charsets]:"
+						"[mvwm][convert_charsets]:"
 						" WARNING -\n\t");
 					fprintf(
 						stderr,
@@ -338,7 +338,7 @@ char *convert_charsets(const char *in_charset, const char *out_charset,
 	{
 		fprintf(
 			stderr,
-			"[fvwm][convert_charsets]: WARNING - iconv_close"
+			"[mvwm][convert_charsets]: WARNING - iconv_close"
 			" fail\n");
 	}
 
@@ -409,7 +409,7 @@ FlocaleCharset *FiconvSetupConversion(Display *dpy, FlocaleCharset *fc)
 
 	if (!FiconvInitialized)
 	{
-		FiconvInit(dpy, "fvwm");
+		FiconvInit(dpy, "mvwm");
 	}
 
 	if (FLCIconvUtf8Charset == NULL)
@@ -443,7 +443,7 @@ FlocaleCharset *FiconvSetupConversion(Display *dpy, FlocaleCharset *fc)
 		{
 			fprintf(
 				stderr,
-				"[fvwmlibs] cannot get iconv converter "
+				"[mvwmlibs] cannot get iconv converter "
 				"for charset %s\n",
 				FLC_DEBUG_GET_X_CHARSET(my_fc));
 			return NULL;

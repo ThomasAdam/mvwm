@@ -1,0 +1,11 @@
+Makefile
+Makefile.in
+MvwmCommand
+MvwmCommandS
+MvwmCommand.sh
+MvwmCommand.pm
+.deps
+TAGS
+.gdb_history
+gmon.out
+MvwmCommand.1

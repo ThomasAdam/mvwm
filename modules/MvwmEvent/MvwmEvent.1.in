@@ -1,0 +1,292 @@
+.\" t
+.\" @(#)@PACKAGE@-@VERSION@ @RELDATELONG@
+.TH MvwmEvent 1 "@RELDATELONG@ (@VERSION@)" Mvwm "Mvwm Modules"
+.UC
+.SH NAME
+\fIMvwmEvent\fP \- the mvwm event module
+.SH SYNOPSIS
+\fIMvwmEvent\fP is a more versatile replacement for \fIMvwmAudio\fP.
+It can in general be used to hook any \fImvwm\fP function or program to any
+window manager event. E.g: Delete unwanted Netscape Pop ups or
+application error pop ups as they appear, play sounds, log events to a
+file and the like. Be creative, you'll find a use for it.
+
+\fIMvwmEvent\fP is spawned by \fImvwm\fP, so no command line invocation will
+work.  From within the \fI.mvwm2rc\fP file, \fIMvwmEvent\fP is spawned as
+follows:
+.nf
+.sp
+Module MvwmEvent
+.sp
+.fi
+or from within an \fImvwm\fP pop-up menu:
+.nf
+.sp
+DestroyMenu Module-Popup
+AddToMenu Module-Popup "Modules" Title
++ "Event"        Module MvwmEvent
++ "Auto"         Module MvwmAuto 200
++ "Buttons"      Module MvwmButtons
++ "Console"      Module MvwmConsole
++ "Ident"        Module MvwmIdent
++ "Banner"       Module MvwmBanner
++ "Pager"        Module MvwmPager 0 3
+.sp
+.fi
+.SH DESCRIPTION
+The \fIMvwmEvent\fP module communicates with the \fImvwm\fP window manager
+to bind \fIactions\fP to window manager \fIevents\fP.  Different actions
+may be assigned to distinct window manager events.
+
+\fIMvwmEvent\fP can be used to bind sound files to events like
+\fIMvwmAudio\fP (RiP) did. It can be used for logging event traces to
+a log file, while debugging \fImvwm\fP.
+
+\fIMvwmEvent\fP can also have builtin support for the rplay library.
+(heritage of MvwmAudio)
+
+.SH INVOCATION
+The invocation method was shown in the synopsis section. No command
+line invocation is possible. \fIMvwmEvent\fP must be invoked by the
+\fImvwm\fP window manager. \fIMvwmEvent\fP accepts a single
+argument:
+
+.IP \-audio
+Enables MvwmAudio compatibility mode.
+
+.IP alias
+Makes MvwmEvent use \fIalias\fP as its name. This affects which lines
+from the user's configuration file are used.
+
+Invoking MvwmEvent as \fIMvwmAudio\fP (either by using an alias or
+creating a symlink) enables MvwmAudio compatibility mode.
+
+.sp
+
+.SH CONFIGURATION OPTIONS
+\fIMvwmEvent\fP gets config info from \fBmvwm\fP's module configuration
+database (see
+.IR mvwm (1),
+section
+.BR "MODULE COMMANDS" ),
+and looks for certain configuration options:
+
+.IP "*MvwmEvent: Cmd \fIcommand\fP"
+This determines the \fImvwm\fP function that is to be called with the
+event parameters. You might want to do one of the following (details below):
+.nf
+.sp
+	# play sounds
+	*MvwmEvent: Cmd \fIbuiltin-rplay\fP
+
+	# execute distinct mvwm functions
+	*MvwmEvent: Cmd
+
+	# execute distinct external programs
+	*MvwmEvent: Cmd exec
+.sp
+.fi
+This version of \fIMvwmEvent\fP has builtin \fIrplay\fP support which does not
+need to invoke an external audio player to play sounds.  The rplay
+support is enabled when \fIMvwmEvent\fP is compiled with \fIHAVE_RPLAY\fP
+defined and when \fIMvwmEvent: Cmd\fP is set to \fIbuiltin-rplay\fP. See
+remarks below if \fIMvwmEvent\fP is invoked in MvwmAudio compatibility mode.
+
+For example:
+.nf
+.sp
+	*MvwmEvent: Cmd \fIbuiltin-rplay\fP
+	*MvwmEvent: add_window drip.au
+.sp
+.fi
+rplay can be obtained via anonymous ftp at
+.nf
+.sp
+	<URL:ftp://ftp.sdsu.edu/pub/rplay> or
+	<URL:ftp://ftp.x.org/contrib/Event/audio/rplay>
+.sp
+.fi
+\fIMvwmEvent\fP also has support for any other external program.
+e.g: the rsynth 'say' command:
+.nf
+.sp
+	*MvwmEvent: Cmd "Exec /rsynth/say"
+	*MvwmEvent: destroy_window "window closed"
+.sp
+.fi
+You can also use \fImvwm\fP's builtin \fIEcho\fP command as
+\fIMvwmEvent: Cmd\fP to obtain debug output for \fImvwm\fP events quietly.
+I used this setup to debug MvwmAuto:
+.nf
+.sp
+	*MvwmEvent: Cmd \fIEcho\fP
+	*MvwmEvent: focus_change "focus change"
+	*MvwmEvent: raise_window "raise window"
+.sp
+.fi
+You can even call different shell commands for each event just by setting
+.nf
+.sp
+	*MvwmEvent: Cmd exec
+	*MvwmEvent: add_window 'killname "APPL ERROR"'
+.sp
+.fi
+.IP "*MvwmEvent: PassId"
+Specifies that the event action will have an ID parameter added to the end
+of the command line. Most events will have the windowID of the window that the
+event refers to, new_desk will have the new desk number. The windowID is a
+hexadecimal string preceded by 0x, desk numbers are decimal.
+
+.IP "*MvwmEvent: \fIwindow-manager-event action-or-filename\fP"
+Binds particular actions to window manager events.
+
+e.g. for audio-events:
+.nf
+.sp
+	*MvwmEvent: startup TaDa.au
+	*MvwmEvent: shutdown Elvis_Left.au
+	*MvwmEvent: unknown doh.au
+
+	*MvwmEvent: new_page beam_trek.au
+	*MvwmEvent: new_desk beam_trek.au
+	*MvwmEvent: old_add_window drip.au
+	*MvwmEvent: raise_window swoosh.au
+	*MvwmEvent: lower_window swoosh.au
+	*MvwmEvent: old_configure_window hammer.au
+	*MvwmEvent: focus_change boing.au
+	*MvwmEvent: enter_window boing.au
+	*MvwmEvent: leave_window boing.au
+	*MvwmEvent: destroy_window explosion.au
+	*MvwmEvent: iconify ploop.au
+	*MvwmEvent: deiconify ploop.au
+	*MvwmEvent: window_name huh.au
+	*MvwmEvent: icon_name beep.au
+	*MvwmEvent: visible_icon_name beep.au
+	*MvwmEvent: res_class beep.au
+	*MvwmEvent: res_name beep.au
+	*MvwmEvent: end_windowlist twang.au
+
+	*MvwmEvent: icon_location beep.au
+	*MvwmEvent: map beep.au
+	*MvwmEvent: error beep.au
+	*MvwmEvent: config_info beep.au
+	*MvwmEvent: end_config_info beep.au
+	*MvwmEvent: icon_file beep.au
+	*MvwmEvent: default_icon beep.au
+	*MvwmEvent: string plapper.au
+	*MvwmEvent: mini_icon beep.au
+	*MvwmEvent: windowshade beep.au
+	*MvwmEvent: dewindowshade beep.au
+
+	*MvwmEvent: visible_name beep.au
+	*MvwmEvent: sendconfig beep.au
+	*MvwmEvent: restack beep.au
+	*MvwmEvent: add_window beep.au
+	*MvwmEvent: configure_window beep.au
+
+	*MvwmEvent: visible_icon_name beep.au
+	*MvwmEvent: enter_window beep.au
+	*MvwmEvent: leave_window beep.au
+	*MvwmEvent: property_change beep.au
+.sp
+.fi
+The window related event handlers are executed within a window
+context.  Previously PassId was used for this purpose, but now using
+PassId is not needed.
+
+Note: The enter_window event is generated when the pointer enters
+a window.  With the -passid option, that window's id is passed to
+mvwm.  An enter_window event is generated too when the pointer
+leaves a window and moves into the root window.  In this case, the
+id passed is 0.
+
+Note: When the shutdown event arrives, MvwmEvent may be killed
+before it can trigger the associated action.
+.sp
+.fi
+Provided \fImvwm\fP supports it (not yet), there's an additional event to
+replace all \fImvwm\fP beeps with a sound:
+.nf
+.sp
+	*MvwmEvent: beep beep.au
+.sp
+.fi
+.IP "*MvwmEvent: Delay \fI5\fP"
+Specifies that an event-action will only be executed if it occurs at
+least 5 seconds after the previous event.  Events that occur during
+the delay period are ignored.  This option is useful if you don't want
+several sounds playing at the same time.  The default delay is 0 which
+disables the Event delay.
+
+.IP "*MvwmEvent: StartDelay \fIdelay\fP"
+Specifies that an event-action will only be executed if it occurs at
+least \fIdelay\fP seconds after the startup event. Events that occur during
+the delay period are ignored.  This option is useful when \fImvwm\fP
+starts and restarts using an audio player.  The default delay is 0.
+
+.SH RPLAY OPTIONS
+The following options are only valid with builtin rplay support.
+i.e: when \fIMvwmEvent\fP was compiled with \fIHAVE_RPLAY\fP defined.
+They are used only if \fIMvwmEvent: Cmd\fP is set
+to \fIbuiltin-rplay\fP.
+
+
+.IP "*MvwmEvent: RplayHost \fIhostname\fP"
+Specifies what host the rplay sounds will play on.  The \fIhostname\fP
+can also be an environment variable such as $HOSTDISPLAY.
+
+.IP "*MvwmEvent: RplayPriority \fI0\fP"
+Specifies what priority will be assigned to the rplay sounds when they
+are played.
+
+.IP "*MvwmEvent: RplayVolume \fI127\fP"
+Specifies what volume will be assigned to the sounds when they are
+played.
+
+.SH MvwmAudio Compatibility Mode
+
+When invoked in MvwmAudio compatibility mode (see above), MvwmEvent
+accepts the following options to provide backwards compatibility
+for MvwmAudio:
+
+.IP "*MvwmEvent: PlayCmd \fIcommand\fP"
+This is equivalent to using *MvwmEvent: Cmd to Exec commands. This
+determines the independent audio player program that will actually
+play the sounds. If the play command is set to \fIbuiltin-rplay\fP
+then the builtin rplay support will be used.
+
+.IP "*MvwmAudio: Dir \fIdirectory\fP"
+Specifies the directory to look for the audio files.  This option is
+ignored when rplay is used.
+
+.SH BUGS
+It's REALLY noisy when \fImvwm\fP starts and restarts using an audio player.
+You can use MvwmEvent: StartDelay to fix this problem.
+
+.SH COPYRIGHTS
+This module has evolved of \fIMvwmAudio\fP, which in term is heavily based
+on a similar Mvwm module called \fIMvwmSound\fP by Mark
+Boyns. \fIMvwmAudio\fP simply took Mark's original program and
+extended it to make it generic enough to work with any audio
+player. Due to different requests to do specific things on specific events,
+\fIMvwmEvent\fP took this one step further and now calls any
+\fImvwm\fP function, or builtin-rplay. If \fImvwm\fP's Exec function
+is used, any external program can be called with any parameter.
+
+The concept for interfacing this module to the Window Manager, is
+original work by Robert Nation.
+
+Copyright 1998 Albrecht Kadlec.
+Copyright 1994, Mark Boyns and Mark Scott.  No guarantees or
+warranties or anything are provided or implied in any way whatsoever.
+Use this program at your own risk.  Permission to use and modify this
+program for any purpose is given, as long as the copyright is kept intact.
+
+
+.sp
+.SH AUTHORS
+.nf
+1994  MvwmSound  Mark Boyns       (\fIboyns@sdsu.edu\fP)
+1994  MvwmAudio  Mark Scott       (\fImscott@mcd.mot.com\fP)
+1996  MvwmAudio  Albrecht Kadlec
+1998  MvwmEvent  Albrecht Kadlec  (\fIalbrecht@auto.tuwien.ac.at\fP)

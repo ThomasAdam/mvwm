@@ -28,7 +28,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 
-#include "fvwmlib.h"
+#include "mvwmlib.h"
 #include "envvar.h"
 #include "Grab.h"
 #include "Parse.h"
@@ -51,12 +51,12 @@
 		+   abs((long)(g1 - g2)) \
                 +   abs((long)(b1 - b2)))
 
-#define FVWM_DIST(r1,g1,b1,r2,g2,b2) \
+#define MVWM_DIST(r1,g1,b1,r2,g2,b2) \
                    (abs(r1 - r2) + abs(g1 - g2) + abs(b1 - b2) \
                     + 2*abs(abs(r1-g1) + abs(g1-b1) + abs(r1-b1) \
                             - abs(r2-g2) - abs(g2-b2) - abs(r2-b2)))
 
-#define USED_DIST(r1,g1,b1,r2,g2,b2) FVWM_DIST(r1,g1,b1,r2,g2,b2)
+#define USED_DIST(r1,g1,b1,r2,g2,b2) MVWM_DIST(r1,g1,b1,r2,g2,b2)
 
 #define PICTURE_COLOR_CLOSENESS USED_DIST(3,3,3,0,0,0)
 
@@ -1209,7 +1209,7 @@ static void finish_ct_init(
 	int call_type, int ctt, int nr, int ng, int nb, int ngrey,
 	int grey_bits, Bool use_named)
 {
-	if (call_type == PICTURE_CALLED_BY_FVWM)
+	if (call_type == PICTURE_CALLED_BY_MVWM)
 	{
 		char *env;
 
@@ -1237,7 +1237,7 @@ static void finish_ct_init(
 		/* TA:  FIXME!  Use xasprintf() */
 		env = xmalloc(PICTURE_TABLETYPE_LENGHT + 1);
 		sprintf(env, "%i", ctt);
-		flib_putenv("FVWM_COLORTABLE_TYPE", env);
+		flib_putenv("MVWM_COLORTABLE_TYPE", env);
 		free(env);
 		if (Pdepth <= 8)
 		{
@@ -1247,7 +1247,7 @@ static void finish_ct_init(
 
 	if (Pct)
 	{
-		if (!PAllocTable && call_type == PICTURE_CALLED_BY_FVWM)
+		if (!PAllocTable && call_type == PICTURE_CALLED_BY_MVWM)
 		{
 			free_table_colors(Pct, PColorLimit);
 		}
@@ -1256,11 +1256,11 @@ static void finish_ct_init(
 }
 
 #define PA_COLOR_CUBE (1 << 1)
-#define FVWM_COLOR_CUBE (1 << 2)
+#define MVWM_COLOR_CUBE (1 << 2)
 #define PA_GRAY_SCALE (1 << 3)
-#define FVWM_GRAY_SCALE (1 << 4)
-#define ANY_COLOR_CUBE (PA_COLOR_CUBE|FVWM_COLOR_CUBE)
-#define ANY_GRAY_SCALE (PA_GRAY_SCALE|FVWM_GRAY_SCALE)
+#define MVWM_GRAY_SCALE (1 << 4)
+#define ANY_COLOR_CUBE (PA_COLOR_CUBE|MVWM_COLOR_CUBE)
+#define ANY_GRAY_SCALE (PA_GRAY_SCALE|MVWM_GRAY_SCALE)
 
 static
 int PictureAllocColorTable(
@@ -1278,22 +1278,22 @@ int PictureAllocColorTable(
 	int color_limit;
 	int pa_type = (Pvisual->class != GrayScale) ?
 		PA_COLOR_CUBE : PA_GRAY_SCALE;
-	int fvwm_type = (Pvisual->class != GrayScale) ?
-		FVWM_COLOR_CUBE : FVWM_GRAY_SCALE;
+	int mvwm_type = (Pvisual->class != GrayScale) ?
+		MVWM_COLOR_CUBE : MVWM_GRAY_SCALE;
 	int cc[][6] =
 	{
 		/* {nr,ng,nb,ngrey,grey_bits,logic} */
 		/* 5 first for direct colors and Pdepth > 8*/
 		/* 8192 colors depth 13, a reasonable max for a color table */
-		{16, 32, 16, 0, 0, FVWM_COLOR_CUBE},
+		{16, 32, 16, 0, 0, MVWM_COLOR_CUBE},
 		/* 4096 colors depth 12 */
-		{16, 16, 16, 0, 0, FVWM_COLOR_CUBE},
+		{16, 16, 16, 0, 0, MVWM_COLOR_CUBE},
 		/* 1024 colors depth 10 */
-		{8, 16, 8, 0, 0, FVWM_COLOR_CUBE},
+		{8, 16, 8, 0, 0, MVWM_COLOR_CUBE},
 		/* 512 colors depth 9 */
-		{8, 8, 8, 0, 0, FVWM_COLOR_CUBE},
+		{8, 8, 8, 0, 0, MVWM_COLOR_CUBE},
 		/* 256 colors 3/3/2 standard colormap */
-		{8, 8, 4, 0, 0, FVWM_COLOR_CUBE},
+		{8, 8, 4, 0, 0, MVWM_COLOR_CUBE},
 		/* 256 grey scale */
 		{0, 0, 0, 0, 8, ANY_GRAY_SCALE},
 		/* 244 Xrender XFree-4.2 */
@@ -1313,7 +1313,7 @@ int PictureAllocColorTable(
 		/* 85 Xrender XFree-4.3 */
 		{4, 4, 4, 23, 0, ANY_COLOR_CUBE},
 		/* 78 (in fact 76)  a good default ??*/
-		{4, 4, 4, 16, 0, FVWM_COLOR_CUBE},
+		{4, 4, 4, 16, 0, MVWM_COLOR_CUBE},
 		/* 70  a good default ?? */
 		{4, 4, 4, 8, 0, ANY_COLOR_CUBE},
 		/* 68  a good default ?? */
@@ -1323,30 +1323,30 @@ int PictureAllocColorTable(
 		/* 64 grey scale */
 		{0, 0, 0, 0, 6, ANY_GRAY_SCALE},
 		/* 54, maybe a good default? */
-		{4, 4, 3, 8, 0, FVWM_COLOR_CUBE},
+		{4, 4, 3, 8, 0, MVWM_COLOR_CUBE},
 		/* 48, (GTK wcl) no grey but ok */
-		{4, 4, 3, 0, 0, FVWM_COLOR_CUBE},
+		{4, 4, 3, 0, 0, MVWM_COLOR_CUBE},
 		/* 32, 2/2/1 standard colormap */
-		{4, 4, 2, 0, 0, FVWM_COLOR_CUBE},
+		{4, 4, 2, 0, 0, MVWM_COLOR_CUBE},
 		/* 32 xrender xfree-4.2 */
 		{0, 0, 0, 0, 6, ANY_GRAY_SCALE},
 		/* 29 */
-		{3, 3, 3, 4, 0, FVWM_COLOR_CUBE},
+		{3, 3, 3, 4, 0, MVWM_COLOR_CUBE},
 		/* 27 (xrender in depth 6&7(hypo) GTK wcl) */
-		{3, 3, 3, 0, 0, FVWM_COLOR_CUBE|PA_COLOR_CUBE*(Pdepth<8)},
+		{3, 3, 3, 0, 0, MVWM_COLOR_CUBE|PA_COLOR_CUBE*(Pdepth<8)},
 		/* 16 grey scale */
-		{0, 0, 0, 0, 4, FVWM_GRAY_SCALE},
+		{0, 0, 0, 0, 4, MVWM_GRAY_SCALE},
 		/* 10 */
-		{2, 2, 2, 4, 0, FVWM_COLOR_CUBE},
+		{2, 2, 2, 4, 0, MVWM_COLOR_CUBE},
                 /* 8 (xrender/qt/gtk wcl) */
-		{2, 2, 2, 0, 0, FVWM_COLOR_CUBE},
+		{2, 2, 2, 0, 0, MVWM_COLOR_CUBE},
 		/* 8 grey scale Xrender depth 4 and XFree-4.3 */
-		{0, 0, 0, 0, 3, FVWM_GRAY_SCALE|PA_GRAY_SCALE*(Pdepth<5)},
+		{0, 0, 0, 0, 3, MVWM_GRAY_SCALE|PA_GRAY_SCALE*(Pdepth<5)},
 		/* 4 grey scale*/
 		{0, 0, 0, 0, 2,
-		 FVWM_GRAY_SCALE|FVWM_COLOR_CUBE|PA_COLOR_CUBE*(Pdepth<4)},
+		 MVWM_GRAY_SCALE|MVWM_COLOR_CUBE|PA_COLOR_CUBE*(Pdepth<4)},
 		/* 2 */
-		{0, 0, 0, 0, 1, FVWM_COLOR_CUBE|FVWM_GRAY_SCALE}
+		{0, 0, 0, 0, 1, MVWM_COLOR_CUBE|MVWM_GRAY_SCALE}
 	};
 
 	(void)dyn_cl_set;
@@ -1362,9 +1362,9 @@ int PictureAllocColorTable(
 	color_limit = 0;
 	use_default = True;
 
-	/* use fvwm color limit */
+	/* use mvwm color limit */
 	if (!use_my_color_limit &&
-	     (envp = getenv("FVWM_COLORTABLE_TYPE")) != NULL)
+	     (envp = getenv("MVWM_COLORTABLE_TYPE")) != NULL)
 	{
 		int nr = 0, ng = 0, nb = 0, grey_bits = 0, ngrey = 0;
 		int ctt = atoi(envp);
@@ -1423,7 +1423,7 @@ int PictureAllocColorTable(
 	color_limit = 0;
 
 	/* parse the color limit env variable */
-	if ((envp = getenv("FVWM_COLORLIMIT")) != NULL)
+	if ((envp = getenv("MVWM_COLORLIMIT")) != NULL)
 	{
 		char *rest, *l;
 
@@ -1722,7 +1722,7 @@ int PictureAllocColorTable(
 	i = 0;
 	while(i < cc_nbr && Pct == NULL)
 	{
-		if ((cc[i][5] & fvwm_type) &&
+		if ((cc[i][5] & mvwm_type) &&
 		    cc[i][0]*cc[i][1]*cc[i][2] + cc[i][3] - 2*(cc[i][3] > 0) +
 		    (1 << cc[i][4])*(cc[i][4] != 0) <= limit)
 		{
@@ -1747,7 +1747,7 @@ int PictureAllocColorTable(
 	if (Pct == NULL)
 	{
 		fprintf(stderr,
-			"[fvwm] ERR -- Cannot get Black and White. exiting!\n");
+			"[mvwm] ERR -- Cannot get Black and White. exiting!\n");
 		exit(2);
 	}
 	return PColorLimit;
@@ -1786,7 +1786,7 @@ Bool alloc_direct_colors(int *limit, Bool use_my_color_limit)
 
 	if (!use_my_color_limit)
 	{
-		/* colors allocated by fvwm we can return */
+		/* colors allocated by mvwm we can return */
 		return 1;
 	}
 
@@ -2271,10 +2271,10 @@ int PictureInitColors(
 	{
 		/* static classes */
 		PUseDynamicColors = 0;
-		if (call_type == PICTURE_CALLED_BY_FVWM &&
-		    getenv("FVWM_COLORTABLE_TYPE") != NULL)
+		if (call_type == PICTURE_CALLED_BY_MVWM &&
+		    getenv("MVWM_COLORTABLE_TYPE") != NULL)
 		{
-			flib_putenv("FVWM_COLORTABLE_TYPE", "");
+			flib_putenv("MVWM_COLORTABLE_TYPE", "");
 		}
 		return PColorLimit;
 	}
@@ -2286,10 +2286,10 @@ int PictureInitColors(
 		PColorLimit = 0;
 		PUseDynamicColors = 0;
 		alloc_direct_colors(0, use_my_color_limit);
-		if (call_type == PICTURE_CALLED_BY_FVWM &&
-		    getenv("FVWM_COLORTABLE_TYPE") != NULL)
+		if (call_type == PICTURE_CALLED_BY_MVWM &&
+		    getenv("MVWM_COLORTABLE_TYPE") != NULL)
 		{
-			flib_putenv("FVWM_COLORTABLE_TYPE", "");
+			flib_putenv("MVWM_COLORTABLE_TYPE", "");
 		}
 		return 0;
 	}
@@ -2322,7 +2322,7 @@ void PicturePrintColorInfo(int verbose)
 {
 	unsigned long nbr_of_colors = 1 << Pdepth;
 
-	fprintf(stderr, "fvwm info on colors\n");
+	fprintf(stderr, "mvwm info on colors\n");
 	fprintf(stderr, "  Visual ID: 0x%x, Default?: %s, Class: ",
 		(int)(Pvisual->visualid),
 		(Pdefault)? "Yes":"No");
@@ -2380,7 +2380,7 @@ void PicturePrintColorInfo(int verbose)
 
 			if (verbose)
 			{
-				fprintf(stderr,"  The fvwm colors table:\n");
+				fprintf(stderr,"  The mvwm colors table:\n");
 			}
 			for (i = 0; i < PColorLimit; i++)
 			{
@@ -2403,7 +2403,7 @@ void PicturePrintColorInfo(int verbose)
 			{
 				if (verbose)
 				{
-					fprintf(stderr,"  fvwm colors not in"
+					fprintf(stderr,"  mvwm colors not in"
 						" the table:\n");
 				}
 				for(i=0; i < nbr_of_colors; i++)
@@ -2447,7 +2447,7 @@ void PicturePrintColorInfo(int verbose)
 			if (Pvisual->class & 1)
 			{
 				fprintf(stderr,
-					"  Number of colours used by fvwm:\n");
+					"  Number of colours used by mvwm:\n");
 				fprintf(stderr,
 					"    In the table: %i\n", count);
 				fprintf(
@@ -2482,7 +2482,7 @@ void PicturePrintColorInfo(int verbose)
 			else
 			{
 				fprintf(stderr,
-					"  Static Colormap used by fvwm:\n");
+					"  Static Colormap used by mvwm:\n");
 			}
 			print_colormap(Pcmap);
 		}

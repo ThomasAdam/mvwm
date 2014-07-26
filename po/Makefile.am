@@ -1,33 +1,33 @@
 
 localedir = @LOCALEDIR@
 
-FVWM_POT_FILES = \
-     ../fvwm/fvwm.c \
-     ../fvwm/expand.c \
-     ../fvwm/windowlist.c \
-     ../fvwm/virtual.c \
-     ../fvwm/menus.c
+MVWM_POT_FILES = \
+     ../mvwm/mvwm.c \
+     ../mvwm/expand.c \
+     ../mvwm/windowlist.c \
+     ../mvwm/virtual.c \
+     ../mvwm/menus.c
 
-FVWMRC_POT_FILES = \
-     ../fvwm/ConfigFvwmSetup \
-     ../modules/FvwmForm/FvwmForm-Setup.in
+MVWMRC_POT_FILES = \
+     ../mvwm/ConfigMvwmSetup \
+     ../modules/MvwmForm/MvwmForm-Setup.in
 
-FVWMTASKBAR_POT_FILES = \
-	../modules/FvwmTaskBar/Goodies.c \
-	../modules/FvwmTaskBar/FvwmTaskBar.c
+MVWMTASKBAR_POT_FILES = \
+	../modules/MvwmTaskBar/Goodies.c \
+	../modules/MvwmTaskBar/MvwmTaskBar.c
 
-FVWMSCRIPT_POT_FILES = \
-	../modules/FvwmScript/Scripts/FvwmScript-BellSetup \
-	../modules/FvwmScript/Scripts/FvwmScript-KeyboardSetup \
-	../modules/FvwmScript/Scripts/FvwmScript-PointerSetup \
-	../modules/FvwmScript/Scripts/FvwmScript-ScreenSetup \
-	../modules/FvwmScript/Scripts/FvwmScript-FileBrowser
+MVWMSCRIPT_POT_FILES = \
+	../modules/MvwmScript/Scripts/MvwmScript-BellSetup \
+	../modules/MvwmScript/Scripts/MvwmScript-KeyboardSetup \
+	../modules/MvwmScript/Scripts/MvwmScript-PointerSetup \
+	../modules/MvwmScript/Scripts/MvwmScript-ScreenSetup \
+	../modules/MvwmScript/Scripts/MvwmScript-FileBrowser
 
 EXTRA_DIST = \
-	@POFILES@ @GMOFILES@ fvwm.pot FvwmTaskBar.pot FvwmScript.pot \
+	@POFILES@ @GMOFILES@ mvwm.pot MvwmTaskBar.pot MvwmScript.pot \
 	remove-potcdate.sed remove-potcdate.sin
 
-COPYRIGHT_HOLDER = fvwm workers
+COPYRIGHT_HOLDER = mvwm workers
 
 # These options get passed to xgettext.
 XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
@@ -69,78 +69,78 @@ catalogs: $(CATALOGS)
 maintainer-clean-local:
 	rm -f $(GMOFILES)
 
-$(FVWM_DOMAIN).pot-update: $(FVWM_POT_FILES) \
-	$(FVWMRC_POT_FILES) \
+$(MVWM_DOMAIN).pot-update: $(MVWM_POT_FILES) \
+	$(MVWMRC_POT_FILES) \
 	remove-potcdate.sed
-	rm -f fvwmrc.pot; \
-	rcpotfiles='$(FVWMRC_POT_FILES)'; \
+	rm -f mvwmrc.pot; \
+	rcpotfiles='$(MVWMRC_POT_FILES)'; \
 	rm -f duplicate; \
 	for file in $$rcpotfiles; do \
 	  perl -ne 's/\[gt\.((\\.|.)+?)\]/ print \
 	  "\#$$ARGV: line $$.\n"."msgid \"$$1\"\n"."msgstr \"\"\n\n"/ge' \
 	  $$file >> duplicate; \
 	done; \
-	msguniq duplicate > fvwmrc.pot;
+	msguniq duplicate > mvwmrc.pot;
 	rm -f duplicate; \
-	potfiles='$(FVWM_POT_FILES)'; \
+	potfiles='$(MVWM_POT_FILES)'; \
 	$(XGETTEXT) \
-	  --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) -o $(FVWM_DOMAIN).po \
+	  --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) -o $(MVWM_DOMAIN).po \
 	  --copyright-holder='$(COPYRIGHT_HOLDER)' $$potfiles; \
-	test ! -f $(FVWM_DOMAIN).po || { \
-	  if test -f $(srcdir)/$(FVWM_DOMAIN).pot; then \
-	    sed -f remove-potcdate.sed < $(srcdir)/$(FVWM_DOMAIN).pot > $(FVWM_DOMAIN).1po && \
-	    sed -f remove-potcdate.sed < $(FVWM_DOMAIN).po > $(FVWM_DOMAIN).2po && \
-	    if cmp $(FVWM_DOMAIN).1po $(FVWM_DOMAIN).2po >/dev/null 2>&1; then \
-	      rm -f $(FVWM_DOMAIN).1po $(FVWM_DOMAIN).2po $(FVWM_DOMAIN).po; \
+	test ! -f $(MVWM_DOMAIN).po || { \
+	  if test -f $(srcdir)/$(MVWM_DOMAIN).pot; then \
+	    sed -f remove-potcdate.sed < $(srcdir)/$(MVWM_DOMAIN).pot > $(MVWM_DOMAIN).1po && \
+	    sed -f remove-potcdate.sed < $(MVWM_DOMAIN).po > $(MVWM_DOMAIN).2po && \
+	    if cmp $(MVWM_DOMAIN).1po $(MVWM_DOMAIN).2po >/dev/null 2>&1; then \
+	      rm -f $(MVWM_DOMAIN).1po $(MVWM_DOMAIN).2po $(MVWM_DOMAIN).po; \
 	    else \
-	      rm -f $(FVWM_DOMAIN).1po $(FVWM_DOMAIN).2po $(srcdir)/$(FVWM_DOMAIN).pot && \
-	      mv $(FVWM_DOMAIN).po $(srcdir)/$(FVWM_DOMAIN).pot; \
+	      rm -f $(MVWM_DOMAIN).1po $(MVWM_DOMAIN).2po $(srcdir)/$(MVWM_DOMAIN).pot && \
+	      mv $(MVWM_DOMAIN).po $(srcdir)/$(MVWM_DOMAIN).pot; \
 	    fi; \
 	  else \
-	    mv $(FVWM_DOMAIN).po $(srcdir)/$(FVWM_DOMAIN).pot; \
+	    mv $(MVWM_DOMAIN).po $(srcdir)/$(MVWM_DOMAIN).pot; \
 	  fi; \
-	  mv $(FVWM_DOMAIN).pot duplicate.pot; \
-	  cat fvwmrc.pot >> duplicate.pot; \
-	  msguniq duplicate.pot  > $(FVWM_DOMAIN).pot; \
-	  rm -f duplicate.pot fvwmrc.pot; \
+	  mv $(MVWM_DOMAIN).pot duplicate.pot; \
+	  cat mvwmrc.pot >> duplicate.pot; \
+	  msguniq duplicate.pot  > $(MVWM_DOMAIN).pot; \
+	  rm -f duplicate.pot mvwmrc.pot; \
 	}
 
-$(srcdir)/$(FVWM_DOMAIN).pot:
-	$(MAKE) $(FVWM_DOMAIN).pot-update
+$(srcdir)/$(MVWM_DOMAIN).pot:
+	$(MAKE) $(MVWM_DOMAIN).pot-update
 
-$(FVWMTASKBAR_DOMAIN).pot-update: $(FVWMTASKBAR_POT_FILES) \
+$(MVWMTASKBAR_DOMAIN).pot-update: $(MVWMTASKBAR_POT_FILES) \
 	remove-potcdate.sed
-	potfiles='$(FVWMTASKBAR_POT_FILES)'; \
+	potfiles='$(MVWMTASKBAR_POT_FILES)'; \
 	$(XGETTEXT) \
 	  --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) \
-	  -o $(FVWMTASKBAR_DOMAIN).po \
+	  -o $(MVWMTASKBAR_DOMAIN).po \
 	  --copyright-holder='$(COPYRIGHT_HOLDER)' $$potfiles; \
-	test ! -f $(FVWMTASKBAR_DOMAIN).po || { \
-	  if test -f $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot; then \
-	    sed -f remove-potcdate.sed < $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot \
-	    > $(FVWMTASKBAR_DOMAIN).1po && \
-	    sed -f remove-potcdate.sed < $(FVWMTASKBAR_DOMAIN).po \
-	    > $(FVWMTASKBAR_DOMAIN).2po && \
-	    if cmp $(FVWMTASKBAR_DOMAIN).1po $(FVWMTASKBAR_DOMAIN).2po \
+	test ! -f $(MVWMTASKBAR_DOMAIN).po || { \
+	  if test -f $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot; then \
+	    sed -f remove-potcdate.sed < $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot \
+	    > $(MVWMTASKBAR_DOMAIN).1po && \
+	    sed -f remove-potcdate.sed < $(MVWMTASKBAR_DOMAIN).po \
+	    > $(MVWMTASKBAR_DOMAIN).2po && \
+	    if cmp $(MVWMTASKBAR_DOMAIN).1po $(MVWMTASKBAR_DOMAIN).2po \
 	    >/dev/null 2>&1; then \
-	      rm -f $(FVWMTASKBAR_DOMAIN).1po $(FVWMTASKBAR_DOMAIN).2po \
-	      $(FVWMTASKBAR_DOMAIN).po; \
+	      rm -f $(MVWMTASKBAR_DOMAIN).1po $(MVWMTASKBAR_DOMAIN).2po \
+	      $(MVWMTASKBAR_DOMAIN).po; \
 	    else \
-	      rm -f $(FVWMTASKBAR_DOMAIN).1po $(FVWMTASKBAR_DOMAIN).2po \
-	      $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot && \
-	      mv $(FVWMTASKBAR_DOMAIN).po $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot; \
+	      rm -f $(MVWMTASKBAR_DOMAIN).1po $(MVWMTASKBAR_DOMAIN).2po \
+	      $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot && \
+	      mv $(MVWMTASKBAR_DOMAIN).po $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot; \
 	    fi; \
 	  else \
-	    mv $(FVWMTASKBAR_DOMAIN).po $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot; \
+	    mv $(MVWMTASKBAR_DOMAIN).po $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot; \
 	  fi; \
 	}
 
-$(srcdir)/$(FVWMTASKBAR_DOMAIN).pot:
-	$(MAKE) $(FVWMTASKBAR_DOMAIN).pot-update
+$(srcdir)/$(MVWMTASKBAR_DOMAIN).pot:
+	$(MAKE) $(MVWMTASKBAR_DOMAIN).pot-update
 
-$(FVWMSCRIPT_DOMAIN).pot-update: $(FVWMSCRIPT_POT_FILES) \
+$(MVWMSCRIPT_DOMAIN).pot-update: $(MVWMSCRIPT_POT_FILES) \
 	remove-potcdate.sed
-	potfiles='$(FVWMSCRIPT_POT_FILES)'; \
+	potfiles='$(MVWMSCRIPT_POT_FILES)'; \
 	rm -f duplicate; \
 	for file in $$potfiles; do \
 	  perl -ne 's/LocaleTitle\s+\{((\\.|.)+?)\}/ print \
@@ -148,15 +148,15 @@ $(FVWMSCRIPT_DOMAIN).pot-update: $(FVWMSCRIPT_POT_FILES) \
 	  $$file >> duplicate; \
 	done; \
 	msguniq duplicate > duplicate.pot; \
-	cat pot_head_sample >  $(FVWMSCRIPT_DOMAIN).pot; \
-	cat duplicate.pot >> $(FVWMSCRIPT_DOMAIN).pot; \
+	cat pot_head_sample >  $(MVWMSCRIPT_DOMAIN).pot; \
+	cat duplicate.pot >> $(MVWMSCRIPT_DOMAIN).pot; \
 	rm -f duplicate duplicate.pot;
 
-$(srcdir)/$(FVWMSCRIPT_DOMAIN).pot:
-	$(MAKE) $(FVWMSCRIPT_DOMAIN).pot-update
+$(srcdir)/$(MVWMSCRIPT_DOMAIN).pot:
+	$(MAKE) $(MVWMSCRIPT_DOMAIN).pot-update
 
-$(POFILES): $(srcdir)/$(FVWM_DOMAIN).pot $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot \
-	$(srcdir)/$(FVWMSCRIPT_DOMAIN).pot
+$(POFILES): $(srcdir)/$(MVWM_DOMAIN).pot $(srcdir)/$(MVWMTASKBAR_DOMAIN).pot \
+	$(srcdir)/$(MVWMSCRIPT_DOMAIN).pot
 	dlang=`echo $@ | sed -e 's,.*/,,' -e 's/\.po$$//'`; \
 	dom=`echo $$dlang | sed -e 's/\..*$$//'`; \
 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
@@ -167,8 +167,8 @@ $(POFILES): $(srcdir)/$(FVWM_DOMAIN).pot $(srcdir)/$(FVWMTASKBAR_DOMAIN).pot \
 
 #	@lang=`echo $@ | sed -e 's,.*/,,' -e 's/\.po$$//'`; \
 #	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-#	echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(FVWM_DOMAIN).pot"; \
-#	cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(FVWM_DOMAIN).pot
+#	echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(MVWM_DOMAIN).pot"; \
+#	cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(MVWM_DOMAIN).pot
 
 install-data-local: install-data-local-@USE_NLS@
 install-data-local-no: all
@@ -292,9 +292,9 @@ uninstall-local-yes:
 	done
 
 update-po: Makefile
-	$(MAKE) $(FVWM_DOMAIN).pot-update
-	$(MAKE) $(FVWMTASKBAR_DOMAIN).pot-update
-	$(MAKE) $(FVWMSCRIPT_DOMAIN).pot-update
+	$(MAKE) $(MVWM_DOMAIN).pot-update
+	$(MAKE) $(MVWMTASKBAR_DOMAIN).pot-update
+	$(MAKE) $(MVWMSCRIPT_DOMAIN).pot-update
 	$(MAKE) $(UPDATEPOFILES)
 	$(MAKE) update-gmo
 

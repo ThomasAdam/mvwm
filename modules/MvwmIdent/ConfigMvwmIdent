@@ -1,0 +1,6 @@
+########################## Window-Identifier ###############################
+# Just choose colors and fonts
+DestroyModuleConfig MvwmIdent: *
+*MvwmIdent: Back MidnightBlue
+*MvwmIdent: Fore Yellow
+*MvwmIdent: Font -adobe-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*

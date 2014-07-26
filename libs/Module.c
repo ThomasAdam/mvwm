@@ -15,7 +15,7 @@
  */
 
 /*
-** Module.c: code for modules to communicate with fvwm
+** Module.c: code for modules to communicate with mvwm
 */
 #include "config.h"
 #include <stdio.h>
@@ -46,21 +46,21 @@ static int positive_read(int fd, char *buf, int count)
 
 
 /*
- * Reads a single packet of info from fvwm.
+ * Reads a single packet of info from mvwm.
  * The packet is stored in static memory that is reused during
  * the next call.
  */
 
-FvwmPacket *ReadFvwmPacket(int fd)
+MvwmPacket *ReadMvwmPacket(int fd)
 {
-	static unsigned long buffer[FvwmPacketMaxSize];
-	FvwmPacket *packet = (FvwmPacket *)buffer;
+	static unsigned long buffer[MvwmPacketMaxSize];
+	MvwmPacket *packet = (MvwmPacket *)buffer;
 	unsigned long length;
 
 	/* The `start flag' value supposedly exists to synchronize the
-	 * fvwm -> module communication.  However, the communication goes
+	 * mvwm -> module communication.  However, the communication goes
 	 * through a pipe.  I don't see how any data could ever get lost,
-	 * so how would fvwm & the module become unsynchronized?
+	 * so how would mvwm & the module become unsynchronized?
 	 */
 	do
 	{
@@ -77,8 +77,8 @@ FvwmPacket *ReadFvwmPacket(int fd)
 	{
 		return NULL;
 	}
-	length = FvwmPacketBodySize_byte(*packet);
-	if (length > FvwmPacketMaxSize_byte - FvwmPacketHeaderSize_byte)
+	length = MvwmPacketBodySize_byte(*packet);
+	if (length > MvwmPacketMaxSize_byte - MvwmPacketHeaderSize_byte)
 	{
 		/* packet too long */
 		return NULL;
@@ -95,7 +95,7 @@ FvwmPacket *ReadFvwmPacket(int fd)
 
 /*
  *
- * SendFinishedStartupNotification - informs fvwm that the module has
+ * SendFinishedStartupNotification - informs mvwm that the module has
  * finished its startup procedures and is fully operational now.
  *
  */
@@ -106,8 +106,8 @@ void SendFinishedStartupNotification(int *fd)
 
 /*
  *
- * SendUnlockNotification - informs fvwm that the module has
- * finished it's procedures and fvwm may proceed.
+ * SendUnlockNotification - informs mvwm that the module has
+ * finished it's procedures and mvwm may proceed.
  *
  */
 void SendUnlockNotification(int *fd)
@@ -117,7 +117,7 @@ void SendUnlockNotification(int *fd)
 
 /*
  *
- * SendQuitNotification - informs fvwm that the module has
+ * SendQuitNotification - informs mvwm that the module has
  * finished and may be killed.
  *
  */
@@ -130,7 +130,7 @@ void SendQuitNotification(int *fd)
 
 /*
  *
- * SendText - Sends arbitrary text/command back to fvwm
+ * SendText - Sends arbitrary text/command back to mvwm
  *
  */
 void SendText(int *fd, const char *message, unsigned long window)
@@ -172,13 +172,13 @@ void SendText(int *fd, const char *message, unsigned long window)
 
 /*
  *
- * SendFvwmPipe - Sends message to fvwm:  The message is a comma-delimited
- * string separated into its component sections and sent one by one to fvwm.
+ * SendMvwmPipe - Sends message to mvwm:  The message is a comma-delimited
+ * string separated into its component sections and sent one by one to mvwm.
  * It is discouraged to use this function with a "synchronous" module.
- * (Form FvwmIconMan)
+ * (Form MvwmIconMan)
  *
  */
-void SendFvwmPipe(int *fd, const char *message, unsigned long window)
+void SendMvwmPipe(int *fd, const char *message, unsigned long window)
 {
 	const char *hold = message;
 	const char *temp;
@@ -249,7 +249,7 @@ void InitGetConfigLine(int *fd, char *match)
 
 
 /*
- * Gets a module configuration line from fvwm. Returns NULL if there are
+ * Gets a module configuration line from mvwm. Returns NULL if there are
  * no more lines to be had. "line" is a pointer to a char *.
  *
  * Changed 10/19/98 by Dan Espen:
@@ -260,7 +260,7 @@ void InitGetConfigLine(int *fd, char *match)
  */
 void GetConfigLine(int *fd, char **tline)
 {
-	FvwmPacket *packet;
+	MvwmPacket *packet;
 	int body_count;
 
 	if (first_pass)
@@ -271,7 +271,7 @@ void GetConfigLine(int *fd, char **tline)
 
 	do
 	{
-		packet = ReadFvwmPacket(fd[1]);
+		packet = ReadMvwmPacket(fd[1]);
 		if (packet == NULL || packet->type == M_END_CONFIG_INFO)
 		{
 			*tline = NULL;
@@ -283,7 +283,7 @@ void GetConfigLine(int *fd, char **tline)
 	 * (unsigned long) zeros.  Skip the zeros and any whitespace that
 	 * follows */
 	*tline = (char *)&(packet->body[3]);
-	body_count = FvwmPacketBodySize(*packet) * sizeof(unsigned long);
+	body_count = MvwmPacketBodySize(*packet) * sizeof(unsigned long);
 
 	while (body_count > 0 && isspace((unsigned char)**tline))
 	{
@@ -299,8 +299,8 @@ ModuleArgs *ParseModuleArgs(int argc, char *argv[], int use_arg6_as_alias)
 
 	/* Need at least six arguments:
 	   [0] name of executable
-	   [1] file descriptor of module->fvwm pipe (write end)
-	   [2] file descriptor of fvwm->module pipe (read end)
+	   [1] file descriptor of module->mvwm pipe (write end)
+	   [2] file descriptor of mvwm->module pipe (read end)
 	   [3] pathname of last config file read (ignored, use Send_ConfigInfo)
 	   [4] application window context
 	   [5] window decoration context
@@ -346,8 +346,8 @@ ModuleArgs *ParseModuleArgs(int argc, char *argv[], int use_arg6_as_alias)
 	}
 
 	/* File descriptors for the pipes */
-	ma.to_fvwm = atoi(argv[1]);
-	ma.from_fvwm = atoi(argv[2]);
+	ma.to_mvwm = atoi(argv[1]);
+	ma.from_mvwm = atoi(argv[2]);
 
 	/* Ignore argv[3] */
 

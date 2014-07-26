@@ -1,22 +1,22 @@
 # Author: Scott Smedley
 
-docdir = @FVWM_DOCDIR@/modules
+docdir = @MVWM_DOCDIR@/modules
 XSLTPROC = @XSLTPROC@
 
-XSL_FILE = $(srcdir)/../fvwm.xsl
-XSL_MAN_FILE = $(srcdir)/../fvwm-man.xsl
+XSL_FILE = $(srcdir)/../mvwm.xsl
+XSL_MAN_FILE = $(srcdir)/../mvwm-man.xsl
 XSL_PROFILE = $(srcdir)/../docbook-xsl/profiling/profile.xsl
 
 MODULES = \
-	FvwmAuto FvwmBacker FvwmButtons FvwmCommand \
-	FvwmConsole FvwmEvent \
-	FvwmIconMan FvwmIdent FvwmPager FvwmPerl \
-	FvwmWindowMenu
+	MvwmAuto MvwmBacker MvwmButtons MvwmCommand \
+	MvwmConsole MvwmEvent \
+	MvwmIconMan MvwmIdent MvwmPager MvwmPerl \
+	MvwmWindowMenu
 HTML_FILES = @DOC_MODULES_HTML@ todo.html
 XML_FILES = todo.xml
 EXTRA_DIST = $(XML_FILES)
 
-if FVWM_BUILD_HTMLDOC
+if MVWM_BUILD_HTMLDOC
 doc_DATA = $(HTML_FILES)
 endif
 

@@ -30,9 +30,9 @@ Pixel GetSimpleColor(char *name);
 Pixel GetColor(char *name);
 
 /* duplicate an already allocated color */
-Pixel fvwmlib_clone_color(Pixel p);
-void fvwmlib_free_colors(Display *dpy, Pixel *pixels, int n, Bool no_limit);
-void fvwmlib_copy_color(
+Pixel mvwmlib_clone_color(Pixel p);
+void mvwmlib_free_colors(Display *dpy, Pixel *pixels, int n, Bool no_limit);
+void mvwmlib_copy_color(
 	Display *dpy, Pixel *dst_color, Pixel *src_color, Bool do_free_dest,
 	Bool do_copy_src);
 
