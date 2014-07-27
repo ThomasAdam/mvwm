@@ -1734,67 +1734,58 @@ static const char_comb_t comb_table[] = {
 static int
 get_combining_class(unsigned short ch)
 {
-	int             count;
-	int             table_size =
-	    sizeof(combclass_table) / sizeof(combclass_table[0]);
+	int	 count;
+	int	 tbl_size = sizeof(combclass_table) / sizeof(combclass_table[0]);
 
-	for (count = 0; count < table_size; count++) {
-		if (combclass_table[count].key == ch) {
-			return combclass_table[count].combclass;
-		}
+	for (count = 0; count < tbl_size; count++) {
+		if (combclass_table[count].key == ch)
+			return (combclass_table[count].combclass);
 	}
-
-	return 0;
+	return (0);
 }
 
 static const char_comb_t *
 get_comb_entry_decomposed(unsigned short ch)
 {
-	int             count;
-	int             table_size =
-	    sizeof(comb_table) / sizeof(comb_table[0]);
+	int	 count;
+	int	 tbl_size = sizeof(comb_table) / sizeof(comb_table[0]);
 
-	for (count = 0; count < table_size; count++) {
-		if (comb_table[count].key == ch) {
-			return &comb_table[count];
-		}
+	for (count = 0; count < tbl_size; count++) {
+		if (comb_table[count].key == ch)
+			return (&comb_table[count]);
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 static unsigned short
 get_comb_entry_composed(unsigned short first, unsigned short second)
 {
-	int             count;
-	int             table_size =
-	    sizeof(comb_table) / sizeof(comb_table[0]);
+	int	 count;
+	int	 tbl_size = sizeof(comb_table) / sizeof(comb_table[0]);
 
-	for (count = 0; count < table_size; count++) {
+	for (count = 0; count < tbl_size; count++) {
 		if (comb_table[count].first == first &&
 		    comb_table[count].second == second) {
-			return comb_table[count].key;
+			return (comb_table[count].key);
 		}
 	}
-
-	return (unsigned short) 0;
+	return ((unsigned short)0);
 }
 
 static int
-convert_to_ucs2(const unsigned char *str_utf8, unsigned short *str_ucs2,
-    int len)
+convert_to_ucs2(const unsigned char *str_utf8, unsigned short *str_ucs2, int len)
 {
 	int             in_pos = 0;
 	int             out_pos = 0;
+
 	while (in_pos < len) {
 		if (str_utf8[in_pos] <= 0x7f) {
 			str_ucs2[out_pos] = (unsigned short) str_utf8[in_pos];
 			in_pos++;
 		} else {
 			if ((str_utf8[in_pos] & 0300) != 0300) {
-				/*
-				 * out of sync
-				 */
+				/* out of sync */
 				str_ucs2[out_pos] = REPLACEMENT_CHARACTER;
 				in_pos++;
 			} else if (in_pos < len - 1
@@ -1804,9 +1795,7 @@ convert_to_ucs2(const unsigned char *str_utf8, unsigned short *str_ucs2,
 				str_ucs2[out_pos] =
 				    ((str_utf8[in_pos] & 0x1f) << 6) +
 				    (str_utf8[in_pos + 1] & 0x3f);
-				/*
-				 * check for overlong sequence
-				 */
+				/* check for overlong sequence */
 				if (str_ucs2[out_pos] < 0x80)
 					str_ucs2[out_pos] =
 					    REPLACEMENT_CHARACTER;
@@ -1821,24 +1810,20 @@ convert_to_ucs2(const unsigned char *str_utf8, unsigned short *str_ucs2,
 				    ((str_utf8[in_pos] & 0x0f) << 12) +
 				    ((str_utf8[in_pos + 1] & 0x3f) << 6) +
 				    (str_utf8[in_pos + 2] & 0x3f);
-				/*
-				 * check for overlong sequence
-				 */
+				/* check for overlong sequence */
 				if (str_ucs2[out_pos] < 0x800)
 					str_ucs2[out_pos] =
 					    REPLACEMENT_CHARACTER;
 				in_pos += 3;
 			} else {
-				/*
-				 * incomplete sequence
-				 */
+				/* incomplete sequence */
 				str_ucs2[out_pos] = REPLACEMENT_CHARACTER;
 				in_pos++;
 			}
 		}
 		out_pos++;
 	}
-	return out_pos;
+	return (out_pos);
 }
 
 static int
@@ -1865,11 +1850,9 @@ convert_to_utf8(const unsigned short *str_ucs2, unsigned char *str_utf8,
 			    (str_ucs2[in_pos] & 0x3f) | 0x80;
 			out_pos += 3;
 		}
-		/*
-		 * this doesn't handle values outside UCS2 (16-bit)
-		 */
+		/* this doesn't handle values outside UCS2 (16-bit) */
 	}
-	return out_pos;
+	return (out_pos);
 }
 
 /* main procedure:
@@ -1895,27 +1878,20 @@ CombineChars(unsigned char *str_visual, int len,
 	int             comp_str_len = 0;
 	Bool            has_changed;
 
-	/*
-	 * if input has zero length, return immediatly
-	 */
-	if (len == 0) {
-		return 0;
-	}
+	/* if input has zero length, return immediatly */
+	if (len == 0)
+		return (0);
 
-	/*
-	 * decompose composed characters
-	 */
+	/* decompose composed characters */
 	source = xmalloc((len + 1) * sizeof(unsigned short));
-	/*
-	 * convert from UTF-8-encoded text to internal 16-bit encoding
-	 */
+
+	/* convert from UTF-8-encoded text to internal 16-bit encoding */
 	str_len = convert_to_ucs2(str_visual, source, len);
 	in_str_len = str_len;
-	/*
-	 * we don't really need to NULL-terminate source, since we
+
+	/* we don't really need to NULL-terminate source, since we
 	 * have string length
 	 */
-
 	/*
 	 * be pessimistic, assume all characters are decomposed
 	 */
@@ -1926,20 +1902,16 @@ CombineChars(unsigned char *str_visual, int len,
 	 */
 	source_v_to_l = xmalloc(str_len * sizeof(int));
 	dest_v_to_l = xmalloc(str_len * 2 * sizeof(int));
-	/*
-	 * setup initial mapping 1-to-1
-	 */
-	for (i = 0; i < str_len; i++) {
+	/* setup initial mapping 1-to-1 */
+	for (i = 0; i < str_len; i++)
 		source_v_to_l[i] = i;
-	}
+
 	do {
 		has_changed = False;
 		for (i = 0, j = 0; i < str_len; i++) {
 			const char_comb_t *decomp =
 			    get_comb_entry_decomposed(source[i]);
-			/*
-			 * current character is decomposable
-			 */
+			/* current character is decomposable */
 			if (decomp) {
 				dest[j] = decomp->first;
 				dest[j + 1] = decomp->second;
@@ -1955,9 +1927,7 @@ CombineChars(unsigned char *str_visual, int len,
 			}
 		}
 
-		/*
-		 * now swap
-		 */
+		/* now swap */
 		free(source);
 		free(source_v_to_l);
 		source = dest;
@@ -1994,9 +1964,8 @@ CombineChars(unsigned char *str_visual, int len,
 			 * class 0, but should be taken out for drawing
 			 * superimposed
 			 */
-			int             c1 = get_combining_class(source[i]);
-			int             c2 =
-			    get_combining_class(source[i + 1]);
+			int	 c1 = get_combining_class(source[i]);
+			int	 c2 = get_combining_class(source[i + 1]);
 			if (c1 > c2 && c2 > 0) {
 				unsigned short  temp = source[i];
 				int             temp_v_to_l =
@@ -2058,9 +2027,8 @@ CombineChars(unsigned char *str_visual, int len,
 			source[j] = dest[i];
 			source_v_to_l[j] = dest_v_to_l[i];
 			str_len = j + 1;
-		} else {
+		} else
 			str_len = j;
-		}
 	} while (has_changed);
 
 	/*
@@ -2073,17 +2041,12 @@ CombineChars(unsigned char *str_visual, int len,
 	 */
 	comp_str_len = 0;
 	if (comb_chars != NULL) {
-		/*
-		 * calculate number of combining characters left
-		 */
+		/* calculate number of combining characters left */
 		for (i = 0; i < str_len; i++) {
-			if (get_combining_class(source[i]) != 0) {
+			if (get_combining_class(source[i]) != 0)
 				comp_str_len++;
-			}
 		}
-		/*
-		 * allocate storage for combining characters
-		 */
+		/* allocate storage for combining characters */
 		*comb_chars = xmalloc((comp_str_len + 1) *
 		    sizeof(superimpose_char_t));
 	}
@@ -2114,9 +2077,7 @@ CombineChars(unsigned char *str_visual, int len,
 			}
 		}
 	}
-	/*
-	 * terminate
-	 */
+	/* terminate */
 	if (comb_chars != NULL) {
 		(*comb_chars)[comp_str_len].position = 0;
 		(*comb_chars)[comp_str_len].c.byte1 = 0;
@@ -2140,9 +2101,8 @@ CombineChars(unsigned char *str_visual, int len,
 		 * because there we have combining chars in that case
 		 */
 		if (out_str_len == 0) {
-			for (i = 0; i < in_str_len; i++) {
+			for (i = 0; i < in_str_len; i++)
 				(*l_to_v)[i] = 0;
-			}
 		}
 		for (i = 0, j = 0; i < out_str_len; i++) {
 			/*
@@ -2151,12 +2111,12 @@ CombineChars(unsigned char *str_visual, int len,
 			 * string by inserting consequitive entries, as many
 			 * as the step in the mapping from visual to logical
 			 */
-			int             step = (i == out_str_len - 1) ?
+			int	 step = (i == out_str_len - 1) ?
 			    in_str_len - j :
 			    dest_v_to_l[i + 1] - dest_v_to_l[i];
-			for (k = 0; k < step; k++, j++) {
+
+			for (k = 0; k < step; k++, j++)
 				(*l_to_v)[j] = i;
-			}
 		}
 		/*
 		 * terminated it with -1, to avoid have to send around
@@ -2173,5 +2133,5 @@ CombineChars(unsigned char *str_visual, int len,
 	free(source_v_to_l);
 	free(dest_v_to_l);
 
-	return str_len;
+	return (str_len);
 }
