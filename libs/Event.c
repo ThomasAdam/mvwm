@@ -21,28 +21,26 @@
 #include "mvwmlib.h"
 #include "Event.h"
 
-/*
- * Return the subwindow member of an event if the event type has one.
- */
+/* Return the subwindow member of an event if the event type has one.  */
 Window
 GetSubwindowFromEvent(Display *dpy, const XEvent *eventp)
 {
-	if (eventp == NULL) {
-		return None;
-	}
+	if (eventp == NULL)
+		return (None);
+
 	switch (eventp->type) {
 	case ButtonPress:
 	case ButtonRelease:
-		return eventp->xbutton.subwindow;
+		return (eventp->xbutton.subwindow);
 	case KeyPress:
 	case KeyRelease:
-		return eventp->xkey.subwindow;
+		return (eventp->xkey.subwindow);
 	case EnterNotify:
 	case LeaveNotify:
-		return eventp->xcrossing.subwindow;
+		return (eventp->xcrossing.subwindow);
 	case MotionNotify:
-		return eventp->xmotion.subwindow;
+		return (eventp->xmotion.subwindow);
 	default:
-		return None;
+		return (None);
 	}
 }
