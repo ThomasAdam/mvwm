@@ -61,11 +61,10 @@
    initializer for static 'char[]' or 'const char[]' variables.  */
 #define gettext_noop(String) String
 
-void            FGettextInit(const char *domain, const char *dir,
-    const char *module);
-const char     *FGettext(char *str);
-char           *FGettextCopy(char *str);
-void            FGettextSetLocalePath(const char *path);
-void            FGettextPrintLocalePath(int verbose);
+void            FGettextInit(const char *, const char *, const char *);
+const char     *FGettext(char *);
+char           *FGettextCopy(char *);
+void            FGettextSetLocalePath(const char *);
+void            FGettextPrintLocalePath(int);
 
 #endif /* _LIBGETTEXT_H */
