@@ -1,4 +1,3 @@
-/* -*-c-*- */
 /* Copyright (C) 2002 Mikhael Goikhman */
 /*
  * FBidi.h - interface to Bidi (bidirectionality for some asian languages).
@@ -73,19 +72,17 @@
 /*
  * Checks whether the string in the given charset should be BidiConvert'd.
  */
-Bool            FBidiIsApplicable(const char *charset);
+Bool	 FBidiIsApplicable(const char *);
 
 /*
  * Converts the given logical string to visual string for the given charset.
  */
-char           *FBidiConvert(const char *logical_str, const char *charset,
-    int str_len, Bool *is_rtl, int *out_len, superimpose_char_t *comb_chars,
-    int *pos_l_to_v);
+char	*FBidiConvert(const char *, const char *, int, Bool *, int *,
+    superimpose_char_t *, int *);
 
 #else /* !HAVE_BIDI */
 
 #define FBidiIsApplicable(c) False
-
 #define FBidiConvert(s, c, l, r, o, cc, lv) NULL
 
 #endif /* HAVE_BIDI */

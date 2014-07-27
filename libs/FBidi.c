@@ -1,4 +1,3 @@
-/* -*-c-*- */
 /* Copyright (C) 2002  Mikhael Goikhman */
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +35,12 @@ FBidiIsApplicable(const char *charset)
 {
 	if (fribidi_parse_charset((char *) charset) ==
 	    FRIBIDI_CHAR_SET_NOT_FOUND) {
-		return False;
+		return (False);
 	}
-	return True;
+	return (True);
 }
 
-char           *
+char *
 FBidiConvert(const char *logical_str, const char *charset, int str_len,
     Bool *is_rtl, int *out_len, superimpose_char_t *comb_chars, int *l_to_v)
 {
@@ -53,29 +52,23 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 	FriBidiStrIndex *pos_l_to_v;
 	int             i;
 
-	if (logical_str == NULL || charset == NULL) {
-		return NULL;
-	}
-	if (str_len < 0) {
+	if (logical_str == NULL || charset == NULL)
+		return (NULL);
+
+	if (str_len < 0)
 		str_len = strlen(logical_str);
-	}
-	if (is_rtl != NULL) {
+
+	if (is_rtl != NULL)
 		*is_rtl = False;
-	}
 
 	fribidi_charset = fribidi_parse_charset((char *) charset);
-	if (fribidi_charset == FRIBIDI_CHAR_SET_NOT_FOUND) {
-		return NULL;
-	}
+	if (fribidi_charset == FRIBIDI_CHAR_SET_NOT_FOUND)
+		return (NULL);
 
-	/*
-	 * it is possible that we allocate a bit more here, if utf-8
-	 */
+	/* it is possible that we allocate a bit more here, if utf-8 */
 	logical_unicode_str = xmalloc((str_len + 1) * sizeof(FriBidiChar));
 
-	/*
-	 * convert to unicode first
-	 */
+	/* convert to unicode first */
 	str_len =
 	    fribidi_charset_to_unicode(fribidi_charset, (char *) logical_str,
 	    str_len, logical_unicode_str);
@@ -125,12 +118,12 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 		}
 		orig_len = i;
 		l_to_v_temp = xmalloc(orig_len * sizeof(int));
-		for (i = 0; i < orig_len; i++) {
+		for (i = 0; i < orig_len; i++)
 			l_to_v_temp[i] = pos_l_to_v[l_to_v[i]];
-		}
-		for (i = 0; i < orig_len; i++) {
+
+		for (i = 0; i < orig_len; i++)
 			l_to_v[i] = l_to_v_temp[i];
-		}
+
 		free(l_to_v_temp);
 	}
 	free(pos_l_to_v);
@@ -156,7 +149,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 
 	free(logical_unicode_str);
 	free(visual_unicode_str);
-	return visual_str;
+	return (visual_str);
 }
 
 #endif /* HAVE_BIDI */
