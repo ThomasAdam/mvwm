@@ -1,4 +1,3 @@
-/* -*-c-*- */
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,12 +16,12 @@
 #include "config.h"
 #include "ClientMsg.h"
 
-Atom            _XA_WM_PROTOCOLS = None;
+Atom	 _XA_WM_PROTOCOLS = None;
 
 void
 send_clientmessage(Display *disp, Window w, Atom a, Time timestamp)
 {
-	XClientMessageEvent ev;
+	XClientMessageEvent	 ev;
 
 	if (_XA_WM_PROTOCOLS == None)
 		_XA_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);

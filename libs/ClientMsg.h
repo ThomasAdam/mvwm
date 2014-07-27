@@ -1,5 +1,3 @@
-/* -*-c-*- */
-
 /*
  * ICCCM Client Messages - Section 4.2.8 of the ICCCM dictates that all
  * client messages will have the following form:
@@ -15,7 +13,6 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-void            send_clientmessage(Display *disp, Window w, Atom a,
-    Time timestamp);
+extern Atom	 _XA_WM_PROTOCOLS;
 
-extern Atom     _XA_WM_PROTOCOLS;
+void	 send_clientmessage(Display *, Window, Atom, Time);
