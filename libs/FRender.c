@@ -45,12 +45,12 @@
 
 /* ---------------------------- local variables ---------------------------- */
 
-static FRenderPictFormat *PFrenderVisualFormat = NULL;
-static FRenderPictFormat *PFrenderAlphaFormat = NULL;
-static FRenderPictFormat *PFrenderMaskFormat = NULL;
-static FRenderPictFormat *PFrenderDirectFormat = NULL;
-static FRenderPictFormat *PFrenderAbsoluteFormat = NULL;
-Bool            FRenderVisualInitialized = False;
+static FRenderPictFormat	*PFrenderVisualFormat = NULL;
+static FRenderPictFormat	*PFrenderAlphaFormat = NULL;
+static FRenderPictFormat	*PFrenderMaskFormat = NULL;
+static FRenderPictFormat	*PFrenderDirectFormat = NULL;
+static FRenderPictFormat	*PFrenderAbsoluteFormat = NULL;
+Bool				 FRenderVisualInitialized = False;
 
 /* #define USE_ABSOLUTE_FORMAT 1*/
 
@@ -61,11 +61,10 @@ Bool            FRenderVisualInitialized = False;
 static void
 FRenderVisualInit(Display *dpy)
 {
-	FRenderPictFormat pf;
+	FRenderPictFormat	 pf;
 
-	if (!XRenderSupport || !FRenderGetExtensionSupported()) {
+	if (!XRenderSupport || !FRenderGetExtensionSupported())
 		return;
-	}
 
 	PFrenderVisualFormat = FRenderFindVisualFormat(dpy, Pvisual);
 	if (!PFrenderVisualFormat) {
@@ -153,7 +152,7 @@ FRenderCompositeAndCheck(Display *dpy, int op, FRenderPicture src,
 	FRenderComposite(dpy, op, src, alpha, dest, x, y, a_x, a_y, d_x, d_y,
 	    d_w, d_h);
 
-	return True;
+	return (True);
 
 }
 
@@ -166,9 +165,8 @@ FRenderCreateShadePicture(Display *dpy, Window win, int alpha_percent)
 	Bool            force_update = False;
 	FRenderColor    frc;
 
-	if (!XRenderSupport || !FRenderGetExtensionSupported()) {
-		return 0;
-	}
+	if (!XRenderSupport || !FRenderGetExtensionSupported())
+		return (0);
 
 	/*
 	 * FRender Visuals should be already initialized
@@ -177,9 +175,9 @@ FRenderCreateShadePicture(Display *dpy, Window win, int alpha_percent)
 	if (!shade_pixmap || !shade_picture) {
 		FRenderPictureAttributes pa;
 
-		if (!shade_pixmap) {
+		if (!shade_pixmap)
 			shade_pixmap = XCreatePixmap(dpy, win, 1, 1, 8);
-		}
+
 		pa.repeat = True;
 		if (shade_pixmap) {
 			shade_picture =
@@ -197,7 +195,7 @@ FRenderCreateShadePicture(Display *dpy, Window win, int alpha_percent)
 		saved_alpha_percent = alpha_percent;
 	}
 
-	return shade_picture;
+	return (shade_picture);
 }
 
 static Bool
@@ -205,34 +203,32 @@ FRenderTintPicture(Display *dpy, Window win, Pixel tint, int tint_percent,
     FRenderPicture dest_picture,
     int dest_x, int dest_y, int dest_w, int dest_h)
 {
-	static Pixel    saved_tint = 0;
-	static int      saved_tint_percent = 0;
-	static Pixmap   tint_pixmap = None;
-	static FRenderPicture tint_picture = None;
-	FRenderPicture  shade_picture = None;
-	FRenderColor    frc_tint;
-	Bool            force_update = False;
-	FRenderPictureAttributes pa;
-	int             rv = 0;
+	static Pixel			 saved_tint = 0;
+	static int			 saved_tint_percent = 0;
+	static Pixmap			 tint_pixmap = None;
+	static FRenderPicture		 tint_picture = None;
+	FRenderPicture			 shade_picture = None;
+	FRenderColor			 frc_tint;
+	Bool				 force_update = False;
+	FRenderPictureAttributes	 pa;
+	int				 rv = 0;
 
-	if (!XRenderSupport) {
-		return 0;
-	}
+	if (!XRenderSupport)
+		return (0);
 
 	if (!tint_pixmap || !tint_picture) {
 		pa.repeat = True;
-		if (!tint_pixmap) {
+		if (!tint_pixmap)
 			tint_pixmap = XCreatePixmap(dpy, win, 1, 1, 32);
-		}
+
 		if (tint_pixmap) {
 			tint_picture = FRenderCreatePicture(dpy, tint_pixmap,
 			    PFrenderAbsoluteFormat, FRenderCPRepeat, &pa);
-			if (!tint_picture) {
+			if (!tint_picture)
 				goto bail;
-			}
-		} else {
+		} else
 			goto bail;
-		}
+
 		force_update = True;
 	}
 	if (tint_picture &&
@@ -261,8 +257,8 @@ FRenderTintPicture(Display *dpy, Window win, Pixel tint, int tint_percent,
 	    shade_picture, dest_picture, 0, 0, 0, 0, dest_x, dest_y, dest_w,
 	    dest_h);
 
-      bail:
-	return rv;
+bail:
+	return (rv);
 }
 
 /* ---------------------------- interface functions ------------------------ */
@@ -277,9 +273,8 @@ FRenderTintRectangle(Display *dpy, Window win, Pixmap mask, Pixel tint,
 	unsigned int    val = 0;
 	Bool            rv = True;
 
-	if (!XRenderSupport || !FRenderGetExtensionSupported()) {
-		return 0;
-	}
+	if (!XRenderSupport || !FRenderGetExtensionSupported())
+		return (0);
 
 	if (!FRenderVisualInitialized) {
 		FRenderVisualInitialized = True;
@@ -288,23 +283,23 @@ FRenderTintRectangle(Display *dpy, Window win, Pixmap mask, Pixel tint,
 
 	if (!PFrenderVisualFormat || !PFrenderAlphaFormat ||
 	    !PFrenderAbsoluteFormat || !PFrenderMaskFormat) {
-		return 0;
+		return (0);
 	}
 
 	pa.clip_mask = mask;
 	val = FRenderCPClipMask;
 
 	if (!(dest_picture =
-		FRenderCreatePicture(dpy, d, PFrenderVisualFormat, val,
-		    &pa))) {
-		return 0;
+		FRenderCreatePicture(dpy, d, PFrenderVisualFormat, val, &pa))) {
+		return (0);
 	}
 
 	rv = FRenderTintPicture(dpy, win, tint_percent, tint, dest_picture,
 	    dest_x, dest_y, dest_w, dest_h);
 
 	FRenderFreePicture(dpy, dest_picture);
-	return rv;
+	
+	return (rv);
 }
 
 int
@@ -314,25 +309,24 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
     int src_w, int src_h, int dest_x, int dest_y, int dest_w, int dest_h,
     Bool do_repeat)
 {
-	FRenderColor    frc;
-	Pixmap          pixmap_copy = None;
-	Pixmap          alpha_copy = None;
-	FRenderPicture  shade_picture = None;
-	FRenderPicture  alpha_picture = None;
-	FRenderPicture  mask_picture = None;
-	FRenderPicture  src_picture = None;
-	FRenderPicture  dest_picture = None;
-	FRenderPicture  root_picture = None;
-	FRenderPictureAttributes pa;
-	unsigned long   pam = 0;
-	int             alpha_x = src_x;
-	int             alpha_y = src_y;
-	Bool            rv = False;
-	Bool            free_alpha_gc = False;
+	FRenderColor			 frc;
+	Pixmap				 pixmap_copy = None;
+	Pixmap				 alpha_copy = None;
+	FRenderPicture			 shade_picture = None;
+	FRenderPicture			 alpha_picture = None;
+	FRenderPicture			 mask_picture = None;
+	FRenderPicture			 src_picture = None;
+	FRenderPicture			 dest_picture = None;
+	FRenderPicture			 root_picture = None;
+	FRenderPictureAttributes	 pa;
+	unsigned long			 pam = 0;
+	int				 alpha_x = src_x;
+	int				 alpha_y = src_y;
+	Bool				 rv = False;
+	Bool				 free_alpha_gc = False;
 
-	if (!XRenderSupport || !FRenderGetExtensionSupported()) {
-		return 0;
-	}
+	if (!XRenderSupport || !FRenderGetExtensionSupported())
+		return (0);
 
 	if (!FRenderVisualInitialized) {
 		FRenderVisualInitialized = True;
@@ -341,12 +335,10 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 
 	if (!PFrenderVisualFormat || !PFrenderAlphaFormat ||
 	    !PFrenderAbsoluteFormat || !PFrenderMaskFormat) {
-		return 0;
+		return (0);
 	}
 
-	/*
-	 * it is a bitmap ?
-	 */
+	/* it is a bitmap ?  */
 	if (Pdepth != depth && pixmap) {
 		pixmap_copy =
 		    PictureBitmapToPixmap(dpy, win, pixmap, Pdepth, gc, src_x,
@@ -355,22 +347,17 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 	}
 
 	pam = FRenderCPRepeat;
-	if (do_repeat) {
+	if (do_repeat)
 		pa.repeat = True;
-	} else {
+	else
 		pa.repeat = False;
-	}
 
-	/*
-	 * build the src_picture
-	 */
+	/* build the src_picture */
 	if (pixmap == ParentRelative) {
-		/*
-		 * need backing store and good preparation of the win
-		 */
-		if (gc == None) {
+		/* need backing store and good preparation of the win */
+		if (gc == None)
 			gc = PictureDefaultGC(dpy, win);
-		}
+	
 		pixmap_copy = XCreatePixmap(dpy, win, src_w, src_h, Pdepth);
 		if (pixmap_copy && gc) {
 			XCopyArea(dpy, win, pixmap_copy, gc,
@@ -378,9 +365,9 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 		}
 		src_x = src_y = 0;
 	} else if (tint_percent > 0 && !pixmap_copy) {
-		if (gc == None) {
+		if (gc == None)
 			gc = PictureDefaultGC(dpy, win);
-		}
+
 		pixmap_copy = XCreatePixmap(dpy, win, src_w, src_h, Pdepth);
 		if (pixmap_copy && gc) {
 			XCopyArea(dpy, pixmap, pixmap_copy, gc,
@@ -399,13 +386,10 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 		    PFrenderVisualFormat, pam, &pa);
 	}
 
-	if (!src_picture) {
+	if (!src_picture)
 		goto bail;
-	}
 
-	/*
-	 * tint the src, it is why we have done a pixmap copy
-	 */
+	/* tint the src, it is why we have done a pixmap copy */
 	if (tint_percent > 0) {
 		FRenderTintPicture(dpy, win, tint, tint_percent, src_picture,
 		    src_x, src_y, src_w, src_h);
@@ -465,9 +449,8 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 			mask_picture =
 			    FRenderCreatePicture(dpy, mask,
 			    PFrenderMaskFormat, pam, &pa);
-		} else {
+		} else
 			alpha_x = alpha_y = 0;
-		}
 
 		if (!(shade_picture =
 			FRenderCreateShadePicture(dpy, win,
@@ -494,9 +477,8 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 		}
 	}
 
-	if (alpha_picture == None) {
+	if (alpha_picture == None)
 		alpha_picture = shade_picture;
-	}
 
 	dest_picture =
 	    FRenderCreatePicture(dpy, d, PFrenderVisualFormat, 0, &pa);
@@ -507,27 +489,27 @@ FRenderRender(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 		    alpha_x, alpha_y, dest_x, dest_y, dest_w, dest_h);
 	}
 
-      bail:
-	if (dest_picture) {
+bail:
+	if (dest_picture)
 		FRenderFreePicture(dpy, dest_picture);
-	}
-	if (src_picture) {
+
+	if (src_picture)
 		FRenderFreePicture(dpy, src_picture);
-	}
-	if (alpha_picture && alpha_picture != shade_picture) {
+
+	if (alpha_picture && alpha_picture != shade_picture)
 		FRenderFreePicture(dpy, alpha_picture);
-	}
-	if (mask_picture) {
+
+	if (mask_picture)
 		FRenderFreePicture(dpy, mask_picture);
-	}
-	if (root_picture) {
+
+	if (root_picture)
 		FRenderFreePicture(dpy, root_picture);
-	}
-	if (alpha_copy) {
+
+	if (alpha_copy)
 		XFreePixmap(dpy, alpha_copy);
-	}
-	if (pixmap_copy) {
+
+	if (pixmap_copy)
 		XFreePixmap(dpy, pixmap_copy);
-	}
-	return rv;
+
+	return (rv);
 }

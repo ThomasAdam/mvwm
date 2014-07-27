@@ -22,18 +22,13 @@
 /* ---------------------------- type definitions --------------------------- */
 
 #if XRenderSupport
-typedef XRenderDirectFormat FRenderDirectFormat;
-typedef PictFormat FRPictFormat;
-typedef XRenderPictFormat FRenderPictFormat;
-typedef XRenderPicture FRenderPicture;
-#if 0  /* this has disappeared */
-typedef XRenderVisual FRenderVisual;
-typedef XRenderDepth FRenderDepth;
-typedef XRenderInfo FRenderInfo;
-#endif
+typedef XRenderDirectFormat	 FRenderDirectFormat;
+typedef PictFormat		 FRPictFormat;
+typedef XRenderPictFormat	 FRenderPictFormat;
+typedef XRenderPicture		 FRenderPicture;
 typedef XRenderPictureAttributes FRenderPictureAttributes;
-typedef XRenderColor FRenderColor;
-typedef XGlyphInfo FGlyphInfo;
+typedef XRenderColor		 FRenderColor;
+typedef XGlyphInfo		 FGlyphInfo;
 
 #define FRenderPictFormatID        PictFormatID
 #define FRenderPictFormatType      PictFormatType
@@ -58,63 +53,26 @@ typedef XGlyphInfo FGlyphInfo;
 #define FRenderPictTypeIndexed PictTypeIndexed
 #define FRenderPictTypeDirect  PictTypeDirect
 
-#define FRenderPictOpMinimum PictOpMinimum
-#define FRenderPictOpClear PictOpClear
-#define FRenderPictOpSrc PictOpSrc
-#define FRenderPictOpDst PictOpDst
-#define FRenderPictOpOver PictOpOver
+#define FRenderPictOpMinimum	 PictOpMinimum
+#define FRenderPictOpClear	 PictOpClear
+#define FRenderPictOpSrc	 PictOpSrc
+#define FRenderPictOpDst	 PictOpDst
+#define FRenderPictOpOver	 PictOpOver
 #define FRenderPictOpOverReverse PictOpOverReverse
-#define FRenderPictOpIn PictOpIn
-#define FRenderPictOpInReverse PictOpInReverse
-#define FRenderPictOpOut PictOpOut
-#define FRenderPictOpOutReverse PictOpOutReverse
-#define FRenderPictOpAtop PictOpAtop
+#define FRenderPictOpIn		 PictOpIn
+#define FRenderPictOpInReverse	 PictOpInReverse
+#define FRenderPictOpOut	 PictOpOut
+#define FRenderPictOpOutReverse	 PictOpOutReverse
+#define FRenderPictOpAtop	 PictOpAtop
 #define FRenderPictOpAtopReverse PictOpAtopReverse
-#define FRenderPictOpXor PictOpXor
-#define FRenderPictOpAdd PictOpAdd
-#define FRenderPictOpSaturate PictOpSaturate
-#define FRenderPictOpMaximum PictOpMaximum
-/*
- * Operators only available in version 0.2
- */
-#if 0
-#define FRenderPictOpDisjointMinimum     PictOpDisjointMinimum
-#define FRenderPictOpDisjointClear       PictOpDisjointClear
-#define FRenderPictOpDisjointSrc         PictOpDisjointSrc
-#define FRenderPictOpDisjointDst         PictOpDisjointDst
-#define FRenderPictOpDisjointOver        PictOpDisjointOver
-#define FRenderPictOpDisjointOverReverse PictOpDisjointOverReverse
-#define FRenderPictOpDisjointIn          PictOpDisjointIn
-#define FRenderPictOpDisjointInReverse   PictOpDisjointInReverse
-#define FRenderPictOpDisjointOut         PictOpDisjointOut
-#define FRenderPictOpDisjointOutReverse  PictOpDisjointOutReverse
-#define FRenderPictOpDisjointAtop        PictOpDisjointAtop
-#define FRenderPictOpDisjointAtopReverse PictOpDisjointAtopReverse
-#define FRenderPictOpDisjointXor         PictOpDisjointXor
-#define FRenderPictOpDisjointMaximum     PictOpDisjointMaximum
-
-#define FRenderPictOpConjointMinimum     PictOpConjointMinimum
-#define FRenderPictOpConjointClear       PictOpConjointClear
-#define FRenderPictOpConjointSrc         PictOpConjointSrc
-#define FRenderPictOpConjointDst         PictOpConjointDst
-#define FRenderPictOpConjointOver        PictOpConjointOver
-#define FRenderPictOpConjointOverReverse PictOpConjointOverReverse
-#define FRenderPictOpConjointIn          PictOpConjointIn
-#define FRenderPictOpConjointInReverse   PictOpConjointInReverse
-#define FRenderPictOpConjointOut         PictOpConjointOut
-#define FRenderPictOpConjointOutReverse  PictOpConjointOutReverse
-#define FRenderPictOpConjointAtop        PictOpConjointAtop
-#define FRenderPictOpConjointAtopReverse PictOpConjointAtopReverse
-#define FRenderPictOpConjointXor         PictOpConjointXor
-#define FRenderPictOpConjointMaximum     PictOpConjointMaximum
-#endif /* 0 */
-
-#define FRenderPolyEdgeSharp  PolyEdgeSharp
-#define FRenderPolyEdgeSmooth PolyEdgeSmooth
-
+#define FRenderPictOpXor	 PictOpXor
+#define FRenderPictOpAdd	 PictOpAdd
+#define FRenderPictOpSaturate	 PictOpSaturate
+#define FRenderPictOpMaximum	 PictOpMaximum
+#define FRenderPolyEdgeSharp	 PolyEdgeSharp
+#define FRenderPolyEdgeSmooth	 PolyEdgeSmooth
 #define FRenderPolyModePrecise
 #define FRenderPolyModeImprecise
-
 #define FRenderCPRepeat            CPRepeat
 #define FRenderCPAlphaMap          CPAlphaMap
 #define FRenderCPAlphaXOrigin      CPAlphaXOrigin
@@ -276,40 +234,6 @@ typedef struct _FGlyphInfo
 #define FRenderPictOpAdd 0
 #define FRenderPictOpSaturate 0
 #define FRenderPictOpMaximum 0
-/*
- * Operators only available in version 0.2
- */
-#if 0
-#define FRenderPictOpDisjointMinimum 0
-#define FRenderPictOpDisjointClear 0
-#define FRenderPictOpDisjointSrc 0
-#define FRenderPictOpDisjointDst 0
-#define FRenderPictOpDisjointOver 0
-#define FRenderPictOpDisjointOverReverse 0
-#define FRenderPictOpDisjointIn 0
-#define FRenderPictOpDisjointInReverse 0
-#define FRenderPictOpDisjointOut 0
-#define FRenderPictOpDisjointOutReverse 0
-#define FRenderPictOpDisjointAtop 0
-#define FRenderPictOpDisjointAtopReverse 0
-#define FRenderPictOpDisjointXor 0
-#define FRenderPictOpDisjointMaximum 0
-
-#define FRenderPictOpConjointMinimum 0
-#define FRenderPictOpConjointClear 0
-#define FRenderPictOpConjointSrc 0
-#define FRenderPictOpConjointDst 0
-#define FRenderPictOpConjointOver 0
-#define FRenderPictOpConjointOverReverse 0
-#define FRenderPictOpConjointIn 0
-#define FRenderPictOpConjointInReverse 0
-#define FRenderPictOpConjointOut 0
-#define FRenderPictOpConjointOutReverse 0
-#define FRenderPictOpConjointAtop 0
-#define FRenderPictOpConjointAtopReverse 0
-#define FRenderPictOpConjointXor 0
-#define FRenderPictOpConjointMaximum 0
-#endif
 
 #define FRenderPolyEdgeSharp 0
 #define FRenderPolyEdgeSmooth 0
