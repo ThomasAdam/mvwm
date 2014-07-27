@@ -36,6 +36,11 @@
 /* globals */
 colorset_t     *Colorset = NULL;
 int             nColorsets = 0;
+static char     csetbuf[256];
+static int      is_bad_gc = 0;
+
+static int	 get_aspect_dimensions(int *, int *, int, int, int, int);
+static int	 BadGCErrorHandler(Display *, XErrorEvent *);
 
 /* stretch the src rectangle to the dest ractangle keeping its aspect so that
  * it fills the destination completely. */
@@ -49,19 +54,15 @@ get_aspect_dimensions(int *ret_w, int *ret_h, int dest_w, int dest_h,
 	ax = (double) dest_w / (double) src_w;
 	ay = (double) dest_h / (double) src_h;
 	if (ax >= ay) {
-		/*
-		 * fit in x direction
-		 */
+		/* fit in x direction */
 		*ret_w = dest_w;
 		*ret_h = (src_h * dest_w) / src_w;
-		return 0;
+		return (0);
 	} else {
-		/*
-		 * fit in y direction
-		 */
+		/* fit in y direction */
 		*ret_w = (src_w * dest_h) / src_h;
 		*ret_h = dest_h;
-		return 1;
+		return (1);
 	}
 }
 
@@ -73,16 +74,11 @@ get_aspect_dimensions(int *ret_w, int *ret_h, int dest_w, int dest_h,
 void
 AllocColorset(int n)
 {
-	/*
-	 * do nothing if it already exists
-	 */
-	if (n < nColorsets) {
+	/* do nothing if it already exists */
+	if (n < nColorsets)
 		return;
-	}
 
-	/*
-	 * increment n to get the required array size, get a new array
-	 */
+	/* increment n to get the required array size, get a new array */
 	Colorset = xrealloc((void *) Colorset, ++n, sizeof(colorset_t));
 
 	/*
@@ -95,23 +91,21 @@ AllocColorset(int n)
 	} else {
 		/*
 		 * copy colorset 0 into new members so that if undefined ones
-		 * * are referenced at least they don't give black on black
+		 * are referenced at least they don't give black on black
 		 */
 		for (; nColorsets < n; nColorsets++) {
 			memcpy(&Colorset[nColorsets], Colorset,
 			    sizeof(colorset_t));
 		}
 	}
-	nColorsets = n;
 
-	return;
+	nColorsets = n;
 }
 
 /*
  * DumpColorset() returns a char * to the colorset contents in printable form
  */
-static char     csetbuf[256];
-char           *
+char *
 DumpColorset(int n, colorset_t *cs)
 {
 	sprintf(csetbuf,
@@ -124,12 +118,11 @@ DumpColorset(int n, colorset_t *cs)
 	    cs->shape_width, cs->shape_height, cs->shape_type,
 	    cs->tint_percent, cs->do_dither_icon, cs->icon_tint_percent,
 	    cs->icon_alpha_percent);
-	return csetbuf;
+
+	return (csetbuf);
 }
 
-/*
- * LoadColorset() takes a strings and stuffs it into the array
- */
+/* LoadColorset() takes a strings and stuffs it into the array */
 int
 LoadColorset(char *line)
 {
@@ -143,17 +136,17 @@ LoadColorset(char *line)
 	unsigned int    tint_percent, do_dither_icon, icon_tint_percent;
 	unsigned int    icon_alpha_percent;
 
-	if (line == NULL) {
-		return -1;
-	}
-	if (sscanf(line, "%x%n", &n, &chars) < 1) {
-		return -1;
-	}
+	if (line == NULL)
+		return (-1);
+
+	if (sscanf(line, "%x%n", &n, &chars) < 1)
+		return (-1);
+
 	line += chars;
 
 	/*
 	 * migo: if you modify this sscanf or other colorset definitions,
-	 * * please update perllib/MVWM/Tracker/Colorsets.pm too
+	 * please update perllib/MVWM/Tracker/Colorsets.pm too
 	 */
 	if (sscanf(line,
 		"%lx %lx %lx %lx %lx %lx %lx %lx %lx "
@@ -163,7 +156,7 @@ LoadColorset(char *line)
 		&pixmap_type, &shape_width, &shape_height, &shape_type,
 		&tint_percent, &do_dither_icon, &icon_tint_percent,
 		&icon_alpha_percent) != 20)
-		return -1;
+		return (-1);
 
 	AllocColorset(n);
 	cs = &Colorset[n];
@@ -188,7 +181,7 @@ LoadColorset(char *line)
 	cs->icon_tint_percent = icon_tint_percent;
 	cs->icon_alpha_percent = icon_alpha_percent;
 
-	return n;
+	return (n);
 }
 
 /* scrolls a pixmap by x_off/y_off pixels, wrapping around at the edges. */
@@ -200,13 +193,14 @@ ScrollPixmap(Display *dpy, Pixmap p, GC gc, int x_off, int y_off, int width,
 	XGCValues       xgcv;
 	Pixmap          p2;
 
-	if (p == None || p == ParentRelative || (x_off == 0 && y_off == 0)) {
-		return p;
-	}
+	if (p == None || p == ParentRelative || (x_off == 0 && y_off == 0))
+		return (p);
+
 	tgc = mvwmlib_XCreateGC(dpy, p, 0, &xgcv);
-	if (tgc == None) {
-		return p;
-	}
+
+	if (tgc == None)
+		return (p);
+
 	XCopyGC(dpy, gc, GCFunction | GCPlaneMask | GCSubwindowMode |
 	    GCClipXOrigin | GCClipYOrigin | GCClipMask, tgc);
 	xgcv.tile = p;
@@ -216,13 +210,14 @@ ScrollPixmap(Display *dpy, Pixmap p, GC gc, int x_off, int y_off, int width,
 	XChangeGC(dpy, tgc, GCTile | GCTileStipXOrigin | GCTileStipYOrigin |
 	    GCFillStyle, &xgcv);
 	p2 = XCreatePixmap(dpy, p, width, height, depth);
-	if (p2 == None) {
-		return p;
-	}
+
+	if (p2 == None)
+		return (p);
+
 	XFillRectangle(dpy, p2, tgc, 0, 0, width, height);
 	XFreeGC(dpy, tgc);
 
-	return p2;
+	return (p2);
 }
 
 /* sets a window background from a colorset
@@ -241,12 +236,14 @@ SetWindowBackgroundWithOffset(Display *dpy, Window win, int x_off, int y_off,
 		unsigned int    ui_junk;
 		int             i_junk;
 	} XID_int;
+
 	if (0 == width || 0 == height) {
 		if (!XGetGeometry(dpy, win, &XID_int.junk,
 			&XID_int.i_junk, &XID_int.i_junk,
 			(unsigned int *) &width,
 			(unsigned int *) &height,
 			&XID_int.ui_junk, &XID_int.ui_junk)) {
+
 			return;
 		}
 	}
@@ -262,47 +259,38 @@ SetWindowBackgroundWithOffset(Display *dpy, Window win, int x_off, int y_off,
 		}
 	}
 	if (!colorset->pixmap) {
-		/*
-		 * use the bg pixel
-		 */
+		/* use the bg pixel */
 		XSetWindowBackground(dpy, win, colorset->bg);
-		if (clear_area) {
+		if (clear_area)
 			XClearArea(dpy, win, 0, 0, width, height, True);
-		}
 	} else {
-
 		pixmap =
 		    CreateOffsetBackgroundPixmap(dpy, win, x_off, y_off,
 		    width, height, colorset, depth, gc, False);
 		if (pixmap) {
 			XSetWindowBackgroundPixmap(dpy, win, pixmap);
-			if (clear_area) {
-				XClearArea(dpy, win, 0, 0, width, height,
-				    True);
-			}
-			if (pixmap != ParentRelative) {
+			if (clear_area)
+				XClearArea(dpy, win, 0, 0, width, height, True);
+
+			if (pixmap != ParentRelative)
 				XFreePixmap(dpy, pixmap);
-			}
 		}
 	}
-
-	return;
 }
 
 Bool
 UpdateBackgroundTransparency(Display *dpy, Window win, int width, int height,
     colorset_t *colorset, unsigned int depth, GC gc, Bool clear_area)
 {
-	if (!CSETS_IS_TRANSPARENT(colorset)) {
-		return False;
-	} else if (!CSETS_IS_TRANSPARENT_PR_PURE(colorset)) {
+	if (!CSETS_IS_TRANSPARENT(colorset))
+		return (False);
+	else if (!CSETS_IS_TRANSPARENT_PR_PURE(colorset)) {
 		SetWindowBackgroundWithOffset(dpy, win, 0, 0, width, height,
 		    colorset, depth, gc, True);
-	} else {
+	} else
 		XClearArea(dpy, win, 0, 0, 0, 0, clear_area);
-	}
 
-	return True;
+	return (True);
 }
 
 void
@@ -311,17 +299,15 @@ SetWindowBackground(Display *dpy, Window win, int width, int height,
 {
 	SetWindowBackgroundWithOffset(dpy, win, 0, 0, width, height, colorset,
 	    depth, gc, clear_area);
-
-	return;
 }
 
 void
 GetWindowBackgroundPixmapSize(colorset_t *cs_t, int width, int height, int *w,
     int *h)
 {
-	if (cs_t->pixmap == None) {
+	if (cs_t->pixmap == None)
 		*w = *h = 1;
-	} else {
+	else {
 		*w = cs_t->width;
 		*h = cs_t->height;
 		switch (cs_t->pixmap_type) {
@@ -341,23 +327,16 @@ GetWindowBackgroundPixmapSize(colorset_t *cs_t, int width, int height, int *w,
 	}
 }
 
-static int      is_bad_gc = 0;
 static int
 BadGCErrorHandler(Display *dpy, XErrorEvent * error)
 {
 	if (error->error_code == BadGC) {
 		is_bad_gc = 1;
 
-		return 0;
+		return (0);
 	} else {
-		int             rc;
-
-		/*
-		 * delegate error to original handler
-		 */
-		rc = ferror_call_next_error_handler(dpy, error);
-
-		return rc;
+		/* delegate error to original handler */
+		return (ferror_call_next_error_handler(dpy, error));
 	}
 }
 
@@ -378,10 +357,19 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 	Bool            cs_keep_aspect;
 	Bool            cs_stretch_x;
 	Bool            cs_stretch_y;
+	int             sx, sy;
+	int             h, w;
+	XID             dummy;
+	MvwmRenderAttributes fra;
+	union {
+		XID             junk;
+		unsigned int    ui_junk;
+		int             i_junk;
+	} XID_int;
+
 
 	if (colorset->pixmap == ParentRelative && !is_shape_mask &&
 	    colorset->tint_percent > 0) {
-		MvwmRenderAttributes fra;
 
 		fra.mask = FRAM_DEST_IS_A_WINDOW | FRAM_HAVE_TINT;
 		fra.tint = colorset->tint;
@@ -391,35 +379,22 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		    PGraphicsCreateTransparency(dpy, win, &fra, gc, x, y,
 		    width, height, True);
 		MyXUngrabServer(dpy);
-		if (pixmap == None) {
-			return ParentRelative;
-		}
-		return pixmap;
+		if (pixmap == None)
+			return (ParentRelative);
+
+		return (pixmap);
 	} else if (colorset->pixmap == ParentRelative && !is_shape_mask) {
-		return ParentRelative;
+		return (ParentRelative);
 	} else if (CSETS_IS_TRANSPARENT_ROOT(colorset) && colorset->pixmap
 	    && !is_shape_mask) {
-		int             sx, sy;
-		int             h, w;
-		XID             dummy;
-
 		cs_pixmap = colorset->pixmap;
 		cs_width = colorset->width;
 		cs_height = colorset->height;
 		if (CSETS_IS_TRANSPARENT_ROOT_PURE(colorset)) {
 			/*
-			 * check if it is still here
-			 */
-			union
-			{
-				XID             junk;
-				unsigned int    ui_junk;
-				int             i_junk;
-			} XID_int;
-			/*
 			 * a priori we should grab the server, but this
-			 * * cause PositiveWrite error when you move a
-			 * * window with a transparent title bar
+			 * cause PositiveWrite error when you move a
+			 * window with a transparent title bar
 			 */
 			if (!XGetGeometry(dpy, colorset->pixmap,
 				&XID_int.junk, &XID_int.i_junk,
@@ -427,33 +402,29 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 				(unsigned int *) &h, &XID_int.ui_junk,
 				&XID_int.ui_junk) || w != cs_width
 			    || h != cs_height) {
-				return None;
+				return (None);
 			}
 		}
 		XTranslateCoordinates(dpy, win, DefaultRootWindow(dpy), x, y,
 		    &sx, &sy, &dummy);
 		pixmap = XCreatePixmap(dpy, win, width, height, Pdepth);
-		if (!pixmap) {
-			return None;
-		}
-		/*
-		 * make sx and sy positif
-		 */
-		while (sx < 0) {
+		if (!pixmap)
+			return (None);
+
+		/* make sx and sy positif */
+		while (sx < 0)
 			sx = sx + cs_width;
-		}
-		while (sy < 0) {
+
+		while (sy < 0)
 			sy = sy + cs_height;
-		}
-		/*
-		 * make sx and sy in (0,0,cs_width,cs_height)
-		 */
-		while (sx >= cs_width) {
+
+		/* make sx and sy in (0,0,cs_width,cs_height) */
+		while (sx >= cs_width)
 			sx = sx - cs_width;
-		}
-		while (sy >= cs_height) {
+
+		while (sy >= cs_height)
 			sy = sy - cs_height;
-		}
+
 		xgcv.fill_style = FillTiled;
 		xgcv.tile = cs_pixmap;
 		xgcv.ts_x_origin = cs_width - sx;
@@ -464,7 +435,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		    GCFillStyle, &xgcv);
 		if (fill_gc == None) {
 			XFreePixmap(dpy, pixmap);
-			return None;
+			return (None);
 		}
 		XSync(dpy, False);
 		is_bad_gc = 0;
@@ -491,7 +462,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 			pixmap = None;
 		}
 		XFreeGC(dpy, fill_gc);
-		return pixmap;
+		return (pixmap);
 	}
 	if (!is_shape_mask) {
 		cs_pixmap = colorset->pixmap;
@@ -504,17 +475,13 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		cs_stretch_y = (colorset->pixmap_type == PIXMAP_STRETCH_Y)
 		    || (colorset->pixmap_type == PIXMAP_STRETCH);
 	} else {
-		/*
-		 * In spite of the name, win contains the pixmap
-		 */
+		/* In spite of the name, win contains the pixmap */
 		cs_pixmap = colorset->shape_mask;
 		win = colorset->shape_mask;
 		if (shape_gc == None) {
 			xgcv.foreground = 1;
 			xgcv.background = 0;
-			/*
-			 * create a gc for 1 bit depth
-			 */
+			/* create a gc for 1 bit depth */
 			shape_gc =
 			    mvwmlib_XCreateGC(dpy, win,
 			    GCForeground | GCBackground, &xgcv);
@@ -531,9 +498,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 	if (cs_pixmap == None) {
 		xgcv.foreground = colorset->bg;
 		fill_gc = mvwmlib_XCreateGC(dpy, win, GCForeground, &xgcv);
-		/*
-		 * create a solid pixmap - not very useful most of the time
-		 */
+		/* create a solid pixmap - not very useful most of the time */
 		pixmap = XCreatePixmap(dpy, win, 1, 1, depth);
 		XFillRectangle(dpy, pixmap, fill_gc, 0, 0, 1, 1);
 		XFreeGC(dpy, fill_gc);
@@ -545,7 +510,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 
 		/*
 		 * make a pixmap big enough to cover the destination but with
-		 * * the aspect ratio of the cs_pixmap
+		 * the aspect ratio of the cs_pixmap
 		 */
 		trim_side =
 		    get_aspect_dimensions(&big_width, &big_height, width,
@@ -569,9 +534,7 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 			XFreePixmap(dpy, big_pixmap);
 		}
 	} else if (!cs_stretch_x && !cs_stretch_y) {
-		/*
-		 * it's a tiled pixmap, create an unstretched one
-		 */
+		/* it's a tiled pixmap, create an unstretched one */
 		if (!is_shape_mask) {
 			pixmap =
 			    XCreatePixmap(dpy, cs_pixmap, cs_width, cs_height,
@@ -583,30 +546,24 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 		} else {
 			/*
 			 * can't tile masks, create a tiled version of the
-			 * * mask
+			 * mask
 			 */
 			pixmap =
 			    CreateTiledPixmap(dpy, cs_pixmap, cs_width,
 			    cs_height, width, height, 1, gc);
 		}
 	} else if (!cs_stretch_x) {
-		/*
-		 * it's an HGradient
-		 */
+		/* it's an HGradient */
 		pixmap =
 		    CreateStretchYPixmap(dpy, cs_pixmap, cs_width, cs_height,
 		    depth, height, gc);
 	} else if (!cs_stretch_y) {
-		/*
-		 * it's a VGradient
-		 */
+		/* it's a VGradient */
 		pixmap =
 		    CreateStretchXPixmap(dpy, cs_pixmap, cs_width, cs_height,
 		    depth, width, gc);
 	} else {
-		/*
-		 * It's a full window pixmap
-		 */
+		/* It's a full window pixmap */
 		pixmap =
 		    CreateStretchPixmap(dpy, cs_pixmap, cs_width, cs_height,
 		    depth, width, height, gc);
@@ -615,15 +572,14 @@ CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x, int y,
 	if (x != 0 || y != 0) {
 		Pixmap          p2;
 
-		p2 = ScrollPixmap(dpy, pixmap, gc, x, y, width, height,
-		    depth);
+		p2 = ScrollPixmap(dpy, pixmap, gc, x, y, width, height, depth);
 		if (p2 != None && p2 != ParentRelative && p2 != pixmap) {
 			XFreePixmap(dpy, pixmap);
 			pixmap = p2;
 		}
 	}
 
-	return pixmap;
+	return (pixmap);
 }
 
 /* create a pixmap suitable for plonking on the background of a window */
@@ -631,8 +587,8 @@ Pixmap
 CreateBackgroundPixmap(Display *dpy, Window win, int width, int height,
     colorset_t *colorset, unsigned int depth, GC gc, Bool is_shape_mask)
 {
-	return CreateOffsetBackgroundPixmap(dpy, win, 0, 0, width, height,
-	    colorset, depth, gc, is_shape_mask);
+	return (CreateOffsetBackgroundPixmap(dpy, win, 0, 0, width, height,
+	    colorset, depth, gc, is_shape_mask));
 }
 
 /* Draws a colorset background into the specified rectangle in the target
@@ -643,8 +599,6 @@ SetRectangleBackground(Display *dpy, Window win, int x, int y, int width,
 {
 	SetClippedRectangleBackground(dpy, win, x, y, width, height, NULL,
 	    colorset, depth, gc);
-
-	return;
 }
 
 /* Draws a colorset background into the specified rectangle in the target
@@ -692,29 +646,24 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 	}
 	if (CSETS_IS_TRANSPARENT_PR_PURE(colorset)) {
 		XClearArea(dpy, win, dest_x, dest_y, dest_w, dest_h, False);
-		/*
-		 * don't do anything
-		 */
+		/* don't do anything */
 		return;
 	}
 	if (CSETS_IS_TRANSPARENT_ROOT(colorset)) {
-		/*
-		 * FIXME: optimize this !
-		 */
+		/* FIXME: optimize this! */
 		x = y = 0;
 		width = width + dest_x;
 		height = height + dest_y;
 	}
-	/*
-	 * minimize gc creation by remembering the last requested depth
-	 */
+
+	/* minimize gc creation by remembering the last requested depth */
 	if (last_gc != None && depth != last_depth) {
 		XFreeGC(dpy, last_gc);
 		last_gc = None;
 	}
-	if (last_gc == None) {
+	if (last_gc == None)
 		last_gc = mvwmlib_XCreateGC(dpy, win, 0, &xgcv);
-	}
+
 	draw_gc = last_gc;
 	last_depth = depth;
 
@@ -723,9 +672,7 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 		    CreateBackgroundPixmap(dpy, 0, width, height, colorset, 1,
 		    None, True);
 		if (clipmask) {
-			/*
-			 * create a GC for clipping
-			 */
+			/* create a GC for clipping */
 			xgcv.clip_x_origin = x;
 			xgcv.clip_y_origin = y;
 			xgcv.clip_mask = clipmask;
@@ -738,9 +685,7 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 	}
 
 	if (!colorset->pixmap) {
-		/*
-		 * use the bg pixel
-		 */
+		/* use the bg pixel */
 		XSetForeground(dpy, draw_gc, colorset->bg);
 		XFillRectangle(dpy, win, draw_gc, dest_x, dest_y, dest_w,
 		    dest_h);
@@ -749,9 +694,7 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 		    CreateBackgroundPixmap(dpy, win, width, height, colorset,
 		    depth, gc, False);
 		if (keep_aspect) {
-			/*
-			 * nothing to do
-			 */
+			/* nothing to do */
 		}
 		if (stretch_x || stretch_y) {
 			if (!stretch_x && colorset->width != width) {
@@ -789,13 +732,10 @@ SetClippedRectangleBackground(Display *dpy, Window win, int x, int y,
 	}
 
 	if (FHaveShapeExtension) {
-		if (clipmask != None) {
+		if (clipmask != None)
 			XFreePixmap(dpy, clipmask);
-		}
-		if (clip_gc != None) {
-			XFreeGC(dpy, clip_gc);
-		}
-	}
 
-	return;
+		if (clip_gc != None)
+			XFreeGC(dpy, clip_gc);
+	}
 }

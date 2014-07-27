@@ -157,36 +157,30 @@ extern colorset_t *Colorset;
 #ifndef MVWM_COLORSET_PRIVATE
 /* Create n new colorsets, mvwm/colorset.c does its own thing (different size)
  */
-void            AllocColorset(int n);
+void            AllocColorset(int);
 #endif
 
 /* dump one */
-char           *DumpColorset(int n, colorset_t *colorset);
+char           *DumpColorset(int, colorset_t *);
 /* load one */
-int             LoadColorset(char *line);
+int             LoadColorset(char *);
 
-Pixmap          CreateOffsetBackgroundPixmap(Display *dpy, Window win, int x,
-    int y, int width, int height, colorset_t *colorset, unsigned int depth,
-    GC gc, Bool is_mask);
-Pixmap          CreateBackgroundPixmap(Display *dpy, Window win, int width,
-    int height, colorset_t *colorset, unsigned int depth, GC gc,
-    Bool is_mask);
-Pixmap          ScrollPixmap(Display *dpy, Pixmap p, GC gc, int x_off,
-    int y_off, int width, int height, unsigned int depth);
-void            SetWindowBackgroundWithOffset(Display *dpy, Window win,
-    int x_off, int y_off, unsigned int width, unsigned int height,
-    colorset_t *colorset, unsigned int depth, GC gc, Bool clear_area);
-void            SetWindowBackground(Display *dpy, Window win, int width,
-    int height, colorset_t *colorset, unsigned int depth, GC gc,
-    Bool clear_area);
-void            GetWindowBackgroundPixmapSize(colorset_t *cs_t, int width,
-    int height, int *w, int *h);
-Bool            UpdateBackgroundTransparency(Display *dpy, Window win,
-    int width, int height, colorset_t *colorset, unsigned int depth, GC gc,
-    Bool clear_area);
-void            SetRectangleBackground(Display *dpy, Window win, int x, int y,
-    int width, int height, colorset_t *colorset, unsigned int depth, GC gc);
-void            SetClippedRectangleBackground(Display *dpy, Window win, int x,
-    int y, int width, int height, XRectangle * clip, colorset_t *colorset,
-    unsigned int depth, GC gc);
+Pixmap          CreateOffsetBackgroundPixmap(Display *, Window, int, int, int,
+    int, colorset_t *, unsigned int, GC, Bool);
+Pixmap          CreateBackgroundPixmap(Display *, Window, int, int,
+    colorset_t *, unsigned int, GC, Bool);
+Pixmap          ScrollPixmap(Display *, Pixmap, GC, int, int, int, int,
+    unsigned int);
+void            SetWindowBackgroundWithOffset(Display *, Window, int, int,
+    unsigned int, unsigned int, colorset_t *, unsigned int, GC, Bool);
+void            SetWindowBackground(Display *, Window, int, int, colorset_t *,
+    unsigned int, GC, Bool);
+void            GetWindowBackgroundPixmapSize(colorset_t *, int, int, int *,
+    int *);
+Bool            UpdateBackgroundTransparency(Display *, Window, int, int,
+    colorset_t *, unsigned int, GC, Bool);
+void            SetRectangleBackground(Display *, Window, int, int, int, int,
+    colorset_t *, unsigned int, GC);
+void            SetClippedRectangleBackground(Display *, Window, int, int, int,
+    int, XRectangle *, colorset_t *, unsigned int, GC);
 #endif
