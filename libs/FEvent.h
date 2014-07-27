@@ -18,89 +18,73 @@
 /* ---------------------------- interface functions (privileged access) ----- */
 
 #ifdef FEVENT_PRIVILEGED_ACCESS
-void            fev_copy_last_event(XEvent *dest);
-XEvent         *fev_get_last_event_address(void);
+void	 fev_copy_last_event(XEvent *);
+XEvent	*fev_get_last_event_address(void);
 #endif
 
 /* ---------------------------- interface functions (normal_access) -------- */
 
 /* get the latest event time */
-Time            fev_get_evtime(void);
+Time	 fev_get_evtime(void);
 
 /* This function determines the location of the mouse pointer from the event
  * if possible, if not it queries the X server. Returns False if it had to
  * query the server and the call failed because the pointer was on a
  * different screen. */
-Bool            fev_get_evpos_or_query(Display *dpy, Window w,
-    const XEvent *e, int *ret_x, int *ret_y);
+Bool	 fev_get_evpos_or_query(Display *, Window, const XEvent *, int *, int *);
 
 /* Sets the x_root/y_root position in the given event if it's of the proper
  * type.  Returns True if the position was set. */
-Bool            fev_set_evpos(XEvent *e, int x, int y);
+Bool	 fev_set_evpos(XEvent *, int, int);
 
 /* announce a faked event to the FEvent module */
-void            fev_fake_event(XEvent *ev);
+void	 fev_fake_event(XEvent *);
 
 /* temporarily store the cached event in allocated memory */
-void           *fev_save_event(void);
+void	*fev_save_event(void);
 
 /* restore an event saved with fev_save_event and free the memory it uses */
-void            fev_restore_event(void *ev);
+void	 fev_restore_event(void *);
 
 /* fill the event structure *ev with a dummy event of no particular type */
-void            fev_make_null_event(XEvent *ev, Display *dpy);
+void	 fev_make_null_event(XEvent *, Display *);
 
 /* return a copy of the last XEVent in *ev */
-void            fev_get_last_event(XEvent *ev);
+void	 fev_get_last_event(XEvent *);
 
 /* ---------------------------- X event replacements ----------------------- */
 
 /* Replacements for X functions */
-XTimeCoord     *FGetMotionEvents(Display *display, Window w, Time start,
-    Time stop, int *nevents_return);
-int             FAllowEvents(Display *display, int event_mode, Time time);
-Bool            FCheckIfEvent(Display *display, XEvent *event_return,
-    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-    XPointer arg);
-Bool            FCheckMaskEvent(Display *display, long event_mask,
-    XEvent *event_return);
-Bool            FCheckPeekIfEvent(Display *display, XEvent *event_return,
-    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-    XPointer arg);
-Bool            FCheckTypedEvent(Display *display, int event_type,
-    XEvent *event_return);
-Bool            FCheckTypedWindowEvent(Display *display, Window w,
-    int event_type, XEvent *event_return);
-Bool            FCheckWindowEvent(Display *display, Window w, long event_mask,
-    XEvent *event_return);
-int             FEventsQueued(Display *display, int mode);
-int             FIfEvent(Display *display, XEvent *event_return,
-    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-    XPointer arg);
-int             FMaskEvent(Display *display, long event_mask,
-    XEvent *event_return);
-int             FNextEvent(Display *display, XEvent *event_return);
-int             FPeekEvent(Display *display, XEvent *event_return);
-int             FPeekIfEvent(Display *display, XEvent *event_return,
-    Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-    XPointer arg);
-int             FPending(Display *display);
-int             FPutBackEvent(Display *display, XEvent *event);
-int             FQLength(Display *display);
-Bool            FQueryPointer(Display *display, Window w, Window *root_return,
-    Window *child_return, int *root_x_return, int *root_y_return,
-    int *win_x_return, int *win_y_return, unsigned int *mask_return);
-int             FSelectInput(Display *display, Window w, long event_mask);
-Status          FSendEvent(Display *display, Window w, Bool propagate,
-    long event_mask, XEvent *event_send);
-int             FWarpPointer(Display *display, Window src_w, Window dest_w,
-    int src_x, int src_y, unsigned int src_width, unsigned int src_height,
-    int dest_x, int dest_y);
-int             FWarpPointerUpdateEvpos(XEvent *ev, Display *display,
-    Window src_w, Window dest_w, int src_x, int src_y, unsigned int src_width,
-    unsigned int src_height, int dest_x, int dest_y);
-int             FWindowEvent(Display *display, Window w, long event_mask,
-    XEvent *event_return);
+XTimeCoord     *FGetMotionEvents(Display *, Window, Time, Time, int *);
+int             FAllowEvents(Display *, int, Time);
+Bool            FCheckIfEvent(Display *, XEvent *,
+    Bool (*predicate) (Display *, XEvent *, XPointer), XPointer);
+Bool            FCheckMaskEvent(Display *, long, XEvent *);
+Bool            FCheckPeekIfEvent(Display *, XEvent *,
+    Bool (*predicate) (Display *, XEvent *, XPointer), XPointer);
+Bool            FCheckTypedEvent(Display *, int, XEvent *);
+Bool            FCheckTypedWindowEvent(Display *, Window, int, XEvent *);
+Bool            FCheckWindowEvent(Display *, Window, long, XEvent *);
+int             FEventsQueued(Display *, int);
+int             FIfEvent(Display *, XEvent *,
+    Bool (*predicate) (Display *, XEvent *, XPointer), XPointer);
+int             FMaskEvent(Display *, long, XEvent *);
+int             FNextEvent(Display *, XEvent *);
+int             FPeekEvent(Display *, XEvent *);
+int             FPeekIfEvent(Display *, XEvent *,
+    Bool (*predicate) (Display *, XEvent *, XPointer), XPointer);
+int             FPending(Display *);
+int             FPutBackEvent(Display *, XEvent *);
+int             FQLength(Display *);
+Bool            FQueryPointer(Display *, Window, Window *, Window *, int *,
+    int *, int *, int *, unsigned int *);
+int             FSelectInput(Display *, Window, long);
+Status          FSendEvent(Display *, Window, Bool, long, XEvent *);
+int             FWarpPointer(Display *, Window, Window, int, int, unsigned int,
+    unsigned int, int, int);
+int             FWarpPointerUpdateEvpos(XEvent *, Display *, Window, Window,
+    int, int, unsigned int, unsigned int, int, int);
+int             FWindowEvent(Display *, Window, long, XEvent *);
 
 /* ---------------------------- disable X symbols -------------------------- */
 

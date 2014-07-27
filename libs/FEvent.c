@@ -41,8 +41,7 @@
 
 typedef struct
 {
-	Bool            (*predicate) (Display *display, XEvent *event,
-	    XPointer arg);
+	Bool		(*predicate) (Display *, XEvent *, XPointer);
 	XPointer        arg;
 	XEvent          event;
 	Bool            found;
@@ -107,24 +106,21 @@ fev_update_last_timestamp(const XEvent *ev)
 	    fev_last_timestamp - new_timestamp > CLOCK_SKEW_MS) {
 		fev_last_timestamp = new_timestamp;
 	}
-
-	return;
 }
 
 static Bool
 fev_check_peek_pred(Display *display, XEvent *event, XPointer arg)
 {
-	fev_check_peek_args *cpa = (fev_check_peek_args *) arg;
+	fev_check_peek_args *cpa = (fev_check_peek_args *)arg;
 
-	if (cpa->found == True) {
-		return False;
-	}
+	if (cpa->found == True)
+		return (False);
+
 	cpa->found = cpa->predicate(display, event, cpa->arg);
-	if (cpa->found == True) {
+	if (cpa->found == True)
 		cpa->event = *event;
-	}
 
-	return False;
+	return (False);
 }
 
 /* ---------------------------- interface functions (privileged access) ----- */
@@ -133,14 +129,12 @@ void
 fev_copy_last_event(XEvent *dest)
 {
 	*dest = fev_event;
-
-	return;
 }
 
-XEvent         *
+XEvent *
 fev_get_last_event_address(void)
 {
-	return &fev_event;
+	return (&fev_event);
 }
 
 /* ---------------------------- interface functions (normal_access) -------- */
@@ -148,7 +142,7 @@ fev_get_last_event_address(void)
 Time
 fev_get_evtime(void)
 {
-	return fev_last_timestamp;
+	return (fev_last_timestamp);
 }
 
 Bool
@@ -167,17 +161,20 @@ fev_get_evpos_or_query(Display *dpy, Window w, const XEvent *e, int *ret_x,
 	case ButtonRelease:
 		*ret_x = e->xbutton.x_root;
 		*ret_y = e->xbutton.y_root;
-		return True;
+		rc = True;
+		break;
 	case KeyPress:
 	case KeyRelease:
 		*ret_x = e->xkey.x_root;
 		*ret_y = e->xkey.y_root;
-		return True;
+		rc = True;
+		break;
 	case EnterNotify:
 	case LeaveNotify:
 		*ret_x = e->xcrossing.x_root;
 		*ret_y = e->xcrossing.y_root;
-		return True;
+		rc = True;
+		break;
 	case MotionNotify:
 		if (e->xmotion.same_screen == True) {
 			*ret_x = e->xmotion.x_root;
@@ -189,7 +186,8 @@ fev_get_evpos_or_query(Display *dpy, Window w, const XEvent *e, int *ret_x,
 			*ret_x = 0;
 			*ret_y = 0;
 		}
-		return True;
+		rc = True;
+		break;
 	default:
 		rc = FQueryPointer(dpy, w, &JunkW, &JunkW, ret_x, ret_y,
 		    &JunkC, &JunkC, &JunkM);
@@ -200,36 +198,42 @@ fev_get_evpos_or_query(Display *dpy, Window w, const XEvent *e, int *ret_x,
 			*ret_x = 0;
 			*ret_y = 0;
 		}
-		return rc;
+		break;
 	}
+
+	return (rc);
 }
 
 Bool
 fev_set_evpos(XEvent *e, int x, int y)
 {
+	int	 rc = False;
+
 	switch (e->type) {
 	case ButtonPress:
 	case ButtonRelease:
 		e->xbutton.x_root = x;
 		e->xbutton.y_root = y;
-		return True;
+		rc = True;
+		break;
 	case KeyPress:
 	case KeyRelease:
 		e->xkey.x_root = x;
 		e->xkey.y_root = y;
-		return True;
+		rc = True;
+		break;
 	case MotionNotify:
 		if (e->xmotion.same_screen == True) {
 			e->xmotion.x_root = x;
 			e->xmotion.y_root = y;
-			return True;
+			rc = True;
 		}
 		break;
 	default:
 		break;
 	}	/* switch */
 
-	return False;
+	return (rc);
 }
 
 void
@@ -239,30 +243,26 @@ fev_fake_event(XEvent *ev)
 	fev_event = *ev;
 	/*
 	 * don't update the last timestamp here; the triggering event has
-	 * * already done this
+	 * already done this
 	 */
-
-	return;
 }
 
 void           *
 fev_save_event(void)
 {
-	XEvent         *ev;
+	XEvent	*ev;
 
-	ev = xmalloc(sizeof(XEvent));
+	ev = xmalloc(sizeof(*ev));
 	*ev = fev_event;
 
-	return ev;
+	return (ev);
 }
 
 void
 fev_restore_event(void *ev)
 {
-	fev_event = *(XEvent *) ev;
+	fev_event = *(XEvent *)ev;
 	free(ev);
-
-	return;
 }
 
 void
@@ -271,16 +271,12 @@ fev_make_null_event(XEvent *ev, Display *dpy)
 	memset(ev, 0, sizeof(*ev));
 	ev->xany.serial = fev_event.xany.serial;
 	ev->xany.display = dpy;
-
-	return;
 }
 
 void
 fev_get_last_event(XEvent *ev)
 {
 	*ev = fev_event;
-
-	return;
 }
 
 /* ---------------------------- X event replacements ----------------------- */
@@ -289,21 +285,13 @@ XTimeCoord     *
 FGetMotionEvents(Display *display, Window w, Time start, Time stop,
     int *nevents_return)
 {
-	XTimeCoord     *rc;
-
-	rc = XGetMotionEvents(display, w, start, stop, nevents_return);
-
-	return rc;
+	return (XGetMotionEvents(display, w, start, stop, nevents_return));
 }
 
 int
 FAllowEvents(Display *display, int event_mode, Time time)
 {
-	int             rc;
-
-	rc = XAllowEvents(display, event_mode, time);
-
-	return rc;
+	return (XAllowEvents(display, event_mode, time));
 }
 
 Bool
@@ -322,7 +310,7 @@ FCheckIfEvent(Display *display, XEvent *event_return,
 		fev_update_last_timestamp(event_return);
 	}
 
-	return rc;
+	return (rc);
 }
 
 Bool
@@ -339,7 +327,7 @@ FCheckMaskEvent(Display *display, long event_mask, XEvent *event_return)
 		fev_update_last_timestamp(event_return);
 	}
 
-	return rc;
+	return (rc);
 }
 
 Bool
@@ -347,19 +335,20 @@ FCheckPeekIfEvent(Display *display, XEvent *event_return,
     Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
     XPointer arg)
 {
-	XEvent          dummy;
-	fev_check_peek_args cpa;
+	XEvent			 dummy;
+	fev_check_peek_args	 cpa;
 
 	cpa.predicate = predicate;
 	cpa.arg = arg;
 	cpa.found = False;
 	XCheckIfEvent(display, &dummy, fev_check_peek_pred, (char *) &cpa);
+
 	if (cpa.found == True) {
 		*event_return = cpa.event;
 		fev_update_last_timestamp(event_return);
 	}
 
-	return cpa.found;
+	return (cpa.found);
 }
 
 Bool
@@ -376,7 +365,7 @@ FCheckTypedEvent(Display *display, int event_type, XEvent *event_return)
 		fev_update_last_timestamp(event_return);
 	}
 
-	return rc;
+	return (rc);
 }
 
 Bool
@@ -394,7 +383,7 @@ FCheckTypedWindowEvent(Display *display, Window w, int event_type,
 		fev_update_last_timestamp(event_return);
 	}
 
-	return rc;
+	return (rc);
 }
 
 Bool
@@ -412,7 +401,7 @@ FCheckWindowEvent(Display *display, Window w, long event_mask,
 		fev_update_last_timestamp(event_return);
 	}
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -437,7 +426,7 @@ FIfEvent(Display *display, XEvent *event_return,
 	*event_return = fev_event;
 	fev_update_last_timestamp(event_return);
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -450,7 +439,7 @@ FMaskEvent(Display *display, long event_mask, XEvent *event_return)
 	*event_return = fev_event;
 	fev_update_last_timestamp(event_return);
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -463,7 +452,7 @@ FNextEvent(Display *display, XEvent *event_return)
 	*event_return = fev_event;
 	fev_update_last_timestamp(event_return);
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -472,11 +461,10 @@ FPeekEvent(Display *display, XEvent *event_return)
 	int             rc;
 
 	rc = XPeekEvent(display, event_return);
-	if (rc == True) {
+	if (rc == True)
 		fev_update_last_timestamp(event_return);
-	}
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -487,21 +475,16 @@ FPeekIfEvent(Display *display, XEvent *event_return,
 	int             rc;
 
 	rc = XPeekIfEvent(display, event_return, predicate, arg);
-	if (rc == True) {
+	if (rc == True)
 		fev_update_last_timestamp(event_return);
-	}
 
-	return rc;
+	return (rc);
 }
 
 int
 FPending(Display *display)
 {
-	int             rc;
-
-	rc = XPending(display);
-
-	return rc;
+	return (XPending(display));
 }
 
 int
@@ -512,17 +495,13 @@ FPutBackEvent(Display *display, XEvent *event)
 	rc = XPutBackEvent(display, event);
 	fev_event = fev_event_old;
 
-	return rc;
+	return (rc);
 }
 
 int
 FQLength(Display *display)
 {
-	int             rc;
-
-	rc = XQLength(display);
-
-	return rc;
+	return (XQLength(display));
 }
 
 Bool
@@ -536,18 +515,14 @@ FQueryPointer(Display *display, Window w, Window *root_return,
 	    root_x_return, root_y_return, win_x_return, win_y_return,
 	    mask_return);
 
-	return rc;
+	return (rc);
 }
 
 Status
 FSendEvent(Display *display, Window w, Bool propagate, long event_mask,
     XEvent *event_send)
 {
-	Status          rc;
-
-	rc = XSendEvent(display, w, propagate, event_mask, event_send);
-
-	return rc;
+	return (XSendEvent(display, w, propagate, event_mask, event_send));
 }
 
 int
@@ -560,7 +535,7 @@ FWarpPointer(Display *display, Window src_w, Window dest_w, int src_x,
 	rc = XWarpPointer(display, src_w, dest_w, src_x, src_y, src_width,
 	    src_height, dest_x, dest_y);
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -572,11 +547,10 @@ FWarpPointerUpdateEvpos(XEvent *ev, Display *display, Window src_w,
 
 	rc = XWarpPointer(display, src_w, dest_w, src_x, src_y, src_width,
 	    src_height, dest_x, dest_y);
-	if (ev != NULL && dest_w == DefaultRootWindow(display)) {
+	if (ev != NULL && dest_w == DefaultRootWindow(display))
 		fev_set_evpos(ev, dest_x, dest_y);
-	}
 
-	return rc;
+	return (rc);
 }
 
 int
@@ -590,5 +564,5 @@ FWindowEvent(Display *display, Window w, long event_mask,
 	*event_return = fev_event;
 	fev_update_last_timestamp(event_return);
 
-	return rc;
+	return (rc);
 }
