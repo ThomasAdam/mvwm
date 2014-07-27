@@ -42,9 +42,7 @@ typedef struct char_shaped
 {
 	FriBidiChar     base;
 
-	/*
-	 * The various Arabic shaped permutations
-	 */
+	/* The various Arabic shaped permutations */
 	FriBidiChar     isolated;
 	FriBidiChar     initial;
 	FriBidiChar     medial;
@@ -53,9 +51,7 @@ typedef struct char_shaped
 
 typedef struct char_shaped_comb
 {
-	/*
-	 * The Arabic exceptions - 2chars ==> 1char
-	 */
+	/* The Arabic exceptions - 2chars ==> 1char */
 	FriBidiChar     first;
 	FriBidiChar     second;
 	FriBidiChar     comb_isolated;
@@ -143,9 +139,7 @@ static const char_shaped_t shaped_table[] = {
 	{0x06D0, 0xFBE4, 0xFBE6, 0xFBE7, 0xFBE5,},
 	{0x06D2, 0xFBAE, 0x0000, 0x0000, 0xFBAF,},
 	{0x06D3, 0xFBB0, 0x0000, 0x0000, 0xFBB1,},
-	/*
-	 * special treatment for ligatures from combining phase
-	 */
+	/* special treatment for ligatures from combining phase */
 	{0xFEF5, 0xFEF5, 0x0000, 0x0000, 0xFEF6,},	/* LAM_ALEF_MADDA */
 	{0xFEF7, 0xFEF7, 0x0000, 0x0000, 0xFEF8,},	/* LAM_ALEF_HAMZA_ABOVE */
 	{0xFEF9, 0xFEF9, 0x0000, 0x0000, 0xFEFA,},	/* LAM_ALEF_HAMZA_BELOW */
@@ -164,75 +158,58 @@ static const char_shaped_comb_t shaped_comb_table[] = {
 static const char_shaped_t *
 get_shaped_entry(FriBidiChar ch)
 {
-	int             count;
-	int             table_size;
+	int	 count;
+	int	 table_size;
 
 	table_size = sizeof(shaped_table) / sizeof(shaped_table[0]);
 
 	for (count = 0; count < table_size; count++) {
-		if (shaped_table[count].base == ch) {
-			return &shaped_table[count];
-		}
+		if (shaped_table[count].base == ch)
+			return (&shaped_table[count]);
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 /* ------------------------- interface functions --------------------------- */
 
 int
-shape_n_join(FriBidiChar * str_visual, int str_len)
+shape_n_join(FriBidiChar *str_visual, int str_len)
 {
-	int             i;	/* counter of the input string */
-	int             len;	/* counter and the final length of the shaped string */
-	FriBidiChar    *orig_str;
-	const char_shaped_t **list;
-	const char_shaped_t *prev;
-	const char_shaped_t *curr;
-	const char_shaped_t *next;
+	int			 i;	/* counter of the input string */
+	int			 len;	/* counter and the final length of the shaped string */
+	FriBidiChar		*orig_str;
+	const char_shaped_t	**list;
+	const char_shaped_t	*prev;
+	const char_shaped_t	*curr;
+	const char_shaped_t	*next;
 
 	list = xmalloc((str_len + 2) * sizeof(char_shaped_t *));
-
 	orig_str = xmalloc((str_len + 1) * sizeof(FriBidiChar));
 
-	/*
-	 * head is NULL
-	 */
+	/* head is NULL */
 	*list = NULL;
 	list++;
 
-	/*
-	 * Populate with existent shaped characters
-	 */
-	for (i = 0; i < str_len; i++) {
+	/* Populate with existent shaped characters */
+	for (i = 0; i < str_len; i++)
 		list[i] = get_shaped_entry(str_visual[i]);
-	}
 
-	/*
-	 * tail is NULL
-	 */
+	/* tail is NULL */
 	list[i] = NULL;
 
-	/*
-	 * Store-off non-shaped characters; start with a clean slate
-	 */
+	/* Store-off non-shaped characters; start with a clean slate */
 	memcpy(orig_str, str_visual, (str_len * sizeof(str_visual[0])));
 	memset(str_visual, 0, (str_len * sizeof(str_visual[0])));
 
-	/*
-	 * Traverse the line & build new content
-	 */
+	/* Traverse the line & build new content */
 	for (i = 0, len = 0; i <= str_len - 1; i++, len++) {
-		/*
-		 * Get previous, current, and next characters
-		 */
+		/* Get previous, current, and next characters */
 		prev = list[i + 1];
 		curr = list[i];
 		next = list[i - 1];
 
-		/*
-		 * Process current mapped characters
-		 */
+		/* Process current mapped characters */
 		if (curr) {
 			if (next) {
 				if (prev) {
@@ -260,22 +237,18 @@ shape_n_join(FriBidiChar * str_visual, int str_len)
 						    curr->final ? curr->
 						    final : curr->isolated;
 					}
-				} else {
+				} else
 					str_visual[len] = curr->isolated;
-				}
 			}
-		} else {
+		} else
 			str_visual[len] = orig_str[i];
-		}
 	}
 
 	free(list - 1);
 	free(orig_str);
 
-	/*
-	 * return the length of the new string
-	 */
-	return len;
+	/* return the length of the new string */
+	return (len);
 }
 
 #endif /* HAVE_BIDI */
