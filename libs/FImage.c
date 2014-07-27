@@ -54,21 +54,20 @@ static int
 FShmErrorHandler(Display *dpy, XErrorEvent * ev)
 {
 	FShmImagesSupported = False;
-	return 0;
+	return (0);
 }
 
 static void
 FShmInit(Display *dpy)
 {
-	if (FShmInitialized) {
+	if (FShmInitialized)
 		return;
-	}
 
 	FShmInitialized = True;
 
-	if (!XShmSupport) {
+	if (!XShmSupport)
 		return;
-	}
+
 	FShmImagesSupported =
 	    XQueryExtension(dpy, "MIT-SHM", &FShmMajorOpCode, &FShmEventBase,
 	    &FShmErrorBase);
@@ -81,9 +80,9 @@ FShmSafeCreateImage(Display *dpy, FImage * fim, Visual * visual,
 	Bool            error = False;
 	XErrorHandler   save_handler;
 
-	if (!XShmSupport) {
+	if (!XShmSupport)
 		return;
-	}
+
 	fim->shminfo = xcalloc(1, sizeof(FShmSegmentInfo));
 	if (!(fim->im =
 		FShmCreateImage(dpy, visual, depth, format, NULL,
@@ -105,40 +104,34 @@ FShmSafeCreateImage(Display *dpy, FImage * fim, Visual * visual,
 	}
 	fim->shminfo->readOnly = False;
 
-	/*
-	 * use the error handler for a definitive error
-	 */
+	/* use the error handler for a definitive error */
 	save_handler = XSetErrorHandler(FShmErrorHandler);
-	if (!FShmAttach(dpy, fim->shminfo)) {
+	if (!FShmAttach(dpy, fim->shminfo))
 		error = True;
-	} else {
+	else
 		XSync(dpy, False);
-	}
 
 	if (!error && !FShmImagesSupported) {
-		/*
-		 * get an X error: we are a remote client
-		 */
-		if (FShmDetach(dpy, fim->shminfo)) {
+		/* get an X error: we are a remote client */
+		if (FShmDetach(dpy, fim->shminfo))
 			XSync(dpy, False);
-		}
+
 		error = True;
 	}
 	XSetErrorHandler(save_handler);
 
-      bail:
+bail:
 	if (error) {
-
 		if (fim->im) {
 			XDestroyImage(fim->im);
 			fim->im = NULL;
 		}
-		if (fim->shminfo->shmaddr) {
+		if (fim->shminfo->shmaddr)
 			Fshmdt(fim->shminfo->shmaddr);
-		}
-		if (fim->shminfo->shmid > 0) {
+
+		if (fim->shminfo->shmid > 0)
 			Fshmctl(fim->shminfo->shmid, IPC_RMID, 0);
-		}
+
 		free(fim->shminfo);
 		fim->shminfo = NULL;
 	}
@@ -170,12 +163,10 @@ FCreateFImage(Display *dpy, Visual * visual, unsigned int depth, int format,
 			    0))) {
 			fim->im->data =
 			    xmalloc(fim->im->bytes_per_line * height);
-		} else {
+		} else
 			free(fim);
-		}
 	}
-
-	return fim;
+	return (fim);
 }
 
 FImage         *
@@ -194,18 +185,16 @@ FGetFImage(Display *dpy, Drawable d, Visual * visual,
 	if (XShmSupport && FShmImagesSupported) {
 		FShmSafeCreateImage(dpy, fim, visual, depth, format, width,
 		    height);
-		if (fim->im) {
+		if (fim->im)
 			FShmGetImage(dpy, d, fim->im, x, y, plane_mask);
-		}
 	}
 
 	if (!fim->im) {
 		fim->im =
-		    XGetImage(dpy, d, x, y, width, height, plane_mask,
-		    format);
+		    XGetImage(dpy, d, x, y, width, height, plane_mask, format);
 	}
 
-	return fim;
+	return (fim);
 }
 
 void
@@ -227,10 +216,9 @@ FPutFImage(Display *dpy, Drawable d, GC gc, FImage * fim, int src_x,
 void
 FDestroyFImage(Display *dpy, FImage * fim)
 {
-	if (fim->shminfo) {
-		if (FShmDetach(dpy, fim->shminfo)) {
-		}
-	}
+	if (fim->shminfo)
+		if (FShmDetach(dpy, fim->shminfo))
+
 	XDestroyImage(fim->im);
 	if (fim->shminfo) {
 		Fshmdt(fim->shminfo->shmaddr);

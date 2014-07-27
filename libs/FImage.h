@@ -19,17 +19,15 @@ typedef struct
 
 /* ---------------------------- interface functions ------------------------ */
 
-FImage         *FCreateFImage(Display *dpy, Visual * visual,
-    unsigned int depth, int format, unsigned int width, unsigned int height);
+FImage	*FCreateFImage(Display *, Visual *, unsigned int, int, unsigned int,
+    unsigned int);
 
-FImage         *FGetFImage(Display *dpy, Drawable d, Visual * visual,
-    unsigned int depth, int x, int y, unsigned int width,
-    unsigned int height, unsigned long plane_mask, int format);
+FImage	*FGetFImage(Display *, Drawable, Visual *, unsigned int, int, int,
+    unsigned int, unsigned int, unsigned long, int);
 
-void            FPutFImage(Display *dpy, Drawable d, GC gc, FImage * fim,
-    int src_x, int src_y, int dest_x, int dest_y, unsigned int width,
-    unsigned int height);
+void	 FPutFImage(Display *, Drawable, GC, FImage *, int, int, int, int,
+    unsigned int, unsigned int);
 
-void            FDestroyFImage(Display *dpy, FImage * fim);
+void	 FDestroyFImage(Display *, FImage *);
 
 #endif /* FIMAGE_H */
