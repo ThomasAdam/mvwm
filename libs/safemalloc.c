@@ -83,3 +83,28 @@ xstrdup(const char *s)
 
 	return (ptr);
 }
+
+int printflike2
+xasprintf(char **ret, const char *fmt, ...)
+{
+	va_list ap;
+	int	i;
+
+	va_start(ap, fmt);
+	i = xvasprintf(ret, fmt, ap);
+	va_end(ap);
+
+	return (i);
+}
+
+int
+xvasprintf(char **ret, const char *fmt, va_list ap)
+{
+	int	i;
+
+	i = vasprintf(ret, fmt, ap);
+	if (i < 0 || *ret == NULL)
+		errx(1, "xvasprintf failed");
+
+	return (i);
+}
