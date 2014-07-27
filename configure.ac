@@ -18,37 +18,21 @@ RELDATENUM="2012-04-20"
 
 # constant variable settings
 MVWMNAMELONG="F? Virtual Window Manager"
-MVWMHOMEPAGE="http://mvwm.org/"
-MVWMFTP="ftp.mvwm.org"
-MVWMFTPDIR="/pub/ftp"
-MVWMALTFTP="metalab.unc.edu"
-MVWMALTFTPDIR="/pub/Linux/X11/window-managers/"
+MVWMHOMEPAGE="http://xteddy.org/"
+MVWMFTP=""
+MVWMFTPDIR=""
+MVWMALTFTP=""
+MVWMALTFTPDIR=""
 MVWMLIST="thomas@xteddy.org"
-MVWMWORKERSLIST="thomas@xteddy.otg.org"
+MVWMWORKERSLIST="thomas@xteddy.org"
 MVWMWORKERSLISTLONG="Thomas Adam <thomas@xteddy.org>"
 MANPAGE_PREAMBLE='.\" WARNING: This file was automatically generated.  Edit the .in file instead.'
 
 if test ! x"$ISRELEASED" = xyes; then
-	VERSIONINFO=" (from cvs)"
+	VERSIONINFO=" (from git)"
 	RELDATELONG="(not released yet)"
 	RELDATESHORT="(not released yet)"
 	RELDATENUM="(not released yet)"
-#	# migo: unfortunately this nice idea can not work, it is not updated.
-#	# I will think more about this, maybe autoconf-2.50+ has a solution.
-#	if test -d CVS/ -a -f CVS/Entries && \
-#		date +%Y-%m-%d -d 'Wed Sep  4 12:36:50 2002' >/dev/null 2>&1
-#	then
-#		# this is not the exact date, but better than the current date
-#		for file in CVS/Entries */CVS/Entries; do
-#			changelog_date="`cat $file | grep /ChangeLog/ \
-#				| cut -d/ -f4`"
-#			test ! x"$changelog_date" = x && \
-#			date +%Y-%m-%d -d "$changelog_date" >>changelog_dates
-#		done
-#		changelog_date=`cat changelog_dates | sort -r -u | head -1`
-#		VERSIONINFO=" (from cvs $changelog_date)"
-#		rm -f changelog_dates
-#	fi
 fi
 
 AC_SUBST(ISRELEASED)
@@ -87,7 +71,6 @@ if test x"$PERL" = x; then
 fi
 if test ! x"$PERL" = x; then
 	AC_MSG_CHECKING([for perl $REQUIRED_PERL_VERSION or better])
-	HAVE_PERL_FOR_DOCS=1
 	if ("$PERL" -e "require $REQUIRED_PERL_VERSION;") 2>/dev/null; then
 		AC_MSG_RESULT(yes)
 	else
@@ -95,7 +78,6 @@ if test ! x"$PERL" = x; then
 		AC_MSG_WARN([$PERL not found or too old])
 	fi
 else
-	HAVE_PERL_FOR_DOCS=0
 	AC_MSG_WARN([perl is not found, it is required for some scripts and modules])
 	AC_MSG_WARN([It is recommended to install perl $REQUIRED_PERL_VERSION or better later])
 	PERL=/usr/bin/perl
@@ -125,7 +107,6 @@ AC_SUBST(MVWM_MODULEDIR)
 AC_SUBST(MVWM_DATADIR)
 AC_SUBST(MVWM_PERLLIBDIR)
 AC_SUBST(MVWM_CONFDIR)
-AC_SUBST(MVWM_DOCDIR)
 
 AH_TEMPLATE([MVWM_CONFIG],
   [Name of config filenames in MVWM_USERDIR and MVWM_DATADIR])
@@ -135,18 +116,6 @@ AH_TEMPLATE([MVWM2RC],[Suffix for old (to be deprecated) config filenames])
 AC_DEFINE(MVWM2RC, ".mvwm2rc")
 
 # Various configure-time options
-
-AC_ARG_ENABLE(dmalloc,
-  AS_HELP_STRING([--enable-dmalloc],
-    [enable support for the dmalloc debugging library]),
-  [ac_cv_dmalloc="$enableval"],
-  [ac_cv_dmalloc="no"])
-
-AC_ARG_ENABLE(efence,
-  AS_HELP_STRING([--enable-efence],
-    [enable support for the efence debugging library]),
-  [ac_cv_efence="$enableval"],
-  [ac_cv_efence="no"])
 
 smr_SWITCH(command-log, command logging, off, MVWM_COMMAND_LOG,, [Produces a log of all executed commands and their times on stderr.])
 AH_VERBATIM([_MVWM_COMMAND_LOG],
@@ -286,153 +255,6 @@ esac
 # - version of fontconfig without fontconfig-config
 # - version of fribidi without fribidi-config
 AM_CHECK_PKG_CONFIG
-
-
-# Building man pages & HTML documentation (from XML source).
-# extract command names
-if test ! x"$SED" = x; then
-	DOC_COMMANDS=`
-		sed -n '
-		:findhead
-			/#.*define.*CMD_ENT/bfindcmd
-			n
-			bfindhead
-		:findcmd
-			n
-			/CMD_ENT/bfound
-			bfindcmd
-		:found
-			/"#"/bfindcmd
-			/"propertychange"/bfindcmd
-			/"readwritecolors"/bfindcmd
-			/"send_.*"/bfindcmd
-			/"set_.*"/bfindcmd
-			s/.*CMD_ENT.*CMD_//
-			s/,.*//
-			p
-			n
-			bfindcmd
-	' < mvwm/functable.c`
-	DOC_COMMANDS=`echo $DOC_COMMANDS`
-	# with .xml suffix
-	DOC_COMMANDS_XML=`for i in $DOC_COMMANDS; do echo ${i}.xml; done`
-	DOC_COMMANDS_XML=`echo $DOC_COMMANDS_XML`
-	# with .xml suffix and path
-	DOC_COMMANDS_XML_PATH=`
-		for i in $DOC_COMMANDS; do
-			echo ../commands/${i}.xml;
-		done
-	`
-	DOC_COMMANDS_XML_PATH=`echo $DOC_COMMANDS_XML_PATH`
-	# with .html suffix
-	DOC_COMMANDS_HTML=`for i in $DOC_COMMANDS; do echo ${i}.html; done`
-	DOC_COMMANDS_HTML=`echo $DOC_COMMANDS_HTML`
-	# extract module names
-	DOC_MODULES=""
-	DOC_MODULES=`
-		for i in modules/*; do echo "$i"; done |
-		sed -n '
-			:search
-			/^modules.Fvwm/bfound
-			bnext
-		:found
-			s/modules.//
-			p
-		:next
-			n
-			bsearch
-		'
-	`
-	DOC_MODULES=`echo $DOC_MODULES`
-	DOC_MODULES_HTML=`for i in $DOC_MODULES; do echo ${i}.html; done`
-	DOC_MODULES_HTML=`echo $DOC_MODULES_HTML`
-	# extract man page section names
-	DOC_SECTIONS=`cat doc/fvwm/sections`
-	DOC_SECTIONS=`echo $DOC_SECTIONS`
-	DOC_SECTIONS_XML=`for i in $DOC_SECTIONS; do echo ${i}.xml; done`
-	DOC_SECTIONS_XML=`echo $DOC_SECTIONS_XML`
-	DOC_SECTIONS_XML_PATH=`for i in $DOC_SECTIONS; do echo ${i}.xml; done`
-	DOC_SECTIONS_XML_PATH=`echo $DOC_SECTIONS_XML`
-else
-	DOC_COMMANDS=""
-	DOC_COMMANDS_XML=""
-	DOC_COMMANDS_XML_PATH=""
-	DOC_COMMANDS_HTML=""
-	DOC_MODULES=""
-	DOC_MODULES_HTML=""
-	DOC_SECTIONS=""
-	DOC_SECTIONS_XML=""
-	DOC_SECTIONS_XML_PATH=""
-fi
-AC_SUBST(DOC_COMMANDS)
-AC_SUBST(DOC_COMMANDS_XML)
-AC_SUBST(DOC_COMMANDS_XML_PATH)
-AC_SUBST(DOC_COMMANDS_HTML)
-AC_SUBST(DOC_MODULES)
-AC_SUBST(DOC_MODULES_HTML)
-AC_SUBST(DOC_SECTIONS)
-AC_SUBST(DOC_SECTIONS_XML)
-AC_SUBST(DOC_SECTIONS_XML_PATH)
-
-problem_mandoc=""
-AC_CHECK_PROG(XSLTPROC, xsltproc, xsltproc, "")
-
-AC_ARG_ENABLE(mandoc,
-  AS_HELP_STRING([--disable-mandoc],
-    [disable generation of man pages]),
-  [ if test x"$enableval" = xyes; then
-		with_mandoc="yes, check"
-	else
-		with_mandoc="no"
-		problem_mandoc=": Explicitly disabled"
-	fi ],
-  [ with_mandoc="not specified, check" ]
-)
-
-if test ! x"$with_mandoc" = xno; then
-	if test x"$XSLTPROC" = x ; then
-		with_mandoc="no"
-		problem_mandoc=": No xsltproc found in PATH"
-	elif test x"$SED" = x ; then
-		with_mandoc="no"
-		problem_mandoc=": No sed found in PATH"
-	elif test x"$HAVE_PERL_FOR_DOCS" = x0 ; then
-		with_mandoc="no"
-		problem_mandoc=": No perl found in PATH"
-	else
-		with_mandoc="yes"
-	fi
-fi
-AM_CONDITIONAL([MVWM_BUILD_MANDOC], [test x"$with_mandoc" = xyes])
-
-
-problem_htmldoc=""
-AC_ARG_ENABLE(htmldoc,
-  AS_HELP_STRING([--enable-htmldoc],[enable generation of HTML documentation]),
-  [ if test x"$enableval" = xyes; then
-		with_htmldoc="yes, check"
-	else
-		with_htmldoc="no"
-		problem_htmldoc=": Explicitly disabled"
-	fi ],
-  [ with_htmldoc="no" ]
-)
-
-if test ! x"$with_htmldoc" = xno; then
-	if test x"$XSLTPROC" = x ; then
-		with_htmldoc="no"
-		problem_htmldoc=": No xsltproc found in PATH"
-	elif test x"$SED" = x ; then
-		with_htmldoc="no"
-		problem_htmldoc=": No sed found in PATH"
-	elif test x"$HAVE_PERL_FOR_DOCS" = x0 ; then
-		with_htmldoc="no"
-		problem_htmldoc=": No perl found in PATH"
-	else
-		with_htmldoc="yes"
-	fi
-fi
-AM_CONDITIONAL([MVWM_BUILD_HTMLDOC], [test x"$with_htmldoc" = xyes])
 
 # Checking for optional libraries
 # Default is to use them if found; can be disable using --without
@@ -1184,20 +1006,6 @@ AH_VERBATIM([_COMPAT_OLD_KEYSYMDEF],
 #  define XK_Page_Down XK_Next
 #endif])
 
-# Allow building with dmalloc.  Do this last to avoid screwing up any
-# other checks above.
-case "$ac_cv_dmalloc" in
-  yes) AC_CHECK_HEADERS(dmalloc.h)
-       AC_CHECK_LIB(dmalloc, dmalloc_shutdown)
-       CPPFLAGS="$CPPFLAGS -DDMALLOC_FUNC_CHECK" ;;
-esac
-
-
-# Allow building with efence.
-case "$ac_cv_efence" in
-  yes) AC_CHECK_LIB(efence, malloc) ;;
-esac
-
 # some explicit definitions for config.h file
 AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 [
@@ -1386,16 +1194,6 @@ AC_OUTPUT(
 	libs/Makefile
 	mvwm/Makefile
 	modules/Makefile
-dnl
-dnl	bin/fvwm-bug.1
-dnl bin/fvwm-config.1
-dnl bin/fvwm-convert-2.2.1
-dnl bin/fvwm-convert-2.4.1
-dnl bin/fvwm-convert-2.6.1
-dnl bin/fvwm-menu-desktop.1
-dnl	bin/fvwm-menu-directory.1
-dnl	bin/fvwm-perllib.1
-dnl	bin/fvwm-root.1
 	modules/MvwmAuto/MvwmAuto.1
 	modules/MvwmBacker/MvwmBacker.1
 	modules/MvwmButtons/MvwmButtons.1
@@ -1406,39 +1204,12 @@ dnl	bin/fvwm-root.1
 	modules/MvwmIconMan/MvwmIconMan.1
 	modules/MvwmIdent/MvwmIdent.1
 	modules/MvwmPager/MvwmPager.1
-dnl
-dnl bin/Makefile
-dnl bin/fvwm-config
-dnl bin/fvwm-bug
-dnl bin/fvwm-perllib
-dnl bin/fvwm-menu-directory
-dnl bin/fvwm-menu-desktop
-dnl bin/fvwm-convert-2.4
-dnl bin/fvwm-convert-2.6
-dnl
 	perllib/Makefile
 	perllib/General/Makefile
 	perllib/MVWM/Makefile
 	perllib/MVWM/Module/Makefile
 	perllib/MVWM/Tracker/Makefile
 	perllib/MVWM/Module.pm
-dnl doc/fvwm.ent
-dnl doc/footer.html
-dnl doc/Makefile
-dnl doc/fvwm/Makefile
-dnl doc/commands/Makefile
-dnl doc/docbook-xml/Makefile
-dnl doc/docbook-xml/ent/Makefile
-dnl doc/docbook-xsl/Makefile
-dnl doc/docbook-xsl/common/Makefile
-dnl doc/docbook-xsl/manpages/Makefile
-dnl doc/docbook-xsl/profiling/Makefile
-dnl doc/docbook-xsl/highlighting/Makefile
-dnl doc/docbook-xsl/lib/Makefile
-dnl doc/docbook-xsl/html/Makefile
-dnl doc/modules/Makefile
-dnl po/Makefile
-dnl
 	modules/MvwmAuto/Makefile
 	modules/MvwmBacker/Makefile
 	modules/MvwmButtons/Makefile
@@ -1494,7 +1265,6 @@ Mvwm Configuration:
   Man pages:   $my_mandir
   Modules:     $my_moddir
   Data files:  $my_datdir
-  Doc files:   $my_docdir
   Perl lib:    $my_plldir
   Locale msg:  $my_localedir $INST_LINGUAS
 
@@ -1509,12 +1279,4 @@ Mvwm Configuration:
   With XRandR support?                $with_xrandr$problem_xrandr
   With Xft anti-alias font support?   $with_xft$problem_xft
   With Xrender image support?         $with_xrender$problem_xrender
-  Build man pages?                    $with_mandoc$problem_mandoc
-  Build HTML documentation?           $with_htmldoc$problem_htmldoc
 "
-case "$ac_cv_dmalloc" in
-  yes) echo "  DMALLOC heap debugging library enabled." ;;
-esac
-case "$ac_cv_efence" in
-  yes) echo "  EFENCE debugging library enabled." ;;
-esac
