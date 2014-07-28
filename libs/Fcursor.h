@@ -8,13 +8,13 @@ typedef XcursorImage FcursorImage;
 typedef XcursorImages FcursorImages;
 typedef XcursorPixel FcursorPixel;
 
-#	define FcursorFilenameLoadImages(a,b)	XcursorFilenameLoadImages(a,b)
-#	define FcursorGetDefaultSize(a)		XcursorGetDefaultSize(a)
-#	define FcursorImageCreate(a,b)		XcursorImageCreate(a,b)
-#	define FcursorImageDestroy(a)		XcursorImageDestroy(a)
-#	define FcursorImagesDestroy(a)		XcursorImagesDestroy(a)
-#	define FcursorImageLoadCursor(a,b)	XcursorImageLoadCursor(a,b)
-#	define FcursorImagesLoadCursor(a,b)	XcursorImagesLoadCursor(a,b)
+#define FcursorFilenameLoadImages(a,b)	XcursorFilenameLoadImages(a,b)
+#define FcursorGetDefaultSize(a)		XcursorGetDefaultSize(a)
+#define FcursorImageCreate(a,b)		XcursorImageCreate(a,b)
+#define FcursorImageDestroy(a)		XcursorImageDestroy(a)
+#define FcursorImagesDestroy(a)		XcursorImagesDestroy(a)
+#define FcursorImageLoadCursor(a,b)	XcursorImageLoadCursor(a,b)
+#define FcursorImagesLoadCursor(a,b)	XcursorImagesLoadCursor(a,b)
 #else
 typedef struct
 {
@@ -32,13 +32,13 @@ typedef struct
 } FcursorImages;
 typedef void    FcursorPixel;
 
-#	define FcursorFilenameLoadImages(a,b) 0
-#	define FcursorGetDefaultSize(a) 0
-#	define FcursorImageCreate(a,b) 0
-#	define FcursorImageDestroy(a)
-#	define FcursorImagesDestroy(a)
-#	define FcursorImageLoadCursor(a,b) 0
-#	define FcursorImagesLoadCursor(a,b) 0
+#define FcursorFilenameLoadImages(a,b) 0
+#define FcursorGetDefaultSize(a) 0
+#define FcursorImageCreate(a,b) 0
+#define FcursorImageDestroy(a)
+#define FcursorImagesDestroy(a)
+#define FcursorImageLoadCursor(a,b) 0
+#define FcursorImagesLoadCursor(a,b) 0
 #endif
 
 #endif /* FCURSOR_H */
