@@ -1,4 +1,3 @@
-/* -*-c-*- */
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -26,9 +25,9 @@
 #include <X11/Xutil.h>
 #include "FShape.h"
 
-int             FShapeEventBase = 0;
-int             FShapeErrorBase = 0;
-Bool            FShapesSupported = False;
+int	 FShapeEventBase = 0;
+int	 FShapeErrorBase = 0;
+Bool	 FShapesSupported = False;
 
 void
 FShapeInit(Display *dpy)

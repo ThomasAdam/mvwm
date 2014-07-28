@@ -1,5 +1,3 @@
-/* -*-c-*- */
-
 /*
 ** FShape.h: drop in replacements for the X shape library encapsulation
 */
