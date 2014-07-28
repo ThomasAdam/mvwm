@@ -53,16 +53,18 @@ int             FRenderAlphaDepth = 0;
 void
 FRenderInit(Display *dpy)
 {
-	int             event_basep;
+	int	 event_basep;
+	int	*pmf = NULL;
+	int	 i, n;
+	int	 alpha_depth = 0;
+
 
 	FRenderAlphaDepth = 8;
+
 	if (!XRenderSupport
 	    || !(FRenderExtensionSupported =
 		XQueryExtension(dpy, "RENDER", &FRenderMajorOpCode,
 		    &event_basep, &FRenderErrorBase))) {
-		int            *pmf = NULL;
-		int             i, n;
-		int             alpha_depth = 0;
 
 		FRenderErrorBase = -10000;
 		FRenderMajorOpCode = -10000;
@@ -90,47 +92,47 @@ FRenderInit(Display *dpy)
 int
 FRenderGetErrorCodeBase(void)
 {
-	return FRenderErrorBase;
+	return (FRenderErrorBase);
 }
 
 int
 FRenderGetMajorOpCode(void)
 {
-	return FRenderMajorOpCode;
+	return (FRenderMajorOpCode);
 }
 
 Bool
 FRenderGetExtensionSupported(void)
 {
-	return FRenderExtensionSupported;
+	return (FRenderExtensionSupported);
 }
 
 int
 FRenderGetAlphaDepth(void)
 {
-	return FRenderAlphaDepth;
+	return (FRenderAlphaDepth);
 }
 
 Bool
 FRenderGetErrorText(int code, char *msg)
 {
 
-	if (XRenderSupport) {
-		static char    *error_names[] = {
-			"BadPictFormat",
-			"BadPicture",
-			"BadPictOp",
-			"BadGlyphSet",
-			"BadGlyph"
-		};
+	static char    *error_names[] = {
+		"BadPictFormat",
+		"BadPicture",
+		"BadPictOp",
+		"BadGlyphSet",
+		"BadGlyph"
+	};
 
+	if (XRenderSupport) {
 		if (code >= FRenderErrorBase &&
 		    code <= FRenderErrorBase +
 		    (sizeof(error_names) / sizeof(char *)) - 1) {
-			sprintf(msg, "%s\n",
+			xsnprintf(msg, "%s\n", sizeof msg,
 			    error_names[code - FRenderErrorBase]);
-			return 1;
+			return (1);
 		}
 	}
-	return 0;
+	return (0);
 }
