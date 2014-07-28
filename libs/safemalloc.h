@@ -16,5 +16,6 @@ void	*xrealloc(void *, size_t, size_t);
 char	*xstrdup(const char *);
 int	 xasprintf(char **, const char *, ...);
 int	 xvasprintf(char **, const char *, va_list);
-
+int printflike3  xsnprintf(char *, size_t, const char *, ...);
+int              xvsnprintf(char *, size_t, const char *, va_list);
 #endif

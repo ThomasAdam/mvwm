@@ -108,3 +108,31 @@ xvasprintf(char **ret, const char *fmt, va_list ap)
 
 	return (i);
 }
+
+int printflike3
+xsnprintf(char *buf, size_t len, const char *fmt, ...)
+{
+	va_list ap;
+	int     i;
+
+	va_start(ap, fmt);
+	i = xvsnprintf(buf, len, fmt, ap);
+	va_end(ap);
+
+	return (i);
+}
+
+int
+xvsnprintf(char *buf, size_t len, const char *fmt, va_list ap)
+{
+	int     i;
+
+	if (len > INT_MAX)
+		errx(1, "len > INT_MAX");
+
+	i = vsnprintf(buf, len, fmt, ap);
+	if (i < 0)
+		errx(1, "vsnprintf failed");
+
+	return (i);
+}
