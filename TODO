@@ -46,7 +46,7 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
       which is added on to a list, and popped when no longer used in that
       state.
 
-* Documentation:
+* Documentation (Being worked on:  https://github.com/Hoodoo/mvwm-docs):
     - It's broken; as I'm removing code I'm not removing the documentation!
     - I don't like docbook and hence XML descriptions.  Use mdoc!  But how
       do we convert to that?
@@ -68,6 +68,8 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
 * Modules:
     - The module interface (FVWM <-> Module) is a mess; consider DBUS?  Or
       imsg?
+    - Use libevent to replace the hand-rolled (and often broken) select/poll mechanism.
+    - Rewrite MvwmConsole not to suck!
     - What about third-party scripting languages?  How do we handle that
       without requiring linking against the specific language in question?
     - FvwmPager with per-monitor broken:  the module needs to be
