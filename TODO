@@ -23,6 +23,22 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
       There's a lot of code being ripped out of libs/ and I don't see much
       more being added in.
 
+* String handling!
+    - libs/String.[ch] and friends have shocking idioms like CatString3, and
+      other hideous means to manipulating strings.  Get rid of these!
+    - Audit the code for strcpy()/strcat(), and take out back and shoot
+      them!  Specifically:
+        - Check whether the original string is being malloc()d and just use
+          xasprintf()
+        - If it's on the stack, use strlcpy(), and carefully consider
+          whether the return value should be checked.  If it's not
+          necessary, add (void) at the start of the call.
+    - Each command shouldn't be doing its own string parsing; the items
+      should be tokenised before-hand and sent along to the relevant CMD_*()
+      functions.
+        - This means rethinking how commands/lines/etc., are parsed.
+
+
 * Despite this being GNU licenced (for now), I'd like to see KNF from
   OpenBSD's style(9) guide being applied.  Might be possible to script
   using indent(1).  Some examples of an indent.pro might exist.
