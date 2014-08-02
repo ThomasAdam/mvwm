@@ -37,3 +37,6 @@ distcheck2: distcheck dist2
 	fi
 
 distclean2: distclean
+
+test:
+	@true
