@@ -499,7 +499,7 @@ void alloc_buttonlist(button_info *ub,int num)
     }
     while(ub->c->allocated_buttons<=num)
       ub->c->allocated_buttons+=32;
-    bb = xmalloc(ub->c->allocated_buttons*sizeof(button_info*));
+    bb = mvwm_malloc(ub->c->allocated_buttons*sizeof(button_info*));
     for(i=old;i<ub->c->allocated_buttons;i++)
       bb[i]=NULL;
     if(ub->c->buttons)
@@ -527,7 +527,7 @@ button_info *alloc_button(button_info *ub,int num)
     exit(2);
   }
 
-  b = xmalloc(sizeof(button_info));
+  b = mvwm_malloc(sizeof(button_info));
   ub->c->buttons[num]=b;
 
   memset((void *)b, 0, sizeof(*b));
@@ -563,7 +563,7 @@ button_info *alloc_button(button_info *ub,int num)
 **/
 void MakeContainer(button_info *b)
 {
-  b->c = xcalloc(1, sizeof(container_info));
+  b->c = mvwm_callow(1, sizeof(container_info));
   b->flags.b_Container = 1;
   if(b->parent != NULL)
   {
@@ -580,11 +580,11 @@ void MakeContainer(button_info *b)
     b->c->flags.b_Frame = 1;
     b->c->flags.b_Back = 1;
     b->c->flags.b_Fore = 1;
-    b->c->font_string = xstrdup("fixed");
+    b->c->font_string = mvwm_strdup("fixed");
     b->c->xpad=2;
     b->c->ypad=4;
-    b->c->back = xstrdup("rgb:90/80/90");
-    b->c->fore = xstrdup("black");
+    b->c->back = mvwm_strdup("rgb:90/80/90");
+    b->c->fore = mvwm_strdup("black");
     b->c->framew=2;
   }
 
@@ -725,7 +725,7 @@ void ShuffleButtons(button_info *ub)
 
   /* make local copy of buttons in ub */
   num_items = c->num_buttons;
-  local_buttons=xmalloc(sizeof(button_info)*num_items);
+  local_buttons=mvwm_malloc(sizeof(button_info)*num_items);
   for(i=0;i<num_items;i++)
   {
     local_buttons[i] = c->buttons[i];

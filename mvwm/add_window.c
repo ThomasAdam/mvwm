@@ -427,7 +427,7 @@ static void setup_window_structure(
 	*/
 	if (ReuseWin == NULL)
 	{
-		*pfw = xmalloc(sizeof(MvwmWindow));
+		*pfw = mvwm_malloc(sizeof(MvwmWindow));
 	}
 	else
 	{
@@ -1696,7 +1696,7 @@ static void __add_window_handle_x_resources(MvwmWindow *fw)
 			name_len--;
 		}
 		if (name_len>0) {
-			fw->style_name = xmalloc(sizeof(char) * (name_len+1));
+			fw->style_name = mvwm_malloc(sizeof(char) * (name_len+1));
 			memcpy(fw->style_name,style_name,name_len);
 			fw->style_name[name_len] = 0;
 		}

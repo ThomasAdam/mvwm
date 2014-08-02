@@ -228,7 +228,7 @@ int AddBinding(
 					break;
 				}
 				temp = *pblist;
-				(*pblist) = xmalloc(sizeof(Binding));
+				(*pblist) = mvwm_malloc(sizeof(Binding));
 				(*pblist)->type = type;
 				(*pblist)->Button_Key = i;
 				if (BIND_IS_KEY_BINDING(type) &&

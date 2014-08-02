@@ -152,7 +152,7 @@ int main(int argc, char **argv)
 {
 	char *temp, *s;
 
-	commands = xmalloc(sizeof(CommandChain));
+	commands = mvwm_malloc(sizeof(CommandChain));
 	commands->first = commands->last = NULL;
 
 	/* Save the program name for error messages and config parsing */
@@ -567,7 +567,7 @@ void ParseConfig(void)
 	char *tline;
 
 	/* TA:  FIXME!  xasprintf() */
-	line_start = xmalloc(strlen(Module) + 2);
+	line_start = mvwm_malloc(strlen(Module) + 2);
 	strcpy(line_start, "*");
 	strcat(line_start, Module);
 
@@ -661,7 +661,7 @@ void AddCommand(char *line)
 	Bool do_ignore_desk = True;
 	Bool do_ignore_page = True;
 
-	this = xmalloc(sizeof(Command));
+	this = mvwm_malloc(sizeof(Command));
 	this->desk = 0;
 	memset(&(this->flags), 0, sizeof(this->flags));
 	this->flags.do_match_any_desk = 1;
@@ -765,7 +765,7 @@ void AddCommand(char *line)
 		/* Plain mvwm command */
 
 		this->type = 0;
-		this->cmdStr = xmalloc(strlen(line) + 1);
+		this->cmdStr = mvwm_malloc(strlen(line) + 1);
 		strcpy(this->cmdStr, line);
 	}
 

@@ -237,7 +237,7 @@ int builtin_gotomanager(int numargs, BuiltinArg *args)
 		{
 			if (wa == NULL)
 			{
-				wa = xmalloc(n * sizeof(WinManager *));
+				wa = mvwm_malloc(n * sizeof(WinManager *));
 			}
 			for (i = 0, num_mapped = 0; i < n; i++)
 			{

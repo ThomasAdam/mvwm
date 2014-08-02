@@ -54,7 +54,7 @@ MetaInfo *new_metainfo(void)
 {
 	MetaInfo *mi;
 
-	mi = xcalloc(1, sizeof *mi);
+	mi = mvwm_callow(1, sizeof *mi);
 
 	return mi;
 }

@@ -114,7 +114,7 @@ static fmodule *module_alloc(void)
 {
 	fmodule *module;
 
-	module = xmalloc(sizeof(fmodule));
+	module = mvwm_malloc(sizeof(fmodule));
 	MOD_SET_CMDLINE(module, 0);
 	MOD_READFD(module) = -1;
 	MOD_WRITEFD(module) = -1;
@@ -163,7 +163,7 @@ static inline void module_list_insert(fmodule *module, fmodule_list *list)
 	{
 		return;
 	}
-	new_store = xmalloc(sizeof(fmodule_store));
+	new_store = mvwm_malloc(sizeof(fmodule_store));
 	new_store->module = module;
 	new_store->next = *list;
 	*list = new_store;
@@ -242,7 +242,7 @@ static fmodule *do_execute_module(
 	mvwm_to_app[1] = -1;
 	app_to_mvwm[1] = -1;
 	app_to_mvwm[0] = -1;
-	args = xmalloc(7 * sizeof(char *));
+	args = mvwm_malloc(7 * sizeof(char *));
 	/* Olivier: Why ? */
 	/*   if (eventp->type != KeyPress) */
 	/*     UngrabEm(); */
@@ -340,7 +340,7 @@ static fmodule *do_execute_module(
 	args[5] = arg6;
 	for (nargs = 6; action = GetNextToken(action, &token), token; nargs++)
 	{
-		args = xrealloc((void *)args, (nargs + 2), sizeof(char *));
+		args = mvwm_realloc((void *)args, (nargs + 2), sizeof(char *));
 		args[nargs] = token;
 		if (MOD_ALIAS(module) == NULL)
 		{
@@ -731,7 +731,7 @@ fmodule_input *module_receive(fmodule *module)
 
 	/* allocate all storage at once */
 	/* also save space for the '\0' termination character */
-	input = xmalloc(sizeof(fmodule_input) + sizeof(char)*(size + 1));
+	input = mvwm_malloc(sizeof(fmodule_input) + sizeof(char)*(size + 1));
 
 	input->module = module;
 	input->window = win;

@@ -308,7 +308,7 @@ void EWMH_SetDesktopNames(struct monitor *m)
 	{
 		return;
 	}
-	names = xmalloc(sizeof(*names)*nbr);
+	names = mvwm_malloc(sizeof(*names)*nbr);
 	for (i = 0; i < nbr; i++)
 	{
 		names[i] = (unsigned char *)FiconvCharsetToUtf8(
@@ -323,7 +323,7 @@ void EWMH_SetDesktopNames(struct monitor *m)
 		}
 		s = s->next;
 	}
-	val = xmalloc(len);
+	val = mvwm_malloc(len);
 	for (i = 0; i < nbr; i++)
 	{
 		if (names[i] != NULL)

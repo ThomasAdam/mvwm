@@ -49,7 +49,7 @@ char *CatString3(const char *a, const char *b, const char *c)
 	if (len > buffer_len)
 	{
 		buffer_len = CHUNK_SIZE * (1 + ((len - 1) / CHUNK_SIZE));
-		buffer = xrealloc(buffer, buffer_len, buffer_len);
+		buffer = mvwm_realloc(buffer, buffer_len, buffer_len);
 	}
 	buffer[0] = 0;
 	if (a != NULL)
@@ -109,7 +109,7 @@ void CopyString(char **dest, const char *source)
 	}
 
 	/* TA:  FIXME!  xasprintf() */
-	*dest = xmalloc(len+1);
+	*dest = mvwm_malloc(len+1);
 	strncpy(*dest,start,len);
 	(*dest)[len]=0;
 }
@@ -171,7 +171,7 @@ char *stripcpy( const char *source )
 		len--;
 	}
 	/* TA:  FIXME!  xasprintf() */
-	ptr = xmalloc(len+1);
+	ptr = mvwm_malloc(len+1);
 	if (len)
 	{
 		strncpy(ptr,source,len);

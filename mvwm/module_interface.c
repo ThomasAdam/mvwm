@@ -404,7 +404,7 @@ static unsigned long *make_named_packet(
 		*len = MvwmPacketMaxSize;
 	}
 
-	body = xmalloc(*len * sizeof(unsigned long));
+	body = mvwm_malloc(*len * sizeof(unsigned long));
 	/* Zero out end of memory to avoid uninit memory access. */
 	body[*len-1] = 0;
 

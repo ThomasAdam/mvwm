@@ -24,7 +24,7 @@
 #include "safemalloc.h"
 
 void *
-xmalloc(size_t length)
+mvwm_malloc(size_t length)
 {
 	void	*ptr;
 
@@ -38,7 +38,7 @@ xmalloc(size_t length)
 }
 
 void *
-xcalloc(size_t num, size_t length)
+mvwm_callow(size_t num, size_t length)
 {
 	void	*ptr;
 
@@ -55,7 +55,7 @@ xcalloc(size_t num, size_t length)
 }
 
 void *
-xrealloc(void *oldptr, size_t nmemb, size_t size)
+mvwm_realloc(void *oldptr, size_t nmemb, size_t size)
 {
 	size_t	 newsize = nmemb * size;
 	void	*newptr;
@@ -65,19 +65,19 @@ xrealloc(void *oldptr, size_t nmemb, size_t size)
 	if (SIZE_MAX / nmemb < size)
 		errx(1, "nmemb * size > SIZE_MAX");
 	if ((newptr = realloc(oldptr, newsize)) == NULL)
-		err(1, "xrealloc failed");
+		err(1, "mvwm_realloc failed");
 
 	return (newptr);
 }
 
 char *
-xstrdup(const char *s)
+mvwm_strdup(const char *s)
 {
 	char	*ptr;
 	size_t	 len;
 
 	len = strlen(s) + 1;
-	ptr = xmalloc(len);
+	ptr = mvwm_malloc(len);
 
 	strlcpy(ptr, s, len);
 

@@ -365,7 +365,7 @@ char *CreateFlagString(char *string, char **restptr)
 		/* We must allocate a new string because we null terminate the
 		 * string between the [ ] or ( ) characters. */
 		/* TA:  FIXME!  xasprintf() */
-		retval = xmalloc(length + 1);
+		retval = mvwm_malloc(length + 1);
 		strncpy(retval, start, length);
 		retval[length] = 0;
 
@@ -714,16 +714,16 @@ void CreateConditionMask(char *flags, WindowConditionMask *mask)
 		{
 			struct name_condition *pp;
 			struct namelist *p;
-			char *condp = xstrdup(cond);
+			char *condp = mvwm_strdup(cond);
 
-			pp = xmalloc(sizeof *pp);
+			pp = mvwm_malloc(sizeof *pp);
 			pp->invert = (!on ? True : False);
 			pp->namelist = NULL;
 			pp->next = mask->name_condition;
 			mask->name_condition = pp;
 			for (;;)
 			{
-				p = xmalloc(sizeof *p);
+				p = mvwm_malloc(sizeof *p);
 				p->name=condp;
 				p->next=pp->namelist;
 				pp->namelist=p;
@@ -1571,7 +1571,7 @@ void CMD_All(F_CMD_ARGS)
 	{
 		num++;
 	}
-	g = xmalloc(num * sizeof(MvwmWindow *));
+	g = mvwm_malloc(num * sizeof(MvwmWindow *));
 	num = 0;
 	if (!use_stack)
 	{
@@ -1880,7 +1880,7 @@ static Bool match_version(char *version, char *operator)
 
 	if (mvwm_version < 0)
 	{
-		char *tmp = xstrdup(VERSION);
+		char *tmp = mvwm_strdup(VERSION);
 		mvwm_version = ver(tmp);
 		free(tmp);
 	}

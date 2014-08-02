@@ -327,7 +327,7 @@ static const func_t *find_builtin_function(char *func)
 		return &(func_table[0]);
 	}
 
-	temp = xstrdup(func);
+	temp = mvwm_strdup(func);
 	for (s = temp; *s != 0; s++)
 	{
 		if (isupper(*s))
@@ -944,7 +944,7 @@ static void execute_complex_function(
 	/* duplicate the whole argument list for use as '$*' */
 	if (taction)
 	{
-		arguments[0] = xstrdup(taction);
+		arguments[0] = mvwm_strdup(taction);
 		/* strip trailing newline */
 		if (arguments[0][0])
 		{
@@ -1190,7 +1190,7 @@ static MvwmFunction *NewMvwmFunction(const char *name)
 {
 	MvwmFunction *tmp;
 
-	tmp = xmalloc(sizeof *tmp);
+	tmp = mvwm_malloc(sizeof *tmp);
 	tmp->next_func = Scr.functions;
 	tmp->first_item = NULL;
 	tmp->last_item = NULL;
@@ -1439,7 +1439,7 @@ void AddToFunction(MvwmFunction *func, char *action)
 		return;
 	}
 
-	tmp = xmalloc(sizeof *tmp);
+	tmp = mvwm_malloc(sizeof *tmp);
 	tmp->next_item = NULL;
 	tmp->func = func;
 	if (func->first_item == NULL)

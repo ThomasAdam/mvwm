@@ -262,8 +262,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_set_expand(Fpng_ptr);
 	}
 
-	data = xmalloc(w * h * sizeof(CARD32));
-	lines = xmalloc(h * sizeof(unsigned char *));
+	data = mvwm_malloc(w * h * sizeof(CARD32));
+	lines = mvwm_malloc(h * sizeof(unsigned char *));
 
 	if (hasg)
 	{
@@ -528,7 +528,7 @@ MvwmPicture *PImageLoadMvwmPictureFromFile(
 		return NULL;
 	}
 
-	p = xcalloc(1, sizeof(MvwmPicture));
+	p = mvwm_callow(1, sizeof(MvwmPicture));
 	p->count = 1;
 	p->name = path;
 	p->fpa_mask = fpa.mask;

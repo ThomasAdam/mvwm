@@ -112,7 +112,7 @@ char *duplicate(const char *s)
 
 	if (!s) return NULL;
 	l = strlen(s);
-	r = xmalloc (sizeof(char)*(l+1));
+	r = mvwm_malloc (sizeof(char)*(l+1));
 	strncpy(r, s, l+1);
 
 	return r;
@@ -735,7 +735,7 @@ LoadWindowStates(char *filename)
 		{
 			sscanf(s, "%*s %lx", &w);
 			num_match++;
-			matches = xrealloc(
+			matches = mvwm_realloc(
 				(void *)matches, sizeof(Match), num_match);
 			matches[num_match - 1].win = w;
 			matches[num_match - 1].client_id = NULL;
@@ -880,7 +880,7 @@ LoadWindowStates(char *filename)
 			sscanf(s, "%*s %i%n",
 			       &matches[num_match - 1].wm_command_count, &pos);
 			matches[num_match - 1].wm_command = (char **)
-				xmalloc(
+				mvwm_malloc(
 					matches[num_match - 1].
 					wm_command_count * sizeof (char *));
 			for (i = 0;

@@ -51,9 +51,9 @@ timeout_t *timeout_create(
 	{
 		return NULL;
 	}
-	to = xcalloc(1, sizeof(timeout_t));
+	to = mvwm_callow(1, sizeof(timeout_t));
 	to->n_timeouts = n_timeouts;
-	to->timeouts = xcalloc(1, n_timeouts * sizeof(timeout_time_t));
+	to->timeouts = mvwm_callow(1, n_timeouts * sizeof(timeout_time_t));
 
 	return to;
 }

@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 	int total, remaining, count, event;
 	int is_extended_msg;
 
-	cmd_line = xmalloc(1);
+	cmd_line = mvwm_malloc(1);
 	*cmd_line = 0;
 	/* Save our program  name - for error events */
 	if ((s=strrchr(argv[0], '/')))
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
 	/* account for '*' */
 	MyNameLen=strlen(s)+1;
 	/* account for \0 */
-	MyName = xmalloc(MyNameLen+1);
+	MyName = mvwm_malloc(MyNameLen+1);
 	*MyName='*';
 	/* append name */
 	strcpy(MyName+1, s);
@@ -391,7 +391,7 @@ void execute_event(event_entry *event_table, short event, unsigned long *body)
 
 		action = event_table[event].action.action;
 		len = strlen(cmd_line) + strlen(action) + 32;
-		buf = xmalloc(len);
+		buf = mvwm_malloc(len);
 
 		int action_arg = event_table[event].action_arg;
 		int fw = 0;
@@ -472,11 +472,11 @@ void handle_config_line(char *buf, char **phost)
 			}
 			if (token)
 			{
-				cmd_line = xstrdup(token);
+				cmd_line = mvwm_strdup(token);
 			}
 			else
 			{
-				cmd_line = xstrdup("");
+				cmd_line = mvwm_strdup("");
 			}
 			break;
 
