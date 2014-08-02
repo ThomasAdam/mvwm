@@ -406,7 +406,7 @@ setup_window_structure(MvwmWindow **pfw, Window w, MvwmWindow *ReuseWin)
 	 * old one (on Recapture).
 	 */
 	if (ReuseWin == NULL) {
-		*pfw = xmalloc(sizeof(MvwmWindow));
+		*pfw = mvwm_malloc(sizeof(MvwmWindow));
 	} else {
 		*pfw = ReuseWin;
 		savewin = &save_state;
@@ -1607,7 +1607,7 @@ __add_window_handle_x_resources(MvwmWindow *fw)
 		}
 		if (name_len > 0) {
 			fw->style_name =
-			    xmalloc(sizeof(char) * (name_len + 1));
+			    mvwm_malloc(sizeof(char) * (name_len + 1));
 			memcpy(fw->style_name, style_name, name_len);
 			fw->style_name[name_len] = 0;
 		}

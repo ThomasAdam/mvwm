@@ -253,13 +253,13 @@ MergeConfigLineResource(XrmDatabase * pdb, char *line, char *prefix,
 	/*
 	 * TA:  FIXME!  xasprintf()
 	 */
-	resource = xmalloc(len + (end - line) + 2);
+	resource = mvwm_malloc(len + (end - line) + 2);
 	strcpy(resource, prefix);
 	strcat(resource, bindstr);
 	strncat(resource, line, end - line);
 
 	len = strlen(value);
-	myvalue = xmalloc(len + 1);
+	myvalue = mvwm_malloc(len + 1);
 	strcpy(myvalue, value);
 	for (len--; len >= 0 && isspace((unsigned char) myvalue[len]); len--)
 		myvalue[len] = 0;
@@ -303,8 +303,8 @@ GetResourceString(XrmDatabase db, const char *resource, const char *prefix,
 	/*
 	 * TA:  FIXME!  xasprintf()
 	 */
-	name = xmalloc(strlen(resource) + strlen(prefix) + 2);
-	Name = xmalloc(strlen(resource) + strlen(prefix) + 2);
+	name = mvwm_malloc(strlen(resource) + strlen(prefix) + 2);
+	Name = mvwm_malloc(strlen(resource) + strlen(prefix) + 2);
 	strcpy(name, prefix);
 	strcat(name, ".");
 	strcat(name, resource);

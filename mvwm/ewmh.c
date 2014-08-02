@@ -337,7 +337,7 @@ ewmh_ChangeProperty(Window w, const char *atom_name, ewmh_atom_list_name list,
 		asize = atom_size(format);
 		if (format == 32 && asize * 8 != format &&
 		    strcmp(atom_name, "_NET_WM_ICON") == 0) {
-			long           *datacopy = xmalloc(asize * length);
+			long           *datacopy = mvwm_malloc(asize * length);
 			int             i;
 
 			for (i = 0; i < length; i++) {
@@ -389,7 +389,7 @@ atom_get(Window win, Atom to_get, Atom type, int *size)
 		int             asize;
 
 		asize = atom_size(format_ret);
-		data = xmalloc(num_ret * asize);
+		data = mvwm_malloc(num_ret * asize);
 		if (format_ret == 32 && asize * 8 != format_ret) {
 			int             i;
 
@@ -603,7 +603,7 @@ add_kst_item(Window w)
 		prev = &(t->next);
 		t = t->next;
 	}
-	*prev = xmalloc(sizeof(KstItem));
+	*prev = mvwm_malloc(sizeof(KstItem));
 	(*prev)->w = w;
 	(*prev)->next = NULL;
 
@@ -646,7 +646,7 @@ set_kde_sys_tray(void)
 	}
 
 	if (nbr > 0) {
-		wins = xmalloc(sizeof(Window) * nbr);
+		wins = mvwm_malloc(sizeof(Window) * nbr);
 	}
 
 	t = ewmh_KstWinList;
@@ -801,7 +801,7 @@ EWMH_SetClientList(struct monitor *m)
 		nbr++;
 	}
 	if (nbr != 0) {
-		wl = xmalloc(sizeof(Window) * nbr);
+		wl = mvwm_malloc(sizeof(Window) * nbr);
 		for (fw = Scr.MvwmRoot.next; fw != NULL; fw = fw->next) {
 			wl[i++] = FW_W(fw);
 		}
@@ -829,7 +829,7 @@ EWMH_SetClientListStacking(struct monitor *m)
 	}
 	i = nbr - 1;
 	if (nbr != 0) {
-		wl = xmalloc(sizeof(Window) * nbr);
+		wl = mvwm_malloc(sizeof(Window) * nbr);
 		for (fw = Scr.MvwmRoot.stack_next; fw != &Scr.MvwmRoot;
 		    fw = fw->stack_next) {
 			wl[i--] = FW_W(fw);
@@ -1732,7 +1732,7 @@ set_net_supported(int l)
 	Atom           *supported;
 	int             i, k = 0;
 
-	supported = xmalloc(l * sizeof(Atom));
+	supported = mvwm_malloc(l * sizeof(Atom));
 	for (i = 0; i < NUMBER_OF_ATOM_LISTS; i++) {
 		ewmh_atom      *list = atom_list[i].list;
 		while (list->name != NULL) {

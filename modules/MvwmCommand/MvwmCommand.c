@@ -212,13 +212,13 @@ main(int argc, char *argv[])
 	/*
 	 * TA:  FIXME!  xasprintf()
 	 */
-	fm_name = xmalloc(strlen(f_stem) + 2);
+	fm_name = mvwm_malloc(strlen(f_stem) + 2);
 	strcpy(fm_name, f_stem);
 	strcat(fm_name, "M");
-	fc_name = xmalloc(strlen(f_stem) + 2);
+	fc_name = mvwm_malloc(strlen(f_stem) + 2);
 	strcpy(fc_name, f_stem);
 	strcat(fc_name, "C");
-	s = xmalloc(strlen(f_stem) + 2);
+	s = mvwm_malloc(strlen(f_stem) + 2);
 	strcpy(s, f_stem);
 	strcat(s, "R");
 

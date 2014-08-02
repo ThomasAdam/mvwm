@@ -1602,7 +1602,7 @@ frame_create_move_resize_args(MvwmWindow *fw, frame_move_resize_mode mr_mode,
 	/*
 	 * set some variables
 	 */
-	mra = xcalloc(1, sizeof(mr_args_internal));
+	mra = mvwm_calloc(1, sizeof(mr_args_internal));
 	if (mr_mode & FRAME_MR_DONT_DRAW) {
 		mr_mode &= ~FRAME_MR_DONT_DRAW;
 		mra->flags.do_not_draw = 1;

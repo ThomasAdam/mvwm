@@ -257,7 +257,7 @@ add_to_junk(Pixmap pixmap)
 {
 	struct junklist *oldjunk = junk;
 
-	junk = xmalloc(sizeof(struct junklist));
+	junk = mvwm_malloc(sizeof(struct junklist));
 	junk->prev = oldjunk;
 	junk->pixmap = pixmap;
 	if (!cleanup_scheduled) {
@@ -1087,7 +1087,7 @@ parse_colorset(int n, char *line)
 			 * * procedure can take a lot of times
 			 */
 			colors =
-			    xmalloc(cs->width * cs->height * sizeof(XColor));
+			    mvwm_malloc(cs->width * cs->height * sizeof(XColor));
 			/*
 			 * get the pixmap and mask into an image
 			 */
@@ -1610,7 +1610,7 @@ alloc_colorset(int n)
 	if (n < nColorsets) {
 		return;
 	} else {
-		Colorset = xrealloc(
+		Colorset = mvwm_realloc(
 		    (void *) Colorset, (n + 1), sizeof(colorset_t));
 		memset(&Colorset[nColorsets], 0,
 		    (n + 1 - nColorsets) * sizeof(colorset_t));

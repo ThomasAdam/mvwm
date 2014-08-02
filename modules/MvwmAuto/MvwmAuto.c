@@ -273,7 +273,7 @@ main(int argc, char **argv)
 			token = PeekToken(enter_fn, NULL);
 			if (!StrEquals(token, "Silent")) {
 				enter_fn =
-				    xstrdup(CatString2("Silent ", enter_fn));
+				    mvwm_strdup(CatString2("Silent ", enter_fn));
 			}
 		}
 		/*** leave command ***/
@@ -296,7 +296,7 @@ main(int argc, char **argv)
 			token = PeekToken(leave_fn, NULL);
 			if (!StrEquals(token, "Silent")) {
 				leave_fn =
-				    xstrdup(CatString2("Silent ", leave_fn));
+				    mvwm_strdup(CatString2("Silent ", leave_fn));
 			}
 		}
 	}
@@ -359,7 +359,7 @@ main(int argc, char **argv)
 	if (do_pass_id) {
 		len += 32;
 	}
-	buf = xmalloc(len);
+	buf = mvwm_malloc(len);
 
 	while (!isTerminated) {
 		char            raise_window_now;

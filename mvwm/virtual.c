@@ -1609,7 +1609,7 @@ CMD_EdgeCommand(F_CMD_ARGS)
 		/*
 		 * check if the command does contain at least one token
 		 */
-		command = xstrdup(action);
+		command = mvwm_strdup(action);
 		if (PeekToken(action, &action) == NULL) {
 			/*
 			 * the command does not contain a token so
@@ -1709,7 +1709,7 @@ CMD_EdgeLeaveCommand(F_CMD_ARGS)
 		/*
 		 * check if the command does contain at least one token
 		 */
-		command = xstrdup(action);
+		command = mvwm_strdup(action);
 		if (PeekToken(action, &action) == NULL) {
 			/*
 			 * the command does not contain a token so
@@ -2258,7 +2258,7 @@ CMD_DesktopName(F_CMD_ARGS)
 				/*
 				 * add it at the end
 				 */
-				*prev = xcalloc(1, sizeof(DesktopsInfo));
+				*prev = mvwm_calloc(1, sizeof(DesktopsInfo));
 				(*prev)->desk = desk;
 				if (action != NULL && *action
 				    && *action != '\n') {
@@ -2268,7 +2268,7 @@ CMD_DesktopName(F_CMD_ARGS)
 				/*
 				 * instert it
 				 */
-				new = xcalloc(1, sizeof(DesktopsInfo));
+				new = mvwm_calloc(1, sizeof(DesktopsInfo));
 				new->desk = desk;
 				if (action != NULL && *action
 				    && *action != '\n') {
@@ -2295,13 +2295,13 @@ CMD_DesktopName(F_CMD_ARGS)
 			/*
 			 * TA:  FIXME!  xasprintf()
 			 */
-			msg = xmalloc(strlen(action) + 44);
+			msg = mvwm_malloc(strlen(action) + 44);
 			sprintf(msg, "DesktopName %d %s", desk, action);
 		} else {
 			/*
 			 * TA:  FIXME!  xasprintf()
 			 */
-			msg = xmalloc(strlen(default_desk_name) + 44);
+			msg = mvwm_malloc(strlen(default_desk_name) + 44);
 			sprintf(msg, "DesktopName %d %s %d", desk,
 			    default_desk_name, desk);
 		}

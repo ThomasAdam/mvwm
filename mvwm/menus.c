@@ -1704,7 +1704,7 @@ size_menu_vertically(MenuSizingParameters * msp)
 			}
 
 			t = EscapeString(MR_NAME(msp->menu), "\"", '\\');
-			tempname = xmalloc((10 + strlen(t)) * sizeof(char));
+			tempname = mvwm_malloc((10 + strlen(t)) * sizeof(char));
 			strcpy(tempname, "Popup \"");
 			strcat(tempname, t);
 			strcat(tempname, "$\"");
@@ -1715,7 +1715,7 @@ size_menu_vertically(MenuSizingParameters * msp)
 			 * * which is 6 chars past the action since
 			 * * strlen("Popup ")==6 )
 			 */
-			t = xmalloc(strlen(MR_NAME(msp->menu)) + 2);
+			t = mvwm_malloc(strlen(MR_NAME(msp->menu)) + 2);
 			strcpy(t, MR_NAME(msp->menu));
 			strcat(t, "$");
 			menuContinuation = NewMenuRoot(t);
@@ -1751,7 +1751,7 @@ size_menu_vertically(MenuSizingParameters * msp)
 			 */
 			if (MR_MISSING_SUBMENU_FUNC(msp->menu)) {
 				MR_MISSING_SUBMENU_FUNC(menuContinuation) =
-				    xstrdup(MR_MISSING_SUBMENU_FUNC(msp->
+				    mvwm_strdup(MR_MISSING_SUBMENU_FUNC(msp->
 					menu));
 			}
 			/*
@@ -2018,8 +2018,8 @@ copy_menu_root(MenuRoot *mr)
 	if (!mr || MR_COPIES(mr) >= MAX_MENU_COPIES) {
 		return NULL;
 	}
-	tmp = xmalloc(sizeof(*tmp));
-	tmp->d = xcalloc(1, sizeof(MenuRootDynamic));
+	tmp = mvwm_malloc(sizeof(*tmp));
+	tmp->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 	tmp->s = mr->s;
 
 	MR_COPIES(mr)++;
@@ -2049,7 +2049,7 @@ copy_menu_root(MenuRoot *mr)
 static void
 clone_menu_root_static(MenuRoot *dest_mr, MenuRoot *src_mr)
 {
-	dest_mr->s = xmalloc(sizeof(MenuRootStatic));
+	dest_mr->s = mvwm_malloc(sizeof(MenuRootStatic));
 	/*
 	 * copy everything
 	 */
@@ -2058,7 +2058,7 @@ clone_menu_root_static(MenuRoot *dest_mr, MenuRoot *src_mr)
 	 * special treatment for a few parts
 	 */
 	if (MR_NAME(src_mr) != NULL) {
-		MR_NAME(dest_mr) = xstrdup(MR_NAME(src_mr));
+		MR_NAME(dest_mr) = mvwm_strdup(MR_NAME(src_mr));
 	}
 	MR_COPIES(dest_mr) = 1;
 	MR_MAPPED_COPIES(dest_mr) = 0;
@@ -2066,7 +2066,7 @@ clone_menu_root_static(MenuRoot *dest_mr, MenuRoot *src_mr)
 	MR_POPDOWN_ACTION(dest_mr) = NULL;
 	if (MR_MISSING_SUBMENU_FUNC(src_mr)) {
 		MR_MISSING_SUBMENU_FUNC(dest_mr) =
-		    xstrdup(MR_MISSING_SUBMENU_FUNC(src_mr));
+		    mvwm_strdup(MR_MISSING_SUBMENU_FUNC(src_mr));
 	}
 	if (MR_HAS_SIDECOLOR(src_mr)) {
 		MR_SIDECOLOR(dest_mr) =
@@ -2083,8 +2083,8 @@ clone_menu(MenuRoot *mr)
 {
 	MenuRoot       *new_mr;
 
-	new_mr = xmalloc(sizeof *new_mr);
-	new_mr->d = xcalloc(1, sizeof(MenuRootDynamic));
+	new_mr = mvwm_malloc(sizeof *new_mr);
+	new_mr->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 	clone_menu_root_static(new_mr, mr);
 
 	return new_mr;
@@ -3050,7 +3050,7 @@ pop_menu_up(MenuRoot **pmenu, MenuParameters *pmp, MenuRoot *parent_menu,
 		 * save variables that we still need but that may be
 		 * * overwritten
 		 */
-		menu_name = xstrdup(MR_NAME(mr));
+		menu_name = mvwm_strdup(MR_NAME(mr));
 		pos_hints = last_saved_pos_hints;
 		if (Scr.BusyCursor & BUSY_DYNAMICMENU) {
 			is_busy_grabbed = GrabEm(CRS_WAIT, GRAB_BUSYMENU);
@@ -4693,7 +4693,7 @@ __mloop_do_popup(MenuParameters *pmp, MenuReturn *pmret,
 			 */
 			char           *action_ptr;
 			action =
-			    xmalloc(strlen("Function") + 3 +
+			    mvwm_malloc(strlen("Function") + 3 +
 			    strlen(missing_action) * 2 + 3 +
 			    strlen(menu_name) * 2 + 1);
 			strcpy(action, "Function ");
@@ -5120,13 +5120,13 @@ __mloop_exit_selected(MenuParameters *pmp, MenuReturn *pmret,
 	 */
 	if (pmp->ret_paction) {
 		if (pmret->rc == MENU_EXEC_CMD) {
-			*pmp->ret_paction = xstrdup(*pmp->ret_paction);
+			*pmp->ret_paction = mvwm_strdup(*pmp->ret_paction);
 		} else {
 			if (*pmp->ret_paction) {
 				free(*pmp->ret_paction);
 			}
 			*pmp->ret_paction = (med->mi) ?
-			    xstrdup(MI_ACTION(med->mi)) : NULL;
+			    mvwm_strdup(MI_ACTION(med->mi)) : NULL;
 		}
 	}
 	if (pmp->ret_paction && *pmp->ret_paction &&
@@ -5317,7 +5317,7 @@ menu_strip_tear_off_title(MenuRoot *mr)
 	if (len == 0) {
 		return NULL;
 	}
-	name = xmalloc(len + 1);
+	name = mvwm_malloc(len + 1);
 	*name = 0;
 	for (i = 0; i < MAX_MENU_ITEM_LABELS; i++) {
 		if (MI_LABEL(mi)[i] != 0) {
@@ -5374,7 +5374,7 @@ menu_tear_off(MenuRoot *mr_to_copy)
 	/*
 	 * also dump the menu style
 	 */
-	buffer = xmalloc(23);
+	buffer = mvwm_malloc(23);
 	sprintf(buffer, "%lu", (unsigned long) mr);
 	action = buffer;
 	ms = menustyle_parse_style(F_PASS_ARGS);
@@ -5426,8 +5426,8 @@ menu_tear_off(MenuRoot *mr_to_copy)
 	 * class, resource and names
 	 */
 	menuclasshints.res_name =
-	    (name != NULL) ? name : xstrdup(MR_NAME(mr));
-	menuclasshints.res_class = xstrdup("mvwm_menu");
+	    (name != NULL) ? name : mvwm_strdup(MR_NAME(mr));
+	menuclasshints.res_class = mvwm_strdup("mvwm_menu");
 	for (t = menuclasshints.res_name; t != NULL && *t != 0; t++) {
 		/*
 		 * replace tabs in the title with spaces
@@ -6431,7 +6431,7 @@ AddToMenu(MenuRoot *mr, char *item, char *action, Bool fPixmapsOk,
 			/*
 			 * TA:  FIXME!  Use asprintf(!)
 			 */
-			MI_LABEL(tmp)[i] = xmalloc(end - start + 1);
+			MI_LABEL(tmp)[i] = mvwm_malloc(end - start + 1);
 			strncpy(MI_LABEL(tmp)[i], start, end - start);
 			(MI_LABEL(tmp)[i])[end - start] = 0;
 			if (*end == '\t') {
@@ -6561,12 +6561,12 @@ NewMenuRoot(char *name)
 	};
 	string_context_t ctx;
 
-	mr = xmalloc(sizeof *mr);
-	mr->s = xcalloc(1, sizeof(MenuRootStatic));
-	mr->d = xcalloc(1, sizeof(MenuRootDynamic));
+	mr = mvwm_malloc(sizeof *mr);
+	mr->s = mvwm_calloc(1, sizeof(MenuRootStatic));
+	mr->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 
 	MR_NEXT_MENU(mr) = Menus.all;
-	MR_NAME(mr) = xstrdup(name);
+	MR_NAME(mr) = mvwm_strdup(name);
 	MR_WINDOW(mr) = None;
 	SCTX_SET_MR(ctx, mr);
 	MR_HAS_SIDECOLOR(mr) = False;

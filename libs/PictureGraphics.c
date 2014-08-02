@@ -408,11 +408,11 @@ PCreateRenderPixmap(Display *dpy, Window win, Pixmap pixmap, Pixmap mask,
 		goto bail;
 	}
 
-	colors = xmalloc(n_src_w * n_src_h * sizeof(XColor));
+	colors = mvwm_malloc(n_src_w * n_src_h * sizeof(XColor));
 	if (dest_fim) {
-		dest_colors = xmalloc(w * h * sizeof(XColor));
+		dest_colors = mvwm_malloc(w * h * sizeof(XColor));
 	}
-	am = xmalloc(n_src_w * n_src_h * sizeof(unsigned short));
+	am = mvwm_malloc(n_src_w * n_src_h * sizeof(unsigned short));
 
 	if (tint_percent > 0) {
 		tint_color.pixel = tint;
@@ -765,8 +765,8 @@ PCreateDitherPixmap(Display *dpy, Window win, Drawable src, Pixmap mask,
 		return None;
 	}
 
-	colors = xmalloc(out_width * out_height * sizeof(XColor));
-	cm = xmalloc(out_width * out_height * sizeof(char));
+	colors = mvwm_malloc(out_width * out_height * sizeof(XColor));
+	cm = mvwm_malloc(out_width * out_height * sizeof(char));
 
 	x = y = 0;
 	for (j = 0; j < out_height; j++, y++) {
@@ -1002,7 +1002,7 @@ PGraphicsCreateStretchPicture(Display *dpy, Window win, MvwmPicture *src,
 		    dest_height, alpha_gc);
 	}
 
-	q = xcalloc(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;
@@ -1047,7 +1047,7 @@ PGraphicsCreateTiledPicture(Display *dpy, Window win, MvwmPicture *src,
 		    FRenderGetAlphaDepth(), alpha_gc);
 	}
 
-	q = xcalloc(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;

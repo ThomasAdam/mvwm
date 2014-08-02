@@ -80,7 +80,7 @@ get_line(void)
 		 * get history from file
 		 */
 		home = getenv("MVWM_USERDIR");
-		h_file = xmalloc(strlen(home) + sizeof(HISTFILE) + 1);
+		h_file = mvwm_malloc(strlen(home) + sizeof(HISTFILE) + 1);
 		strcpy(h_file, home);
 		strcat(h_file, HISTFILE);
 		mvwm_stifle_history(HISTSIZE);

@@ -53,6 +53,7 @@ clean_up(void)
 	}
 	if (S_name != NULL) {
 		unlink(S_name);
+		free(S_name);
 		S_name = NULL;
 	}
 
@@ -118,7 +119,7 @@ main(int argc, char *argv[])
 	 */
 	strcpy(client, argv[0]);
 	strcat(client, "C");
-	eargv = xmalloc((argc + 12) * sizeof(char *));
+	eargv = mvwm_malloc((argc + 12) * sizeof(char *));
 	/*
 	 * copy arguments
 	 */
@@ -192,7 +193,6 @@ void
 server(void)
 {
 	struct sockaddr_un sas, csas;
-	int             len;
 	socklen_t       clen;	/* length of sockaddr */
 	char            buf[MAX_COMMAND_SIZE];	/*  command line buffer */
 	char           *tline;
@@ -215,9 +215,7 @@ server(void)
 	 * name the socket
 	 */
 	home = getenv("MVWM_USERDIR");
-	S_name = xmalloc(strlen(home) + sizeof(S_NAME) + 1);
-	strcpy(S_name, home);
-	strcat(S_name, S_NAME);
+	asprintf(&S_name, "%s%s", home, S_NAME);
 
 	sas.sun_family = AF_UNIX;
 	strcpy(sas.sun_path, S_name);
@@ -225,9 +223,8 @@ server(void)
 	 * bind the above name to the socket: first, erase the old socket
 	 */
 	unlink(S_name);
-	len = sizeof(sas) - sizeof(sas.sun_path) + strlen(sas.sun_path);
 	umask(0077);
-	rc = bind(s, (struct sockaddr *) &sas, len);
+	rc = bind(s, (struct sockaddr *) &sas, SUN_LEN(&sas));
 	if (rc < 0) {
 		ErrMsg("bind");
 	} else {
@@ -324,6 +321,7 @@ server(void)
 			SendText(Fd, buf, 0);
 		}
 	}
+	free(S_name);
 }
 
 /*

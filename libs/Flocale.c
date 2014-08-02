@@ -276,7 +276,7 @@ FlocaleUtf8ToUnicodeStr2b(char *str, int len, int *nl)
 	XChar2b        *str2b = NULL;
 	int             i = 0, j = 0, t;
 
-	str2b = xmalloc((len + 1) * sizeof(XChar2b));
+	str2b = mvwm_malloc((len + 1) * sizeof(XChar2b));
 	while (i < len && str[i] != 0) {
 		if ((str[i] & 0x80) == 0) {
 			str2b[j].byte2 = str[i];
@@ -330,7 +330,7 @@ FlocaleStringToString2b(Display *dpy, FlocaleFont *flf, char *str, int len,
 	} else if (flf->fc && StrEquals(flf->fc->x, "big5-0")) {
 		euc = False;
 	}
-	str2b = xmalloc((len + 1) * sizeof(XChar2b));
+	str2b = mvwm_malloc((len + 1) * sizeof(XChar2b));
 	if (euc) {
 		while (i < len && str[i] != 0) {
 			if ((str[i] & 0x80) == 0) {
@@ -481,7 +481,7 @@ FlocaleEncodeString(Display *dpy, FlocaleFont *flf, char *str, int *do_free,
 		 * initialise array with composing characters (empty)
 		 */
 		if (comb_chars != NULL && *comb_chars == NULL) {
-			*comb_chars = xmalloc(sizeof *comb_chars);
+			*comb_chars = mvwm_malloc(sizeof *comb_chars);
 			(*comb_chars)[0].position = -1;
 			(*comb_chars)[0].c.byte1 = 0;
 			(*comb_chars)[0].c.byte2 = 0;
@@ -492,7 +492,7 @@ FlocaleEncodeString(Display *dpy, FlocaleFont *flf, char *str, int *do_free,
 		 * (this is default when no combining has been done (1-to-1))
 		 */
 		if (l_to_v != NULL && *l_to_v == NULL) {
-			*l_to_v = xmalloc((len + 1) * sizeof(int));
+			*l_to_v = mvwm_malloc((len + 1) * sizeof(int));
 			for (i = 0; i < len; i++)
 				(*l_to_v)[i] = i;
 			(*l_to_v)[len] = -1;
@@ -713,7 +713,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 				/*
 				 * just replace with empty string
 				 */
-				buf2 = xmalloc(sizeof(char));
+				buf2 = mvwm_malloc(sizeof(char));
 				*buf2 = '\0';
 			}
 			tmp_fws.e_str = buf2;
@@ -725,7 +725,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 			} else if (flf->font != None) {
 				if (FLC_ENCODING_TYPE_IS_UTF_8(flf->fc)) {
 					tmp_fws.str2b =
-					    xmalloc(2 * sizeof(XChar2b));
+					    mvwm_malloc(2 * sizeof(XChar2b));
 					tmp_fws.str2b[0] = comb_chars[i].c;
 					tmp_fws.str2b[1].byte1 = 0;
 					tmp_fws.str2b[1].byte2 = 0;
@@ -756,7 +756,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 	/*
 	 * reserve memory for the first XImage
 	 */
-	normal_data = xmalloc(normal_len * normal_h);
+	normal_data = mvwm_malloc(normal_len * normal_h);
 
 	/*
 	 * create depth 1 XImage
@@ -796,7 +796,7 @@ FlocaleRotateDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 	/*
 	 * reserve memory for the rotated image
 	 */
-	rotated_data = xcalloc(rotated_h * rotated_len, 1);
+	rotated_data = mvwm_calloc(rotated_h * rotated_len, 1);
 
 	/*
 	 * create the rotated X image
@@ -1063,7 +1063,7 @@ FlocaleGetFftFont(Display *dpy, char *fontname, char *encoding, char *module)
 		}
 		return NULL;
 	}
-	flf = xcalloc(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	memset(flf, '\0', sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fftf = *fftf;
@@ -1134,7 +1134,7 @@ FlocaleGetFontSet(Display *dpy, char *fontname, char *encoding, char *module)
 		XFreeStringList(ml);
 	}
 
-	flf = xcalloc(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fontset = fontset;
 	FlocaleCharsetSetFlocaleCharset(dpy, flf, hints, encoding, module);
@@ -1189,7 +1189,7 @@ FlocaleGetFont(Display *dpy, char *fontname, char *encoding, char *module)
 		return NULL;
 	}
 
-	flf = xcalloc(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fontset = None;
 	flf->fftf.fftfont = NULL;
@@ -1742,7 +1742,7 @@ FlocaleDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 		 * ending at 0 is what's expected in a correct
 		 * string
 		 */
-		pixel_pos = xmalloc(
+		pixel_pos = mvwm_malloc(
 		    (char_len != 0 ? char_len : 1) * sizeof(int));
 
 		/*
@@ -1861,7 +1861,7 @@ FlocaleDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 				/*
 				 * just replace with empty string
 				 */
-				buf2 = xmalloc(sizeof(char));
+				buf2 = mvwm_malloc(sizeof(char));
 				*buf2 = '\0';
 			}
 			tmp_fws.e_str = buf2;
@@ -1894,7 +1894,7 @@ FlocaleDrawString(Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 			} else if (flf->font != None) {
 				if (FLC_ENCODING_TYPE_IS_UTF_8(flf->fc)) {
 					tmp_fws.str2b =
-					    xmalloc(2 * sizeof(XChar2b));
+					    mvwm_malloc(2 * sizeof(XChar2b));
 					tmp_fws.str2b[0] = comb_chars[i].c;
 					tmp_fws.str2b[1].byte1 = 0;
 					tmp_fws.str2b[1].byte2 = 0;
@@ -2157,7 +2157,7 @@ FlocaleGetMinOffset(FlocaleFont *flf, rotation_t rotation)
 void
 FlocaleAllocateWinString(FlocaleWinString **pfws)
 {
-	*pfws = xcalloc(1, sizeof(FlocaleWinString));
+	*pfws = mvwm_calloc(1, sizeof(FlocaleWinString));
 }
 
 /*

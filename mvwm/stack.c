@@ -287,7 +287,7 @@ raise_over_unmanaged(MvwmWindow *t)
 		}
 
 		if (count > 0) {
-			wins = xmalloc(count * sizeof(Window));
+			wins = mvwm_malloc(count * sizeof(Window));
 			for (i = 0, t2 = Scr.MvwmRoot.stack_next;
 			    t2 != &Scr.MvwmRoot; t2 = t2->stack_next) {
 				wins[i++] = FW_W_FRAME(t2);
@@ -491,7 +491,7 @@ __restack_window_list(MvwmWindow *r, MvwmWindow *s, int count,
 	/*
 	 * restack the windows between r and s
 	 */
-	wins = xmalloc((count + 3) * sizeof(Window));
+	wins = mvwm_malloc((count + 3) * sizeof(Window));
 	for (t = r->stack_next, i = 0; t != s; t = t->stack_next) {
 		if (i > count) {
 			mvwm_msg(ERR, "__restack_window_list",
@@ -1215,7 +1215,7 @@ ResyncXStackingOrder(void)
 		 */
 	}
 	if (count > 0) {
-		wins = xmalloc(3 * count * sizeof(Window));
+		wins = mvwm_malloc(3 * count * sizeof(Window));
 		for (i = 0, t = Scr.MvwmRoot.stack_next; count--;
 		    t = t->stack_next) {
 			wins[i++] = FW_W_FRAME(t);
@@ -1295,7 +1295,7 @@ BroadcastRestack(MvwmWindow *s1, MvwmWindow *s2)
 	for (; num > 1; s1 = fw, num -= n) {
 		n = min(num, max_wins_per_packet) - 1;
 		length = MvwmPacketHeaderSize + 3 * (n + 1);
-		body = xmalloc(length * sizeof(unsigned long));
+		body = mvwm_malloc(length * sizeof(unsigned long));
 		bp = body;
 		*(bp++) = START_FLAG;
 		*(bp++) = M_RESTACK;

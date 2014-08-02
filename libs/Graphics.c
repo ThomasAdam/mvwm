@@ -502,7 +502,7 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels,
 	 */
 	b = from.blue;
 	db = (float) (to.blue - from.blue);
-	xcs = xcalloc(1, sizeof(XColor) * npixels);
+	xcs = mvwm_calloc(1, sizeof(XColor) * npixels);
 	c.flags = DoRed | DoGreen | DoBlue;
 	for (i = (skip_first_color) ? 1 : 0; i < npixels && div > 0; ++i) {
 		c.red = (unsigned short)
@@ -533,7 +533,7 @@ static XColor  *
 AllocNonlinearGradient(char *s_colors[], int clen[], int nsegs, int npixels,
     int dither)
 {
-	XColor         *xcs = xmalloc(sizeof(XColor) * npixels);
+	XColor         *xcs = mvwm_malloc(sizeof(XColor) * npixels);
 	int             i;
 	int             curpixel = 0;
 	int            *seg_end_colors;
@@ -710,8 +710,8 @@ ParseGradient(char *gradient, char **rest, char ***colors_return,
 		/*
 		 * get the end color of a simple gradient
 		 */
-		s_colors = xmalloc(sizeof(char *) * 2);
-		perc = xmalloc(sizeof(int));
+		s_colors = mvwm_malloc(sizeof(char *) * 2);
+		perc = mvwm_malloc(sizeof(int));
 		nsegs = 1;
 		s_colors[0] = item;
 		gradient = GetNextToken(gradient, &item);
@@ -726,8 +726,8 @@ ParseGradient(char *gradient, char **rest, char ***colors_return,
 			nsegs = 1;
 		if (nsegs > MAX_GRADIENT_SEGMENTS)
 			nsegs = MAX_GRADIENT_SEGMENTS;
-		s_colors = xmalloc(sizeof(char *) * (nsegs + 1));
-		perc = xmalloc(sizeof(int) * nsegs);
+		s_colors = mvwm_malloc(sizeof(char *) * (nsegs + 1));
+		perc = mvwm_malloc(sizeof(int) * nsegs);
 		for (i = 0; !is_syntax_error && i <= nsegs; i++) {
 			s_colors[i] = 0;
 			gradient = GetNextToken(gradient, &s_colors[i]);
@@ -1297,7 +1297,7 @@ CreateGradientPixmapFromString(Display *dpy, Drawable d, GC gc, int type,
 				Pixel          *pixels;
 				int             i;
 
-				pixels = xmalloc(ncolors * sizeof(Pixel));
+				pixels = mvwm_malloc(ncolors * sizeof(Pixel));
 				for (i = 0; i < ncolors; i++) {
 					pixels[i] = xcs[i].pixel;
 				}

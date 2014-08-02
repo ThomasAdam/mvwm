@@ -71,7 +71,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 	/*
 	 * it is possible that we allocate a bit more here, if utf-8
 	 */
-	logical_unicode_str = xmalloc((str_len + 1) * sizeof(FriBidiChar));
+	logical_unicode_str = mvwm_malloc((str_len + 1) * sizeof(FriBidiChar));
 
 	/*
 	 * convert to unicode first
@@ -80,7 +80,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 	    fribidi_charset_to_unicode(fribidi_charset, (char *) logical_str,
 	    str_len, logical_unicode_str);
 
-	visual_unicode_str = xmalloc((str_len + 1) * sizeof(FriBidiChar));
+	visual_unicode_str = mvwm_malloc((str_len + 1) * sizeof(FriBidiChar));
 
 	/*
 	 * apply bidi algorithm, convert logical string to visual string
@@ -89,7 +89,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 	 * also keep track of how characters are reordered here, to reorder
 	 * combing characters accordingly
 	 */
-	pos_l_to_v = xmalloc((str_len + 1) * sizeof(FriBidiStrIndex));
+	pos_l_to_v = mvwm_malloc((str_len + 1) * sizeof(FriBidiStrIndex));
 	fribidi_log2vis(logical_unicode_str, str_len, &pbase_dir,
 	    visual_unicode_str, pos_l_to_v, NULL, NULL);
 
@@ -124,7 +124,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 		for (i = 0; l_to_v[i] != -1; i++) {
 		}
 		orig_len = i;
-		l_to_v_temp = xmalloc(orig_len * sizeof(int));
+		l_to_v_temp = mvwm_malloc(orig_len * sizeof(int));
 		for (i = 0; i < orig_len; i++) {
 			l_to_v_temp[i] = pos_l_to_v[l_to_v[i]];
 		}
@@ -140,7 +140,7 @@ FBidiConvert(const char *logical_str, const char *charset, int str_len,
 	 */
 	str_len = shape_n_join(visual_unicode_str, str_len);
 
-	visual_str = xmalloc((4 * str_len + 1) * sizeof(char));
+	visual_str = mvwm_malloc((4 * str_len + 1) * sizeof(char));
 
 	/*
 	 * convert from unicode finally

@@ -559,7 +559,7 @@ FlocaleInit_X_Charset(Display *dpy, const char *module)
 			}
 			FLCXOMCharsetList_num = cs.charset_count;
 			FLCXOMCharsetList =
-			    xmalloc(sizeof(FlocaleCharset) *
+			    mvwm_malloc(sizeof(FlocaleCharset) *
 			    cs.charset_count);
 			for (i = 0; i < FLCXOMCharsetList_num; i++) {
 				FLCXOMCharsetList[i] =
@@ -769,7 +769,7 @@ FlocaleCharsetSetFlocaleCharset(Display *dpy, FlocaleFont *flf, char *hints,
 		 * * have it: must create a FlocaleCharset
 		 */
 		flf->flags.must_free_fc = True;
-		fc = xmalloc(sizeof(FlocaleCharset));
+		fc = mvwm_malloc(sizeof(FlocaleCharset));
 		if (flf->fc != NULL) {
 			CopyString(&fc->x, flf->fc->x);
 			fc->encoding_type = flf->fc->encoding_type;
@@ -782,7 +782,7 @@ FlocaleCharsetSetFlocaleCharset(Display *dpy, FlocaleFont *flf, char *hints,
 			fc->bidi = NULL;
 			fc->encoding_type = FLC_ENCODING_TYPE_FONT;
 		}
-		fc->locale = xmalloc(2 * sizeof(char *));
+		fc->locale = mvwm_malloc(2 * sizeof(char *));
 		CopyString(&fc->locale[0], iconv);
 		fc->locale[1] = NULL;
 		fc->iconv_index = FLC_INDEX_ICONV_CHARSET_NOT_INITIALIZED;

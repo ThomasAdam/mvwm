@@ -3828,7 +3828,7 @@ register_event_group(int event_base, int event_count, PFEH * jump_table)
 	/*
 	 * create the group structure (these are not freed until mvwm exits)
 	 */
-	group = xmalloc(sizeof(event_group_t));
+	group = mvwm_malloc(sizeof(event_group_t));
 	group->base = event_base;
 	group->count = event_count;
 	group->jump_table = jump_table;

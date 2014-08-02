@@ -254,7 +254,7 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		spec = xmalloc(len);
+		spec = mvwm_malloc(len);
 		strncpy(spec, s, len - 1);
 		spec[len - 1] = 0;
 	} else {
@@ -290,7 +290,7 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 			while (tail->next) {
 				tail = tail->next;
 			}
-			tail->next = xmalloc(sizeof(DecorFace));
+			tail->next = mvwm_malloc(sizeof(DecorFace));
 			memcpy(tail->next, &tmpdf, sizeof(DecorFace));
 			if (DFS_FACE_TYPE(tail->next->style) == VectorButton
 			    && DFS_FACE_TYPE((&TB_STATE(*tb)[bs_start])->
@@ -317,7 +317,7 @@ ReadTitleButton(char *s, TitleButton *tb, Boolean append, int button)
 				while (tail->next) {
 					tail = tail->next;
 				}
-				tail->next = xcalloc(1, sizeof(DecorFace));
+				tail->next = mvwm_calloc(1, sizeof(DecorFace));
 				DFS_FACE_TYPE(tail->next->style) =
 				    SimpleButton;
 				tail->next->next = NULL;
@@ -500,9 +500,9 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 
 	df->style.face_type = MultiPixmap;
 	df->u.mp.pixmaps = pm =
-	    xcalloc(TBMP_NUM_PIXMAPS, sizeof(MvwmPicture *));
-	df->u.mp.acs = acs = xmalloc(TBMP_NUM_PIXMAPS * sizeof(MvwmAcs));
-	df->u.mp.pixels = pixels = xmalloc(TBMP_NUM_PIXMAPS * sizeof(Pixel));
+	    mvwm_calloc(TBMP_NUM_PIXMAPS, sizeof(MvwmPicture *));
+	df->u.mp.acs = acs = mvwm_malloc(TBMP_NUM_PIXMAPS * sizeof(MvwmAcs));
+	df->u.mp.pixels = pixels = mvwm_malloc(TBMP_NUM_PIXMAPS * sizeof(Pixel));
 	for (i = 0; i < TBMP_NUM_PIXMAPS; i++) {
 		acs[i].cs = -1;
 		acs[i].alpha_percent = 100;
@@ -1215,7 +1215,7 @@ FreeDecorFace(Display *dpy, DecorFace *df)
 			Pixel          *p;
 			int             i;
 
-			p = xmalloc(df->u.grad.npixels * sizeof(Pixel));
+			p = mvwm_malloc(df->u.grad.npixels * sizeof(Pixel));
 			for (i = 0; i < df->u.grad.npixels; i++) {
 				p[i] = df->u.grad.xcs[i].pixel;
 			}
@@ -1394,11 +1394,11 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 
 			vc->num = num_coords;
 			vc->use_fgbg = 0;
-			vc->x = xmalloc(sizeof(char) * num_coords);
-			vc->y = xmalloc(sizeof(char) * num_coords);
-			vc->xoff = xmalloc(sizeof(char) * num_coords);
-			vc->yoff = xmalloc(sizeof(char) * num_coords);
-			vc->c = xmalloc(sizeof(char) * num_coords);
+			vc->x = mvwm_malloc(sizeof(char) * num_coords);
+			vc->y = mvwm_malloc(sizeof(char) * num_coords);
+			vc->xoff = mvwm_malloc(sizeof(char) * num_coords);
+			vc->yoff = mvwm_malloc(sizeof(char) * num_coords);
+			vc->c = mvwm_malloc(sizeof(char) * num_coords);
 
 			/*
 			 * get the points
@@ -2064,12 +2064,12 @@ CMD_ExecUseShell(F_CMD_ARGS)
 	} else {	/* no arg, so use $SHELL -- not working??? */
 
 		if (getenv("SHELL")) {
-			exec_shell_name = xstrdup(getenv("SHELL"));
+			exec_shell_name = mvwm_strdup(getenv("SHELL"));
 		} else {
 			/*
 			 * if $SHELL not set, use default
 			 */
-			exec_shell_name = xstrdup("/bin/sh");
+			exec_shell_name = mvwm_strdup("/bin/sh");
 		}
 	}
 }
@@ -2095,7 +2095,7 @@ CMD_Exec(F_CMD_ARGS)
 	} else
 #endif
 	{
-		cmd = xstrdup(action);
+		cmd = mvwm_strdup(action);
 	}
 	if (!cmd) {
 		return;
@@ -2201,14 +2201,14 @@ CMD_Wait(F_CMD_ARGS)
 			while (*temp && isspace((unsigned char) *temp)) {
 				temp++;
 			}
-			wait_string = xstrdup(temp);
+			wait_string = mvwm_strdup(temp);
 			for (i = strlen(wait_string) - 1; i >= 0 &&
 			    isspace(wait_string[i]); i--) {
 				wait_string[i] = 0;
 			}
 		}
 	} else {
-		wait_string = xstrdup("");
+		wait_string = mvwm_strdup("");
 	}
 
 	is_ungrabbed = UngrabEm(GRAB_NORMAL);
@@ -2475,7 +2475,7 @@ CMD_HilightColor(F_CMD_ARGS)
 		/*
 		 * TA:  FIXME:  xasprintf()
 		 */
-		action = xmalloc(strlen(fore) + strlen(back) + 29);
+		action = mvwm_malloc(strlen(fore) + strlen(back) + 29);
 		sprintf(action, "* HilightFore %s, HilightBack %s", fore,
 		    back);
 		CMD_Style(F_PASS_ARGS);
@@ -2507,7 +2507,7 @@ CMD_HilightColorset(F_CMD_ARGS)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		newaction = xmalloc(strlen(action) + 32);
+		newaction = mvwm_malloc(strlen(action) + 32);
 		sprintf(newaction, "* HilightColorset %s", action);
 		action = newaction;
 		CMD_Style(F_PASS_ARGS);
@@ -2635,10 +2635,10 @@ CMD_DefaultColors(F_CMD_ARGS)
 		action = GetNextToken(action, &back);
 	}
 	if (!back) {
-		back = xstrdup(DEFAULT_BACK_COLOR);
+		back = mvwm_strdup(DEFAULT_BACK_COLOR);
 	}
 	if (!fore) {
-		fore = xstrdup(DEFAULT_FORE_COLOR);
+		fore = mvwm_strdup(DEFAULT_FORE_COLOR);
 	}
 	if (!StrEquals(fore, "-")) {
 		PictureFreeColors(dpy, Pcmap, &Scr.StdFore, 1, 0, True);
@@ -2719,7 +2719,7 @@ CMD_IconFont(F_CMD_ARGS)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		newaction = xmalloc(strlen(action) + 16);
+		newaction = mvwm_malloc(strlen(action) + 16);
 		sprintf(newaction, "* IconFont %s", action);
 		action = newaction;
 		CMD_Style(F_PASS_ARGS);
@@ -2745,7 +2745,7 @@ CMD_WindowFont(F_CMD_ARGS)
 		/*
 		 * TA;  FIXME!  xasprintf()
 		 */
-		newaction = xmalloc(strlen(action) + 16);
+		newaction = mvwm_malloc(strlen(action) + 16);
 		sprintf(newaction, "* Font %s", action);
 		action = newaction;
 		CMD_Style(F_PASS_ARGS);
@@ -2837,7 +2837,7 @@ CMD_DestroyDecor(F_CMD_ARGS)
 			int             i;
 
 			InitMvwmDecor(found);
-			found->tag = xstrdup(item);
+			found->tag = mvwm_strdup(item);
 			scr_flags.do_need_window_update = 1;
 			found->flags.has_changed = 1;
 			found->flags.has_title_height_changed = 0;
@@ -2887,7 +2887,7 @@ CMD_AddToDecor(F_CMD_ARGS)
 		/*
 		 * then make a new one
 		 */
-		found = xmalloc(sizeof *found);
+		found = mvwm_malloc(sizeof *found);
 		InitMvwmDecor(found);
 		found->tag = item;	/* tag it */
 		/*
@@ -2998,9 +2998,9 @@ CMD_SetEnv(F_CMD_ARGS)
 	}
 	action = GetNextToken(action, &szValue);
 	if (!szValue) {
-		szValue = xstrdup("");
+		szValue = mvwm_strdup("");
 	}
-	szPutenv = xmalloc(strlen(szVar) + strlen(szValue) + 2);
+	szPutenv = mvwm_malloc(strlen(szVar) + strlen(szValue) + 2);
 	sprintf(szPutenv, "%s=%s", szVar, szValue);
 	flib_putenv(szVar, szPutenv);
 	free(szVar);

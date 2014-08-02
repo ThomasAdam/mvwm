@@ -191,9 +191,9 @@ shape_n_join(FriBidiChar * str_visual, int str_len)
 	const char_shaped_t *curr;
 	const char_shaped_t *next;
 
-	list = xmalloc((str_len + 2) * sizeof(char_shaped_t *));
+	list = mvwm_malloc((str_len + 2) * sizeof(char_shaped_t *));
 
-	orig_str = xmalloc((str_len + 1) * sizeof(FriBidiChar));
+	orig_str = mvwm_malloc((str_len + 1) * sizeof(FriBidiChar));
 
 	/*
 	 * head is NULL

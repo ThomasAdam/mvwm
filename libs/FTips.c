@@ -412,7 +412,7 @@ FTipsNewConfig(void)
 {
 	ftips_config   *fc;
 
-	fc = xcalloc(1, sizeof(ftips_config));
+	fc = mvwm_calloc(1, sizeof(ftips_config));
 
 	/*
 	 * use colorset 0 as default

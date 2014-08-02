@@ -258,8 +258,8 @@ PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_set_expand(Fpng_ptr);
 	}
 
-	data = xmalloc(w * h * sizeof(CARD32));
-	lines = xmalloc(h * sizeof(unsigned char *));
+	data = mvwm_malloc(w * h * sizeof(CARD32));
+	lines = mvwm_malloc(h * sizeof(unsigned char *));
 
 	if (hasg) {
 		Fpng_set_gray_to_rgb(Fpng_ptr);
@@ -492,7 +492,7 @@ PImageLoadMvwmPictureFromFile(Display *dpy, Window win, char *path,
 		return NULL;
 	}
 
-	p = xcalloc(1, sizeof(MvwmPicture));
+	p = mvwm_calloc(1, sizeof(MvwmPicture));
 	p->count = 1;
 	p->name = path;
 	p->fpa_mask = fpa.mask;

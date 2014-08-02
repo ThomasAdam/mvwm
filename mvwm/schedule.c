@@ -132,9 +132,9 @@ schedule(Window window, char *command, Time time_to_execute, int *pid,
 	/*
 	 * create the new object
 	 */
-	new_obj = xcalloc(1, sizeof(sq_object_type));
+	new_obj = mvwm_calloc(1, sizeof(sq_object_type));
 	new_obj->window = window;
-	new_obj->command = xstrdup(command);
+	new_obj->command = mvwm_strdup(command);
 	new_obj->time_to_execute = time_to_execute;
 	new_obj->period = period;	/* 0 if this is not a periodic command */
 	/*
@@ -198,7 +198,7 @@ execute_obj_func(void *object, void *args)
 		/*
 		 * This is a periodic function, so reschedule it.
 		 */
-		sq_object_type *new_obj = xmalloc(sizeof(sq_object_type));
+		sq_object_type *new_obj = mvwm_malloc(sizeof(sq_object_type));
 		memcpy(new_obj, obj, sizeof(sq_object_type));
 		obj->command = NULL;	/* new_obj->command now points to cmd. */
 		new_obj->time_to_execute = fev_get_evtime() + new_obj->period;

@@ -73,7 +73,6 @@ main(int argc, char *argv[])
 {
 	char           *cmd;
 	char            data[MAX_MESSAGE_SIZE];
-	int             len;	/* length of socket address */
 	struct sockaddr_un sas;
 	int             clen;	/* command length */
 	int             pid;	/* child process id */
@@ -95,9 +94,7 @@ main(int argc, char *argv[])
 	 * make a socket
 	 */
 	home = getenv("MVWM_USERDIR");
-	s_name = xmalloc(strlen(home) + sizeof(S_NAME) + 1);
-	strcpy(s_name, home);
-	strcat(s_name, S_NAME);
+	asprintf(&s_name, "%s%s", home, S_NAME);
 	s = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (s < 0) {
 		ErrMsg("socket");
@@ -107,8 +104,7 @@ main(int argc, char *argv[])
 	 */
 	sas.sun_family = AF_UNIX;
 	strcpy(sas.sun_path, s_name);
-	len = sizeof(sas) - sizeof(sas.sun_path) + strlen(sas.sun_path);
-	rc = connect(s, (struct sockaddr *) &sas, len);
+	rc = connect(s, (struct sockaddr *) &sas, SUN_LEN(&sas));
 	if (rc < 0) {
 		ErrMsg("connect");
 	}
@@ -167,6 +163,7 @@ main(int argc, char *argv[])
 		}
 		printf("%s", data);
 	}
+	free(s_name);
 
 	return 0;
 }

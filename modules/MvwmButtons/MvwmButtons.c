@@ -416,7 +416,7 @@ AddButtonAction(button_info *b, int n, char *action)
 		}
 	} else {
 		int             i;
-		b->action = xmalloc(
+		b->action = mvwm_malloc(
 		    (NUMBER_OF_EXTENDED_MOUSE_BUTTONS + 1) * sizeof(char *));
 		for (i = 0; i <= NUMBER_OF_EXTENDED_MOUSE_BUTTONS;
 		    b->action[i++] = NULL) {
@@ -446,7 +446,7 @@ AddButtonAction(button_info *b, int n, char *action)
 			break;
 		}
 	}
-	t = xmalloc(l + 1);
+	t = mvwm_malloc(l + 1);
 	memmove(t, action, l);
 	t[l] = 0;
 	b->action[n] = t;
@@ -645,14 +645,14 @@ main(int argc, char **argv)
 			 */
 		{
 			free(MyName);
-			MyName = xstrdup(argv[i]);
+			MyName = mvwm_strdup(argv[i]);
 			has_name = 1;
 		} else if (!has_file)
 			/*
 			 * There is a config file here!
 			 */
 		{
-			config_file = xstrdup(argv[i]);
+			config_file = mvwm_strdup(argv[i]);
 			has_file = 1;
 		}
 	}
@@ -679,7 +679,7 @@ main(int argc, char **argv)
 
 	oldErrorHandler = XSetErrorHandler(myErrorHandler);
 
-	UberButton = xmalloc(sizeof(button_info));
+	UberButton = mvwm_malloc(sizeof(button_info));
 	memset(UberButton, 0, sizeof(button_info));
 	UberButton->BWidth = 1;
 	UberButton->BHeight = 1;
@@ -930,7 +930,7 @@ ButtonPressProcess(button_info *b, char **act)
 
 					if (i2 - i > 1) {
 						b->flags.b_Hangon = 1;
-						b->hangon = xmalloc(i2 - i);
+						b->hangon = mvwm_malloc(i2 - i);
 						strncpy(b->hangon,
 						    &(*act)[i + 1],
 						    i2 - i - 1);
@@ -940,7 +940,7 @@ ButtonPressProcess(button_info *b, char **act)
 				} else
 					i2 = i;
 
-				tmp.name = xmalloc(strlen(*act) + 1);
+				tmp.name = mvwm_malloc(strlen(*act) + 1);
 				strcpy(tmp.name, "Exec ");
 				while (
 				    (*act)[i2] != 0 &&
@@ -2279,8 +2279,8 @@ CreateUberButtonWindow(button_info *ub, int maxx, int maxy)
 #endif
 	XSetWMProtocols(Dpy, MyWindow, &_XA_WM_DEL_WIN, 1);
 
-	myclasshints.res_name = xstrdup(MyName);
-	myclasshints.res_class = xstrdup("MvwmButtons");
+	myclasshints.res_name = mvwm_strdup(MyName);
+	myclasshints.res_class = mvwm_strdup("MvwmButtons");
 
 	{
 		XTextProperty   mynametext;

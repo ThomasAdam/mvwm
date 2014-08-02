@@ -1110,7 +1110,7 @@ ParseButton(button_info **uberb, char *s)
 					b->swallow |= 1;
 					if (!(b->swallow & b_NoHints)) {
 						b->hints =
-						    xmalloc(sizeof
+						    mvwm_malloc(sizeof
 						    (XSizeHints));
 					}
 					if (o) {
@@ -1596,7 +1596,7 @@ ParseButton(button_info **uberb, char *s)
 		}
 		b->hangon = seekright(&s);
 		if (!b->hangon) {
-			b->hangon = xstrdup("");
+			b->hangon = mvwm_strdup("");
 		}
 		if (tolower(*s) == 's') {
 			b->flags.b_Swallow = 1;
@@ -1608,13 +1608,13 @@ ParseButton(button_info **uberb, char *s)
 		b->swallow |= 1;
 		s = trimleft(s);
 		if (!(b->swallow & b_NoHints)) {
-			b->hints = xmalloc(sizeof(XSizeHints));
+			b->hints = mvwm_malloc(sizeof(XSizeHints));
 		}
 		if (*s) {
 			if (!(buttonSwallow(b) & b_UseOld)) {
 				SendText(fd, s, 0);
 			}
-			b->spawn = xstrdup(s);
+			b->spawn = mvwm_strdup(s);
 		}
 	} else if (*s) {
 		AddButtonAction(b, 0, s);
@@ -1886,7 +1886,7 @@ ParseConfiguration(button_info *ub)
 		NULL
 	};
 
-	items[0] = xmalloc(strlen(MyName) + 2);
+	items[0] = mvwm_malloc(strlen(MyName) + 2);
 	sprintf(items[0], "*%s", MyName);
 
 	/*

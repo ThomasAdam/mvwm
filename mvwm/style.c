@@ -265,7 +265,7 @@ copy_icon_boxes(icon_boxes ** pdest, icon_boxes * src)
 	 * copy the icon boxes
 	 */
 	for (; src != NULL; src = src->next) {
-		temp = xmalloc(sizeof(icon_boxes));
+		temp = mvwm_malloc(sizeof(icon_boxes));
 		memcpy(temp, src, sizeof(icon_boxes));
 		temp->next = NULL;
 		if (last != NULL)
@@ -367,7 +367,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_ICON_NAME(*merged_style));
 			SSET_ICON_NAME(*merged_style,
 			    (SGET_ICON_NAME(*add_style)) ?
-			    xstrdup(SGET_ICON_NAME(*add_style)) : NULL);
+			    mvwm_strdup(SGET_ICON_NAME(*add_style)) : NULL);
 		} else {
 			SSET_ICON_NAME(*merged_style,
 			    SGET_ICON_NAME(*add_style));
@@ -378,7 +378,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_MINI_ICON_NAME(*merged_style));
 			SSET_MINI_ICON_NAME(*merged_style,
 			    (SGET_MINI_ICON_NAME(*add_style)) ?
-			    xstrdup(SGET_MINI_ICON_NAME(*add_style)) : NULL);
+			    mvwm_strdup(SGET_MINI_ICON_NAME(*add_style)) : NULL);
 		} else {
 			SSET_MINI_ICON_NAME(*merged_style,
 			    SGET_MINI_ICON_NAME(*add_style));
@@ -389,7 +389,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_DECOR_NAME(*merged_style));
 			SSET_DECOR_NAME(*merged_style,
 			    (SGET_DECOR_NAME(*add_style)) ?
-			    xstrdup(SGET_DECOR_NAME(*add_style)) : NULL);
+			    mvwm_strdup(SGET_DECOR_NAME(*add_style)) : NULL);
 		} else {
 			SSET_DECOR_NAME(*merged_style,
 			    SGET_DECOR_NAME(*add_style));
@@ -400,7 +400,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_ICON_FONT(*merged_style));
 			SSET_ICON_FONT(*merged_style,
 			    (SGET_ICON_FONT(*add_style)) ?
-			    xstrdup(SGET_ICON_FONT(*add_style)) : NULL);
+			    mvwm_strdup(SGET_ICON_FONT(*add_style)) : NULL);
 		} else {
 			SSET_ICON_FONT(*merged_style,
 			    SGET_ICON_FONT(*add_style));
@@ -411,7 +411,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_WINDOW_FONT(*merged_style));
 			SSET_WINDOW_FONT(*merged_style,
 			    (SGET_WINDOW_FONT(*add_style)) ?
-			    xstrdup(SGET_WINDOW_FONT(*add_style)) : NULL);
+			    mvwm_strdup(SGET_WINDOW_FONT(*add_style)) : NULL);
 		} else {
 			SSET_WINDOW_FONT(*merged_style,
 			    SGET_WINDOW_FONT(*add_style));
@@ -433,7 +433,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_FORE_COLOR_NAME(*merged_style));
 			SSET_FORE_COLOR_NAME(*merged_style,
 			    (SGET_FORE_COLOR_NAME(*add_style)) ?
-			    xstrdup(SGET_FORE_COLOR_NAME(*add_style)) : NULL);
+			    mvwm_strdup(SGET_FORE_COLOR_NAME(*add_style)) : NULL);
 		} else {
 			SSET_FORE_COLOR_NAME(*merged_style,
 			    SGET_FORE_COLOR_NAME(*add_style));
@@ -444,7 +444,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_BACK_COLOR_NAME(*merged_style));
 			SSET_BACK_COLOR_NAME(*merged_style,
 			    (SGET_BACK_COLOR_NAME(*add_style)) ?
-			    xstrdup(SGET_BACK_COLOR_NAME(*add_style)) : NULL);
+			    mvwm_strdup(SGET_BACK_COLOR_NAME(*add_style)) : NULL);
 		} else {
 			SSET_BACK_COLOR_NAME(*merged_style,
 			    SGET_BACK_COLOR_NAME(*add_style));
@@ -455,7 +455,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_FORE_COLOR_NAME_HI(*merged_style));
 			SSET_FORE_COLOR_NAME_HI(*merged_style,
 			    (SGET_FORE_COLOR_NAME_HI(*add_style)) ?
-			    xstrdup(SGET_FORE_COLOR_NAME_HI(*add_style)) :
+			    mvwm_strdup(SGET_FORE_COLOR_NAME_HI(*add_style)) :
 			    NULL);
 		} else {
 			SSET_FORE_COLOR_NAME_HI(*merged_style,
@@ -467,7 +467,7 @@ merge_styles(window_style *merged_style, window_style *add_style,
 			SAFEFREE(SGET_BACK_COLOR_NAME_HI(*merged_style));
 			SSET_BACK_COLOR_NAME_HI(*merged_style,
 			    (SGET_BACK_COLOR_NAME_HI(*add_style)) ?
-			    xstrdup(SGET_BACK_COLOR_NAME_HI(*add_style)) :
+			    mvwm_strdup(SGET_BACK_COLOR_NAME_HI(*add_style)) :
 			    NULL);
 		} else {
 			SSET_BACK_COLOR_NAME_HI(*merged_style,
@@ -1747,7 +1747,7 @@ style_parse_icon_box_style(icon_boxes ** ret_ib, char *option, char *rest,
 	/*
 	 * otherwise try to parse the icon box
 	 */
-	IconBoxes = xcalloc(1, sizeof(icon_boxes));
+	IconBoxes = mvwm_calloc(1, sizeof(icon_boxes));
 
 	IconBoxes->IconScreen = "global";
 	/*
@@ -2122,7 +2122,7 @@ style_parse_one_style_option(char *token, char *rest, char **ret_rest,
 			/*
 			 * TA:  xasprintf()
 			 */
-			token_l = xmalloc(l + strlen(token) + 1);
+			token_l = mvwm_malloc(l + strlen(token) + 1);
 			strcpy(token_l, prefix);
 			strcat(token_l, token);
 			token = token_l;
@@ -4094,7 +4094,7 @@ __style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	 */
 	window_style   *ps;
 
-	ps = xcalloc(1, sizeof(window_style));
+	ps = mvwm_calloc(1, sizeof(window_style));
 	/*
 	 * init default focus policy
 	 */

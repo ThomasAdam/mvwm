@@ -50,9 +50,9 @@ timeout_create(int n_timeouts)
 	if (n_timeouts < 0 || n_timeouts > TIMEOUT_MAX_TIMEOUTS) {
 		return NULL;
 	}
-	to = xcalloc(1, sizeof(timeout_t));
+	to = mvwm_calloc(1, sizeof(timeout_t));
 	to->n_timeouts = n_timeouts;
-	to->timeouts = xcalloc(1, n_timeouts * sizeof(timeout_time_t));
+	to->timeouts = mvwm_calloc(1, n_timeouts * sizeof(timeout_time_t));
 
 	return to;
 }

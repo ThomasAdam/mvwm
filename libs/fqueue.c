@@ -189,7 +189,7 @@ fqueue_add_at_front(fqueue * fq, void *object)
 {
 	fqueue_record  *rec;
 
-	rec = xcalloc(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	rec->next = fq->first;
 	if (fq->lock_level > 0) {
@@ -206,7 +206,7 @@ fqueue_add_at_end(fqueue * fq, void *object)
 {
 	fqueue_record  *rec;
 
-	rec = xcalloc(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0) {
 		rec->flags.is_just_created = 1;
@@ -231,7 +231,7 @@ fqueue_add_inside(fqueue * fq, void *object, cmp_objects_t cmp_objects,
 	fqueue_record  *p;
 	fqueue_record  *t;
 
-	rec = xcalloc(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0) {
 		rec->flags.is_just_created = 1;

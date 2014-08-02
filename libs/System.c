@@ -142,7 +142,7 @@ searchPath(const char *pathlist, const char *filename, const char *suffix,
 	/*
 	 * +1 for extra / and +1 for null termination
 	 */
-	path = xmalloc(maxpath_len + filename_len + 2);
+	path = mvwm_malloc(maxpath_len + filename_len + 2);
 	*path = '\0';
 
 	if (*filename == '/') {

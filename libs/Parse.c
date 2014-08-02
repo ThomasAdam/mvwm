@@ -141,7 +141,7 @@ EscapeString(char *s, const char *qchars, char echar)
 			len++;
 		}
 	}
-	ret = xmalloc(len);
+	ret = mvwm_malloc(len);
 	for (t = ret; *s; s++, t++) {
 		if (strchr(qchars, *s) != NULL) {
 			*t = echar;
@@ -249,7 +249,7 @@ GetQuotedString(char *sin, char **sout, const char *delims, const char *qlong,
 		t = SkipQuote(t, qlong, qstart, qend);
 	}
 	len = t - sin;
-	*sout = xmalloc(len + 1);
+	*sout = mvwm_malloc(len + 1);
 	memcpy(*sout, sin, len);
 	(*sout)[len] = 0;
 	if (*t) {
@@ -441,7 +441,7 @@ DoGetNextToken(char *indata, char **token, char *spaces, char *delims,
 	if (tmptok == NULL) {
 		*token = NULL;
 	} else {
-		*token = xstrdup(tmptok);
+		*token = mvwm_strdup(tmptok);
 	}
 
 	return end;
@@ -889,7 +889,7 @@ GetFileNameFromPath(char *path)
 	/*
 	 * TA:  FIXME!  xasprintf()
 	 */
-	name = xmalloc(strlen(s) + 1);
+	name = mvwm_malloc(strlen(s) + 1);
 	strcpy(name, s);
 
 	return name;

@@ -513,7 +513,7 @@ get_display_name(char *display_name, int screen_num)
 	/*
 	 * TA:  FIXME!  Use asprintF()
 	 */
-	new_dn = xmalloc(strlen(msg) + strlen(string_screen_num) + 1);
+	new_dn = mvwm_malloc(strlen(msg) + strlen(string_screen_num) + 1);
 	*new_dn = '\0';
 	strcat(new_dn, msg);
 	strcat(new_dn, string_screen_num);
@@ -547,7 +547,7 @@ Done(int restart, char *command)
 		exec_context_changes_t ecc;
 
 		char           *action =
-		    xstrdup(CatString2("Function ", exit_func_name));
+		    mvwm_strdup(CatString2("Function ", exit_func_name));
 		ecc.type = restart ? EXCT_TORESTART : EXCT_QUIT;
 		ecc.w.wcontext = C_ROOT;
 		exc = exc_create_context(&ecc, ECC_TYPE | ECC_WCONTEXT);
@@ -844,11 +844,11 @@ LoadDefaultLeftButton(DecorFace *df, int i)
 	case 0:
 	case 4:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 22;
 		v->y[0] = 39;
 		v->c[0] = 1;
@@ -865,11 +865,11 @@ LoadDefaultLeftButton(DecorFace *df, int i)
 		break;
 	case 1:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 32;
 		v->y[0] = 45;
 		v->x[1] = 68;
@@ -885,11 +885,11 @@ LoadDefaultLeftButton(DecorFace *df, int i)
 		break;
 	case 2:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 49;
 		v->y[0] = 49;
 		v->c[0] = 1;
@@ -906,11 +906,11 @@ LoadDefaultLeftButton(DecorFace *df, int i)
 		break;
 	case 3:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 32;
 		v->y[0] = 45;
 		v->c[0] = 1;
@@ -955,11 +955,11 @@ LoadDefaultRightButton(DecorFace *df, int i)
 	case 0:
 	case 3:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 25;
 		v->y[0] = 25;
 		v->c[0] = 1;
@@ -976,11 +976,11 @@ LoadDefaultRightButton(DecorFace *df, int i)
 		break;
 	case 1:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 39;
 		v->y[0] = 39;
 		v->c[0] = 1;
@@ -997,11 +997,11 @@ LoadDefaultRightButton(DecorFace *df, int i)
 		break;
 	case 2:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 49;
 		v->y[0] = 49;
 		v->c[0] = 1;
@@ -1018,11 +1018,11 @@ LoadDefaultRightButton(DecorFace *df, int i)
 		break;
 	case 4:
 		v->num = 5;
-		v->x = xmalloc(sizeof(char) * v->num);
-		v->y = xmalloc(sizeof(char) * v->num);
-		v->xoff = xmalloc(sizeof(char) * v->num);
-		v->yoff = xmalloc(sizeof(char) * v->num);
-		v->c = xcalloc(v->num, sizeof(char));
+		v->x = mvwm_malloc(sizeof(char) * v->num);
+		v->y = mvwm_malloc(sizeof(char) * v->num);
+		v->xoff = mvwm_malloc(sizeof(char) * v->num);
+		v->yoff = mvwm_malloc(sizeof(char) * v->num);
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 36;
 		v->y[0] = 36;
 		v->c[0] = 1;
@@ -1291,7 +1291,7 @@ setVersionInfo(void)
 	 */
 	sprintf(version_str, "mvwm %s%s compiled on %s at %s",
 	    VERSION, VERSIONINFO, __DATE__, __TIME__);
-	Mvwm_VersionInfo = xstrdup(version_str);
+	Mvwm_VersionInfo = mvwm_strdup(version_str);
 
 	sprintf(license_str,
 	    "mvwm comes with NO WARRANTY, to the extent permitted by law. "
@@ -1299,7 +1299,7 @@ setVersionInfo(void)
 	    "the terms of the GNU General Public License.\n"
 	    "For more information about these matters, see the file "
 	    "named COPYING.");
-	Mvwm_LicenseInfo = xstrdup(license_str);
+	Mvwm_LicenseInfo = mvwm_strdup(license_str);
 
 #ifdef HAVE_READLINE
 	strcat(support_str, " ReadLine,");
@@ -1344,7 +1344,7 @@ setVersionInfo(void)
 		 */
 		support_str[support_len - 1] = '\0';
 		Mvwm_SupportInfo =
-		    xstrdup(CatString2("with support for:", support_str));
+		    mvwm_strdup(CatString2("with support for:", support_str));
 	} else {
 		Mvwm_SupportInfo = "with no optional feature support";
 	}
@@ -1577,7 +1577,7 @@ StartupStuff(void)
 	init_func_name = get_init_function_name(Restarting == True);
 	if (functions_is_complex_function(init_func_name)) {
 		char           *action =
-		    xstrdup(CatString2("Function ", init_func_name));
+		    mvwm_strdup(CatString2("Function ", init_func_name));
 
 		execute_function(NULL, exc, action, 0);
 		free(action);
@@ -1808,7 +1808,7 @@ main(int argc, char **argv)
 	/*
 	 * for use on restart
 	 */
-	g_argv = xmalloc((argc + 4) * sizeof(char *));
+	g_argv = mvwm_malloc((argc + 4) * sizeof(char *));
 	g_argc = argc;
 	for (i = 0; i < argc; i++) {
 		g_argv[i] = argv[i];
@@ -1833,7 +1833,7 @@ main(int argc, char **argv)
 	if (home_dir == NULL) {
 		struct passwd  *pw = getpwuid(getuid());
 		if (pw != NULL) {
-			home_dir = xstrdup(pw->pw_dir);
+			home_dir = mvwm_strdup(pw->pw_dir);
 		}
 	}
 #endif
@@ -1848,12 +1848,12 @@ main(int argc, char **argv)
 	if (mvwm_userdir == NULL) {
 		char           *s;
 
-		mvwm_userdir = xstrdup(CatString2(home_dir, "/.mvwm"));
+		mvwm_userdir = mvwm_strdup(CatString2(home_dir, "/.mvwm"));
 		/*
 		 * Put the user directory into the environment so it can be used
 		 * * later everywhere.
 		 */
-		s = xstrdup(CatString2("MVWM_USERDIR=", mvwm_userdir));
+		s = mvwm_strdup(CatString2("MVWM_USERDIR=", mvwm_userdir));
 		flib_putenv("MVWM_USERDIR", s);
 		free(s);
 	}
@@ -1924,7 +1924,7 @@ main(int argc, char **argv)
 			}
 			if (num_config_commands < MAX_CFG_CMDS) {
 				config_commands[num_config_commands] =
-				    xstrdup(argv[i]);
+				    mvwm_strdup(argv[i]);
 				num_config_commands++;
 			} else {
 				mvwm_msg(ERR, "main",
@@ -2134,7 +2134,7 @@ main(int argc, char **argv)
 	 * * with mvwm -display term:0.0
 	 */
 	len = strlen(XDisplayString(dpy));
-	display_string = xmalloc(len + 10);
+	display_string = mvwm_malloc(len + 10);
 	sprintf(display_string, "DISPLAY=%s", XDisplayString(dpy));
 	flib_putenv("DISPLAY", display_string);
 	/*
@@ -2148,7 +2148,7 @@ main(int argc, char **argv)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		rdisplay_string = xmalloc(len + 14 + strlen(client));
+		rdisplay_string = mvwm_malloc(len + 14 + strlen(client));
 		sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
 		    &display_string[9]);
 		flib_putenv("HOSTDISPLAY", rdisplay_string);
@@ -2159,7 +2159,7 @@ main(int argc, char **argv)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		rdisplay_string = xmalloc(len + 14 + strlen(client));
+		rdisplay_string = mvwm_malloc(len + 14 + strlen(client));
 		sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
 		    &display_string[13]);
 		flib_putenv("HOSTDISPLAY", rdisplay_string);
@@ -2169,7 +2169,7 @@ main(int argc, char **argv)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		rdisplay_string = xmalloc(len + 14);
+		rdisplay_string = mvwm_malloc(len + 14);
 		sprintf(rdisplay_string, "HOSTDISPLAY=%s",
 		    XDisplayString(dpy));
 		flib_putenv("HOSTDISPLAY", rdisplay_string);
@@ -2379,7 +2379,7 @@ main(int argc, char **argv)
 		}
 	}
 	restart_state_filename =
-	    xstrdup(CatString3(mvwm_userdir, "/.fs-restart-",
+	    mvwm_strdup(CatString3(mvwm_userdir, "/.fs-restart-",
 		getenv("HOSTDISPLAY")));
 	if (!state_filename && Restarting) {
 		state_filename = restart_state_filename;

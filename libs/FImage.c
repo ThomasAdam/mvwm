@@ -84,7 +84,7 @@ FShmSafeCreateImage(Display *dpy, FImage * fim, Visual * visual,
 	if (!XShmSupport) {
 		return;
 	}
-	fim->shminfo = xcalloc(1, sizeof(FShmSegmentInfo));
+	fim->shminfo = mvwm_calloc(1, sizeof(FShmSegmentInfo));
 	if (!(fim->im =
 		FShmCreateImage(dpy, visual, depth, format, NULL,
 		    fim->shminfo, width, height))) {
@@ -154,7 +154,7 @@ FCreateFImage(Display *dpy, Visual * visual, unsigned int depth, int format,
 
 	FShmInit(dpy);
 
-	fim = xmalloc(sizeof(FImage));
+	fim = mvwm_malloc(sizeof(FImage));
 	fim->im = NULL;
 	fim->shminfo = NULL;
 
@@ -169,7 +169,7 @@ FCreateFImage(Display *dpy, Visual * visual, unsigned int depth, int format,
 			    height, Pdepth > 16 ? 32 : (Pdepth > 8 ? 16 : 8),
 			    0))) {
 			fim->im->data =
-			    xmalloc(fim->im->bytes_per_line * height);
+			    mvwm_malloc(fim->im->bytes_per_line * height);
 		} else {
 			free(fim);
 		}
@@ -187,7 +187,7 @@ FGetFImage(Display *dpy, Drawable d, Visual * visual,
 
 	FShmInit(dpy);
 
-	fim = xmalloc(sizeof(FImage));
+	fim = mvwm_malloc(sizeof(FImage));
 	fim->im = NULL;
 	fim->shminfo = NULL;
 

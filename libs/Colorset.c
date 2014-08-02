@@ -83,7 +83,7 @@ AllocColorset(int n)
 	/*
 	 * increment n to get the required array size, get a new array
 	 */
-	Colorset = xrealloc((void *) Colorset, ++n, sizeof(colorset_t));
+	Colorset = mvwm_realloc((void *) Colorset, ++n, sizeof(colorset_t));
 
 	/*
 	 * zero out colorset 0

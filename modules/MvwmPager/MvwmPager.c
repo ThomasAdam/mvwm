@@ -259,7 +259,7 @@ main(int argc, char **argv)
 				    (*s != '-' || s != argv[opt_num]
 					|| *(s + 1) == 0)) {
 					free(MyName);
-					MyName = xstrdup(argv[opt_num]);
+					MyName = mvwm_strdup(argv[opt_num]);
 					opt_num++;
 					break;
 				}
@@ -288,7 +288,7 @@ main(int argc, char **argv)
 	}
 	ndesks = desk2 - desk1 + 1;
 
-	Desks = xcalloc(1, ndesks * sizeof(DeskInfo));
+	Desks = mvwm_calloc(1, ndesks * sizeof(DeskInfo));
 	for (i = 0; i < ndesks; i++) {
 		sprintf(line, "Desk %d", i + desk1);
 		CopyString(&Desks[i].label, line);
@@ -352,28 +352,28 @@ main(int argc, char **argv)
 	}
 
 	if (PagerFore == NULL)
-		PagerFore = xstrdup("black");
+		PagerFore = mvwm_strdup("black");
 
 	if (PagerBack == NULL)
-		PagerBack = xstrdup("white");
+		PagerBack = mvwm_strdup("white");
 
 	if (HilightC == NULL)
-		HilightC = xstrdup(PagerFore);
+		HilightC = mvwm_strdup(PagerFore);
 
 	if (WindowLabelFormat == NULL)
-		WindowLabelFormat = xstrdup("%i");
+		WindowLabelFormat = mvwm_strdup("%i");
 
 	if ((HilightC == NULL) && (HilightPixmap == NULL))
 		HilightDesks = 0;
 
 	if (BalloonBorderColor == NULL)
-		BalloonBorderColor = xstrdup("black");
+		BalloonBorderColor = mvwm_strdup("black");
 
 	if (BalloonTypeString == NULL)
-		BalloonTypeString = xstrdup("%i");
+		BalloonTypeString = mvwm_strdup("%i");
 
 	if (BalloonFormatString == NULL)
-		BalloonFormatString = xstrdup("%i");
+		BalloonFormatString = mvwm_strdup("%i");
 
 	/*
 	 * open a pager window
@@ -669,7 +669,7 @@ list_add(unsigned long *body)
 		t = t->next;
 		i++;
 	}
-	*prev = xcalloc(1, sizeof(PagerWindow));
+	*prev = mvwm_calloc(1, sizeof(PagerWindow));
 	handle_config_win_package(*prev, cfgpacket);
 	AddNewWindow(*prev);
 
@@ -1239,7 +1239,7 @@ list_restack(unsigned long *body, unsigned long length)
 	Window         *wins;
 	int             i, j, d;
 
-	wins = xmalloc(length * sizeof(Window));
+	wins = mvwm_malloc(length * sizeof(Window));
 	/*
 	 * first restack in the icon view
 	 */
@@ -1593,12 +1593,12 @@ ParseOptions(void)
 			continue;
 		tline2 = GetNextToken(tline2, &arg1);
 		if (!arg1) {
-			arg1 = xmalloc(1);
+			arg1 = mvwm_malloc(1);
 			arg1[0] = 0;
 		}
 		tline2 = GetNextToken(tline2, &arg2);
 		if (!arg2) {
-			arg2 = xmalloc(1);
+			arg2 = mvwm_malloc(1);
 			arg2[0] = 0;
 		}
 
@@ -2032,7 +2032,7 @@ NewPagerStringItem(PagerStringList * last, int desk)
 {
 	PagerStringList *newitem;
 
-	newitem = xcalloc(1, sizeof(PagerStringList));
+	newitem = mvwm_calloc(1, sizeof(PagerStringList));
 	last->next = newitem;
 	newitem->colorset = -1;
 	newitem->highcolorset = -1;

@@ -158,7 +158,7 @@ FScreenInit(Display *dpy)
 	m->coord.y = 0;
 	m->coord.w = DisplayWidth(disp, DefaultScreen(disp));
 	m->coord.h = DisplayHeight(disp, DefaultScreen(disp));
-	m->name = xstrdup("global");
+	m->name = mvwm_strdup("global");
 	TAILQ_INSERT_HEAD(&monitor_q, m, entry);
 
 	if (!is_randr_present)
@@ -187,7 +187,7 @@ FScreenInit(Display *dpy)
 			m->coord.y = crtc->y;
 			m->coord.w = crtc->width;
 			m->coord.h = crtc->height;
-			m->name = xstrdup(oinfo->name);
+			m->name = mvwm_strdup(oinfo->name);
 
 			TAILQ_INSERT_TAIL(&monitor_q, m, entry);
 
@@ -209,7 +209,7 @@ init_monitor_contents(void)
 		if (monitor_should_ignore_global(m))
 			continue;
 
-		m->Desktops = xcalloc(1, sizeof(DesktopsInfo));
+		m->Desktops = mvwm_calloc(1, sizeof(DesktopsInfo));
 		m->Desktops->name = NULL;
 		m->Desktops->desk = 0;	/* not desk 0 */
 		m->Desktops->ewmh_dyn_working_area.x =
@@ -586,11 +586,11 @@ FScreenParseGeometryWithScreen(char *parsestring, int *x_return,
 	 * * question!
 	 */
 	if (strchr(parsestring, '@') == NULL) {
-		copy = xstrdup(parsestring);
+		copy = mvwm_strdup(parsestring);
 		goto parse_geometry;
 	}
 
-	copy = xstrdup(parsestring);
+	copy = mvwm_strdup(parsestring);
 	copy = strsep(&parsestring, "@");
 	*screen_return = parsestring;
 	geom_str = strsep(&copy, "@");

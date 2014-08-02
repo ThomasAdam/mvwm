@@ -50,7 +50,7 @@ alloc_string(char *string)
 	 * TA:  FIXME!  xasprintf() - but also, this function should die!!!
 	 */
 	int             len = strlen(string);
-	char           *ret = xmalloc((len + 1) * sizeof(char));
+	char           *ret = mvwm_malloc((len + 1) * sizeof(char));
 	strcpy(ret, string);
 	return ret;
 }
@@ -148,7 +148,7 @@ allocate_managers(int num)
 	}
 
 	globals.num_managers = num;
-	globals.managers = xmalloc(num * sizeof(WinManager));
+	globals.managers = mvwm_malloc(num * sizeof(WinManager));
 
 	for (i = 0; i < num; i++) {
 		init_win_manager(i);

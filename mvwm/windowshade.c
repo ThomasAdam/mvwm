@@ -220,7 +220,7 @@ CMD_WindowShadeAnimate(F_CMD_ARGS)
 	/*
 	 * TA:  FIXME!  xasprintf()
 	 */
-	buf = xmalloc(strlen(action) + 32);
+	buf = mvwm_malloc(strlen(action) + 32);
 	sprintf(buf, "* WindowShadeSteps %s", action);
 	action = buf;
 	CMD_Style(F_PASS_ARGS);

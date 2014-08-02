@@ -111,7 +111,7 @@ charmap_table_to_string(int mask, charmap_t * table)
 
 	c[1] = 0;
 	modmask = mask;
-	allmods = xmalloc(sizeof(table->value) * 8 + 1);
+	allmods = mvwm_malloc(sizeof(table->value) * 8 + 1);
 	*allmods = 0;
 	for (; table->key != 0; table++) {
 		c[0] = toupper(table->key);

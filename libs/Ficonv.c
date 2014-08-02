@@ -138,7 +138,7 @@ set_default_iconv_charsets(FlocaleCharset * fc)
 					(FLCIconvUtf8Charset, i),
 					FLC_GET_LOCALE_CHARSET(fc, j))) {
 					FLC_SET_ICONV_TRANSLIT_CHARSET(fc,
-					    xstrdup(translit_csname
+					    mvwm_strdup(translit_csname
 						(FLC_GET_LOCALE_CHARSET(fc,
 							j))));
 				} else {
@@ -182,7 +182,7 @@ set_iconv_charset_index(FlocaleCharset * fc)
 				(FLCIconvUtf8Charset),
 				FLC_GET_LOCALE_CHARSET(fc, i))) {
 				FLC_SET_ICONV_TRANSLIT_CHARSET(fc,
-				    xstrdup(translit_csname
+				    mvwm_strdup(translit_csname
 					(FLC_GET_LOCALE_CHARSET(fc, i))));
 			} else {
 				FLC_SET_ICONV_TRANSLIT_CHARSET(fc,
@@ -247,7 +247,7 @@ convert_charsets(const char *in_charset, const char *out_charset,
 	outbuf_size = len + 1;
 	outbytes_remaining = outbuf_size - 1;
 	insize = len;
-	outp = dest = xmalloc(outbuf_size);
+	outp = dest = mvwm_malloc(outbuf_size);
 
 	inptr = in;
 
@@ -471,7 +471,7 @@ FiconvUtf8ToCharset(Display *dpy, FlocaleCharset * fc,
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		out = xmalloc(in_size + 1);
+		out = mvwm_malloc(in_size + 1);
 		strncpy(out, in, in_size);
 		out[in_size] = 0;
 	} else {
@@ -518,7 +518,7 @@ FiconvCharsetToUtf8(Display *dpy, FlocaleCharset * fc,
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		out = xmalloc(in_size + 1);
+		out = mvwm_malloc(in_size + 1);
 		strncpy(out, in, in_size);
 		out[in_size] = 0;
 	} else {

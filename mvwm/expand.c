@@ -424,7 +424,7 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 			/*
 			 * TA:  FIXME!  xasprintf()
 			 */
-			allocated_string = xmalloc(19 + strlen(ddn));
+			allocated_string = mvwm_malloc(19 + strlen(ddn));
 			sprintf(allocated_string, "%s %i", ddn, cs);
 			string = allocated_string;
 		}
@@ -843,7 +843,7 @@ expand_vars_extended(char *var_name, char *output, cond_rc_t *cond_rc,
 		len = strlen(string);
 	}
 	if (should_quote) {
-		quoted_string = xmalloc(len * 2 + 3);
+		quoted_string = mvwm_malloc(len * 2 + 3);
 		len = QuoteString(quoted_string, string) - quoted_string;
 		if (output) {
 			strcpy(output, quoted_string);
@@ -1048,7 +1048,7 @@ expand_vars(char *input, char *arguments[], Bool addto, Bool ismod,
 	 * Actually create expanded string
 	 */
 	i = 0;
-	out = xmalloc(l2 + 1);
+	out = mvwm_malloc(l2 + 1);
 	j = 0;
 	while (i < l) {
 		if (input[i] == '$' && (!ismod || !isalpha(input[i + 1]))) {

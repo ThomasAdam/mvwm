@@ -330,7 +330,7 @@ CreateFlagString(char *string, char **restptr)
 		/*
 		 * TA:  FIXME!  xasprintf()
 		 */
-		retval = xmalloc(length + 1);
+		retval = mvwm_malloc(length + 1);
 		strncpy(retval, start, length);
 		retval[length] = 0;
 
@@ -597,15 +597,15 @@ CreateConditionMask(char *flags, WindowConditionMask *mask)
 		} else {
 			struct name_condition *pp;
 			struct namelist *p;
-			char           *condp = xstrdup(cond);
+			char           *condp = mvwm_strdup(cond);
 
-			pp = xmalloc(sizeof *pp);
+			pp = mvwm_malloc(sizeof *pp);
 			pp->invert = (!on ? True : False);
 			pp->namelist = NULL;
 			pp->next = mask->name_condition;
 			mask->name_condition = pp;
 			for (;;) {
-				p = xmalloc(sizeof *p);
+				p = mvwm_malloc(sizeof *p);
 				p->name = condp;
 				p->next = pp->namelist;
 				pp->namelist = p;
@@ -1375,7 +1375,7 @@ CMD_All(F_CMD_ARGS)
 	for (t = Scr.MvwmRoot.next; t; t = t->next) {
 		num++;
 	}
-	g = xmalloc(num * sizeof(MvwmWindow *));
+	g = mvwm_malloc(num * sizeof(MvwmWindow *));
 	num = 0;
 	if (!use_stack) {
 		for (t = Scr.MvwmRoot.next; t; t = t->next) {
@@ -1664,7 +1664,7 @@ match_version(char *version, char *operator)
 	const int       v = ver(version);
 
 	if (mvwm_version < 0) {
-		char           *tmp = xstrdup(VERSION);
+		char           *tmp = mvwm_strdup(VERSION);
 		mvwm_version = ver(tmp);
 		free(tmp);
 	}

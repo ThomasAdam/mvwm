@@ -220,7 +220,7 @@ PLoadMvwmPictureFromPixmap(Display *dpy, Window win, char *name,
 {
 	MvwmPicture    *q;
 
-	q = xcalloc(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = name;
 	q->next = NULL;

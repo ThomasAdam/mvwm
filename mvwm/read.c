@@ -57,7 +57,7 @@ push_read_file(const char *file)
 		return 0;
 	}
 	prev_read_files[curr_read_depth++] = curr_read_file;
-	curr_read_file = xstrdup(file);
+	curr_read_file = mvwm_strdup(file);
 	if (curr_read_dir) {
 		free(curr_read_dir);
 	}
@@ -105,7 +105,7 @@ get_current_read_dir(void)
 		if (!dir_end) {
 			dir_end = curr_read_file;
 		}
-		curr_read_dir = xmalloc(dir_end - curr_read_file + 1);
+		curr_read_dir = mvwm_malloc(dir_end - curr_read_file + 1);
 		strncpy(curr_read_dir, curr_read_file,
 		    dir_end - curr_read_file);
 		curr_read_dir[dir_end - curr_read_file] = '\0';

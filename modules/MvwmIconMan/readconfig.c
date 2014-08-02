@@ -402,7 +402,7 @@ static int      JmpArgs = 0;
 static Function *
 parse_function(char **line, char *pstop_char)
 {
-	Function       *ftype = xmalloc(sizeof(Function));
+	Function       *ftype = mvwm_malloc(sizeof(Function));
 	char           *ptr, *name, *tok;
 	int             j, flag;
 	FunctionType   *builtin_functions_i;
@@ -697,7 +697,7 @@ ParseMouseEntry(char *tline)
 		    "Excess modifiers will be ignored.");
 	}
 
-	new = xcalloc(1, sizeof(Binding));
+	new = mvwm_calloc(1, sizeof(Binding));
 	new->type = BIND_BUTTONPRESS;
 	new->Button_Key = button;
 	new->Modifier = mods;
@@ -781,7 +781,7 @@ ParseKeyEntry(char *tline)
 				actionstring = keystring = NULL;
 			}
 			temp = new;
-			new = xcalloc(1, sizeof(Binding));
+			new = mvwm_calloc(1, sizeof(Binding));
 			new->type = BIND_KEYPRESS;
 			new->Button_Key = i;
 			new->key_name = keystring;
@@ -811,7 +811,7 @@ ParseSimpleEntry(char *tline)
 		return NULL;
 	}
 
-	new = xcalloc(1, sizeof(Binding));
+	new = mvwm_calloc(1, sizeof(Binding));
 	new->type = BIND_KEYPRESS;
 	new->key_name = "select";
 	new->Action = stripcpy(tline);
@@ -1107,7 +1107,7 @@ add_weighted_sort(WinManager *man, WeightedSort * weighted_sort)
 
 	if (man->weighted_sorts_len == man->weighted_sorts_size) {
 		man->weighted_sorts_size += 16;
-		man->weighted_sorts = xrealloc(
+		man->weighted_sorts = mvwm_realloc(
 		    (char *) man->weighted_sorts,
 		    man->weighted_sorts_size, sizeof(WeightedSort));
 	}
@@ -1626,7 +1626,7 @@ read_in_resources(void)
 				}
 				DoGetNextToken(p, &token, NULL, ",", NULL);
 				if (!token) {
-					token = xmalloc(1);
+					token = mvwm_malloc(1);
 					*token = 0;
 				}
 
@@ -1651,7 +1651,7 @@ read_in_resources(void)
 				}
 				DoGetNextToken(p, &token, NULL, ",", NULL);
 				if (!token) {
-					token = xmalloc(1);
+					token = mvwm_malloc(1);
 					*token = 0;
 				}
 
@@ -1916,7 +1916,7 @@ read_in_resources(void)
 				}
 				DoGetNextToken(p, &token, NULL, ",", NULL);
 				if (!token) {
-					token = xmalloc(1);
+					token = mvwm_malloc(1);
 					*token = 0;
 				}
 
@@ -1934,7 +1934,7 @@ read_in_resources(void)
 				}
 				DoGetNextToken(p, &token, NULL, ",", NULL);
 				if (!token) {
-					token = xmalloc(1);
+					token = mvwm_malloc(1);
 					*token = 0;
 				}
 
@@ -2217,7 +2217,7 @@ read_in_resources(void)
 				}
 				DoGetNextToken(p, &token, NULL, ",", NULL);
 				if (!token) {
-					token = xmalloc(1);
+					token = mvwm_malloc(1);
 					*token = 0;
 				}
 
