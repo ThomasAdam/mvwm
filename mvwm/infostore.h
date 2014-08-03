@@ -3,6 +3,8 @@
 #ifndef INFOSTORE_H
 #define INFOSTORE_H
 
+#include "libs/queue.h"
+
 /* ---------------------------- included header files ---------------------- */
 
 /* ---------------------------- global definitions ------------------------- */
@@ -11,13 +13,15 @@
 
 /* ---------------------------- type definitions --------------------------- */
 
-typedef struct MetaInfo
-{
+struct meta_info {
 	char           *key;
 	char           *value;
 
-	struct MetaInfo *next;
-} MetaInfo;
+	TAILQ_ENTRY(meta_info) entry;
+};
+
+TAILQ_HEAD(meta_infos, meta_info);
+struct meta_infos meta_info_q;
 
 /* ---------------------------- forward declarations ----------------------- */
 
@@ -25,9 +29,9 @@ typedef struct MetaInfo
 
 /* ---------------------------- interface functions ------------------------ */
 
-MetaInfo       *new_metainfo(void);
-void            insert_metainfo(char *, char *);
-char           *get_metainfo_value(const char *);
-void            print_infostore(void);
+struct meta_info	*new_metainfo(void);
+void			 insert_metainfo(char *, char *);
+char			*get_metainfo_value(const char *);
+void			 print_infostore(void);
 
 #endif /* INFOSTORE_H */

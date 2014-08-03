@@ -37,8 +37,6 @@
 
 /* ---------------------------- local types -------------------------------- */
 
-static MetaInfo *mi_store;
-
 /* ---------------------------- forward declarations ----------------------- */
 
 static void     delete_metainfo(const char *);
@@ -50,10 +48,10 @@ static int      get_metainfo_length(void);
 
 /* ---------------------------- local functions ---------------------------- */
 
-MetaInfo       *
+struct meta_info *
 new_metainfo(void)
 {
-	MetaInfo       *mi;
+	struct meta_info       *mi;
 
 	mi = mvwm_calloc(1, sizeof *mi);
 
@@ -63,14 +61,14 @@ new_metainfo(void)
 void
 insert_metainfo(char *key, char *value)
 {
-	MetaInfo       *mi;
-	MetaInfo       *mi_new;
+	struct meta_info       *mi;
+	struct meta_info       *mi_new;
 
-	for (mi = mi_store; mi; mi = mi->next) {
+	TAILQ_FOREACH(mi, &meta_info_q, entry) {
 		if (StrEquals(mi->key, key)) {
 			/*
 			 * We already have an entry in the list with that key, so
-			 * * update the value of it only.
+			 * update the value of it only.
 			 */
 			free(mi->value);
 			CopyString(&mi->value, value);
@@ -86,68 +84,58 @@ insert_metainfo(char *key, char *value)
 	mi_new->key = key;
 	CopyString(&mi_new->value, value);
 
-	mi_new->next = mi_store;
-	mi_store = mi_new;
-
-	return;
+	if (TAILQ_EMPTY(&meta_info_q))
+		TAILQ_INSERT_HEAD(&meta_info_q, mi_new, entry);
+	else
+		TAILQ_INSERT_TAIL(&meta_info_q, mi_new, entry);
 }
 
 static void
 delete_metainfo(const char *key)
 {
-	MetaInfo       *mi_current, *mi_prev;
-	mi_prev = NULL;
+	struct meta_info       *mi;
 
-	for (mi_current = mi_store; mi_current != NULL;
-	    mi_prev = mi_current, mi_current = mi_current->next) {
-		if (StrEquals(mi_current->key, key)) {
-			if (mi_prev == NULL)
-				mi_store = mi_current->next;
-			else
-				mi_prev->next = mi_current->next;
-
-			free(mi_current->key);
-			free(mi_current->value);
-			free(mi_current);
+	TAILQ_FOREACH(mi, &meta_info_q, entry) {
+		if (StrEquals(mi->key, key)) {
+			TAILQ_REMOVE(&meta_info_q, mi, entry);
+			free(mi->key);
+			free(mi->value);
+			free(mi);
 
 			break;
 		}
 	}
-
-	return;
 }
 
 inline char    *
 get_metainfo_value(const char *key)
 {
-	MetaInfo       *mi_current;
+	struct meta_info       *mi;
 
-	for (mi_current = mi_store; mi_current; mi_current = mi_current->next) {
-		if (StrEquals(mi_current->key, key))
-			return mi_current->value;
+	TAILQ_FOREACH(mi, &meta_info_q, entry) {
+		if (StrEquals(mi->key, key))
+			return (mi->value);
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 static inline int
 get_metainfo_length(void)
 {
-	MetaInfo       *mi;
-	int             count;
+	struct meta_info       *mi;
+	int			count = 0;
 
-	count = 0;
-
-	for (mi = mi_store; mi; mi = mi->next)
+	TAILQ_FOREACH(mi, &meta_info_q, entry)
 		count++;
 
-	return count;
+	return (count);
 }
 
 void
 print_infostore(void)
 {
-	MetaInfo       *mi;
+	struct meta_info       *mi;
 
 	fprintf(stderr, "Current items in infostore (key, value):\n\n");
 
@@ -157,12 +145,8 @@ print_infostore(void)
 		return;
 	}
 
-	for (mi = mi_store; mi; mi = mi->next) {
+	TAILQ_FOREACH(mi, &meta_info_q, entry)
 		fprintf(stderr, "%s\t%s\n", mi->key, mi->value);
-	}
-
-	return;
-
 }
 
 /* ---------------------------- interface functions ------------------------ */
