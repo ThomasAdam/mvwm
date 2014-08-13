@@ -4,9 +4,8 @@ Note, the changes for the last STABLE release start with release
 -------------------------------------------------------------------
 Changes in release 2.6.6 (not released yet)
 
-* Released features:
+* New fvwm features:
 
-  - FvwmForm supports separator lines.
   - Support for Russian from Ivan Gayevskiy.
   - EnvMatch supports infostore variables.
   - The option "forget" to the Maximize command allows to
@@ -14,9 +13,14 @@ Changes in release 2.6.6 (not released yet)
   - Windows shaded to a corner (NW, NE, SW, SE) are reduced to a
     small square.
   - New option "!raise" to the WarpToWindow command.
-
   - The option "forget" to the Maximize command allows to
     unmaximize a window without changing its size and position.
+* New module features:
+
+  - FvwmForm supports separator lines.
+  - New FvwmIconMan options:
+      IconAndSelectButton
+      IconAndSelectColorset
 
 * Bug fixes:
 
@@ -38,6 +42,9 @@ Changes in release 2.6.6 (not released yet)
   - Windows sometimes did not get expose events (i.e. did not
     redraw properly) if they were uncovered by moving a window
     above them.  This has been fixed.
+  - FvwmConsole now causes much less network traffic.
+  - Suppress bogus events sent to the modules when a window is
+    resized with the mouse.
 
   - FvwmForm now honours a Xinerama screen specifier in its
     geometry.
