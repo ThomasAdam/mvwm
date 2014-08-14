@@ -49,7 +49,7 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
 
 * Separate desktops per monitor:
     - Does having pages *and* desks make sense anymore?
-        - Just go with pages, which can be named.
+        - Just go with desks, which can be named.
         - Only allow a linear arrangement; 3x3 for example makes no sense
           with multi-monitor setups.
 	- PanWindows per-monitor inhibit moving windows across screen
@@ -75,6 +75,10 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
         - Think about a common way of referring to pages/windows/etc -- much
           like with tmux's "-t session:window.pane" syntax, can we not do
           something similar here for referring to pages/windows?
+	- Handling of command options:
+		- Commands don't do their own parsing; instead, command tokens are
+		  parsed with getopt(), and a tree of key/values are built; that
+		  tree is passed in, and referenced arg_has()/arg_get(), etc.
 
 * Functions / Conditionals / Exec (PipeRead) / Etc.:
     - Context is powerful, but:
