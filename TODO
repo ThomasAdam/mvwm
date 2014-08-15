@@ -5,10 +5,8 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
     - Add xasprintf() to libs/safemalloc.[ch]
     - Audit xmalloc() use and consider xasprintf() wrapper
     - Look at current code warnings at compilation and fix
-    - Every sodding command in FVWM does its own string parsing!!!  Bad!
 
 * Code cleanup needed!
-    - Look at EWMH support.  Remove legacy KDE/GNOME crap.
     - Don't use typedefs for structs:
         - Opaqueness is not useful here!
             - 'struct foo' versus 'foo_t' or 'Foo' as the type.
@@ -42,16 +40,13 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
 * Despite this being GNU licenced (for now), I'd like to see KNF from
   OpenBSD's style(9) guide being applied.  Might be possible to script
   using indent(1).  Some examples of an indent.pro might exist.
+	- STARTED!  Best to happen as code is changed/removed, etc.
 
 * liblfg as a configuration file framework?
     - http://liblcfg.carnivore.it/
     - It would stop every command doing its own string parsing!
 
 * Separate desktops per monitor:
-    - Does having pages *and* desks make sense anymore?
-        - Just go with desks, which can be named.
-        - Only allow a linear arrangement; 3x3 for example makes no sense
-          with multi-monitor setups.
 	- PanWindows per-monitor inhibit moving windows across screen
 	  boundaries.  Have a key-binding to stop panning?
 
@@ -83,14 +78,25 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
 * Functions / Conditionals / Exec (PipeRead) / Etc.:
     - Context is powerful, but:
         - Next/Prev/etc., are all very scripting-like.  Do we just want hook
-          support?
+          support?  Is it worth expanding FvwmEvent to do this?
 
 * Modules:
     - The module interface (FVWM <-> Module) is a mess; consider DBUS?  Or
       imsg?
-    - Use libevent to replace the hand-rolled (and often broken) select/poll mechanism.
+    - Use libevent to replace the hand-rolled (and often broken) select/poll
+	  mechanism.
     - Rewrite MvwmConsole not to suck!
     - What about third-party scripting languages?  How do we handle that
       without requiring linking against the specific language in question?
     - FvwmPager with per-monitor broken:  the module needs to be
       screen-aware.
+	- Amalgamation of module(s) is a possibility:
+		- Functionality for things like buttons, taskbars, iconman, pager,
+		  etc., can be replaced with a single module:
+			- Combines all the functionality of the obsolete modules.
+			- Uses colorsets consistently, to allow configuring all GUI
+			  elements.
+			- Can be reconfigured at runtime through user interactions (e.g.
+			  dragging elements to a different position on the window)
+			- Initially support the older module interface.
+			- Can replace all the old modules with symlinks.
