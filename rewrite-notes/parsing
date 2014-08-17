@@ -524,6 +524,8 @@ Definitions that need defining for the below
     * COMMAND (builtin; can also be one of FUNCNAME)
     * FUNCNAME (StartFunction | ExitFunction | etc, plus user-defined)
     * SHELL
+    * KEYNAME
+    * STYLEOPTION (massive list of style options!!!)
 
  * AddButtonStyle BUTTON [STATE] [STYLE] [FLAG]
     BUTTON: INT:o- "All" | "Left" | "Right"
@@ -760,32 +762,37 @@ Definitions that need defining for the below
 
  * ExecUseShell SHELL
 
- * FakeClick
-   !!!
+ * FakeClick COMMAND VALUE [, COMMAND VALUE]
+    COMMAND: (KEYWORD, VALUE)
+    KEYWORD: "press" | "release" | "modifiers" | "wait" | DEPTH
+    VALUE: ("1" | "2" | "3" | "4" | "5" | "Mod1" | "Mod2" | "Mod3" |
+        "Mod4" | "Mod5") | ("6" | "7" | "8" | "Shift" | "Lock" | "Control")
+    DEPTH: ("depth" | "0" | "1" | "2" | "3" | INT)
 
- * FakeKeypress
-   !!!
+ * FakeKeypress COMMAND VALUE [, COMMAND VALUE]
+    KEYWORD: "press" | "release" | "modifiers" | "wait" | DEPTH
+    VALUE: KEYNAME
 
- * FlipFocus
-   !!!
+    DEPTH: ("depth" | "0" | "1" | "2" | "3" | INT)
 
- * Focus
-   !!!
+* FlipFocus [TOKEN]
+    TOKEN: "nowarp"
 
- * FocusStyle
-   !!!
+ * Focus [TOKEN]
+    TOKEN: "nowarp"
 
- * Function
-   !!!
+ * FocusStyle [STYLEOPTION] [, STYLEOPTION]
+
+ * Function [FUNCNAME]
 
  * GlobalOpts
-   !!!
+    (* OBSOLETE; ignoring! *)
 
  * GnomeButton
-   !!!
+    (* REMOVED IN MVWM ALREADY; ignoring! *)
 
  * GnomeShowDesks
-   !!!
+   (* REMOVED IN MVWM ALREADY; ignoring! *)
 
  * GotoDesk
    !!!
