@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: ButtonState.xml,v 1.3 2007/06/16 12:38:45 griph Exp $ -->
+<!-- $Id: ButtonState.xml,v 1.3.6.1 2014/08/17 12:45:40 tadam Exp $ -->
 
 <section id='ButtonState'>
 <title>ButtonState</title>
@@ -29,10 +29,10 @@ The
 <emphasis remap='B'>ButtonState</emphasis>
 command controls which states of the window titles and title
 buttons are used.  The default is to use all four states:
-"ActiveUp>",
-"ActiveDown>",
-"InactiveUp>" and
-"InactiveDown>" (see
+"ActiveUp",
+"ActiveDown",
+"InactiveUp" and
+"InactiveDown" (see
 <fvwmref cmd="ButtonStyle"/> and
 <fvwmref cmd="TitleStyle"/>
 commands).  The
