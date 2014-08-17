@@ -507,14 +507,32 @@ Step 2 (__run_complex_function_items())
 Parsing needs of the builtin commands
 -------------------------------------
 
- * AddButtonStyle
-   !!!
+ * AddButtonStyle BUTTON [STATE] [STYLE] [FLAG]
+    BUTTON: INT:o- "All" | "Left" | "Right"
+    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
+        ACTIVE | "Inactive" | TOGGLED | "AllActive" | "AllInactive" |
+        "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
+        "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
+    ACTIVE: "Active" - implies FOCUSED_WINDOW
+    TOGGLED: "Toggled" - inverts the meaning.
+    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
 
- * AddTitleStyle
-   !!!
+    (XXX: ButtonStyle relationships here...)
 
- * AddToDecor
-   !!!
+ * AddTitleStyle [STATE] [STYLE] [FLAG]
+    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
+        ACTIVE | "Inactive" | "toggled" | "AllActive" | "AllInactive"
+
+    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
+    ACTIVE: "Active" - implies FOCUSED_WINDOW
+    TOGGLED: "Toggled" - inverts the meaning.
+
+    (XXX: TitleStyle/ButtonStyle relationships here...)
+
+ * AddToDecor DECOR
+    DECOR: TOKEN
+
+    (XXX: Other commands/styles affect this; document below first!)
 
  * AddToFunc
    !!!
@@ -530,23 +548,33 @@ Parsing needs of the builtin commands
      WINDOWNAMEPATTERN: TOKEN
      KEYWORD: !!!
      COMMAND: RESTOFLINE
- * AnimatedMove
-   !!!
+ * AnimatedMove MOVEARGS MOVEARGS [KEYWORD]
+    MOVEARGS: !!!
+    KEYWORD: "Warp"
 
- * Asterisk
-   !!!
+ * Asterisk [MODULE_LINE]
 
  * Beep
-   !!!
 
- * BorderStyle
-   !!!
+ * BorderStyle STATE [STYLE] [FLAG]
+    STATE: "Active" | "Inactive"
+    STYLE: "TiledPixmap" | "Colorset"
+    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
+    KEYWORD: "HiddenHandles" | "NoInset" | "Raised" | "Sunk" | "Flat" |
+        "Simple"
 
- * Break
-   !!!
+ * Break [LEVELS]
+    LEVELS: INT
 
- * BugOpts
-   !!!
+ * BugOpts OPTION
+    OPTION: KEYWORD [VALUE] ...
+    KEYWORD: "FlickingMoveWorkaround" | "MixedVisualWorkaround" |
+        "ModalityIsEvil" | "RaiseOverNativeWindows" | "RaiseOverUnmanaged" |
+        "FlickingQtDialogsWorkaround" | QtDragnDropWorkaround" |
+        "EWMHIconicStateWorkaround" | "DisplayNewWindowNames" |
+        "ExplainWindowPlacement" | "DebugCRMotionMethod" |
+        "TransliterateUtf8"
+    VALUE: "True" | "False" | 0 | 1
 
  * BusyCursor
    !!!
