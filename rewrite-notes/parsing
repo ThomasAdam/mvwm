@@ -576,29 +576,53 @@ Parsing needs of the builtin commands
         "TransliterateUtf8"
     VALUE: "True" | "False" | 0 | 1
 
- * BusyCursor
-   !!!
+ * BusyCursor OPTION [,OPTION]
+    OPTION: KEYWORD VALUE ...
+    KEYWORD: "DynamicMenu" | "ModuleSynchronous" | "Read" | "Wait" | "*"
+    VALUE: "True" | "False" | 0 | 1
 
- * ButtonState
-   !!!
+ * ButtonState OPTION [,OPTION]
+    OPTION: KEYWORD [VALUE]
+    KEYWORD: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown"
+    VALUE: "True" | "False" | "Yes" | "No"
 
- * ButtonStyle
-   !!!
+ * ButtonStyle BUTTON [STATE] [STYLE] [FLAGS]
+    BUTTON: 0-9 | "All" | "Left" | "Right" | "Reset"
+    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
+        ACTIVE | "Inactive" | TOGGLED | "AllActive" | "AllInactive" |
+        "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
+        "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
+    ACTIVE: "Active" - implies FOCUSED_WINDOW
+    TOGGLED: "Toggled" - inverts the meaning.
+    STYLE: "Simple" | "Default" | "Solid" | "Colorset" | "Vector" |
+        GRADIENT | "Pixmap" | AdjustedPixmap" | "ShrunkPixmap" |
+        "StretchedPixmap" | "TiledPixmap" | "MiniIcon"
+    GRADIENT: TYPE START-COLOUR END-COLOUR
+    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
+    KEYWORD: "Raised" | "Sunk" | "Flat" | "UseBorderStyle" |
+        "UseTitleStyle"
+        (XXX: "Raised, Sunk, and Flat" can only be used initially!!!")
 
- * ChangeDecor
-   !!!
+ * ChangeDecor [DECOR]
+    DECOR: TOKEN
 
  * ChangeMenuStyle MENUSTYLENAME MENUNAME
      MENUSTYLENAME: TOKEN
      MENUNAME: TOKEN
+
  * CleanupColorsets VOID
+
  * ClickTime INT:0+
    (stores the negative value during startup>
+
  * Close, Delete, Destroy VOID
    (work on context window)
+
  * ColorLimit
    (obsolete, has been removed)
+
  * ColormapFocus "FollowsMouse" | "FollowsFocus"
+
  * Colorset INT:o- OPTION [, OPTION] ...
      OPTION: KEYWORD [VALUE] ...
      KEYWORD: "fg" | "Fore" | "Foreground" | "bg" | "Back" | "Background" |
@@ -610,13 +634,27 @@ Parsing needs of the builtin commands
        "IconAlpha" | "Plain"
      VALUE: INT | COLOURNAME | IMAGEFILENAME | PERCENTAGE:0-100
    (memory usage depends on highest colorset number)
+
  * CopyMenuStyle MENUSTYLENAME MENUSTYLENAME
      MENUSTYLENAME: TOKEN
- * CursorMove
-   !!!
 
- * CursorStyle
-   !!!
+ * CursorMove HORIZONTAL[p] VERTICAL[p]
+    HORIZONTAL: INT
+    p: "p"
+
+ * CursorStyle CONTEXT | X11_NAME [OPTION]
+    CONTEXT: KEYWORD | X11_NAME
+    CONTEXT: "POSITION" | "TITLE" | "DEFAULT" | "SYS" | "MOVE" | "RESIZE" |
+        "WAIT" | "MENU" | "SELECT" | "DESTROY" | "TOP" | "RIGHT" |
+        "BOTTOM" | "LEFT" | "TOP_LEFT" | "TOP_RIGHT" | "BOTTOM_LEFT" |
+        "BOTTOM_RIGHT" | "TOP_EDGE" | "RIGHT_EDGE" | "BOTTOM_EDGE" |
+        "LEFT_EDGE" | "ROOT" | "STROKE" | "None" | "Tiny"
+    X11_NAME: "top_left_corner" | "top_left_arrow" | "hand2" | "fleur" |
+        "sizing" | "watch" | "crosshair" | "pirate" | "top_side" |
+        "bottom_side" | "left_side" | "top_right_corner" |
+        "bottom_left_corner" | "top_side" | "right_side" | "left_side" |
+        "left_ptr" | "plus"
+    OPTION: IMAGEFILE [INT] | "fg" | "bg"
 
  * DefaultColors
    !!!
