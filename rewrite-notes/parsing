@@ -507,6 +507,24 @@ Step 2 (__run_complex_function_items())
 Parsing needs of the builtin commands
 -------------------------------------
 
+Definitions that need defining for the below
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * FLAG
+    * INT
+    * BOOL
+    * DECOR
+    * FONTNAME
+    * IMAGEFILE
+    * GRADIENT
+    * MOVEARGS
+    * MODULECONFIG
+    * CONDITION
+    * COLOUR_FG
+    * COLOUR_BG
+    * COMMAND (builtin; can also be one of FUNCNAME)
+    * FUNCNAME (StartFunction | ExitFunction | etc, plus user-defined)
+    * SHELL
+
  * AddButtonStyle BUTTON [STATE] [STYLE] [FLAG]
     BUTTON: INT:o- "All" | "Left" | "Right"
     STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
@@ -656,94 +674,91 @@ Parsing needs of the builtin commands
         "left_ptr" | "plus"
     OPTION: IMAGEFILE [INT] | "fg" | "bg"
 
- * DefaultColors
-   !!!
+ * DefaultColors [COLOUR_FG] [COLOUR_BG]
+    <These need defining!>
 
- * DefaultColorset
-   !!!
+ * DefaultColorset [INT]
+    INT: INT | -1
 
- * DefaultFont
-   !!!
+ * DefaultFont [FONTNAME]
 
- * DefaultIcon
-   !!!
+ * DefaultIcon [IMAGEFILE]
 
- * DefaultLayers
-   !!!
+ * DefaultLayers INT INT INT
 
- * Deschedule
-   !!!
+ * Deschedule [INT]
 
  * Desk
-   !!!
+   (* OBSOLETED BY GOTODESK *)
 
- * DesktopName
-   !!!
+ * DesktopName INT DESKTOPNAME
+    DESKTOPNAME: TOKEN
 
- * DesktopSize
-   !!!
+ * DesktopSize HORIZONTALxVERTICAL
+    HORIZONTAL: INT
+    VERTICAL: INT
 
- * DestroyDecor
-   !!!
+ * DestroyDecor [RECREATE] DECOR
+    RECREATE: "recreate"
 
- * DestroyFunc
-   !!!
+ * DestroyFunc [FUNCNAME]
+    FUNCNAME: TOKEN
 
- * DestroyMenu
-   !!!
+ * DestroyMenu [RECREATE] MENUNAME
+    RECREATE: "recreate"
+    MENUNAME: STRING
 
  * DestroyMenuStyle MENUSTYLENAME
      MENUSTYLENAME: TOKEN
- * DestroyModuleConfig
-   !!!
 
- * DestroyStyle
-   !!!
+ * DestroyModuleConfig MODULECONFIG
 
- * DestroyWindowStyle
-   !!!
+ * DestroyStyle STYLENAME
+    STYLENAME: TOKEN | "*"
 
- * Direction
-   !!!
+ * DestroyWindowStyle VOID
 
- * Echo
-   !!!
+ * Direction [FROMPOINTER] DIRECTION [(CONDITIONS)] COMMAND
+    FROMPOINTER: "FromPointer"
+    DIRECTION: "North" | "NorthEast" | "East" | "SouthEast" | "South" |
+        "SouthWest" | "West" | "NorthWest" | "Center"
 
- * EchoFuncDefinition
-   !!!
+ * Echo TOKEN
 
- * EdgeCommand
-   !!!
+ * EchoFuncDefinition FUNCNAME
 
- * EdgeLeaveCommand
-   !!!
+ * EdgeCommand [EDGEDIRECTION [COMMAND]]
+    EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
+        "Right" | "East"
+
+ * EdgeLeaveCommand [EDGEDIRECTION [COMMAND]]
+    EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
+        "Right" | "East"
 
  * EdgeResistance
-   !!!
+   (* OBSOLETED BY CORRESPONDING STYLE COMMAND *)
 
- * EdgeScroll
-   !!!
+ * EdgeScroll HORIZONTAL[p] VERTICAL[p] [OPTION]
+    HORIZONTAL: INT
+    p: "p"
+    OPTION: "Wrap" | "wrapx" | "Wrapy"
 
- * EdgeThickness
-   !!!
 
- * Emulate
-   !!!
+ * EdgeThickness TOKEN
+    TOKEN: "0" | "1" | "2"
 
- * EscapeFunc
-   !!!
+ * Emulate TOKEN
+    TOKEN: "Fvwm" | "Mwm" | "Win"
 
- * EwmhBaseStruts
-   !!!
+ * EscapeFunc VOID
 
- * EwmhNumberOfDesktops
-   !!!
+ * EwmhBaseStruts INT INT INT INT
 
- * Exec
-   !!!
+ * EwmhNumberOfDesktops INT INT
 
- * ExecUseShell
-   !!!
+ * Exec COMMAND
+
+ * ExecUseShell SHELL
 
  * FakeClick
    !!!
