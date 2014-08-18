@@ -137,7 +137,6 @@ void SendText(int *fd, const char *message, unsigned long window)
 {
 	char *p, *buf;
 	unsigned int len;
-	size_t n;
 
 	if (!message)
 	{

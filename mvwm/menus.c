@@ -5264,15 +5264,13 @@ static mloop_ret_code_t __mloop_handle_action_without_mi(
 static void __mloop_exit_warp_back(MenuParameters *pmp)
 {
 	MenuRoot *tmrMi;
-	int tmi;
 
 	if (pmp->parent_menu && MR_SELECTED_ITEM(pmp->parent_menu))
 	{
 		warp_pointer_to_item(
 			pmp->parent_menu, MR_SELECTED_ITEM(pmp->parent_menu),
 			False);
-		tmi = find_entry(pmp, NULL, &tmrMi, None, -1, -1);
-		(void)tmi;
+		(void)find_entry(pmp, NULL, &tmrMi, None, -1, -1);
 		if (pmp->parent_menu != tmrMi && MR_XANIMATION(pmp->menu) == 0)
 		{
 			/* Warping didn't take us to the correct menu, i.e. the
