@@ -1,3 +1,5 @@
+/* -*-c-*- */
+
 /* Memory management routines...
  *
  * Permission to use, copy, modify, and distribute this software for any
