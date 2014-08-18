@@ -8,10 +8,10 @@ SUBDIRS = \
 	libs \
 	mvwm \
 	modules \
+	$(MVWM_PERLLIB) \
 	## TA:  Ignore things in bin/ for now.
 	#bin \
 	doc \
-	$(MVWM_PERLLIB) \
 	$(POSUB)
 
 ## ---------------------------------------------------------------------------
