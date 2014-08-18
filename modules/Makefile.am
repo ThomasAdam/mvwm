@@ -2,5 +2,5 @@
 
 SUBDIRS = \
 	MvwmAuto MvwmBacker MvwmButtons MvwmCommand \
-	MvwmConsole MvwmEvent \
+	MvwmConsole MvwmCpp MvwmEvent \
 	MvwmIconMan MvwmIdent MvwmPager MvwmPerl

@@ -1200,6 +1200,7 @@ AC_OUTPUT(
 	modules/MvwmCommand/MvwmCommand.1
 	modules/MvwmConsole/MvwmConsole.1
 	modules/MvwmConsole/MvwmConsoleC.pl.1
+	modules/MvwmCpp/MvwmCpp.1
 	modules/MvwmEvent/MvwmEvent.1
 	modules/MvwmIconMan/MvwmIconMan.1
 	modules/MvwmIdent/MvwmIdent.1
@@ -1217,6 +1218,7 @@ AC_OUTPUT(
 	modules/MvwmCommand/scripts/Makefile
 	modules/MvwmConsole/Makefile
 	modules/MvwmConsole/MvwmConsoleC.pl
+	modules/MvwmCpp/Makefile
 	modules/MvwmEvent/Makefile
 	modules/MvwmIconMan/Makefile
 	modules/MvwmIdent/Makefile
