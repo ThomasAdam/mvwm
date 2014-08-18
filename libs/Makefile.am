@@ -8,7 +8,7 @@ libmvwm_a_SOURCES = \
 	CombineChars.h Cursor.h Event.h FBidi.h FEvent.h FGettext.h FImage.h \
 	FRender.h FRenderInit.h FRenderInterface.h FScreen.h \
 	FShape.h FShm.h FTips.h Fcursor.h Fft.h FftInterface.h Ficonv.h \
-	Flocale.h FlocaleCharset.h Fpng.h Fsvg.h Grab.h \
+	Flocale.h FlocaleCharset.h Fpng.h Grab.h \
 	Graphics.h Module.h Parse.h Picture.h PictureBase.h \
 	PictureDitherMatrice.h PictureGraphics.h PictureImageLoader.h \
 	PictureUtils.h Rectangles.h Strings.h System.h Target.h WinMagic.h \
