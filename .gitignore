@@ -16,3 +16,4 @@ configure
 aclocal*
 autom4te.cache/
 etc/
+mvwm/mvwm
