@@ -517,7 +517,7 @@ XColor *AllocLinearGradient(
 	/* blue part and step width */
 	b = from.blue;
 	db = (float)(to.blue - from.blue);
-	xcs = mvwm_callow(1, sizeof(XColor) * npixels);
+	xcs = mvwm_calloc(1, sizeof(XColor) * npixels);
 	c.flags = DoRed | DoGreen | DoBlue;
 	for (i = (skip_first_color) ? 1 : 0; i < npixels && div > 0; ++i)
 	{

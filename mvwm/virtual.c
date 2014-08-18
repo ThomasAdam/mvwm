@@ -2411,7 +2411,7 @@ void CMD_DesktopName(F_CMD_ARGS)
 			if (d == NULL)
 			{
 				/* add it at the end */
-				*prev = mvwm_callow(1, sizeof(DesktopsInfo));
+				*prev = mvwm_calloc(1, sizeof(DesktopsInfo));
 				(*prev)->desk = desk;
 				if (action != NULL && *action && *action != '\n')
 				{
@@ -2421,7 +2421,7 @@ void CMD_DesktopName(F_CMD_ARGS)
 			else
 			{
 				/* instert it */
-				new = mvwm_callow(1, sizeof(DesktopsInfo));
+				new = mvwm_calloc(1, sizeof(DesktopsInfo));
 				new->desk = desk;
 				if (action != NULL && *action && *action != '\n')
 				{

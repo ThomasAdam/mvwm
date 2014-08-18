@@ -1241,7 +1241,7 @@ static void finish_ct_init(
 		free(env);
 		if (Pdepth <= 8)
 		{
-			Pac = mvwm_callow((1 << Pdepth), sizeof(PColor));
+			Pac = mvwm_calloc((1 << Pdepth), sizeof(PColor));
 		}
 	}
 
@@ -1955,7 +1955,7 @@ PictureImageColorAllocator *PictureOpenImageColorAllocator(
 	    ((PUseDynamicColors && Pct) || no_limit))
 	{
 		int s =  1 << Pdepth;
-		pica->pixels_table = mvwm_callow(s, sizeof(unsigned long));
+		pica->pixels_table = mvwm_calloc(s, sizeof(unsigned long));
 		pica->pixels_table_size = s;
 		do_save_pixels = True;
 	}

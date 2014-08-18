@@ -203,7 +203,7 @@ init_monitor_contents(void)
 		if (monitor_should_ignore_global(m))
 			continue;
 
-		m->Desktops = mvwm_callow(1, sizeof(DesktopsInfo));
+		m->Desktops = mvwm_calloc(1, sizeof(DesktopsInfo));
 		m->Desktops->name = NULL;
 		m->Desktops->desk = 0; /* not desk 0 */
 		m->Desktops->ewmh_dyn_working_area.x =

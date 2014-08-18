@@ -98,7 +98,7 @@ const exec_context_t *exc_create_null_context(void)
 	int i;
 #endif
 
-	exc = mvwm_callow(1, sizeof(exec_context_t));
+	exc = mvwm_calloc(1, sizeof(exec_context_t));
 #ifdef DEBUG_EXECCONTEXT
 fprintf(stderr, "xxx+0 ");
 for(i=0;i<nx;i++)fprintf(stderr,"  ");

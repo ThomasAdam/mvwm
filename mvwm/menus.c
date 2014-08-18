@@ -2049,7 +2049,7 @@ static MenuRoot *copy_menu_root(MenuRoot *mr)
 		return NULL;
 	}
 	tmp = mvwm_malloc(sizeof(*tmp));
-	tmp->d = mvwm_callow(1, sizeof(MenuRootDynamic));
+	tmp->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 	tmp->s = mr->s;
 
 	MR_COPIES(mr)++;
@@ -2112,7 +2112,7 @@ static MenuRoot *clone_menu(MenuRoot *mr)
 	MenuRoot *new_mr;
 
 	new_mr = mvwm_malloc(sizeof *new_mr);
-	new_mr->d = mvwm_callow(1, sizeof(MenuRootDynamic));
+	new_mr->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 	clone_menu_root_static(new_mr, mr);
 
 	return new_mr;
@@ -6857,8 +6857,8 @@ MenuRoot *NewMenuRoot(char *name)
 	string_context_t ctx;
 
 	mr = mvwm_malloc(sizeof *mr);
-	mr->s = mvwm_callow(1, sizeof(MenuRootStatic));
-	mr->d = mvwm_callow(1, sizeof(MenuRootDynamic));
+	mr->s = mvwm_calloc(1, sizeof(MenuRootStatic));
+	mr->d = mvwm_calloc(1, sizeof(MenuRootDynamic));
 
 	MR_NEXT_MENU(mr) = Menus.all;
 	MR_NAME(mr) = mvwm_strdup(name);

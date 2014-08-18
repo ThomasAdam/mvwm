@@ -38,7 +38,7 @@ mvwm_malloc(size_t length)
 }
 
 void *
-mvwm_callow(size_t num, size_t length)
+mvwm_calloc(size_t num, size_t length)
 {
 	void	*ptr;
 

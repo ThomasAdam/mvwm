@@ -830,7 +830,7 @@ void FlocaleRotateDrawString(
 	rotated_len = (rotated_w - 1) / 8 + 1;
 
 	/* reserve memory for the rotated image */
-	rotated_data = mvwm_callow(rotated_h * rotated_len, 1);
+	rotated_data = mvwm_calloc(rotated_h * rotated_len, 1);
 
 	/* create the rotated X image */
 	if ((rotated_image = XCreateImage(
@@ -1096,7 +1096,7 @@ FlocaleFont *FlocaleGetFftFont(
 		}
 		return NULL;
 	}
-	flf = mvwm_callow(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	memset(flf, '\0', sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fftf = *fftf;
@@ -1180,7 +1180,7 @@ FlocaleFont *FlocaleGetFontSet(
 		XFreeStringList(ml);
 	}
 
-	flf = mvwm_callow(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fontset = fontset;
 	FlocaleCharsetSetFlocaleCharset(dpy, flf, hints, encoding, module);
@@ -1244,7 +1244,7 @@ FlocaleFont *FlocaleGetFont(
 		return NULL;
 	}
 
-	flf = mvwm_callow(1, sizeof(FlocaleFont));
+	flf = mvwm_calloc(1, sizeof(FlocaleFont));
 	flf->count = 1;
 	flf->fontset = None;
 	flf->fftf.fftfont = NULL;
@@ -2295,7 +2295,7 @@ int FlocaleGetMinOffset(
 
 void FlocaleAllocateWinString(FlocaleWinString **pfws)
 {
-	*pfws = mvwm_callow(1, sizeof(FlocaleWinString));
+	*pfws = mvwm_calloc(1, sizeof(FlocaleWinString));
 }
 
 /*

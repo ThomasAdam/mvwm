@@ -133,7 +133,7 @@ static void schedule(
 		return;
 	}
 	/* create the new object */
-	new_obj = mvwm_callow(1, sizeof(sq_object_type));
+	new_obj = mvwm_calloc(1, sizeof(sq_object_type));
 	new_obj->window = window;
 	new_obj->command = mvwm_strdup(command);
 	new_obj->time_to_execute = time_to_execute;

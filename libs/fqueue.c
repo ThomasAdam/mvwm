@@ -195,7 +195,7 @@ void fqueue_add_at_front(
 {
 	fqueue_record *rec;
 
-	rec = mvwm_callow(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	rec->next = fq->first;
 	if (fq->lock_level > 0)
@@ -213,7 +213,7 @@ void fqueue_add_at_end(
 {
 	fqueue_record *rec;
 
-	rec = mvwm_callow(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0)
 	{
@@ -241,7 +241,7 @@ void fqueue_add_inside(
 	fqueue_record *p;
 	fqueue_record *t;
 
-	rec = mvwm_callow(1, sizeof *rec);
+	rec = mvwm_calloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0)
 	{

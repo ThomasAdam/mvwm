@@ -475,7 +475,7 @@ ftips_config *FTipsNewConfig(void)
 {
 	ftips_config *fc;
 
-	fc = mvwm_callow(1, sizeof(ftips_config));
+	fc = mvwm_calloc(1, sizeof(ftips_config));
 
 	/* use colorset 0 as default */
 	fc->border_width = FTIPS_DEFAULT_BORDER_WIDTH;

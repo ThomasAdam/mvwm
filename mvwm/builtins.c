@@ -356,7 +356,7 @@ static char *ReadTitleButton(
 				{
 					tail = tail->next;
 				}
-				tail->next = mvwm_callow(1, sizeof(DecorFace));
+				tail->next = mvwm_calloc(1, sizeof(DecorFace));
 				DFS_FACE_TYPE(tail->next->style) =
 					SimpleButton;
 				tail->next->next = NULL;
@@ -554,7 +554,7 @@ static char *ReadMultiPixmapDecor(char *s, DecorFace *df)
 	MvwmPictureAttributes fpa;
 
 	df->style.face_type = MultiPixmap;
-	df->u.mp.pixmaps = pm = mvwm_callow(TBMP_NUM_PIXMAPS, sizeof(MvwmPicture*));
+	df->u.mp.pixmaps = pm = mvwm_calloc(TBMP_NUM_PIXMAPS, sizeof(MvwmPicture*));
 	df->u.mp.acs = acs = mvwm_malloc(TBMP_NUM_PIXMAPS * sizeof(MvwmAcs));
 	df->u.mp.pixels = pixels = mvwm_malloc(TBMP_NUM_PIXMAPS * sizeof(Pixel));
 	for(i=0; i < TBMP_NUM_PIXMAPS; i++)

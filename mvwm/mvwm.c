@@ -866,7 +866,7 @@ static void LoadDefaultLeftButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 22;
 		v->y[0] = 39;
 		v->c[0] = 1;
@@ -887,7 +887,7 @@ static void LoadDefaultLeftButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 32;
 		v->y[0] = 45;
 		v->x[1] = 68;
@@ -907,7 +907,7 @@ static void LoadDefaultLeftButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 49;
 		v->y[0] = 49;
 		v->c[0] = 1;
@@ -928,7 +928,7 @@ static void LoadDefaultLeftButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 32;
 		v->y[0] = 45;
 		v->c[0] = 1;
@@ -976,7 +976,7 @@ static void LoadDefaultRightButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 25;
 		v->y[0] = 25;
 		v->c[0] = 1;
@@ -997,7 +997,7 @@ static void LoadDefaultRightButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 39;
 		v->y[0] = 39;
 		v->c[0] = 1;
@@ -1018,7 +1018,7 @@ static void LoadDefaultRightButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 49;
 		v->y[0] = 49;
 		v->c[0] = 1;
@@ -1039,7 +1039,7 @@ static void LoadDefaultRightButton(DecorFace *df, int i)
 		v->y = mvwm_malloc(sizeof(char) * v->num);
 		v->xoff = mvwm_malloc(sizeof(char) * v->num);
 		v->yoff = mvwm_malloc(sizeof(char) * v->num);
-		v->c = mvwm_callow(v->num, sizeof(char));
+		v->c = mvwm_calloc(v->num, sizeof(char));
 		v->x[0] = 36;
 		v->y[0] = 36;
 		v->c[0] = 1;

@@ -294,7 +294,7 @@ int main(int argc, char **argv)
     }
   ndesks = desk2 - desk1 + 1;
 
-  Desks = mvwm_callow(1, ndesks*sizeof(DeskInfo));
+  Desks = mvwm_calloc(1, ndesks*sizeof(DeskInfo));
   for(i=0;i<ndesks;i++)
     {
       sprintf(line,"Desk %d",i+desk1);
@@ -671,7 +671,7 @@ void list_add(unsigned long *body)
 		t = t->next;
 		i++;
 	}
-	*prev = mvwm_callow(1, sizeof(PagerWindow));
+	*prev = mvwm_calloc(1, sizeof(PagerWindow));
 	handle_config_win_package(*prev, cfgpacket);
 	AddNewWindow(*prev);
 
@@ -2217,7 +2217,7 @@ PagerStringList *NewPagerStringItem(PagerStringList *last, int desk)
 {
   PagerStringList *newitem;
 
-  newitem = mvwm_callow(1, sizeof(PagerStringList));
+  newitem = mvwm_calloc(1, sizeof(PagerStringList));
   last->next = newitem;
   newitem->colorset = -1;
   newitem->highcolorset = -1;

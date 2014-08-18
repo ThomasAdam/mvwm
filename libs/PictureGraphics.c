@@ -1145,7 +1145,7 @@ MvwmPicture *PGraphicsCreateStretchPicture(
 			dest_width, dest_height, alpha_gc);
 	}
 
-	q = mvwm_callow(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;
@@ -1193,7 +1193,7 @@ MvwmPicture *PGraphicsCreateTiledPicture(
 			dest_height, FRenderGetAlphaDepth(), alpha_gc);
 	}
 
-	q = mvwm_callow(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = NULL;
 	q->next = NULL;

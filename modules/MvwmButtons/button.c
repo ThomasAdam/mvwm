@@ -563,7 +563,7 @@ button_info *alloc_button(button_info *ub,int num)
 **/
 void MakeContainer(button_info *b)
 {
-  b->c = mvwm_callow(1, sizeof(container_info));
+  b->c = mvwm_calloc(1, sizeof(container_info));
   b->flags.b_Container = 1;
   if(b->parent != NULL)
   {

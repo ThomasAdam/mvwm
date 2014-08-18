@@ -85,7 +85,7 @@ static void FShmSafeCreateImage(
 	{
 		return;
 	}
-	fim->shminfo = mvwm_callow(1, sizeof(FShmSegmentInfo));
+	fim->shminfo = mvwm_calloc(1, sizeof(FShmSegmentInfo));
 	if (!(fim->im = FShmCreateImage(
 		dpy, visual, depth, format, NULL, fim->shminfo,
 		width, height)))

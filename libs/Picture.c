@@ -230,7 +230,7 @@ MvwmPicture *PLoadMvwmPictureFromPixmap(
 {
 	MvwmPicture *q;
 
-	q = mvwm_callow(1, sizeof(MvwmPicture));
+	q = mvwm_calloc(1, sizeof(MvwmPicture));
 	q->count = 1;
 	q->name = name;
 	q->next = NULL;

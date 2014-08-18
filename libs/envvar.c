@@ -424,7 +424,7 @@ static void add_to_envlist(char *var, char *env)
 	{
 		/* list is still empty */
 		env_len_allocated = ENV_LIST_INC;
-		env_list = mvwm_callow(sizeof(env_list_item), env_len_allocated);
+		env_list = mvwm_calloc(sizeof(env_list_item), env_len_allocated);
 	}
 	else if (env_len >= env_len_allocated && env != NULL)
 	{

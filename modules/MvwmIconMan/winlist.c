@@ -245,7 +245,7 @@ static int iconmanager_show (WinManager *man, char *tname, char *iname,
 
 WinData *new_windata (void)
 {
-  WinData *new = mvwm_callow (1, sizeof (WinData));
+  WinData *new = mvwm_calloc (1, sizeof (WinData));
   new->desknum = ULONG_MAX;
   new->x = ULONG_MAX;
   new->y = ULONG_MAX;

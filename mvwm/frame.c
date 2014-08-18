@@ -1729,7 +1729,7 @@ frame_move_resize_args frame_create_move_resize_args(
 	int diff;
 
 	/* set some variables */
-	mra = mvwm_callow(1, sizeof(mr_args_internal));
+	mra = mvwm_calloc(1, sizeof(mr_args_internal));
 	if (mr_mode & FRAME_MR_DONT_DRAW)
 	{
 		mr_mode &= ~FRAME_MR_DONT_DRAW;

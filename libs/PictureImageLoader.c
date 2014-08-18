@@ -528,7 +528,7 @@ MvwmPicture *PImageLoadMvwmPictureFromFile(
 		return NULL;
 	}
 
-	p = mvwm_callow(1, sizeof(MvwmPicture));
+	p = mvwm_calloc(1, sizeof(MvwmPicture));
 	p->count = 1;
 	p->name = path;
 	p->fpa_mask = fpa.mask;

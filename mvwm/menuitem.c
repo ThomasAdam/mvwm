@@ -183,7 +183,7 @@ struct MenuItem *menuitem_create(void)
 {
 	MenuItem *mi;
 
-	mi = mvwm_callow(1, sizeof *mi);
+	mi = mvwm_calloc(1, sizeof *mi);
 	return mi;
 }
 

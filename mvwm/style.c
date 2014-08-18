@@ -1791,7 +1791,7 @@ static char *style_parse_icon_box_style(
 	}
 
 	/* otherwise try to parse the icon box */
-	IconBoxes = mvwm_callow(1, sizeof(icon_boxes));
+	IconBoxes = mvwm_calloc(1, sizeof(icon_boxes));
 
 	IconBoxes->IconScreen = "global";
 	/* init grid x */
@@ -4642,7 +4642,7 @@ static void __style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	/* temp area to build name list */
 	window_style *ps;
 
-	ps = mvwm_callow(1, sizeof(window_style));
+	ps = mvwm_calloc(1, sizeof(window_style));
 	/* init default focus policy */
 	fpol_init_default_fp(&S_FOCUS_POLICY(SCF(*ps)));
 	/* mark style as changed */

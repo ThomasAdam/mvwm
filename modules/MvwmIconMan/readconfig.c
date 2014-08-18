@@ -686,7 +686,7 @@ Binding *ParseMouseEntry(char *tline)
 		    "Excess modifiers will be ignored.");
   }
 
-  new = mvwm_callow(1, sizeof(Binding));
+  new = mvwm_calloc(1, sizeof(Binding));
   new->type = BIND_BUTTONPRESS;
   new->Button_Key = button;
   new->Modifier = mods;
@@ -765,7 +765,7 @@ static Binding *ParseKeyEntry(char *tline)
 	actionstring = keystring = NULL;
       }
       temp = new;
-      new  = mvwm_callow(1, sizeof(Binding));
+      new  = mvwm_calloc(1, sizeof(Binding));
       new->type = BIND_KEYPRESS;
       new->Button_Key = i;
       new->key_name = keystring;
@@ -795,7 +795,7 @@ static Binding *ParseSimpleEntry(char *tline)
 		return NULL;
 	}
 
-	new = mvwm_callow(1, sizeof(Binding));
+	new = mvwm_calloc(1, sizeof(Binding));
 	new->type = BIND_KEYPRESS;
 	new->key_name = "select";
 	new->Action = stripcpy(tline);
