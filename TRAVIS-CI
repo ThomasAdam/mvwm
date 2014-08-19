@@ -1,0 +1,63 @@
+Travis-CI build notes
+=====================
+
+The mvwm repository on github is setup to spawn and build all
+branches/commits pushed to the repository.  This is useful to ensure that
+there aren't any problems, especially in other environments which are not
+the same as the developer who made the changes.  This also helps to spot
+problems more easily and upfront.
+
+Overview
+========
+
+See:  https://travis-ci.org/ThomasAdam/mvwm/builds
+
+From here, it's possible to look at the build runs for each commit, etc., as
+well as download the logs for each build.
+
+Configuration
+=============
+
+See:  http://docs.travis-ci.com/user/build-configuration/
+
+The YAML file contains a matrix describing the two different jobs that each
+commit will build under.
+
+
+    language: c
+    matrix:
+        include:
+            - compiler: gcc
+              env: CFLAGS="-g -O2 -Wall -Wpointer-arith -fno-strict-aliasing -Werror"
+            - compiler: clang
+              env: CFLAGS="-g -O2"
+    before_install:
+        - sudo apt-get update -qq
+        - sudo apt-get install [...files...]
+    script: (CFLAGS= ./autogen.sh) && make && make distcheck2 
+
+This sets up an environment for GCC, setting custom CFLAGS, and likewise for
+clang.  Note that clang doesn't like having any -W options in the CFLAGS,
+hence why it's rather minimal compared to gcc.  However, it seems that clang
+defaults to more verbose/useful output.
+
+The 'script:' target is what gets called once the environment has been
+setup, and the 'before_install:' target has completed.  Note that the call
+to 'autogen.sh' which includes generating ./configure and running
+./configure explicitly unsets CFLAGS in a subshell.  This is to appease GCC
+in that it wouldn't allow the test programs to compile.  Yet we know they
+compile well enough for enabling ./configure's tests, and we don't care
+about how strict/valid GCC thinks of them.
+
+If one of the two jobs from the matrix fails, so the specified commit being
+built is marked as failed.
+
+Changing the configuration
+==========================
+
+There is a Travis-CI lint checker which you can use to check the validity of
+the changes in the context of how Travis-CI will read the file.  If the YAML
+file is incorrect in someway, Travis-CI simply ignores things and you won't
+see your commit in the build section.
+
+See:  http://lint.travis-ci.org/
