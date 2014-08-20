@@ -2,7 +2,7 @@ language: c
 matrix:
     include:
         - compiler: gcc
-          env: CFLAGS="-g -O2 -Wall -Wpointer-arith -fno-strict-aliasing -Werror"
+          env: CFLAGS="-g -O2 -Wall -Wpointer-arith -fno-strict-aliasing -Werror -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits -Wno-missing-field-initializers"
         - compiler: clang
           env: CFLAGS="-g -O2"
 before_install:
