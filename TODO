@@ -4,8 +4,6 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
     - Remove SAFEFREE() macro;
     - Add xasprintf() to libs/safemalloc.[ch]
     - Audit xmalloc() use and consider xasprintf() wrapper
-    - Look at current code warnings at compilation and fix
-		- CFLAGS containing -Wextra must be fixed.
 
 * Code cleanup needed!
     - Don't use typedefs for structs:
@@ -21,6 +19,8 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
     - What's in libs/ -- the static linking of libfvwm.a useful anymore?
       There's a lot of code being ripped out of libs/ and I don't see much
       more being added in.
+    - I'm not keen on commands.h:P() macro, or ewmh_intern.h:CMD_EWMH_ARGS
+      macros; I'd rather have all prototypes unrolled and explicitly stated.
 
 * String handling!
     - libs/String.[ch] and friends have idioms like CatString3, and
