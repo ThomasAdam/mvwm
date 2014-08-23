@@ -510,8 +510,6 @@ Parsing needs of the builtin commands
 Definitions that need defining for the below
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * FLAG
-    * INT
-    * BOOL
     * DECOR
     * FONTNAME
     * IMAGEFILE
@@ -527,14 +525,31 @@ Definitions that need defining for the below
     * KEYNAME
     * STYLEOPTION (massive list of style options!!!)
 
+Types
+~~~~~
+
+ INT = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+ BOOL = "yes" | "y" | "no" | "n" | "0" | "1"
+ TOGGLE = "toggle"
+ MODIFIER = "1" | "2" | "3" | "4" | "5"
+ PATH = { STRING, "/" }
+ WINDOW = VISIBLE_NAME | CLASS | RESOURCE | NAME | WINDOW_ID
+ CONTEXT = 'R' | 'W' | 'D' | 'T' | 'F' | '[' | ']' | '-' | '_' |
+    '<' | '^' | '>' | 'v' | 'I' | INT | 'A' | 'S' | 'M'
+ MODULENAME = "FvwmAnimate" | "FvwmButtons" | ...
+ EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
+    "Right" | "East"
+
+Commands
+~~~~~~~~
+
  * AddButtonStyle BUTTON [STATE] [STYLE] [FLAG]
     BUTTON: INT:o- "All" | "Left" | "Right"
     STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
-        ACTIVE | "Inactive" | TOGGLED | "AllActive" | "AllInactive" |
+        ACTIVE | "Inactive" | TOGGLE | "AllActive" | "AllInactive" |
         "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
         "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
     ACTIVE: "Active" - implies FOCUSED_WINDOW
-    TOGGLED: "Toggled" - inverts the meaning.
     FLAG: [!]KEYWORD [, [!]KEYWORD] ...
 
     (XXX: ButtonStyle relationships here...)
@@ -545,7 +560,6 @@ Definitions that need defining for the below
 
     FLAG: [!]KEYWORD [, [!]KEYWORD] ...
     ACTIVE: "Active" - implies FOCUSED_WINDOW
-    TOGGLED: "Toggled" - inverts the meaning.
 
     (XXX: TitleStyle/ButtonStyle relationships here...)
 
@@ -554,14 +568,13 @@ Definitions that need defining for the below
 
     (XXX: Other commands/styles affect this; document below first!)
 
- * AddToFunc
-   !!!
+ * AddToFunc FUNCNAME FUNCDEFS COMMAND
+   FUNCDEFS: "I" | "M" | "C" | "H" | "D"
 
- * AddToMenu
-   !!!
+ * AddToMenu STRING [LABEL COMMAND]
 
- * All
-   !!!
+ * All [OPTIONS] [(CONDITION)] COMMAND
+    OPTIONS: "Reverse" | "UseStack"
 
  * Any, Current, Next, None, PointerWindow, Prev [(CONDITION)] COMMAND
      CONDITION: WINDOWNAMEPATTERN | [!]KEYWORD [, [!]KEYWORD] ...
@@ -590,7 +603,7 @@ Definitions that need defining for the below
     OPTION: KEYWORD [VALUE] ...
     KEYWORD: "FlickingMoveWorkaround" | "MixedVisualWorkaround" |
         "ModalityIsEvil" | "RaiseOverNativeWindows" | "RaiseOverUnmanaged" |
-        "FlickingQtDialogsWorkaround" | QtDragnDropWorkaround" |
+        "FlickingQtDialogsWorkaround" | "QtDragnDropWorkaround" |
         "EWMHIconicStateWorkaround" | "DisplayNewWindowNames" |
         "ExplainWindowPlacement" | "DebugCRMotionMethod" |
         "TransliterateUtf8"
@@ -609,11 +622,10 @@ Definitions that need defining for the below
  * ButtonStyle BUTTON [STATE] [STYLE] [FLAGS]
     BUTTON: 0-9 | "All" | "Left" | "Right" | "Reset"
     STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
-        ACTIVE | "Inactive" | TOGGLED | "AllActive" | "AllInactive" |
+        ACTIVE | "Inactive" | TOGGLE | "AllActive" | "AllInactive" |
         "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
         "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
     ACTIVE: "Active" - implies FOCUSED_WINDOW
-    TOGGLED: "Toggled" - inverts the meaning.
     STYLE: "Simple" | "Default" | "Solid" | "Colorset" | "Vector" |
         GRADIENT | "Pixmap" | AdjustedPixmap" | "ShrunkPixmap" |
         "StretchedPixmap" | "TiledPixmap" | "MiniIcon"
@@ -636,10 +648,10 @@ Definitions that need defining for the below
    (stores the negative value during startup>
 
  * Close, Delete, Destroy VOID
-   (work on context window)
+   (* work on context window *)
 
  * ColorLimit
-   (obsolete, has been removed)
+   (* obsolete, has been removed *)
 
  * ColormapFocus "FollowsMouse" | "FollowsFocus"
 
@@ -660,6 +672,7 @@ Definitions that need defining for the below
 
  * CursorMove HORIZONTAL[p] VERTICAL[p]
     HORIZONTAL: INT
+    VERTICAL: INT
     p: "p"
 
  * CursorStyle CONTEXT | X11_NAME [OPTION]
@@ -730,18 +743,15 @@ Definitions that need defining for the below
  * EchoFuncDefinition FUNCNAME
 
  * EdgeCommand [EDGEDIRECTION [COMMAND]]
-    EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
-        "Right" | "East"
 
  * EdgeLeaveCommand [EDGEDIRECTION [COMMAND]]
-    EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
-        "Right" | "East"
 
  * EdgeResistance
    (* OBSOLETED BY CORRESPONDING STYLE COMMAND *)
 
  * EdgeScroll HORIZONTAL[p] VERTICAL[p] [OPTION]
     HORIZONTAL: INT
+    VERTICAL: INT
     p: "p"
     OPTION: "Wrap" | "wrapx" | "Wrapy"
 
@@ -794,314 +804,334 @@ Definitions that need defining for the below
  * GnomeShowDesks
    (* REMOVED IN MVWM ALREADY; ignoring! *)
 
- * GotoDesk
-   !!!
+ * GotoDesk [PREV | INT [INT] [INT INT]
+    PREV: "prev"
 
- * GotoDeskAndPage
-   !!!
+ * GotoDeskAndPage PREV | INT INT INT
+    PREV: "prev"
 
- * GotoPage
-   !!!
+ * GotoPage PREV | [OPTIONS] X[p] Y[p]
+    PREV: "prev"
+    OPTIONS: "wrapx" | "wrapy"
+    X: INT
+    Y: INT
+    p: "p"
 
- * HideGeometryWindow
-   !!!
+ * HideGeometryWindow [COMMAND]
+    COMMAND: "Never" | "Move" | "Resize"
 
  * HilightColor
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * HilightColorset
-   !!!
+ * HilightColorset [INT]
 
- * IconFont
-   !!!
+ * IconFont FONTNAME
+    (* OBSOLETE; ignoring *)
 
  * IconPath
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * Iconify
-   !!!
+ * Iconify (BOOL | TOGGLE)
 
- * IgnoreModifiers
-   !!!
+ * IgnoreModifiers (MODIFIER | "L")
 
- * ImagePath
-   !!!
+ * ImagePath [PATH]
 
- * InfoStoreAdd
-   !!!
+ * InfoStoreAdd KEY VALUE
+    KEY: STRING
+    VALUE: STRING
 
- * InfoStoreRemove
-   !!!
+ * InfoStoreRemove [KEY]
 
- * KeepRc
-   !!!
+ * KeepRc [COMMAND]
 
- * Key
-   !!!
+ * Key [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
 
- * KillModule
-   !!!
+ * KillModule [MODULENAME] [STRING]
 
- * Layer
-   !!!
+ * Layer [INT INT] | "default"
 
- * LocalePath
-   !!!
+ * LocalePath [PATH]
 
- * Lower, Raise, RaiseLower
-   !!!
+ * Lower, Raise, RaiseLower VOID
 
- * Maximize
-   !!!
+ * Maximize [FLAGS] [BOOL | "forget" ] [[HORIZONTAL[p]] VERTICAL[p]]
+    GROWOPTS = "grow" | "growleft" | "growright" | "growup" | "growdown"
+    HORIZONTAL: INT | GROWOPTS
+    VERTICAL: INT | GROWOPTS
+    p: "p"
+    FLAGS: "ewmhiwa" | "growonwindowlayer" | "growonlayers" |
+        ("screen" | XINERAMASCR)
 
- * Menu
-   !!!
+ * Menu TOKEN [POSITION] [COMMAND]
+    POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
+    CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
+        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
+        "This" | ("Rectangle" GEOMETRY)
+    OPTIONS: "TearoffImmediately" | "SelectInPlace"
 
- * MenuStyle
-   !!!
+ * MenuStyle MENUSTYLE [OPTIONS]
+    OPTIONS: "Fvwm" | "Mwm" | "Win"| "BorderWidth" | "Foreground" |
+        "Background" "Greyed" | "HilightBack" | "!HilightBack" |
+        "HilightTitleBack" | "ActiveFore" | "!ActiveFore" | "MenuColorset" |
+        "ActiveColorset" | "GreyedColorset" | "TitleColorset" |
+        "Hilight3DThick" | "Hilight3DThin" | "Hilight3DOff" |
+        "Hilight3DThickness" | "Animation" | "!Animation" | "Font" |
+        "TitleFont" | "MenuFace" | "PopupDelay" | "PopupOffset" |
+        "TitleWarp" | "!TitleWarp" | "TitleUnderlines0" |
+        "TitleUnderlines1" | "TitleUnderlines2" | "SeparatorsLong" |
+        "SeparatorsShort" | "TrianglesSolid" | "TrianglesRelief" |
+        "PopupImmediately" | "PopupDelayed" | "PopdownImmediately" |
+        "PopdownDelayed" | "PopupActiveArea" | "DoubleClickTime" |
+        "SidePic" | "SideColor" | "PopupAsRootMenu" | "PopupAsSubmenu" |
+        "PopupIgnore" | "PopupClose"| "RemoveSubmenus" | "HoldSubmenus" |
+        "SubmenusRight" | "SubmenusLeft" | "SelectOnRelease" |
+        "ItemFormat" | "VerticalItemSpacing"| "VerticalMargins" |
+        "VerticalTitleSpacing" | "AutomaticHotkeys" |
+        "!AutomaticHotkeys"| "UniqueHotkeyActivatesImmediate" |
+        "!UniqueHotkeyActivatesImmediate" | "MouseWheel" | "ScrollOffPage" |
+        "!ScrollOffPage|" | "TrianglesUseFore" | "!TrianglesUseFore"
 
- * Module
-   !!!
+ * Module [MODULENAME] [MODULEALIAS]
 
- * ModuleListenOnly
-   !!!
+ * ModuleListenOnly MODULENAME [ARGS]
 
- * ModulePath
-   !!!
+ * ModulePath PATH
 
- * ModuleSynchronous
-   !!!
+ * ModuleSynchronous ["Expect" STRING] ["Timeout" INT] [MODULENAME]
 
- * ModuleTimeout
-   !!!
+ * ModuleTimeout INT
 
- * Mouse
-   !!!
+ * Mouse [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
 
- * Move
-   !!!
+ * Move [MOVEARGS]
 
- * MoveThreshold
-   !!!
+ * MoveThreshold [INT]
 
- * MoveToDesk
-   !!!
+ * MoveToDesk [PREV | INT [INT] [INT INT]
+   PREV: "prev"
 
- * MoveToPage
-   !!!
+ * MoveToPage PREV [OPTIONS] X[p] Y[p]
+   PREV: "prev"
+   OPTIONS: "wrapx" | "wrapy" | "nodesklimitx" | "nodesklimity"
+   X: INT
+   Y: INT
+   p: "p" | "w"
 
- * MoveToScreen
-   !!!
+ * MoveToScreen [XRANDRMONITORNAME]
 
- * NoWindow
-   !!!
+ * NoWindow VOID
 
- * Nop
-   !!!
+ * Nop VOID
 
- * OpaqueMoveSize
-   !!!
+ * OpaqueMoveSize [INT]
 
- * Pick
-   !!!
+ * Pick ([CONDITIONS) COMMAND
 
- * PipeRead
-   !!!
+ * PipeRead COMMAND ["quiet"]
 
  * PixmapPath
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * PlaceAgain
-   !!!
+ * PlaceAgain ["Anim"] ["Icon"]
 
- * Plus
-   !!!
+ * Plus [STRING]
 
- * PointerKey
-   !!!
+ * PointerKey [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
 
- * Popup
-   !!!
+ * Popup [STRING] [POSITION] [COMMAND]
+   POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
+   CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
+        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
+        "This" | ("Rectangle" GEOMETRY)
+   OPTIONS: "TearoffImmediately" | "SelectInPlace"
 
- * PrintInfo
-   !!!
+ * PrintInfo SUBJECT
+   SUBJECT: (KEYWORD [VAL])
+   VAL: "0" | "1" | "2"
+   KEYWORD: "Colors" | "ImageCache" | "Locale" | "NLS" | "Style" |
+        "Bindings" | "Infostore"
 
- * Quit
-   !!!
+ * Quit VOID
 
- * QuitScreen
-   !!!
+ * QuitScreen VOID
 
  * QuitSession
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * Read
-   !!!
+ * Read FILENAME ["quiet"]
 
- * Recapture
-   !!!
+ * Recapture VOID
 
  * RecaptureWindow
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * Refresh
-   !!!
+ * Refresh VOID
 
- * RefreshWindow
-   !!!
+ * RefreshWindow VOID
 
- * Repeat
-   !!!
+ * Repeat VOID
 
- * Resize
-   !!!
+ * Resize [RESIZEARGS]
+   RESIZEARGS: ["br" | ["frame"]] ["direction" DIR] |
+    ["warptoborder" "automatic"] ["fixeddirection"][WIDTH HEIGHT]
+    WIDTH: INT | "keep"
+    HEIGHT INT | "keep"
 
- * ResizeMaximize
-   !!!
+ * ResizeMaximize [RESIZEARGS]
 
- * ResizeMove
-   !!!
+ * ResizeMove RESIZEARGS MOVEARGS
 
- * ResizeMoveMaximize
-   !!!
+ * ResizeMoveMaximize RESIZEARGS MOVEARGS
 
- * RestackTransients
-   !!!
+ * RestackTransients VOID
 
- * Restart
-   !!!
+ * Restart [STRING]
 
  * SaveQuitSession
-   !!!
+   (* OBSOLETE; ignoring *)
 
  * SaveSession
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * ScanForWindow
-   !!!
+ * ScanForWindow ["FromPointer"] DIR DIR [(CONDITIONS)] COMMAND
+   DIR: EDGEDIRECTION
 
- * Schedule
-   !!!
+ * Schedule ["periodic"] INT [INT] COMMAND
 
- * Scroll
-   !!!
+ * Scroll [HORIZONTAL[p] VERTICAL[p] | OPTION]
+   HORIZONTAL: INT
+   VERTICAL: INT
+   p: "p"
+   OPTION: "reverse"
 
- * SendToModule
-   !!!
+ * SendToModule [MODULENAME] [STRING]
 
- * SetAnimation
-   !!!
+ * SetAnimation INT [INT]
 
- * SetEnv
-   !!!
+ * SetEnv [STRING] [STRING]
 
- * Silent
-   !!!
+ * Silent COMMAND
 
  * SnapAttraction
-   !!!
+   (* OBSOLETE; style option; ignoring *)
 
  * SnapGrid
-   !!!
+   (* OBSOLETE; style option; ignoring *)
 
- * State
-   !!!
+ * State STATE [BOOL]
+   STATE: INT | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" |
+        "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" |
+        "28" | "29" | "30" | "31"
 
- * Stick
-   !!!
+ * Stick [BOOL]
 
- * StickAcrossDesks
-   !!!
+ * StickAcrossDesks [BOOL]
 
- * StickAcrossPages
-   !!!
+ * StickAcrossPages [BOOL]
 
  * Stroke
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
  * StrokeFunc
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
- * Style
-   !!!
+ * Style [STYLENAME] [OPTION] [, OPTION]
 
- * TearMenuOff
-   !!!
+ * TearMenuOff VOID
+   (* Applies to menu context only *)
 
- * Test
-   !!!
+ * Test [([!]TESTCONDITION)] COMMAND
+   TESTCONDITION: (KEYWORD [VALUE])
+   KEYWORD: ("version" OPERATOR DOTTEDNUM) | ("EnvIsSet" STRING) |
+    ("EnvMatch" STRING) | ("EdgeHasPointer" DIRECTION) |
+    ("EdgeIsActive" DIRECTION) | "Start" | "Init" | "Restart" | "Exit" |
+    "Quit" | "ToRestart" | "True" | "False" | "F" | "R" | "W" | "X" | "I"
+   OPERATOR: ">=" | ">" | "<=" | "==" | "!="
 
- * TestRc
-   !!!
+ * TestRc [([!]RETCODE)] COMMAND
+   RETCODE: "0" | "1" | "-1" | "-2" | "NoMatch" | "Match" | "Error" |
+    "Break"
 
- * ThisWindow
-   !!!
+ * ThisWindow [(CONDITION)] COMMAND
+   CONDITION: { CONDITION; "CirculateHit" | "CirculateHitIcon" |
+        "CirculateHitShaded" }
 
- * Title
-   !!!
+ * Title VOID
+   (* Applies to menu context only *)
 
  * TitleStyle
    !!!
 
- * UnsetEnv
-   !!!
+ * UnsetEnv [STRING]
 
- * UpdateDecor
-   !!!
+ * UpdateDecor VOID
 
- * UpdateStyles
-   !!!
+ * UpdateStyles VOID
 
- * Wait
-   !!!
+ * Wait VOID
 
- * WarpToWindow
-   !!!
+ * WarpToWindow X[p] Y[p]
+   X: INT
+   Y: INT
+   p: "p"
 
  * WindowFont
-   !!!
+   (* OBSOLETE *)
 
- * WindowId
-   !!!
+ * WindowId [WINDOWID]
 
- * WindowList
-   !!!
+ * WindowList [(CONDITIONS)] [POSITION] [WLOPTIONS] [COMMAND]
+   POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
+   CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
+        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
+        "This" | ("Rectangle" GEOMETRY)
+   OPTIONS: "TearoffImmediately" | "SelectInPlace"
+   WLOPTIONS: (KEYWORD [VALUE])
+   WLOPTIONS: "Geometry" | "NoGeometry" | "NoGeometryWithInfo" |
+        "NoDeskNum" | "NoLayer" | "NoNumInDeskTitle" |
+        "NoCurrentDeskTitle" | ("MaxLabelWidth" INT) |
+        "TitleForAllDesks" | ("Function" FUNCNAME) | ("Desk" INT) |
+        "CurrentDesk" | "NoIcons" | "Icons" | "OnlyIcons" | "NoNormal" |
+        "Normal" | "OnlyNormal" | "NoSticky" | "Sticky" | "OnlySticky" |
+        "NoStickyAcrossPages" | "StickyAcrossPages" |
+        "OnlyStickyAcrossPages" | "NoStickyAcrossDesks" |
+        "StickyAcrossDesks" | "OnlyStickyAcrossDesks" | "NoOnTop" |
+        "OnTop" | "OnlyOnTop" | "NoOnBottom" | "OnlyOnBottom" |
+        (Layer INT [INT]) | "UseSkipList" | "OnlySkipList" |
+        "SortByResource" | "SortByClass" | "NoHotKeys" | "SelectOnRelease" |
+        "ReverseOrder" | "NoDeskSort" | "CurrentAtEnd" | "IconifiedAtEnd" |
+        "UseIconName" | "Alphabetic" | "NotAlphabetic"
 
- * WindowShade
-   !!!
+ * WindowShade [BOOL] | ["ShadeAgain"] [DIRECTION]
 
  * WindowShadeAnimate
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * WindowStyle
-   !!!
+ * WindowStyle [STYLEOPTION] [, STYLEOPTION]
 
  * WindowsDesk
-   !!!
+   (* OBSOLETE; ignoring *)
 
- * XSync
-   !!!
+ * XSync VOID
 
- * XSynchronize
-   !!!
+ * XSynchronize [BOOL]
 
  * Xinerama
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
  * XineramaPrimaryScreen
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
  * XineramaSls
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
  * XineramaSlsScreens
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
  * XineramaSlsSize
-   !!!
+   (* OBSOLETE; removed in mvwm *)
 
- * XorPixmap
-   !!!
+ * XorPixmap [IMAGEFILE]
 
- * XorValue
-   !!!
+ * XorValue [INT]
