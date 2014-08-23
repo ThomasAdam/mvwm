@@ -507,631 +507,477 @@ Step 2 (__run_complex_function_items())
 Parsing needs of the builtin commands
 -------------------------------------
 
+Note: Let's attempt to formulate the existing syntax in ABNF
+(rfc5234).
+
 Definitions that need defining for the below
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    * FLAG
-    * DECOR
-    * FONTNAME
-    * IMAGEFILE
-    * GRADIENT
-    * MOVEARGS
-    * MODULECONFIG
-    * CONDITION
-    * COLOUR_FG
-    * COLOUR_BG
-    * COMMAND (builtin; can also be one of FUNCNAME)
-    * FUNCNAME (StartFunction | ExitFunction | etc, plus user-defined)
-    * SHELL
-    * KEYNAME
-    * STYLEOPTION (massive list of style options!!!)
+    * FLAG = !!!;
+    * DECOR = !!!;
+    * FONTNAME = !!!;
+    * IMAGEFILE = !!!;
+    * GRADIENT = !!!;
+    * MOVEARGS = !!!;
+    * MODULECONFIG = !!!;
+    * CONDITION = !!!;
+    * COLOUR_FG = !!!;
+    * COLOUR_BG = !!!;
+    * COMMAND = !!!; (builtin; can also be one of FUNCNAME)
+    * FUNCNAME = !!!; (StartFunction | ExitFunction | etc, plus user-defined)
+    * SHELL = !!!;
+    * KEYNAME = !!!;
+    * STYLEOPTION = !!!; (massive list of style options!!!)
 
 Types
 ~~~~~
 
- INT = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
- BOOL = "yes" | "y" | "no" | "n" | "0" | "1"
- TOGGLE = "toggle"
- MODIFIER = "1" | "2" | "3" | "4" | "5"
- PATH = { STRING, "/" }
- WINDOW = VISIBLE_NAME | CLASS | RESOURCE | NAME | WINDOW_ID
- CONTEXT = 'R' | 'W' | 'D' | 'T' | 'F' | '[' | ']' | '-' | '_' |
-    '<' | '^' | '>' | 'v' | 'I' | INT | 'A' | 'S' | 'M'
- MODULENAME = "FvwmAnimate" | "FvwmButtons" | ...
- EDGEDIRECTION: "North" | "Top" | "West" | "Left" | "South" | "Bottom" |
-    "Right" | "East"
+ WS = %x20 / %x09;
+ DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9";
+ SIGNPOS = "+";
+ SIGNNEG = "-";
+ SIGN = SIGNPOS / SIGNNEG;
+ POSINT = [SIGNPOS] 1*DIGIT;
+ INT = [SIGN] 1*DIGIT;
+ INTPERCENTAGE = 1DIGIT | 2DIGIT | ("0" / "1") 2DIGIT
+ TRUE = "yes" / "y" / "1" / "t" / "true";
+ FALSE = "no" / "n" / "0" / "f" / "false";
+ BOOL = TRUE / FALSE;
+ TOGGLE = "toggle";
+ MODIFIER = "1" / "2" / "3" / "4" / "5";
+ PATH = [ "/" ] *( STRING "/" ) [ STRING ]
+ VISIBLE_NAME = !!!;
+ CLASS = !!!;
+ RESOURCE = !!!;
+ NAME = !!!;
+ WINDOW_ID = !!!;
+ WINDOWSELECTOR = VISIBLE_NAME / CLASS / RESOURCE / NAME / WINDOW_ID;
+ CONTEXT = "R" / "W" / "D" / "T" / "F" / "[" / "]" / "-" / "_" /
+    "<" / "^" / ">" / "v" / "I" / INT / "A" / "S" / "M";
+ MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...;
+ EDGEDIRECTION: "North" / "Top" / "N" / "West" / "Left" / "W" /
+    "South" / "Bottom" / "S" / "East" / "Right" / "E";
 
 Commands
 ~~~~~~~~
-
- * AddButtonStyle BUTTON [STATE] [STYLE] [FLAG]
-    BUTTON: INT:o- "All" | "Left" | "Right"
-    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
-        ACTIVE | "Inactive" | TOGGLE | "AllActive" | "AllInactive" |
-        "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
-        "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
-    ACTIVE: "Active" - implies FOCUSED_WINDOW
-    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
-
-    (XXX: ButtonStyle relationships here...)
-
- * AddTitleStyle [STATE] [STYLE] [FLAG]
-    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
-        ACTIVE | "Inactive" | "toggled" | "AllActive" | "AllInactive"
-
-    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
-    ACTIVE: "Active" - implies FOCUSED_WINDOW
-
-    (XXX: TitleStyle/ButtonStyle relationships here...)
-
- * AddToDecor DECOR
-    DECOR: TOKEN
-
-    (XXX: Other commands/styles affect this; document below first!)
-
- * AddToFunc FUNCNAME FUNCDEFS COMMAND
-   FUNCDEFS: "I" | "M" | "C" | "H" | "D"
-
- * AddToMenu STRING [LABEL COMMAND]
-
- * All [OPTIONS] [(CONDITION)] COMMAND
-    OPTIONS: "Reverse" | "UseStack"
-
- * Any, Current, Next, None, PointerWindow, Prev [(CONDITION)] COMMAND
-     CONDITION: WINDOWNAMEPATTERN | [!]KEYWORD [, [!]KEYWORD] ...
-     WINDOWNAMEPATTERN: TOKEN
-     KEYWORD: !!!
-     COMMAND: RESTOFLINE
- * AnimatedMove MOVEARGS MOVEARGS [KEYWORD]
-    MOVEARGS: !!!
-    KEYWORD: "Warp"
-
- * Asterisk [MODULE_LINE]
-
- * Beep
-
- * BorderStyle STATE [STYLE] [FLAG]
-    STATE: "Active" | "Inactive"
-    STYLE: "TiledPixmap" | "Colorset"
-    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
-    KEYWORD: "HiddenHandles" | "NoInset" | "Raised" | "Sunk" | "Flat" |
-        "Simple"
-
- * Break [LEVELS]
-    LEVELS: INT
-
- * BugOpts OPTION
-    OPTION: KEYWORD [VALUE] ...
-    KEYWORD: "FlickingMoveWorkaround" | "MixedVisualWorkaround" |
-        "ModalityIsEvil" | "RaiseOverNativeWindows" | "RaiseOverUnmanaged" |
-        "FlickingQtDialogsWorkaround" | "QtDragnDropWorkaround" |
-        "EWMHIconicStateWorkaround" | "DisplayNewWindowNames" |
-        "ExplainWindowPlacement" | "DebugCRMotionMethod" |
-        "TransliterateUtf8"
-    VALUE: "True" | "False" | 0 | 1
-
- * BusyCursor OPTION [,OPTION]
-    OPTION: KEYWORD VALUE ...
-    KEYWORD: "DynamicMenu" | "ModuleSynchronous" | "Read" | "Wait" | "*"
-    VALUE: "True" | "False" | 0 | 1
-
- * ButtonState OPTION [,OPTION]
-    OPTION: KEYWORD [VALUE]
-    KEYWORD: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown"
-    VALUE: "True" | "False" | "Yes" | "No"
-
- * ButtonStyle BUTTON [STATE] [STYLE] [FLAGS]
-    BUTTON: 0-9 | "All" | "Left" | "Right" | "Reset"
-    STATE: "ActiveUp" | "ActiveDown" | "InactiveUp" | "InactiveDown" |
-        ACTIVE | "Inactive" | TOGGLE | "AllActive" | "AllInactive" |
-        "AllNormal" | "AllToggled" | "AllUp" | "AllDown" | "AllActiveUp" |
-        "AllActiveDown" | "AllInactiveUp" | "AllInactiveDown"
-    ACTIVE: "Active" - implies FOCUSED_WINDOW
-    STYLE: "Simple" | "Default" | "Solid" | "Colorset" | "Vector" |
-        GRADIENT | "Pixmap" | AdjustedPixmap" | "ShrunkPixmap" |
-        "StretchedPixmap" | "TiledPixmap" | "MiniIcon"
-    GRADIENT: TYPE START-COLOUR END-COLOUR
-    FLAG: [!]KEYWORD [, [!]KEYWORD] ...
-    KEYWORD: "Raised" | "Sunk" | "Flat" | "UseBorderStyle" |
-        "UseTitleStyle"
-        (XXX: "Raised, Sunk, and Flat" can only be used initially!!!")
-
- * ChangeDecor [DECOR]
-    DECOR: TOKEN
-
- * ChangeMenuStyle MENUSTYLENAME MENUNAME
-     MENUSTYLENAME: TOKEN
-     MENUNAME: TOKEN
-
- * CleanupColorsets VOID
-
- * ClickTime INT:0+
+ADDBUTTONSTYLE = "AddButtonStyle" BUTTON [STATE] [STYLE] [FLAG];
+    BUTTON = POSINT "All" / "Left" / "Right";
+    STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
+        ACTIVE / "Inactive" / TOGGLE / "AllActive" / "AllInactive" /
+        "AllNormal" / "AllToggled" / "AllUp" / "AllDown" / "AllActiveUp" /
+        "AllActiveDown" / "AllInactiveUp" / "AllInactiveDown";
+    ACTIVE = "Active" - implies FOCUSED_WINDOW;
+    FLAG = [!]KEYWORD [, [!]KEYWORD] ...;
+    (XXX = ButtonStyle relationships here...)
+ADDTITLESTYLE = "AddTitleStyle" [STATE] [STYLE] [FLAG];
+    STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
+        ACTIVE / "Inactive" / "toggled" / "AllActive" / "AllInactive";
+    FLAG = [!]KEYWORD [, [!]KEYWORD] ...;
+    ACTIVE = "Active" - implies FOCUSED_WINDOW;
+    (XXX = TitleStyle/ButtonStyle relationships here...)
+ADDTODECOR = "AddToDecor" DECOR;
+    DECOR = TOKEN;
+    (XXX = Other commands/styles affect this; document below first!)
+ADDTOFUNC = "AddToFunc" FUNCNAME FUNCDEFS COMMAND;
+   FUNCDEFS = "I" / "M" / "C" / "H" / "D";
+ADDTOMENU = "AddToMenu" MENUNAME [LABEL COMMAND];
+ALL = "All" [OPTIONS] ["(" CONDITION ")"] COMMAND;
+    OPTIONS = "Reverse" / "UseStack";
+ANY = "Any" ["(" CONDITION ")"] COMMAND;
+CURRENT = "Current" ["(" CONDITION ")"] COMMAND;
+NEXT = "Next" ["(" CONDITION ")"] COMMAND;
+NONE = "None" ["(" CONDITION ")"] COMMAND;
+POINTERWINDOW = "PointerWindow" ["(" CONDITION ")"] COMMAND;
+PREV = "Prev" ["(" CONDITION ")"] COMMAND;
+     CONDITION = WINDOWNAMEPATTERN / [!]KEYWORD [, [!]KEYWORD] ...;
+     WINDOWNAMEPATTERN = TOKEN;
+     KEYWORD = !!!;
+     COMMAND = RESTOFLINE;
+ANIMATEDMOVE = "AnimatedMove" MOVEARGS MOVEARGS [KEYWORD];
+    MOVEARGS = !!!;
+    KEYWORD = "Warp";
+ASTERISK = "Asterisk" [MODULE_LINE];
+BEEP = "Beep";
+BORDERSTYLE = "BorderStyle" STATE [STYLE] [FLAG];
+    STATE = "Active" / "Inactive";
+    STYLE = "TiledPixmap" / "Colorset";
+    FLAG = [!]KEYWORD [, [!]KEYWORD] ...;
+    KEYWORD = "HiddenHandles" / "NoInset" / "Raised" / "Sunk" / "Flat" /
+        "Simple";
+BREAK = "Break" [LEVELS];
+    LEVELS = INT;
+BUGOPTS = "BugOpts" OPTION;
+    OPTION = KEYWORD [VALUE] ...;
+    KEYWORD = "FlickingMoveWorkaround" / "MixedVisualWorkaround" /
+        "ModalityIsEvil" / "RaiseOverNativeWindows" / "RaiseOverUnmanaged" /
+        "FlickingQtDialogsWorkaround" / "QtDragnDropWorkaround" /
+        "EWMHIconicStateWorkaround" / "DisplayNewWindowNames" /
+        "ExplainWindowPlacement" / "DebugCRMotionMethod" /
+        "TransliterateUtf8";
+    VALUE = "True" / "False" / 0 / 1;
+BUSYCURSOR = "BusyCursor" OPTION [,OPTION];
+    OPTION = KEYWORD VALUE ...;
+    KEYWORD = "DynamicMenu" / "ModuleSynchronous" / "Read" / "Wait" / "*";
+    VALUE = "True" / "False" / 0 / 1;
+BUTTONSTATE = "ButtonState" OPTION [,OPTION];
+    OPTION = KEYWORD [VALUE];
+    KEYWORD = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown";
+    VALUE = "True" / "False" / "Yes" / "No";
+BUTTONSTYLE = "ButtonStyle" BUTTON [STATE] [STYLE] [FLAGS];
+    BUTTON = 0-9 / "All" / "Left" / "Right" / "Reset";
+    STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
+        ACTIVE / "Inactive" / TOGGLE / "AllActive" / "AllInactive" /
+        "AllNormal" / "AllToggled" / "AllUp" / "AllDown" / "AllActiveUp" /
+        "AllActiveDown" / "AllInactiveUp" / "AllInactiveDown";
+    ACTIVE = "Active" - implies FOCUSED_WINDOW;
+    STYLE = "Simple" / "Default" / "Solid" / "Colorset" / "Vector" /
+        GRADIENT / "Pixmap" / AdjustedPixmap" / "ShrunkPixmap" /
+        "StretchedPixmap" / "TiledPixmap" / "MiniIcon";
+    GRADIENT = TYPE START-COLOUR END-COLOUR;
+    FLAG = [ "!" ]KEYWORD [, [ "!" ]KEYWORD] ...;
+    KEYWORD = "Raised" / "Sunk" / "Flat" / "UseBorderStyle" /
+        "UseTitleStyle";
+        (XXX = "Raised, Sunk, and Flat" can only be used initially!!!")
+CHANGEDECOR = "ChangeDecor" [DECOR];
+    DECOR = TOKEN;
+CHANGEMENUSTYLE = "ChangeMenuStyle" MENUSTYLENAME MENUNAME;
+     MENUSTYLENAME = TOKEN;
+     MENUNAME = TOKEN;
+CLEANUPCOLORSETS = "CleanupColorsets";
+CLICKTIME = "ClickTime" POSINT;
    (stores the negative value during startup>
-
- * Close, Delete, Destroy VOID
+CLOSE = "Close";
+DELETE = "Delete";
+DESTROY = "Destroy";
    (* work on context window *)
-
- * ColorLimit
+COLORLIMIT = "ColorLimit";
    (* obsolete, has been removed *)
-
- * ColormapFocus "FollowsMouse" | "FollowsFocus"
-
- * Colorset INT:o- OPTION [, OPTION] ...
-     OPTION: KEYWORD [VALUE] ...
-     KEYWORD: "fg" | "Fore" | "Foreground" | "bg" | "Back" | "Background" |
-       "hi" | "Hilite" | "Hilight | "sh" | "Shade" | "Shadow" | "fgsh" |
-       "Pixmap" | "TiledPixmap" | "AspectPixmap" | "Transparent" |
-       "RootTransparent" | "Shape" | "TiledShape" | "AspectShape" |
-       "NoShape" | "[V|B|D|S|C|R|Y]Gradient" | "Tint" | "fgTint" | "bgTint" |
-       "Alpha" | "fgAlpha" | "Dither" | "NoDither" | "IconTint" |
-       "IconAlpha" | "Plain"
-     VALUE: INT | COLOURNAME | IMAGEFILENAME | PERCENTAGE:0-100
+COLORMAPFOCUS = "ColormapFocus" "FollowsMouse" / "FollowsFocus";
+COLORSET = "Colorset" POSINT OPTION [, OPTION] ...;
+     OPTION = KEYWORD [VALUE] ...;
+     KEYWORD = "fg" / "Fore" / "Foreground" / "bg" / "Back" / "Background" /
+       "hi" / "Hilite" / "Hilight / "sh" / "Shade" / "Shadow" / "fgsh" /
+       "Pixmap" / "TiledPixmap" / "AspectPixmap" / "Transparent" /
+       "RootTransparent" / "Shape" / "TiledShape" / "AspectShape" /
+       "NoShape" / "[V/B/D/S/C/R/Y]Gradient" / "Tint" / "fgTint" / "bgTint" /
+       "Alpha" / "fgAlpha" / "Dither" / "NoDither" / "IconTint" /
+       "IconAlpha" / "Plain";
+     VALUE = INT / COLOURNAME / IMAGEFILENAME / INTPERCENTAGE;
    (memory usage depends on highest colorset number)
-
- * CopyMenuStyle MENUSTYLENAME MENUSTYLENAME
-     MENUSTYLENAME: TOKEN
-
- * CursorMove HORIZONTAL[p] VERTICAL[p]
-    HORIZONTAL: INT
-    VERTICAL: INT
-    p: "p"
-
- * CursorStyle CONTEXT | X11_NAME [OPTION]
-    CONTEXT: KEYWORD | X11_NAME
-    CONTEXT: "POSITION" | "TITLE" | "DEFAULT" | "SYS" | "MOVE" | "RESIZE" |
-        "WAIT" | "MENU" | "SELECT" | "DESTROY" | "TOP" | "RIGHT" |
-        "BOTTOM" | "LEFT" | "TOP_LEFT" | "TOP_RIGHT" | "BOTTOM_LEFT" |
-        "BOTTOM_RIGHT" | "TOP_EDGE" | "RIGHT_EDGE" | "BOTTOM_EDGE" |
-        "LEFT_EDGE" | "ROOT" | "STROKE" | "None" | "Tiny"
-    X11_NAME: "top_left_corner" | "top_left_arrow" | "hand2" | "fleur" |
-        "sizing" | "watch" | "crosshair" | "pirate" | "top_side" |
-        "bottom_side" | "left_side" | "top_right_corner" |
-        "bottom_left_corner" | "top_side" | "right_side" | "left_side" |
-        "left_ptr" | "plus"
-    OPTION: IMAGEFILE [INT] | "fg" | "bg"
-
- * DefaultColors [COLOUR_FG] [COLOUR_BG]
+COPYMENUSTYLE = "CopyMenuStyle" MENUSTYLENAME MENUSTYLENAME;
+     MENUSTYLENAME = TOKEN;
+CURSORMOVE = "CursorMove" HORIZONTAL[p] VERTICAL[p];
+    HORIZONTAL = INT;
+    VERTICAL = INT;
+    p = "p";
+CURSORSTYLE = "CursorStyle" CONTEXT / X11_NAME [OPTION];
+    CONTEXT = KEYWORD / X11_NAME;
+    CONTEXT = "POSITION" / "TITLE" / "DEFAULT" / "SYS" / "MOVE" / "RESIZE" /
+        "WAIT" / "MENU" / "SELECT" / "DESTROY" / "TOP" / "RIGHT" /
+        "BOTTOM" / "LEFT" / "TOP_LEFT" / "TOP_RIGHT" / "BOTTOM_LEFT" /
+        "BOTTOM_RIGHT" / "TOP_EDGE" / "RIGHT_EDGE" / "BOTTOM_EDGE" /
+        "LEFT_EDGE" / "ROOT" / "STROKE" / "None" / "Tiny";
+    X11_NAME = "top_left_corner" / "top_left_arrow" / "hand2" / "fleur" /
+        "sizing" / "watch" / "crosshair" / "pirate" / "top_side" /
+        "bottom_side" / "left_side" / "top_right_corner" /
+        "bottom_left_corner" / "top_side" / "right_side" / "left_side" /
+        "left_ptr" / "plus";
+    OPTION = IMAGEFILE [INT] / "fg" / "bg";
+DEFAULTCOLORS = "DefaultColors" [COLOUR_FG] [COLOUR_BG];
     <These need defining!>
-
- * DefaultColorset [INT]
-    INT: INT | -1
-
- * DefaultFont [FONTNAME]
-
- * DefaultIcon [IMAGEFILE]
-
- * DefaultLayers INT INT INT
-
- * Deschedule [INT]
-
- * Desk
+DEFAULTCOLORSET = "DefaultColorset" [INT];
+    INT = INT / "-1";
+DEFAULTFONT = "DefaultFont" [FONTNAME];
+DEFAULTICON = "DefaultIcon" [IMAGEFILE];
+DEFAULTLAYERS = "DefaultLayers" INT INT INT;
+DESCHEDULE = "Deschedule" [INT];
+DESK = "Desk" [!!!];
    (* OBSOLETED BY GOTODESK *)
-
- * DesktopName INT DESKTOPNAME
-    DESKTOPNAME: TOKEN
-
- * DesktopSize HORIZONTALxVERTICAL
-    HORIZONTAL: INT
-    VERTICAL: INT
-
- * DestroyDecor [RECREATE] DECOR
-    RECREATE: "recreate"
-
- * DestroyFunc [FUNCNAME]
-    FUNCNAME: TOKEN
-
- * DestroyMenu [RECREATE] MENUNAME
-    RECREATE: "recreate"
-    MENUNAME: STRING
-
- * DestroyMenuStyle MENUSTYLENAME
-     MENUSTYLENAME: TOKEN
-
- * DestroyModuleConfig MODULECONFIG
-
- * DestroyStyle STYLENAME
-    STYLENAME: TOKEN | "*"
-
- * DestroyWindowStyle VOID
-
- * Direction [FROMPOINTER] DIRECTION [(CONDITIONS)] COMMAND
-    FROMPOINTER: "FromPointer"
-    DIRECTION: "North" | "NorthEast" | "East" | "SouthEast" | "South" |
-        "SouthWest" | "West" | "NorthWest" | "Center"
-
- * Echo TOKEN
-
- * EchoFuncDefinition FUNCNAME
-
- * EdgeCommand [EDGEDIRECTION [COMMAND]]
-
- * EdgeLeaveCommand [EDGEDIRECTION [COMMAND]]
-
- * EdgeResistance
+DESKTOPNAME = "DesktopName" INT DESKTOPNAME;
+    DESKTOPNAME = TOKEN;
+DESKTOPSIZE = "DesktopSize" HORIZONTALxVERTICAL;
+    HORIZONTAL = INT;
+    VERTICAL = INT;
+DESTROYDECOR = "DestroyDecor" [RECREATE] DECOR;
+    RECREATE = "recreate";
+DESTROYFUNC = "DestroyFunc" [FUNCNAME];
+    FUNCNAME = TOKEN;
+DESTROYMENU = "DestroyMenu" ["recreate"] MENUNAME;
+    MENUNAME = STRING;
+DESTROYMENUSTYLE = "DestroyMenuStyle" MENUSTYLENAME;
+     MENUSTYLENAME = TOKEN;
+DESTROYMODULECONFIG = "DestroyModuleConfig" MODULECONFIG;
+DESTROYSTYLE = "DestroyStyle" STYLENAME;
+    STYLENAME = TOKEN / "*";
+DESTROYWINDOWSTYLE = "DestroyWindowStyle";
+DIRECTION = "Direction" [FROMPOINTER] DIRECTION ["(" CONDITIONS ")"] COMMAND;
+    FROMPOINTER = "FromPointer";
+    DIRECTION = "North" / "NorthEast" / "East" / "SouthEast" / "South" /
+        "SouthWest" / "West" / "NorthWest" / "Center";
+ECHO = "Echo" TOKEN;
+ECHOFUNCDEFINITION = "EchoFuncDefinition" FUNCNAME;
+EDGECOMMAND = "EdgeCommand" [EDGEDIRECTION [COMMAND]];
+EDGELEAVECOMMAND = "EdgeLeaveCommand" [EDGEDIRECTION [COMMAND]];
+EDGERESISTANCE = "EdgeResistance";
    (* OBSOLETED BY CORRESPONDING STYLE COMMAND *)
-
- * EdgeScroll HORIZONTAL[p] VERTICAL[p] [OPTION]
-    HORIZONTAL: INT
-    VERTICAL: INT
-    p: "p"
-    OPTION: "Wrap" | "wrapx" | "Wrapy"
-
-
- * EdgeThickness TOKEN
-    TOKEN: "0" | "1" | "2"
-
- * Emulate TOKEN
-    TOKEN: "Fvwm" | "Mwm" | "Win"
-
- * EscapeFunc VOID
-
- * EwmhBaseStruts INT INT INT INT
-
- * EwmhNumberOfDesktops INT INT
-
- * Exec COMMAND
-
- * ExecUseShell SHELL
-
- * FakeClick COMMAND VALUE [, COMMAND VALUE]
-    COMMAND: (KEYWORD, VALUE)
-    KEYWORD: "press" | "release" | "modifiers" | "wait" | DEPTH
-    VALUE: ("1" | "2" | "3" | "4" | "5" | "Mod1" | "Mod2" | "Mod3" |
-        "Mod4" | "Mod5") | ("6" | "7" | "8" | "Shift" | "Lock" | "Control")
-    DEPTH: ("depth" | "0" | "1" | "2" | "3" | INT)
-
- * FakeKeypress COMMAND VALUE [, COMMAND VALUE]
-    KEYWORD: "press" | "release" | "modifiers" | "wait" | DEPTH
-    VALUE: KEYNAME
-
-    DEPTH: ("depth" | "0" | "1" | "2" | "3" | INT)
-
-* FlipFocus [TOKEN]
-    TOKEN: "nowarp"
-
- * Focus [TOKEN]
-    TOKEN: "nowarp"
-
- * FocusStyle [STYLEOPTION] [, STYLEOPTION]
-
- * Function [FUNCNAME]
-
- * GlobalOpts
-    (* OBSOLETE; ignoring! *)
-
- * GnomeButton
+EDGESCROLL = "EdgeScroll" HORIZONTAL[p] VERTICAL[p] [OPTION];
+    HORIZONTAL = INT;
+    VERTICAL = INT;
+    p = "p";
+    OPTION = "Wrap" / "wrapx" / "Wrapy";
+EDGETHICKNESS = "EdgeThickness" TOKEN;
+    TOKEN = "0" / "1" / "2";
+EMULATE = "Emulate" TOKEN;
+    TOKEN = "Mvwm" / "Mwm" / "Win";
+ESCAPEFUNC = "EscapeFunc";
+EWMHBASESTRUTS = "EwmhBaseStruts" INT INT INT INT;
+EWMHNUMBEROFDESKTOPS = "EwmhNumberOfDesktops" INT INT;
+EXEC = "Exec" COMMAND;
+EXECUSESHELL = "ExecUseShell" SHELL;
+FAKECLICK = "FakeClick" COMMAND VALUE [, COMMAND VALUE];
+    COMMAND = (KEYWORD, VALUE);
+    KEYWORD = "press" / "release" / "modifiers" / "wait" / DEPTH;
+    VALUE = ("1" / "2" / "3" / "4" / "5" / "Mod1" / "Mod2" / "Mod3" /
+        "Mod4" / "Mod5") / ("6" / "7" / "8" / "Shift" / "Lock" / "Control");
+    DEPTH = ("depth" / "0" / "1" / "2" / "3" / INT);
+FAKEKEYPRESS = "FakeKeypress" COMMAND VALUE [, COMMAND VALUE];
+    KEYWORD = "press" / "release" / "modifiers" / "wait" / DEPTH;
+    VALUE = KEYNAME;
+    DEPTH = ("depth" / "0" / "1" / "2" / "3" / INT);
+FLIPFOCUS = "FlipFocus" ["nowarp"];
+FOCUS = "Focus" ["nowarp"];
+FOCUSSTYLE = "FocusStyle" [STYLEOPTION] [, STYLEOPTION];
+FUNCTION = "Function" [FUNCNAME];
+GLOBALOPTS = "GlobalOpts"
+    (* OBSOLETE; ignoring! *);
+GNOMEBUTTON = "GnomeButton";
     (* REMOVED IN MVWM ALREADY; ignoring! *)
-
- * GnomeShowDesks
+GNOMESHOWDESKS = "GnomeShowDesks";
    (* REMOVED IN MVWM ALREADY; ignoring! *)
-
- * GotoDesk [PREV | INT [INT] [INT INT]
-    PREV: "prev"
-
- * GotoDeskAndPage PREV | INT INT INT
-    PREV: "prev"
-
- * GotoPage PREV | [OPTIONS] X[p] Y[p]
-    PREV: "prev"
-    OPTIONS: "wrapx" | "wrapy"
-    X: INT
-    Y: INT
-    p: "p"
-
- * HideGeometryWindow [COMMAND]
-    COMMAND: "Never" | "Move" | "Resize"
-
- * HilightColor
+GOTODESK = "GotoDesk" [PREV / INT [INT] [INT INT];
+    PREV = "prev";
+GOTODESKANDPAGE = "GotoDeskAndPage" PREV / INT INT INT;
+    PREV = "prev";
+GOTOPAGE = "GotoPage" PREV / [OPTIONS] X[p] Y[p];
+    PREV = "prev";
+    OPTIONS = "wrapx" / "wrapy";
+    X = INT;
+    Y = INT;
+    p = "p";
+HIDEGEOMETRYWINDOW = "HideGeometryWindow" [COMMAND];
+    COMMAND = "Never" / "Move" / "Resize";
+HILIGHTCOLOR = "HilightColor";
    (* OBSOLETE; ignoring *)
-
- * HilightColorset [INT]
-
- * IconFont FONTNAME
+HILIGHTCOLORSET = "HilightColorset" [INT];
+ICONFONT = "IconFont" FONTNAME;
     (* OBSOLETE; ignoring *)
-
- * IconPath
+ICONPATH = "IconPath";
    (* OBSOLETE; ignoring *)
-
- * Iconify (BOOL | TOGGLE)
-
- * IgnoreModifiers (MODIFIER | "L")
-
- * ImagePath [PATH]
-
- * InfoStoreAdd KEY VALUE
-    KEY: STRING
-    VALUE: STRING
-
- * InfoStoreRemove [KEY]
-
- * KeepRc [COMMAND]
-
- * Key [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
-
- * KillModule [MODULENAME] [STRING]
-
- * Layer [INT INT] | "default"
-
- * LocalePath [PATH]
-
- * Lower, Raise, RaiseLower VOID
-
- * Maximize [FLAGS] [BOOL | "forget" ] [[HORIZONTAL[p]] VERTICAL[p]]
-    GROWOPTS = "grow" | "growleft" | "growright" | "growup" | "growdown"
-    HORIZONTAL: INT | GROWOPTS
-    VERTICAL: INT | GROWOPTS
-    p: "p"
-    FLAGS: "ewmhiwa" | "growonwindowlayer" | "growonlayers" |
-        ("screen" | XINERAMASCR)
-
- * Menu TOKEN [POSITION] [COMMAND]
-    POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
-    CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
-        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
-        "This" | ("Rectangle" GEOMETRY)
-    OPTIONS: "TearoffImmediately" | "SelectInPlace"
-
- * MenuStyle MENUSTYLE [OPTIONS]
-    OPTIONS: "Fvwm" | "Mwm" | "Win"| "BorderWidth" | "Foreground" |
-        "Background" "Greyed" | "HilightBack" | "!HilightBack" |
-        "HilightTitleBack" | "ActiveFore" | "!ActiveFore" | "MenuColorset" |
-        "ActiveColorset" | "GreyedColorset" | "TitleColorset" |
-        "Hilight3DThick" | "Hilight3DThin" | "Hilight3DOff" |
-        "Hilight3DThickness" | "Animation" | "!Animation" | "Font" |
-        "TitleFont" | "MenuFace" | "PopupDelay" | "PopupOffset" |
-        "TitleWarp" | "!TitleWarp" | "TitleUnderlines0" |
-        "TitleUnderlines1" | "TitleUnderlines2" | "SeparatorsLong" |
-        "SeparatorsShort" | "TrianglesSolid" | "TrianglesRelief" |
-        "PopupImmediately" | "PopupDelayed" | "PopdownImmediately" |
-        "PopdownDelayed" | "PopupActiveArea" | "DoubleClickTime" |
-        "SidePic" | "SideColor" | "PopupAsRootMenu" | "PopupAsSubmenu" |
-        "PopupIgnore" | "PopupClose"| "RemoveSubmenus" | "HoldSubmenus" |
-        "SubmenusRight" | "SubmenusLeft" | "SelectOnRelease" |
-        "ItemFormat" | "VerticalItemSpacing"| "VerticalMargins" |
-        "VerticalTitleSpacing" | "AutomaticHotkeys" |
-        "!AutomaticHotkeys"| "UniqueHotkeyActivatesImmediate" |
-        "!UniqueHotkeyActivatesImmediate" | "MouseWheel" | "ScrollOffPage" |
-        "!ScrollOffPage|" | "TrianglesUseFore" | "!TrianglesUseFore"
-
- * Module [MODULENAME] [MODULEALIAS]
-
- * ModuleListenOnly MODULENAME [ARGS]
-
- * ModulePath PATH
-
- * ModuleSynchronous ["Expect" STRING] ["Timeout" INT] [MODULENAME]
-
- * ModuleTimeout INT
-
- * Mouse [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
-
- * Move [MOVEARGS]
-
- * MoveThreshold [INT]
-
- * MoveToDesk [PREV | INT [INT] [INT INT]
-   PREV: "prev"
-
- * MoveToPage PREV [OPTIONS] X[p] Y[p]
-   PREV: "prev"
-   OPTIONS: "wrapx" | "wrapy" | "nodesklimitx" | "nodesklimity"
-   X: INT
-   Y: INT
-   p: "p" | "w"
-
- * MoveToScreen [XRANDRMONITORNAME]
-
- * NoWindow VOID
-
- * Nop VOID
-
- * OpaqueMoveSize [INT]
-
- * Pick ([CONDITIONS) COMMAND
-
- * PipeRead COMMAND ["quiet"]
-
- * PixmapPath
+ICONIFY = "Iconify" (BOOL / TOGGLE);
+IGNOREMODIFIERS = "IgnoreModifiers" (MODIFIER / "L");
+IMAGEPATH = "ImagePath" [PATH];
+INFOSTOREADD = "InfoStoreAdd" KEY VALUE;
+    KEY = STRING;
+    VALUE = STRING;
+INFOSTOREREMOVE = "InfoStoreRemove" [KEY];
+KEEPRC = "KeepRc" [COMMAND];
+KEY = "Key" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND;
+KILLMODULE = "KillModule" [MODULENAME] [STRING];
+LAYER = "Layer" [INT INT] / "default";
+LOCALEPATH = "LocalePath" [PATH];
+LOWER = "Lower";
+RAISE = "Raise";
+RAISELOWER = "RaiseLower";
+MAXIMIZE = "Maximize" [FLAGS] [BOOL / "forget" ] [[HORIZONTAL[p]] VERTICAL[p]];
+    GROWOPTS = "grow" / "growleft" / "growright" / "growup" / "growdown";
+    HORIZONTAL = INT / GROWOPTS;
+    VERTICAL = INT / GROWOPTS;
+    p = "p";
+    FLAGS = "ewmhiwa" / "growonwindowlayer" / "growonlayers" /
+        ("screen" / XINERAMASCR);
+MENU = "Menu" TOKEN [POSITION] [COMMAND];
+    POSITION = CONTEXT-RECTANGLE INT INT [OPTIONS];
+    CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
+        "Interior" / "Tiitle" / ("Button" INT) "Icon" / "Item" / "Context" /
+        "This" / ("Rectangle" GEOMETRY);
+    OPTIONS = "TearoffImmediately" / "SelectInPlace";
+MENUSTYLE = "MenuStyle" MENUSTYLE [OPTIONS];
+    OPTIONS = "Mvwm" / "Mwm" / "Win"/ "BorderWidth" / "Foreground" /
+        "Background" "Greyed" / "HilightBack" / "!HilightBack" /
+        "HilightTitleBack" / "ActiveFore" / "!ActiveFore" / "MenuColorset" /
+        "ActiveColorset" / "GreyedColorset" / "TitleColorset" /
+        "Hilight3DThick" / "Hilight3DThin" / "Hilight3DOff" /
+        "Hilight3DThickness" / "Animation" / "!Animation" / "Font" /
+        "TitleFont" / "MenuFace" / "PopupDelay" / "PopupOffset" /
+        "TitleWarp" / "!TitleWarp" / "TitleUnderlines0" /
+        "TitleUnderlines1" / "TitleUnderlines2" / "SeparatorsLong" /
+        "SeparatorsShort" / "TrianglesSolid" / "TrianglesRelief" /
+        "PopupImmediately" / "PopupDelayed" / "PopdownImmediately" /
+        "PopdownDelayed" / "PopupActiveArea" / "DoubleClickTime" /
+        "SidePic" / "SideColor" / "PopupAsRootMenu" / "PopupAsSubmenu" /
+        "PopupIgnore" / "PopupClose"/ "RemoveSubmenus" / "HoldSubmenus" /
+        "SubmenusRight" / "SubmenusLeft" / "SelectOnRelease" /
+        "ItemFormat" / "VerticalItemSpacing"/ "VerticalMargins" /
+        "VerticalTitleSpacing" / "AutomaticHotkeys" /
+        "!AutomaticHotkeys"/ "UniqueHotkeyActivatesImmediate" /
+        "!UniqueHotkeyActivatesImmediate" / "MouseWheel" / "ScrollOffPage" /
+        "!ScrollOffPage/" / "TrianglesUseFore" / "!TrianglesUseFore";
+MODULE = "Module" [MODULENAME] [MODULEALIAS];
+MODULELISTENONLY = "ModuleListenOnly" MODULENAME [ARGS];
+MODULEPATH = "ModulePath" PATH;
+MODULESYNCHRONOUS = "ModuleSynchronous" ["Expect" STRING] ["Timeout" INT] [MODULENAME];
+MODULETIMEOUT = "ModuleTimeout" INT;
+MOUSE = "Mouse" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND;
+MOVE = "Move" [MOVEARGS];
+MOVETHRESHOLD = "MoveThreshold" [INT];
+MOVETODESK = "MoveToDesk" [PREV / INT [INT] [INT INT];
+   PREV = "prev";
+MOVETOPAGE = "MoveToPage" PREV [OPTIONS] X[p] Y[p];
+   PREV = "prev";
+   OPTIONS = "wrapx" / "wrapy" / "nodesklimitx" / "nodesklimity";
+   X = INT;
+   Y = INT;
+   p = "p" / "w";
+MOVETOSCREEN = "MoveToScreen" [XRANDRMONITORNAME];
+NOWINDOW = "NoWindow";
+NOP = "Nop";
+OPAQUEMOVESIZE = "OpaqueMoveSize" [INT];
+PICK = "Pick" ([CONDITIONS) COMMAND;
+PIPEREAD = "PipeRead" COMMAND ["quiet"];
+PIXMAPPATH = "PixmapPath"
+   (* OBSOLETE; ignoring *);
+PLACEAGAIN = "PlaceAgain" ["Anim"] ["Icon"];
+PLUS = "Plus" [STRING];
+POINTERKEY = "PointerKey" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND;
+POPUP = "Popup" [STRING] [POSITION] [COMMAND];
+   POSITION = CONTEXT-RECTANGLE INT INT [OPTIONS];
+   CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
+        "Interior" / "Tiitle" / ("Button" INT) "Icon" / "Item" / "Context" /
+        "This" / ("Rectangle" GEOMETRY);
+   OPTIONS = "TearoffImmediately" / "SelectInPlace";
+PRINTINFO = "PrintInfo" SUBJECT;
+   SUBJECT = (KEYWORD [VAL]);
+   VAL = "0" / "1" / "2";
+   KEYWORD = "Colors" / "ImageCache" / "Locale" / "NLS" / "Style" /
+        "Bindings" / "Infostore";
+QUIT = "Quit";
+QUITSCREEN = "QuitScreen";
+QUITSESSION = "QuitSession";
    (* OBSOLETE; ignoring *)
-
- * PlaceAgain ["Anim"] ["Icon"]
-
- * Plus [STRING]
-
- * PointerKey [(WINDOW)] KEYNAME CONTEXT MODIFIER COMMAND
-
- * Popup [STRING] [POSITION] [COMMAND]
-   POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
-   CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
-        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
-        "This" | ("Rectangle" GEOMETRY)
-   OPTIONS: "TearoffImmediately" | "SelectInPlace"
-
- * PrintInfo SUBJECT
-   SUBJECT: (KEYWORD [VAL])
-   VAL: "0" | "1" | "2"
-   KEYWORD: "Colors" | "ImageCache" | "Locale" | "NLS" | "Style" |
-        "Bindings" | "Infostore"
-
- * Quit VOID
-
- * QuitScreen VOID
-
- * QuitSession
+READ = "Read" FILENAME ["quiet"];
+RECAPTURE = "Recapture";
+RECAPTUREWINDOW = "RecaptureWindow";
    (* OBSOLETE; ignoring *)
-
- * Read FILENAME ["quiet"]
-
- * Recapture VOID
-
- * RecaptureWindow
+REFRESH = "Refresh";
+REFRESHWINDOW = "RefreshWindow";
+REPEAT = "Repeat";
+RESIZE = "Resize" [RESIZEARGS];
+   RESIZEARGS = ["br" / ["frame"]] ["direction" DIR] /
+    ["warptoborder" "automatic"] ["fixeddirection"][WIDTH HEIGHT];
+    WIDTH = INT / "keep"
+    HEIGHT INT / "keep";
+RESIZEMAXIMIZE = "ResizeMaximize" [RESIZEARGS];
+RESIZEMOVE = "ResizeMove" RESIZEARGS MOVEARGS;
+RESIZEMOVEMAXIMIZE = "ResizeMoveMaximize" RESIZEARGS MOVEARGS;
+RESTACKTRANSIENTS = "RestackTransients";
+RESTART = "Restart" [STRING];
+SAVEQUITSESSION = "SaveQuitSession";
    (* OBSOLETE; ignoring *)
-
- * Refresh VOID
-
- * RefreshWindow VOID
-
- * Repeat VOID
-
- * Resize [RESIZEARGS]
-   RESIZEARGS: ["br" | ["frame"]] ["direction" DIR] |
-    ["warptoborder" "automatic"] ["fixeddirection"][WIDTH HEIGHT]
-    WIDTH: INT | "keep"
-    HEIGHT INT | "keep"
-
- * ResizeMaximize [RESIZEARGS]
-
- * ResizeMove RESIZEARGS MOVEARGS
-
- * ResizeMoveMaximize RESIZEARGS MOVEARGS
-
- * RestackTransients VOID
-
- * Restart [STRING]
-
- * SaveQuitSession
+SAVESESSION = "SaveSession";
    (* OBSOLETE; ignoring *)
-
- * SaveSession
-   (* OBSOLETE; ignoring *)
-
- * ScanForWindow ["FromPointer"] DIR DIR [(CONDITIONS)] COMMAND
-   DIR: EDGEDIRECTION
-
- * Schedule ["periodic"] INT [INT] COMMAND
-
- * Scroll [HORIZONTAL[p] VERTICAL[p] | OPTION]
-   HORIZONTAL: INT
-   VERTICAL: INT
-   p: "p"
-   OPTION: "reverse"
-
- * SendToModule [MODULENAME] [STRING]
-
- * SetAnimation INT [INT]
-
- * SetEnv [STRING] [STRING]
-
- * Silent COMMAND
-
- * SnapAttraction
+SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIR DIR ["(" CONDITIONS ")"] COMMAND;
+   DIR = EDGEDIRECTION;
+SCHEDULE = "Schedule" ["periodic"] INT [INT] COMMAND;
+SCROLL = "Scroll" [HORIZONTAL["p"] VERTICAL["p"] / OPTION];
+   HORIZONTAL = INT;
+   VERTICAL = INT;
+   OPTION = "reverse";
+SENDTOMODULE = "SendToModule" [MODULENAME] [STRING];
+SETANIMATION = "SetAnimation" INT [INT];
+SETENV = "SetEnv" [STRING] [STRING];
+SILENT = "Silent" COMMAND;
+SNAPATTRACTION = "SnapAttraction";
    (* OBSOLETE; style option; ignoring *)
-
- * SnapGrid
+SNAPGRID = "SnapGrid";
    (* OBSOLETE; style option; ignoring *)
-
- * State STATE [BOOL]
-   STATE: INT | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" |
-        "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" |
-        "28" | "29" | "30" | "31"
-
- * Stick [BOOL]
-
- * StickAcrossDesks [BOOL]
-
- * StickAcrossPages [BOOL]
-
- * Stroke
+STATE = "State" STATE [BOOL];
+   STATE = INT / "11" / "12" / "13" / "14" / "15" / "16" / "17" / "18" /
+        "19" / "20" / "21" / "22" / "23" / "24" / "25" / "26" / "27" /
+        "28" / "29" / "30" / "31";
+STICK = "Stick" [BOOL];
+STICKACROSSDESKS = "StickAcrossDesks" [BOOL];
+STICKACROSSPAGES = "StickAcrossPages" [BOOL];
+STROKE = "Stroke";
    (* OBSOLETE; removed in mvwm *)
-
- * StrokeFunc
+STROKEFUNC = "StrokeFunc";
    (* OBSOLETE; removed in mvwm *)
-
- * Style [STYLENAME] [OPTION] [, OPTION]
-
- * TearMenuOff VOID
+STYLE = "Style" [STYLENAME] [OPTION] [, OPTION];
+TEARMENUOFF = "TearMenuOff";
    (* Applies to menu context only *)
-
- * Test [([!]TESTCONDITION)] COMMAND
-   TESTCONDITION: (KEYWORD [VALUE])
-   KEYWORD: ("version" OPERATOR DOTTEDNUM) | ("EnvIsSet" STRING) |
-    ("EnvMatch" STRING) | ("EdgeHasPointer" DIRECTION) |
-    ("EdgeIsActive" DIRECTION) | "Start" | "Init" | "Restart" | "Exit" |
-    "Quit" | "ToRestart" | "True" | "False" | "F" | "R" | "W" | "X" | "I"
-   OPERATOR: ">=" | ">" | "<=" | "==" | "!="
-
- * TestRc [([!]RETCODE)] COMMAND
-   RETCODE: "0" | "1" | "-1" | "-2" | "NoMatch" | "Match" | "Error" |
-    "Break"
-
- * ThisWindow [(CONDITION)] COMMAND
-   CONDITION: { CONDITION; "CirculateHit" | "CirculateHitIcon" |
-        "CirculateHitShaded" }
-
- * Title VOID
+TEST = "Test" ["(" [ "!" ] TESTCONDITION ")"] COMMAND;
+   TESTCONDITION = (KEYWORD [VALUE]);
+   KEYWORD = ("version" OPERATOR DOTTEDNUM) / ("EnvIsSet" STRING) /
+    ("EnvMatch" STRING) / ("EdgeHasPointer" DIRECTION) /
+    ("EdgeIsActive" DIRECTION) / "Start" / "Init" / "Restart" / "Exit" /
+    "Quit" / "ToRestart" / "True" / "False" / "F" / "R" / "W" / "X" / "I";
+   OPERATOR = ">=" / ">" / "<=" / "==" / "!=";
+TESTRC = "TestRc" ["(" [ "!" ]RETCODE ")"] COMMAND;
+   RETCODE = "0" / "1" / "-1" / "-2" / "NoMatch" / "Match" / "Error" /
+    "Break";
+THISWINDOW = "ThisWindow" ["(" CONDITION ")"] COMMAND;
+   CONDITION = *("CirculateHit" / "CirculateHitIcon" / "CirculateHitShaded")
+TITLE = "Title";
    (* Applies to menu context only *)
-
- * TitleStyle
-   !!!
-
- * UnsetEnv [STRING]
-
- * UpdateDecor VOID
-
- * UpdateStyles VOID
-
- * Wait VOID
-
- * WarpToWindow X[p] Y[p]
-   X: INT
-   Y: INT
-   p: "p"
-
- * WindowFont
+TITLESTYLE = "TitleStyle"
+   !!!;
+UNSETENV = "UnsetEnv" [STRING];
+UPDATEDECOR = "UpdateDecor";
+UPDATESTYLES = "UpdateStyles";
+WAIT = "Wait";
+WARPTOWINDOW = "WarpToWindow" X[p] Y[p];
+   X = INT;
+   Y = INT;
+   p = "p";
+WINDOWFONT = "WindowFont";
    (* OBSOLETE *)
-
- * WindowId [WINDOWID]
-
- * WindowList [(CONDITIONS)] [POSITION] [WLOPTIONS] [COMMAND]
-   POSITION: CONTEXT-RECTANGLE INT INT [OPTIONS]
-   CONTEXT-RECTANGLE: "Root" | "XineramaRoot" | "Mouse" | "Window" |
-        "Interior" | "Tiitle" | ("Button" INT) "Icon" | "Item" | "Context" |
-        "This" | ("Rectangle" GEOMETRY)
-   OPTIONS: "TearoffImmediately" | "SelectInPlace"
-   WLOPTIONS: (KEYWORD [VALUE])
-   WLOPTIONS: "Geometry" | "NoGeometry" | "NoGeometryWithInfo" |
-        "NoDeskNum" | "NoLayer" | "NoNumInDeskTitle" |
-        "NoCurrentDeskTitle" | ("MaxLabelWidth" INT) |
-        "TitleForAllDesks" | ("Function" FUNCNAME) | ("Desk" INT) |
-        "CurrentDesk" | "NoIcons" | "Icons" | "OnlyIcons" | "NoNormal" |
-        "Normal" | "OnlyNormal" | "NoSticky" | "Sticky" | "OnlySticky" |
-        "NoStickyAcrossPages" | "StickyAcrossPages" |
-        "OnlyStickyAcrossPages" | "NoStickyAcrossDesks" |
-        "StickyAcrossDesks" | "OnlyStickyAcrossDesks" | "NoOnTop" |
-        "OnTop" | "OnlyOnTop" | "NoOnBottom" | "OnlyOnBottom" |
-        (Layer INT [INT]) | "UseSkipList" | "OnlySkipList" |
-        "SortByResource" | "SortByClass" | "NoHotKeys" | "SelectOnRelease" |
-        "ReverseOrder" | "NoDeskSort" | "CurrentAtEnd" | "IconifiedAtEnd" |
-        "UseIconName" | "Alphabetic" | "NotAlphabetic"
-
- * WindowShade [BOOL] | ["ShadeAgain"] [DIRECTION]
-
- * WindowShadeAnimate
+WINDOWID = "WindowId" [WINDOWID];
+WINDOWLIST = "WindowList" ["(" WINDOWLISTCONDITIONS ")"] [POSITION] [WLOPTIONS] [COMMAND];
+   POSITION = CONTEXT-RECTANGLE INT INT [OPTIONS];
+   CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
+        "Interior" / "Tiitle" / ("Button" INT) "Icon" / "Item" / "Context" /
+        "This" / ("Rectangle" GEOMETRY);
+   OPTIONS = "TearoffImmediately" / "SelectInPlace";
+   WLOPTIONS = (KEYWORD [VALUE]);
+   WLOPTIONS = "Geometry" / "NoGeometry" / "NoGeometryWithInfo" /
+        "NoDeskNum" / "NoLayer" / "NoNumInDeskTitle" /
+        "NoCurrentDeskTitle" / ("MaxLabelWidth" INT) /
+        "TitleForAllDesks" / ("Function" FUNCNAME) / ("Desk" INT) /
+        "CurrentDesk" / "NoIcons" / "Icons" / "OnlyIcons" / "NoNormal" /
+        "Normal" / "OnlyNormal" / "NoSticky" / "Sticky" / "OnlySticky" /
+        "NoStickyAcrossPages" / "StickyAcrossPages" /
+        "OnlyStickyAcrossPages" / "NoStickyAcrossDesks" /
+        "StickyAcrossDesks" / "OnlyStickyAcrossDesks" / "NoOnTop" /
+        "OnTop" / "OnlyOnTop" / "NoOnBottom" / "OnlyOnBottom" /
+        (Layer INT [INT]) / "UseSkipList" / "OnlySkipList" /
+        "SortByResource" / "SortByClass" / "NoHotKeys" / "SelectOnRelease" /
+        "ReverseOrder" / "NoDeskSort" / "CurrentAtEnd" / "IconifiedAtEnd" /
+        "UseIconName" / "Alphabetic" / "NotAlphabetic";
+WINDOWSHADE = "WindowShade" [BOOL] / ["ShadeAgain"] [DIRECTION];
+WINDOWSHADEANIMATE = "WindowShadeAnimate";
    (* OBSOLETE; ignoring *)
-
- * WindowStyle [STYLEOPTION] [, STYLEOPTION]
-
- * WindowsDesk
+WINDOWSTYLE = "WindowStyle" [STYLEOPTION] [, STYLEOPTION];
+WINDOWSDESK = "WindowsDesk";
    (* OBSOLETE; ignoring *)
-
- * XSync VOID
-
- * XSynchronize [BOOL]
-
- * Xinerama
+XSYNC = "XSync";
+XSYNCHRONIZE = "XSynchronize" [BOOL];
+XINERAMA = "Xinerama";
    (* OBSOLETE; removed in mvwm *)
-
- * XineramaPrimaryScreen
+XINERAMAPRIMARYSCREEN = "XineramaPrimaryScreen";
    (* OBSOLETE; removed in mvwm *)
-
- * XineramaSls
+XINERAMASLS = "XineramaSls";
    (* OBSOLETE; removed in mvwm *)
-
- * XineramaSlsScreens
+XINERAMASLSSCREENS = "XineramaSlsScreens";
    (* OBSOLETE; removed in mvwm *)
-
- * XineramaSlsSize
+XINERAMASLSSIZE = "XineramaSlsSize";
    (* OBSOLETE; removed in mvwm *)
-
- * XorPixmap [IMAGEFILE]
-
- * XorValue [INT]
+XORPIXMAP = "XorPixmap" [IMAGEFILE];
+XORVALUE = "XorValue" [INT];
