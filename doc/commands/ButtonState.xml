@@ -6,7 +6,7 @@
 %myents;
 ]>
 
-<!-- $Id: ButtonState.xml,v 1.3 2007/06/16 12:38:45 griph Exp $ -->
+<!-- $Id: ButtonState.xml,v 1.3.6.2 2014/08/17 12:52:16 tadam Exp $ -->
 
 <section id='ButtonState'>
 <title>ButtonState</title>
@@ -29,16 +29,19 @@ The
 <emphasis remap='B'>ButtonState</emphasis>
 command controls which states of the window titles and title
 buttons are used.  The default is to use all four states:
-"ActiveUp>",
-"ActiveDown>",
-"InactiveUp>" and
-"InactiveDown>" (see
+"ActiveUp",
+"ActiveDown",
+"InactiveUp" and
+"InactiveDown" (see
 <fvwmref cmd="ButtonStyle"/> and
 <fvwmref cmd="TitleStyle"/>
 commands).  The
 <replaceable>bool</replaceable>
 argument after the key word controls if the designated state is
-used ("True") or not ("False").  The "ActiveUp" state cannot be
+used ("True") or not ("False").  The <replaceable>bool</replacement> flag
+is the same as other commands, and not limited to just "True" or "False";
+"Yes" and "No" may also be used.
+The "ActiveUp" state cannot be
 deactivated. If no arguments are provided or the given arguments
 are illegal, the default is restored.</para>
 
