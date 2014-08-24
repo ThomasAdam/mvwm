@@ -531,7 +531,8 @@ Definitions that need defining for the below
 Types
 ~~~~~
 
- WS = %x20 / %x09
+ WSC = %x20 / %x09
+ WS = *WSC
  DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
  SIGNPOS = "+"
  SIGNNEG = "-"
@@ -543,8 +544,9 @@ Types
  FALSE = "no" / "n" / "0" / "f" / "false"
  BOOL = TRUE / FALSE
  TOGGLE = "toggle"
+ BOOLOR_TOGGLE = BOOL / TOGGLE
  MODIFIER = "1" / "2" / "3" / "4" / "5"
- PATH = [ "/" ] *( STRING "/" ) [ STRING ]
+ PATH = ["/"] *(STRING "/") [STRING]
  VISIBLE_NAME = !!!
  CLASS = !!!
  RESOURCE = !!!
@@ -556,117 +558,200 @@ Types
  MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
  EDGEDIRECTION: "North" / "Top" / "N" / "West" / "Left" / "W" /
     "South" / "Bottom" / "S" / "East" / "Right" / "E"
+ DECORNAME = TOKEN
+ FUNCNAME = TOKEN
+ MENUNAME = TOKEN
+ MENUSTYLENAME = TOKEN
+ STYLENAME = TOKEN / "*"
+ DIRS_MAIN = "North" / "N"
+ DIRS_MAIN =/ "East" / "E"
+ DIRS_MAIN =/ "South" / "S"
+ DIRS_MAIN =/ "West" / "W"
+ DIRS_DIAG = DIRS_MAIN
+ DIRS_DIAG =/ "NorthEast" / "NW"
+ DIRS_DIAG =/ "SouthEast" / "SE"
+ DIRS_DIAG =/ "SouthWest" / "SW"
+ DIRS_DIAG =/ "NorthWest" / "NW"
+ DIRS_CENTER = DIRS_DIAG / "Center" / "C"
+ COLORSET_NUM = POSINT
 
 Commands
 ~~~~~~~~
-ADDBUTTONSTYLE = "AddButtonStyle" BUTTON [STATE] [STYLE] [FLAG]
-BUTTON = POSINT "All" / "Left" / "Right"
-STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
-	ACTIVE / "Inactive" / TOGGLE / "AllActive" / "AllInactive" /
-	"AllNormal" / "AllToggled" / "AllUp" / "AllDown" / "AllActiveUp" /
-	"AllActiveDown" / "AllInactiveUp" / "AllInactiveDown"
-ACTIVE = "Active" - implies FOCUSED_WINDOW
-FLAG = [!]KEYWORD [, [!]KEYWORD] ...
-(XXX = ButtonStyle relationships here...)
+ADDBUTTONSTYLE = "AddButtonStyle" ADDBUTTONSTYLEBUTTON [ADDBUTTONSTYLESTATE] [ADDBUTTONSTYLESTYLE] [ADDBUTTONSTYLEFLAG]
+ADDBUTTONSTYLEBUTTON = POSINT ("All" / "Left" / "Right")
+ADDBUTTONSTYLESTATE = "ActiveUp"
+ADDBUTTONSTYLESTATE =/ "ActiveDown"
+ADDBUTTONSTYLESTATE =/ "InactiveUp"
+ADDBUTTONSTYLESTATE =/ "InactiveDown"
+ADDBUTTONSTYLESTATE =/ ADDBUTTONSTYLEACTIVE
+ADDBUTTONSTYLESTATE =/ "Inactive"
+ADDBUTTONSTYLESTATE =/ TOGGLE
+ADDBUTTONSTYLESTATE =/ "AllActive"
+ADDBUTTONSTYLESTATE =/ "AllInactive"
+ADDBUTTONSTYLESTATE =/ "AllNormal"
+ADDBUTTONSTYLESTATE =/ "AllToggled"
+ADDBUTTONSTYLESTATE =/ "AllUp"
+ADDBUTTONSTYLESTATE =/ "AllDown"
+ADDBUTTONSTYLESTATE =/ "AllActiveUp"
+ADDBUTTONSTYLESTATE =/ "AllActiveDown"
+ADDBUTTONSTYLESTATE =/ "AllInactiveUp"
+ADDBUTTONSTYLESTATE =/ "AllInactiveDown"
+ADDBUTTONSTYLEACTIVE = "Active" - implies FOCUSED_WINDOW
+ADDBUTTONSTYLEFLAG = [!]KEYWORD [, [!]KEYWORD] ...
+; (XXX = ButtonStyle relationships here...)
 
-ADDTITLESTYLE = "AddTitleStyle" [STATE] [STYLE] [FLAG]
-STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
-	ACTIVE / "Inactive" / "toggled" / "AllActive" / "AllInactive"
-FLAG = [!]KEYWORD [, [!]KEYWORD] ...
-ACTIVE = "Active" - implies FOCUSED_WINDOW
-(XXX = TitleStyle/ButtonStyle relationships here...)
+ADDTITLESTYLE = "AddTitleStyle" [ADDTITLESTYLESTATE] [ADDTITLESTYLESTYLE] [ADDTITLESTYLEFLAG]
+ADDTITLESTYLESTATE = "ActiveUp"
+ADDTITLESTYLESTATE =/ "ActiveDown"
+ADDTITLESTYLESTATE =/ "InactiveUp"
+ADDTITLESTYLESTATE =/ "InactiveDown"
+ADDTITLESTYLESTATE =/ ADDTITLESTYLEACTIVE
+ADDTITLESTYLESTATE =/ "Inactive"
+ADDTITLESTYLESTATE =/ "toggled"
+ADDTITLESTYLESTATE =/ "AllActive"
+ADDTITLESTYLESTATE =/ "AllInactive"
+ADDTITLESTYLEFLAG = ["!"] ADDTITLESTYLEFLAGKEYWORD *("," ["!"] ADDTITLESTYLEFLAGKEYWORD)
+ADDTITLESTYLEACTIVE = "Active" ; - implies FOCUSED_WINDOW
+; (XXX = TitleStyle/ButtonStyle relationships here...)
 
-ADDTODECOR = "AddToDecor" DECOR
-DECOR = TOKEN
-(XXX = Other commands/styles affect this document below first!)
+ADDTODECOR = "AddToDecor" DECORNAME
+DECORNAME = TOKEN
+; (XXX = Other commands/styles affect this document below first!)
 
-ADDTOFUNC = "AddToFunc" FUNCNAME FUNCDEFS COMMAND
-FUNCDEFS = "I" / "M" / "C" / "H" / "D"
+ADDTOFUNC = "AddToFunc" FUNCNAME ADDTOFUNCFUNCDEFS RESTOFLINE_COMMAND
+ADDTOFUNCFUNCDEFS = "I"
+ADDTOFUNCFUNCDEFS =/ "M"
+ADDTOFUNCFUNCDEFS =/ "C"
+ADDTOFUNCFUNCDEFS =/ "H"
+ADDTOFUNCFUNCDEFS =/ "D"
 
-ADDTOMENU = "AddToMenu" MENUNAME [LABEL COMMAND]
+ADDTOMENU = "AddToMenu" MENUNAME [ADDTOMENULABEL RESTOFLINE_COMMAND]
 
-ALL = "All" [OPTIONS] ["(" CONDITION ")"] COMMAND
-OPTIONS = "Reverse" / "UseStack"
+ALL = "All" [ALLOPTIONS] ["(" ALLCONDITION ")"] RESTOFLINE_COMMAND
+ALLOPTIONS = "Reverse"
+ALLOPTIONS =/ "UseStack"
 
-ANY = "Any" ["(" CONDITION ")"] COMMAND
-CURRENT = "Current" ["(" CONDITION ")"] COMMAND
-NEXT = "Next" ["(" CONDITION ")"] COMMAND
-NONE = "None" ["(" CONDITION ")"] COMMAND
-POINTERWINDOW = "PointerWindow" ["(" CONDITION ")"] COMMAND
-PREV = "Prev" ["(" CONDITION ")"] COMMAND
-CONDITION = WINDOWNAMEPATTERN / [!]KEYWORD [, [!]KEYWORD] ...
+ANY = "Any" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+CURRENT = "Current" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+NEXT = "Next" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+NONE = "None" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+POINTERWINDOW = "PointerWindow" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+PREV = "Prev" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
+CONDCONDITION = (WINDOWNAMEPATTERN / ["!"] CONDKEYWORD) *("," ["!"] KEYWORD)
 WINDOWNAMEPATTERN = TOKEN
-KEYWORD = !!!
-COMMAND = RESTOFLINE
+CONDKEYWORD = !!!
 
-ANIMATEDMOVE = "AnimatedMove" MOVEARGS MOVEARGS [KEYWORD]
+ANIMATEDMOVE = "AnimatedMove" MOVEARGS MOVEARGS [ANIMATEDMOVEKEYWORD]
 MOVEARGS = !!!
-KEYWORD = "Warp"
+ANIMATEDMOVEKEYWORD = "Warp"
+
 ASTERISK = "Asterisk" [MODULE_LINE]
 
 BEEP = "Beep"
 
-BORDERSTYLE = "BorderStyle" STATE [STYLE] [FLAG]
-STATE = "Active" / "Inactive"
-STYLE = "TiledPixmap" / "Colorset"
-FLAG = [!]KEYWORD [, [!]KEYWORD] ...
-KEYWORD = "HiddenHandles" / "NoInset" / "Raised" / "Sunk" / "Flat" /
-	"Simple"
+BORDERSTYLE = "BorderStyle" BORDERSTYLESTATE [BORDERSTYLESTYLE] [BORDERSTYLEFLAG]
+BORDERSTYLESTATE = "Active" / "Inactive"
+BORDERSTYLESTYLE = "TiledPixmap" / "Colorset"
+BORDERSTYLEFLAG = ["!"] BORDERSTYLEKEYWORD ("," ["!"] BORDERSTYLEKEYWORD)
+BORDERSTYLEKEYWORD = "HiddenHandles"
+BORDERSTYLEKEYWORD =/ "NoInset"
+BORDERSTYLEKEYWORD =/ "Raised"
+BORDERSTYLEKEYWORD =/ "Sunk"
+BORDERSTYLEKEYWORD =/ "Flat"
+BORDERSTYLEKEYWORD =/ "Simple"
 
-BREAK = "Break" [LEVELS]
-LEVELS = INT
+BREAK = "Break" [BREAKLEVELS]
+BREAKLEVELS = INT
 
-BUGOPTS = "BugOpts" OPTION
-OPTION = KEYWORD [VALUE] ...
-KEYWORD = "FlickingMoveWorkaround" / "MixedVisualWorkaround" /
-	"ModalityIsEvil" / "RaiseOverNativeWindows" / "RaiseOverUnmanaged" /
-	"FlickingQtDialogsWorkaround" / "QtDragnDropWorkaround" /
-	"EWMHIconicStateWorkaround" / "DisplayNewWindowNames" /
-	"ExplainWindowPlacement" / "DebugCRMotionMethod" /
-	"TransliterateUtf8"
-VALUE = "True" / "False" / 0 / 1
+BUGOPTS = "BugOpts" BUGOPTSOPTION
+BUGOPTSOPTION = 1*(BUGOPTSKEYWORD [BOOL_OR_TOGGLE])
+BUGOPTSKEYWORD = "FlickingMoveWorkaround"
+BUGOPTSKEYWORD =/ "MixedVisualWorkaround"
+BUGOPTSKEYWORD =/ "ModalityIsEvil"
+BUGOPTSKEYWORD =/ "RaiseOverNativeWindows"
+BUGOPTSKEYWORD =/ "RaiseOverUnmanaged"
+BUGOPTSKEYWORD =/ "FlickingQtDialogsWorkaround"
+BUGOPTSKEYWORD =/ "QtDragnDropWorkaround"
+BUGOPTSKEYWORD =/ "EWMHIconicStateWorkaround"
+BUGOPTSKEYWORD =/ "DisplayNewWindowNames"
+BUGOPTSKEYWORD =/ "ExplainWindowPlacement"
+BUGOPTSKEYWORD =/ "DebugCRMotionMethod"
+BUGOPTSKEYWORD =/ "TransliterateUtf8"
 
-BUSYCURSOR = "BusyCursor" OPTION [,OPTION]
-OPTION = KEYWORD VALUE ...
-KEYWORD = "DynamicMenu" / "ModuleSynchronous" / "Read" / "Wait" / "*"
-VALUE = "True" / "False" / 0 / 1
+BUSYCURSOR = "BusyCursor" BUSYCURSOROPTION *("," BUSYCURSOROPTION)
+BUSYCURSOROPTION = 1*(BUSYCURSORKEYWORD BOOL)
+BUSYCURSORKEYWORD = "DynamicMenu"
+BUSYCURSORKEYWORD =/ "ModuleSynchronous"
+BUSYCURSORKEYWORD =/ "Read"
+BUSYCURSORKEYWORD =/ "Wait"
+BUSYCURSORKEYWORD =/ "*"
 
-BUTTONSTATE = "ButtonState" OPTION [,OPTION]
-OPTION = KEYWORD [VALUE]
-KEYWORD = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown"
-VALUE = "True" / "False" / "Yes" / "No"
+BUTTONSTATE = "ButtonState" BUTTONSTATEOPTION *("," BUTTONSTATEOPTION)
+BUTTONSTATEOPTION = BUTTONSTATEKEYWORD [BOOL]
+BUTTONSTATEKEYWORD = "ActiveUp"
+BUTTONSTATEKEYWORD =/ "ActiveDown"
+BUTTONSTATEKEYWORD =/ "InactiveUp"
+BUTTONSTATEKEYWORD =/ "InactiveDown"
 
-BUTTONSTYLE = "ButtonStyle" BUTTON [STATE] [STYLE] [FLAGS]
-BUTTON = 0-9 / "All" / "Left" / "Right" / "Reset"
-STATE = "ActiveUp" / "ActiveDown" / "InactiveUp" / "InactiveDown" /
-	ACTIVE / "Inactive" / TOGGLE / "AllActive" / "AllInactive" /
-	"AllNormal" / "AllToggled" / "AllUp" / "AllDown" / "AllActiveUp" /
-	"AllActiveDown" / "AllInactiveUp" / "AllInactiveDown"
-ACTIVE = "Active" - implies FOCUSED_WINDOW
-STYLE = "Simple" / "Default" / "Solid" / "Colorset" / "Vector" /
-	GRADIENT / "Pixmap" / AdjustedPixmap" / "ShrunkPixmap" /
-	"StretchedPixmap" / "TiledPixmap" / "MiniIcon"
-GRADIENT = TYPE START-COLOUR END-COLOUR
-FLAG = [ "!" ]KEYWORD [, [ "!" ]KEYWORD] ...
-KEYWORD = "Raised" / "Sunk" / "Flat" / "UseBorderStyle" /
-	"UseTitleStyle"
-	(XXX = "Raised, Sunk, and Flat" can only be used initially!!!")
+BUTTONSTYLE = "ButtonStyle" BUTTONSTYLEBUTTON [BUTTONSTYLESTATE] [BUTTONSTYLESTYLE] [FLAGS]
+BUTTONSTYLEBUTTON = 0-9
+BUTTONSTYLEBUTTON =/ "All"
+BUTTONSTYLEBUTTON =/ "Left"
+BUTTONSTYLEBUTTON =/ "Right"
+BUTTONSTYLEBUTTON =/ "Reset"
+BUTTONSTYLEBUTTONSTATE = "ActiveUp"
+BUTTONSTYLEBUTTONSTATE =/ "ActiveDown"
+BUTTONSTYLEBUTTONSTATE =/ "InactiveUp"
+BUTTONSTYLEBUTTONSTATE =/ "InactiveDown"
+BUTTONSTYLEBUTTONSTATE =/ BUTTONSTYLEACTIVE
+BUTTONSTYLEBUTTONSTATE =/ "Inactive"
+BUTTONSTYLEBUTTONSTATE =/ TOGGLE
+BUTTONSTYLEBUTTONSTATE =/ "AllActive"
+BUTTONSTYLEBUTTONSTATE =/ "AllInactive"
+BUTTONSTYLEBUTTONSTATE =/ "AllNormal"
+BUTTONSTYLEBUTTONSTATE =/ "AllToggled"
+BUTTONSTYLEBUTTONSTATE =/ "AllUp"
+BUTTONSTYLEBUTTONSTATE =/ "AllDown"
+BUTTONSTYLEBUTTONSTATE =/ "AllActiveUp"
+BUTTONSTYLEBUTTONSTATE =/ "AllActiveDown"
+BUTTONSTYLEBUTTONSTATE =/ "AllInactiveUp"
+BUTTONSTYLEBUTTONSTATE =/ "AllInactiveDown"
+BUTTONSTYLEACTIVE = "Active" ; - implies FOCUSED_WINDOW
+BUTTONSTYLESTYLE = "Simple"
+BUTTONSTYLESTYLE =/ "Default"
+BUTTONSTYLESTYLE =/ "Solid"
+BUTTONSTYLESTYLE =/ "Colorset"
+BUTTONSTYLESTYLE =/ "Vector"
+BUTTONSTYLESTYLE =/ BUTTONSTYLEGRADIENT
+BUTTONSTYLESTYLE =/ "Pixmap"
+BUTTONSTYLESTYLE =/ AdjustedPixmap"
+BUTTONSTYLESTYLE =/ "ShrunkPixmap"
+BUTTONSTYLESTYLE =/ "StretchedPixmap"
+BUTTONSTYLESTYLE =/ "TiledPixmap"
+BUTTONSTYLESTYLE =/ "MiniIcon"
+BUTTONSTYLEGRADIENT = TYPE START-COLOUR END-COLOUR
+BUTTONSTYLESTYLEFLAG = ["!"] BUTTONSTYLESTYLEKEYWORD *("," ["!"] BUTTONSTYLESTYLEKEYWORD)
+BUTTONSTYLESTYLEKEYWORD = "Raised"
+BUTTONSTYLESTYLEKEYWORD =/ "Sunk"
+BUTTONSTYLESTYLEKEYWORD =/ "Flat"
+BUTTONSTYLESTYLEKEYWORD =/ "UseBorderStyle"
+BUTTONSTYLESTYLEKEYWORD =/ "UseTitleStyle"
+; (XXX = "Raised, Sunk, and Flat" can only be used initially!!!")
 
-CHANGEDECOR = "ChangeDecor" [DECOR]
-DECOR = TOKEN
+CHANGEDECOR = "ChangeDecor" [DECORNAME]
 
 CHANGEMENUSTYLE = "ChangeMenuStyle" MENUSTYLENAME MENUNAME
-MENUSTYLENAME = TOKEN
-MENUNAME = TOKEN
 
 CLEANUPCOLORSETS = "CleanupColorsets"
 
 CLICKTIME = "ClickTime" POSINT
-(stores the negative value during startup>
+; (stores the negative value during startup>
 
 CLOSE = "Close"
+; work on context window
 
 DELETE = "Delete"
+; work on context window
 
 DESTROY = "Destroy"
 ; work on context window
@@ -674,47 +759,110 @@ DESTROY = "Destroy"
 COLORLIMIT = "ColorLimit"
 ; obsolete, has been removed
 
-COLORMAPFOCUS = "ColormapFocus" "FollowsMouse" / "FollowsFocus"
+COLORMAPFOCUS = "ColormapFocus" ("FollowsMouse" / "FollowsFocus")
 
-COLORSET = "Colorset" POSINT OPTION [, OPTION] ...
-OPTION = KEYWORD [VALUE] ...
-KEYWORD = "fg" / "Fore" / "Foreground" / "bg" / "Back" / "Background" /
-	"hi" / "Hilite" / "Hilight / "sh" / "Shade" / "Shadow" / "fgsh" /
-	"Pixmap" / "TiledPixmap" / "AspectPixmap" / "Transparent" /
-	"RootTransparent" / "Shape" / "TiledShape" / "AspectShape" /
-	"NoShape" / "[V/B/D/S/C/R/Y]Gradient" / "Tint" / "fgTint" / "bgTint" /
-	"Alpha" / "fgAlpha" / "Dither" / "NoDither" / "IconTint" /
-	"IconAlpha" / "Plain"
-VALUE = INT / COLOURNAME / IMAGEFILENAME / INTPERCENTAGE
-(memory usage depends on highest colorset number)
+COLORSET = "Colorset" COLORSET_NUM COLORSETOPTION *("," COLORSETOPTION)
+OPTION = COLORSETKEYWORD [COLORSETVALUE]
+COLORSETKEYWORD = "fg"
+COLORSETKEYWORD =/ "Fore"
+COLORSETKEYWORD =/ "Foreground"
+COLORSETKEYWORD =/ "bg"
+COLORSETKEYWORD =/ "Back"
+COLORSETKEYWORD =/ "Background"
+COLORSETKEYWORD =/ "hi"
+COLORSETKEYWORD =/ "Hilite"
+COLORSETKEYWORD =/ "Hilight
+COLORSETKEYWORD =/ "sh"
+COLORSETKEYWORD =/ "Shade"
+COLORSETKEYWORD =/ "Shadow"
+COLORSETKEYWORD =/ "fgsh"
+COLORSETKEYWORD =/ "Pixmap"
+COLORSETKEYWORD =/ "TiledPixmap"
+COLORSETKEYWORD =/ "AspectPixmap"
+COLORSETKEYWORD =/ "Transparent"
+COLORSETKEYWORD =/ "RootTransparent"
+COLORSETKEYWORD =/ "Shape"
+COLORSETKEYWORD =/ "TiledShape"
+COLORSETKEYWORD =/ "AspectShape"
+COLORSETKEYWORD =/ "NoShape"
+COLORSETKEYWORD =/ ("V" / "B" / "D" / "S" / "C" / "R" / "Y") "Gradient"
+COLORSETKEYWORD =/ "Tint"
+COLORSETKEYWORD =/ "fgTint"
+COLORSETKEYWORD =/ "bgTint"
+COLORSETKEYWORD =/ "Alpha"
+COLORSETKEYWORD =/ "fgAlpha"
+COLORSETKEYWORD =/ "Dither"
+COLORSETKEYWORD =/ "NoDither"
+COLORSETKEYWORD =/ "IconTint"
+COLORSETKEYWORD =/ "IconAlpha"
+COLORSETKEYWORD =/ "Plain"
+COLORSETVALUE = INT
+COLORSETVALUE =/ COLORNAME
+COLORSETVALUE =/ IMAGEFILENAME
+COLORSETVALUE =/ INTPERCENTAGE
+; (memory usage depends on highest colorset number)
 
 COPYMENUSTYLE = "CopyMenuStyle" MENUSTYLENAME MENUSTYLENAME
-MENUSTYLENAME = TOKEN
 
-CURSORMOVE = "CursorMove" HORIZONTAL[CURSORMOVESUFFIX] VERTICAL[CURSORMOVESUFFIX]
-HORIZONTAL = INT
-VERTICAL = INT
+CURSORMOVE = "CursorMove" CURSORMOVEHORIZONTAL[CURSORMOVESUFFIX] CURSORMOVEVERTICAL[CURSORMOVESUFFIX]
+CURSORMOVEHORIZONTAL = INT
+CURSORMOVEVERTICAL = INT
 CURSORMOVESUFFIX = "p"
 
-CURSORSTYLE = "CursorStyle" CONTEXT / X11_NAME [OPTION]
-CONTEXT = KEYWORD / X11_NAME
-CONTEXT = "POSITION" / "TITLE" / "DEFAULT" / "SYS" / "MOVE" / "RESIZE" /
-	"WAIT" / "MENU" / "SELECT" / "DESTROY" / "TOP" / "RIGHT" /
-	"BOTTOM" / "LEFT" / "TOP_LEFT" / "TOP_RIGHT" / "BOTTOM_LEFT" /
-	"BOTTOM_RIGHT" / "TOP_EDGE" / "RIGHT_EDGE" / "BOTTOM_EDGE" /
-	"LEFT_EDGE" / "ROOT" / "STROKE" / "None" / "Tiny"
-X11_NAME = "top_left_corner" / "top_left_arrow" / "hand2" / "fleur" /
-	"sizing" / "watch" / "crosshair" / "pirate" / "top_side" /
-	"bottom_side" / "left_side" / "top_right_corner" /
-	"bottom_left_corner" / "top_side" / "right_side" / "left_side" /
-	"left_ptr" / "plus"
-OPTION = IMAGEFILE [INT] / "fg" / "bg"
+CURSORSTYLE = "CursorStyle" CURSORSTYLECONTEXT [CURSORSTYLEOPTION]
+CURSORSTYLECONTEXT = KEYWORD / X11NAME
+CURSORSTYLEKEYWORD = "POSITION"
+CURSORSTYLEKEYWORD =/ "TITLE"
+CURSORSTYLEKEYWORD =/ "DEFAULT"
+CURSORSTYLEKEYWORD =/ "SYS"
+CURSORSTYLEKEYWORD =/ "MOVE"
+CURSORSTYLEKEYWORD =/ "RESIZE"
+CURSORSTYLEKEYWORD =/ "WAIT"
+CURSORSTYLEKEYWORD =/ "MENU"
+CURSORSTYLEKEYWORD =/ "SELECT"
+CURSORSTYLEKEYWORD =/ "DESTROY"
+CURSORSTYLEKEYWORD =/ "TOP"
+CURSORSTYLEKEYWORD =/ "RIGHT"
+CURSORSTYLEKEYWORD =/ "BOTTOM"
+CURSORSTYLEKEYWORD =/ "LEFT"
+CURSORSTYLEKEYWORD =/ "TOP_LEFT"
+CURSORSTYLEKEYWORD =/ "TOP_RIGHT"
+CURSORSTYLEKEYWORD =/ "BOTTOM_LEFT"
+CURSORSTYLEKEYWORD =/ "BOTTOM_RIGHT"
+CURSORSTYLEKEYWORD =/ "TOP_EDGE"
+CURSORSTYLEKEYWORD =/ "RIGHT_EDGE"
+CURSORSTYLEKEYWORD =/ "BOTTOM_EDGE"
+CURSORSTYLEKEYWORD =/ "LEFT_EDGE"
+CURSORSTYLEKEYWORD =/ "ROOT"
+CURSORSTYLEKEYWORD =/ "STROKE"
+CURSORSTYLEKEYWORD =/ "None"
+CURSORSTYLEKEYWORD =/ "Tiny"
+CURSORSTYLEX11NAME = "top_left_corner"
+CURSORSTYLEX11NAME =/ "top_left_arrow"
+CURSORSTYLEX11NAME =/ "hand2"
+CURSORSTYLEX11NAME =/ "fleur"
+CURSORSTYLEX11NAME =/ "sizing"
+CURSORSTYLEX11NAME =/ "watch"
+CURSORSTYLEX11NAME =/ "crosshair"
+CURSORSTYLEX11NAME =/ "pirate"
+CURSORSTYLEX11NAME =/ "top_side"
+CURSORSTYLEX11NAME =/ "bottom_side"
+CURSORSTYLEX11NAME =/ "left_side"
+CURSORSTYLEX11NAME =/ "top_right_corner"
+CURSORSTYLEX11NAME =/ "bottom_left_corner"
+CURSORSTYLEX11NAME =/ "top_side"
+CURSORSTYLEX11NAME =/ "right_side"
+CURSORSTYLEX11NAME =/ "left_side"
+CURSORSTYLEX11NAME =/ "left_ptr"
+CURSORSTYLEX11NAME =/ "plus"
+CURSORSTYLEXOPTION = IMAGEFILE [INT]
+CURSORSTYLEXOPTION =/ "fg"
+CURSORSTYLEXOPTION =/ "bg"
 
 DEFAULTCOLORS = "DefaultColors" [COLOUR_FG] [COLOUR_BG]
 <These need defining!>
 
-DEFAULTCOLORSET = "DefaultColorset" [INT]
-INT = INT / "-1"
+DEFAULTCOLORSET = "DefaultColorset" (COLORSET_NUM/ "-1")
 
 DEFAULTFONT = "DefaultFont" [FONTNAME]
 
@@ -730,56 +878,57 @@ DESK = "Desk" [!!!]
 DESKTOPNAME = "DesktopName" INT DESKTOPNAME
 DESKTOPNAME = TOKEN
 
-DESKTOPSIZE = "DesktopSize" HORIZONTALxVERTICAL
-HORIZONTAL = INT
-VERTICAL = INT
+DESKTOPSIZE = "DesktopSize" DESKTOPSIZEHORIZONTAL "x" DESKTOPSIZEVERTICAL
+DESKTOPSIZEHORIZONTAL = INT
+DESKTOPSIZEVERTICAL = INT
 
-DESTROYDECOR = "DestroyDecor" [RECREATE] DECOR
-RECREATE = "recreate"
+DESTROYDECOR = "DestroyDecor" [DESTROYDECORRECREATE] DECORNAME
+DESTROYDECORRECREATE = "recreate"
 
 DESTROYFUNC = "DestroyFunc" [FUNCNAME]
-FUNCNAME = TOKEN
 
 DESTROYMENU = "DestroyMenu" ["recreate"] MENUNAME
-MENUNAME = STRING
 
 DESTROYMENUSTYLE = "DestroyMenuStyle" MENUSTYLENAME
-MENUSTYLENAME = TOKEN
 
 DESTROYMODULECONFIG = "DestroyModuleConfig" MODULECONFIG
 
 DESTROYSTYLE = "DestroyStyle" STYLENAME
-STYLENAME = TOKEN / "*"
 
 DESTROYWINDOWSTYLE = "DestroyWindowStyle"
+; operates on context window
 
-DIRECTION = "Direction" [FROMPOINTER] DIRECTION ["(" CONDITIONS ")"] COMMAND
-FROMPOINTER = "FromPointer"
-DIRECTION = "North" / "NorthEast" / "East" / "SouthEast" / "South" /
-	"SouthWest" / "West" / "NorthWest" / "Center"
+DIRECTION = "Direction" [DIRECTIONFROMPOINTER] DIRS_CENTER ["(" DIRECTIONCONDITIONS ")"] RESTOFLINE_COMMAND
+DIRECTIONFROMPOINTER = "FromPointer"
+DIRECTIONCONDITION = !!!
 
-ECHO = "Echo" TOKEN
+ECHO = "Echo" RESTOFLINE
 
 ECHOFUNCDEFINITION = "EchoFuncDefinition" FUNCNAME
 
-EDGECOMMAND = "EdgeCommand" [EDGEDIRECTION [COMMAND]]
+EDGECOMMAND = "EdgeCommand" [DIRS_MAIN [RESTOFLINE_COMMAND]]
 
-EDGELEAVECOMMAND = "EdgeLeaveCommand" [EDGEDIRECTION [COMMAND]]
+EDGELEAVECOMMAND = "EdgeLeaveCommand" [DIRS_MAIN [RESTOFLINE_COMMAND]]
 
 EDGERESISTANCE = "EdgeResistance"
 ; OBSOLETED BY CORRESPONDING STYLE COMMAND
 
-EDGESCROLL = "EdgeScroll" HORIZONTAL[EDGESCROLLSUFFIX] VERTICAL[EDGESCROLLSUFFIX] [OPTION]
-HORIZONTAL = INT
-VERTICAL = INT
+EDGESCROLL = "EdgeScroll" EDGESCROLLHORIZONTAL[EDGESCROLLSUFFIX]
+	EDGESCROLLVERTICAL[EDGESCROLLSUFFIX] [EDGESCROLLOPTION]
+EDGESCROLLHORIZONTAL = INT
+EDGESCROLLVERTICAL = INT
 EDGESCROLLSUFFIX = "p"
-OPTION = "Wrap" / "wrapx" / "Wrapy"
+EDGESCROLLOPTION = "Wrap"
+EDGESCROLLOPTION =/ "WrapX"
+EDGESCROLLOPTION =/ "WrapY"
 
-EDGETHICKNESS = "EdgeThickness" TOKEN
-TOKEN = "0" / "1" / "2"
+EDGETHICKNESS = "EdgeThickness" EDGETHICKNESSVAL
+EDGETHICKNESSVAL = "0" / "1" / "2"
 
-EMULATE = "Emulate" TOKEN
-TOKEN = "Mvwm" / "Mwm" / "Win"
+EMULATE = "Emulate" EMULATEVAL
+EMULATEVAL = "Mvwm"
+EMULATEVAL =/ "Mwm"
+EMULATEVAL =/ "Win"
 
 ESCAPEFUNC = "EscapeFunc"
 
@@ -787,27 +936,62 @@ EWMHBASESTRUTS = "EwmhBaseStruts" INT INT INT INT
 
 EWMHNUMBEROFDESKTOPS = "EwmhNumberOfDesktops" INT INT
 
-EXEC = "Exec" COMMAND
+EXEC = "Exec" RESTOFLINE_COMMAND
 
-EXECUSESHELL = "ExecUseShell" SHELL
+EXECUSESHELL = "ExecUseShell" EXECUSESHELLSHELL
+EXECUSESHELLSHELL = !!!
 
-FAKECLICK = "FakeClick" COMMAND VALUE [, COMMAND VALUE]
-COMMAND = (KEYWORD, VALUE)
-KEYWORD = "press" / "release" / "modifiers" / "wait" / DEPTH
-VALUE = ("1" / "2" / "3" / "4" / "5" / "Mod1" / "Mod2" / "Mod3" /
-	"Mod4" / "Mod5") / ("6" / "7" / "8" / "Shift" / "Lock" / "Control")
-DEPTH = ("depth" / "0" / "1" / "2" / "3" / INT)
+FAKECLICK = "FakeClick" FAKECLICKACTION *("," FAKECLICKACTION)
+FAKECLICKACTION = FAKECLICKCOMMAND FAKECLICKVALUE
+FAKECLICKCOMMAND = (FAKECLICKKEYWORD, FAKECLICKVALUE)
+FAKECLICKKEYWORD = "press"
+FAKECLICKKEYWORD =/ "release"
+FAKECLICKKEYWORD =/ "modifiers"
+FAKECLICKKEYWORD =/ "wait"
+FAKECLICKKEYWORD =/ FAKECLICKDEPTH
+FAKECLICKVALUE = "1"
+FAKECLICKVALUE =/ "2"
+FAKECLICKVALUE =/ "3"
+FAKECLICKVALUE =/ "4"
+FAKECLICKVALUE =/ "5"
+FAKECLICKVALUE =/ "Mod1"
+FAKECLICKVALUE =/ "Mod2"
+FAKECLICKVALUE =/ "Mod3"
+FAKECLICKVALUE =/ "Mod4"
+FAKECLICKVALUE =/ "Mod5"
+FAKECLICKVALUE =/ "6"
+FAKECLICKVALUE =/ "7"
+FAKECLICKVALUE =/ "8"
+FAKECLICKVALUE =/ "Shift"
+FAKECLICKVALUE =/ "Lock"
+FAKECLICKVALUE =/ "Control"
+FAKECLICKDEPTH = "depth"
+FAKECLICKDEPTH =/ "0"
+FAKECLICKDEPTH =/ "1"
+FAKECLICKDEPTH =/ "2"
+FAKECLICKDEPTH =/ "3"
+FAKECLICKDEPTH =/ INT
 
-FAKEKEYPRESS = "FakeKeypress" COMMAND VALUE [, COMMAND VALUE]
-KEYWORD = "press" / "release" / "modifiers" / "wait" / DEPTH
-VALUE = KEYNAME
-DEPTH = ("depth" / "0" / "1" / "2" / "3" / INT)
+FAKEKEYPRESS = "FakeKeypress" FAKEKEYPRESSACTION *("," FAKEKEYPRESSACTION)
+FAKEKEYPRESSACTION = FAKEKEYPRESSCOMMAND FAKEKEYPRESSVALUE
+FAKEKEYPRESSKEYWORD = "press"
+FAKEKEYPRESSKEYWORD =/ "release"
+FAKEKEYPRESSKEYWORD =/ "modifiers"
+FAKEKEYPRESSKEYWORD =/ "wait"
+FAKEKEYPRESSKEYWORD =/ DEPTH
+FAKEKEYPRESSVALUE = KEYNAME
+FAKEKEYPRESSDEPTH = "depth"
+FAKEKEYPRESSDEPTH =/ "0"
+FAKEKEYPRESSDEPTH =/ "1"
+FAKEKEYPRESSDEPTH =/ "2"
+FAKEKEYPRESSDEPTH =/ "3"
+FAKEKEYPRESSDEPTH =/ INT
 
 FLIPFOCUS = "FlipFocus" ["nowarp"]
 
 FOCUS = "Focus" ["nowarp"]
 
-FOCUSSTYLE = "FocusStyle" [STYLEOPTION] [, STYLEOPTION]
+FOCUSSTYLE = "FocusStyle" STYLEOPTIONS
 
 FUNCTION = "Function" [FUNCNAME]
 
@@ -820,26 +1004,27 @@ GNOMEBUTTON = "GnomeButton"
 GNOMESHOWDESKS = "GnomeShowDesks"
 ; REMOVED IN MVWM ALREADY ignoring!
 
-GOTODESK = "GotoDesk" [PREV / INT [INT] [INT INT]
-PREV = "prev"
+GOTODESK = "GotoDesk" DESKNUMBER
+DESKNUMBER = ["prev" / (INT [INT [INT [INT]]])]
 
-GOTODESKANDPAGE = "GotoDeskAndPage" PREV / INT INT INT
-PREV = "prev"
+GOTODESKANDPAGE = "GotoDeskAndPage" "prev" / (INT INT INT)
 
-GOTOPAGE = "GotoPage" PREV / [OPTIONS] X[GOTOPAGESUFFIX] Y[GOTOPAGESUFFIX]
-PREV = "prev"
-OPTIONS = "wrapx" / "wrapy"
-X = INT
-Y = INT
-GOTOPAGESUFFIX = "p"
+GOTOPAGE = "GotoPage" PAGE_ARGUMENTS
+PAGE_ARGUMENTS = ["prev" / ([OPTIONS] PAGEX[PAGESUFFIX] PAGEY[PAGESUFFIX])]
+OPTIONS = ["!"] ("wrapx" / "wrapy" / "nodesklimitx" / "nodesklimity")
+PAGEX = INT
+PAGEY = INT
+PAGESUFFIX = "p"
 
-HIDEGEOMETRYWINDOW = "HideGeometryWindow" [COMMAND]
-COMMAND = "Never" / "Move" / "Resize"
+HIDEGEOMETRYWINDOW = "HideGeometryWindow" [HIDEGEOMETRYWINDOWCOMMAND]
+HIDEGEOMETRYWINDOWCOMMAND = "Never"
+HIDEGEOMETRYWINDOWCOMMAND =/ "Move"
+HIDEGEOMETRYWINDOWCOMMAND =/ "Resize"
 
 HILIGHTCOLOR = "HilightColor"
 ; OBSOLETE ignoring
 
-HILIGHTCOLORSET = "HilightColorset" [INT]
+HILIGHTCOLORSET = "HilightColorset" [COLORSET_NUM]
 
 ICONFONT = "IconFont" FONTNAME
 ; OBSOLETE ignoring
@@ -847,19 +1032,19 @@ ICONFONT = "IconFont" FONTNAME
 ICONPATH = "IconPath"
 ; OBSOLETE ignoring
 
-ICONIFY = "Iconify" (BOOL / TOGGLE)
+ICONIFY = "Iconify" BOOL_OR_TOGGLE
 
 IGNOREMODIFIERS = "IgnoreModifiers" (MODIFIER / "L")
 
 IMAGEPATH = "ImagePath" [PATH]
 
-INFOSTOREADD = "InfoStoreAdd" KEY VALUE
-KEY = STRING
-VALUE = STRING
+INFOSTOREADD = "InfoStoreAdd" INFOSTOREKEY INFOSTOREVALUE
+INFOSTOREKEY = STRING
+INFOSTOREVALUE = STRING
 
-INFOSTOREREMOVE = "InfoStoreRemove" [KEY]
+INFOSTOREREMOVE = "InfoStoreRemove" [INFOSTOREREKEY]
 
-KEEPRC = "KeepRc" [COMMAND]
+KEEPRC = "KeepRc" [RESTOFLINE_COMMAND]
 
 KEY = "Key" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND
 
@@ -875,7 +1060,7 @@ RAISE = "Raise"
 
 RAISELOWER = "RaiseLower"
 
-MAXIMIZE = "Maximize" [FLAGS] [BOOL / "forget" ] [[HORIZONTAL[p]] VERTICAL[p]]
+MAXIMIZE = "Maximize" [FLAGS] [BOOL / "forget"] [[HORIZONTAL[p]] VERTICAL[p]]
 GROWOPTS = "grow" / "growleft" / "growright" / "growup" / "growdown"
 HORIZONTAL = INT / GROWOPTS
 VERTICAL = INT / GROWOPTS
@@ -928,8 +1113,7 @@ MOVE = "Move" [MOVEARGS]
 
 MOVETHRESHOLD = "MoveThreshold" [INT]
 
-MOVETODESK = "MoveToDesk" [PREV / INT [INT] [INT INT]
-PREV = "prev"
+MOVETODESK = "MoveToDesk" DESKNUMBER
 
 MOVETOPAGE = "MoveToPage" PREV [OPTIONS] X[MOVETOPAGESUFFIX] Y[MOVETOPAGESUFFIX]
 PREV = "prev"
@@ -966,10 +1150,10 @@ CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
 	"This" / ("Rectangle" GEOMETRY)
 OPTIONS = "TearoffImmediately" / "SelectInPlace"
 
-PRINTINFO = "PrintInfo" SUBJECT
-SUBJECT = (KEYWORD [VAL])
-VAL = "0" / "1" / "2"
-KEYWORD = "Colors" / "ImageCache" / "Locale" / "NLS" / "Style" /
+PRINTINFO = "PrintInfo" PRINTINFOSUBJECT
+PRINTINFOSUBJECT = (PRINTINFOKEYWORD [PRINTINFOVAL])
+PRINTINFOVAL = "0" / "1" / "2"
+PRINTINFOKEYWORD = "Colors" / "ImageCache" / "Locale" / "NLS" / "Style" /
 	"Bindings" / "Infostore"
 
 QUIT = "Quit"
@@ -1056,12 +1240,14 @@ STROKE = "Stroke"
 STROKEFUNC = "StrokeFunc"
 ; OBSOLETE removed in mvwm
 
-STYLE = "Style" [STYLENAME] [OPTION] [, OPTION]
+STYLE = "Style" [STYLENAME] STYLEOPTIONS
+STYLEOPTIONS = STYLEOPTION ("," STYLEOPTION)
+STYLEOPTION = !!!
 
 TEARMENUOFF = "TearMenuOff"
 ; Applies to menu context only
 
-TEST = "Test" ["(" [ "!" ] TESTCONDITION ")"] COMMAND
+TEST = "Test" ["(" ["!"] TESTCONDITION ")"] COMMAND
 TESTCONDITION = (KEYWORD [VALUE])
 KEYWORD = ("version" OPERATOR DOTTEDNUM) / ("EnvIsSet" STRING) /
 	("EnvMatch" STRING) / ("EdgeHasPointer" DIRECTION) /
@@ -1069,7 +1255,7 @@ KEYWORD = ("version" OPERATOR DOTTEDNUM) / ("EnvIsSet" STRING) /
 	"Quit" / "ToRestart" / "True" / "False" / "F" / "R" / "W" / "X" / "I"
 OPERATOR = ">=" / ">" / "<=" / "==" / "!="
 
-TESTRC = "TestRc" ["(" [ "!" ]RETCODE ")"] COMMAND
+TESTRC = "TestRc" ["(" ["!"]RETCODE ")"] COMMAND
 RETCODE = "0" / "1" / "-1" / "-2" / "NoMatch" / "Match" / "Error" /
 	"Break"
 THISWINDOW = "ThisWindow" ["(" CONDITION ")"] COMMAND
@@ -1083,7 +1269,7 @@ TITLESTYLE = "TitleStyle"
 
 UNSETENV = "UnsetEnv" [STRING]
 
-UPDATEDECOR = "UpdateDecor"
+UPDATEDECOR = "UpdateDecor" [DECORNAME]
 
 UPDATESTYLES = "UpdateStyles"
 
@@ -1126,7 +1312,8 @@ WINDOWSHADE = "WindowShade" [BOOL] / ["ShadeAgain"] [DIRECTION]
 WINDOWSHADEANIMATE = "WindowShadeAnimate"
 ; OBSOLETE ignoring
 
-WINDOWSTYLE = "WindowStyle" [STYLEOPTION] [, STYLEOPTION]
+WINDOWSTYLE = "WindowStyle" STYLEOPTIONS
+; operates on context window
 
 WINDOWSDESK = "WindowsDesk"
 ; OBSOLETE ignoring
