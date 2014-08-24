@@ -544,7 +544,7 @@ Types
  FALSE = "no" / "n" / "0" / "f" / "false"
  BOOL = TRUE / FALSE
  TOGGLE = "toggle"
- BOOLOR_TOGGLE = BOOL / TOGGLE
+ BOOL_OR_TOGGLE = BOOL / TOGGLE
  MODIFIERS = "s" / "c" / "l" / "m" / "1" / "2" / "3" / "4" / "5" / "a"
  BINDINGMODIFIERS = "n" / 1*MODIFIERS
  PATH = ["/"] *(STRING "/") [STRING]
