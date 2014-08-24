@@ -545,7 +545,8 @@ Types
  BOOL = TRUE / FALSE
  TOGGLE = "toggle"
  BOOLOR_TOGGLE = BOOL / TOGGLE
- MODIFIER = "1" / "2" / "3" / "4" / "5"
+ MODIFIERS = "s" / "c" / "l" / "m" / "1" / "2" / "3" / "4" / "5" / "a"
+ BINDINGMODIFIERS = "n" / 1*MODIFIERS
  PATH = ["/"] *(STRING "/") [STRING]
  VISIBLE_NAME = !!!
  CLASS = !!!
@@ -553,11 +554,12 @@ Types
  NAME = !!!
  WINDOW_ID = !!!
  WINDOWSELECTOR = VISIBLE_NAME / CLASS / RESOURCE / NAME / WINDOW_ID
- CONTEXT = "R" / "W" / "D" / "T" / "F" / "[" / "]" / "-" / "_" /
-    "<" / "^" / ">" / "v" / "I" / INT / "A" / "S" / "M"
+ BINDINGCONTEXT = "R" / "W" / "D" / "T" / "F" / "A" / "S" / "M" / "I"
+ BINDINGCONTEXT = "[" / "]" / "-" / "_"
+ BINDINGCONTEXT = "<" / "^" / ">" / "v"
+ BINDINGCONTEXT = DIGIT
  MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
- EDGEDIRECTION: "North" / "Top" / "N" / "West" / "Left" / "W" /
-    "South" / "Bottom" / "S" / "East" / "Right" / "E"
+ MODULALIAS = TOKEN
  DECORNAME = TOKEN
  FUNCNAME = TOKEN
  MENUNAME = TOKEN
@@ -574,6 +576,7 @@ Types
  DIRS_DIAG =/ "NorthWest" / "NW"
  DIRS_CENTER = DIRS_DIAG / "Center" / "C"
  COLORSET_NUM = POSINT
+ BUTTON = 1*DIGIT
 
 Commands
 ~~~~~~~~
@@ -597,7 +600,7 @@ ADDBUTTONSTYLESTATE =/ "AllActiveDown"
 ADDBUTTONSTYLESTATE =/ "AllInactiveUp"
 ADDBUTTONSTYLESTATE =/ "AllInactiveDown"
 ADDBUTTONSTYLEACTIVE = "Active" - implies FOCUSED_WINDOW
-ADDBUTTONSTYLEFLAG = [!]KEYWORD [, [!]KEYWORD] ...
+ADDBUTTONSTYLEFLAG = ["!"]ADDBUTTONSTYLEKEYWORD *(","  ["!"]ADDBUTTONSTYLEKEYWORD)
 ; (XXX = ButtonStyle relationships here...)
 
 ADDTITLESTYLE = "AddTitleStyle" [ADDTITLESTYLESTATE] [ADDTITLESTYLESTYLE] [ADDTITLESTYLEFLAG]
@@ -635,7 +638,6 @@ ANY = "Any" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
 CURRENT = "Current" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
 NEXT = "Next" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
 NONE = "None" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
-POINTERWINDOW = "PointerWindow" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
 PREV = "Prev" ["(" CONDCONDITION ")"] RESTOFLINE_COMMAND
 CONDCONDITION = (WINDOWNAMEPATTERN / ["!"] CONDKEYWORD) *("," ["!"] KEYWORD)
 WINDOWNAMEPATTERN = TOKEN
@@ -1034,7 +1036,7 @@ ICONPATH = "IconPath"
 
 ICONIFY = "Iconify" BOOL_OR_TOGGLE
 
-IGNOREMODIFIERS = "IgnoreModifiers" (MODIFIER / "L")
+IGNOREMODIFIERS = "IgnoreModifiers" [ BINDINGMODIFIERS ]
 
 IMAGEPATH = "ImagePath" [PATH]
 
@@ -1046,109 +1048,189 @@ INFOSTOREREMOVE = "InfoStoreRemove" [INFOSTOREREKEY]
 
 KEEPRC = "KeepRc" [RESTOFLINE_COMMAND]
 
-KEY = "Key" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND
+KEY = "Key" ["(" WINDOWSELECTOR ")"] KEYNAME
+	BINDINGCONTEXT BINDINGMODIFIERS RESTOFLINE_COMMAND
 
-KILLMODULE = "KillModule" [MODULENAME] [STRING]
+KILLMODULE = "KillModule" [MODULENAME] [MODULEALIAS]
 
 LAYER = "Layer" [INT INT] / "default"
 
 LOCALEPATH = "LocalePath" [PATH]
 
 LOWER = "Lower"
+; operates on context window
 
 RAISE = "Raise"
+; operates on context window
 
 RAISELOWER = "RaiseLower"
+; operates on context window
 
-MAXIMIZE = "Maximize" [FLAGS] [BOOL / "forget"] [[HORIZONTAL[p]] VERTICAL[p]]
-GROWOPTS = "grow" / "growleft" / "growright" / "growup" / "growdown"
-HORIZONTAL = INT / GROWOPTS
-VERTICAL = INT / GROWOPTS
-p = "p"
-FLAGS = "ewmhiwa" / "growonwindowlayer" / "growonlayers" /
-	("screen" / XINERAMASCR)
+MAXIMIZE = "Maximize" [MAXIMIZEFLAGS] [BOOL_OR_TOGGLE / "forget"]
+	[[MAXIMIZEHORIZONTAL[MAXIMIZESUFFIX]] MAXIMIZEVERTICAL[MAXIMIZESUFFIX]]
+MAXIMIZEGROWOPTS = "grow"
+MAXIMIZEGROWOPTS =/ "growleft"
+MAXIMIZEGROWOPTS =/ "growright"
+MAXIMIZEGROWOPTS =/ "growup"
+MAXIMIZEGROWOPTS =/ "growdown"
+MAXIMIZEHORIZONTAL = INT
+MAXIMIZEHORIZONTAL =/ MAXIMIZEGROWOPTS
+MAXIMIZEVERTICAL = INT
+MAXIMIZEVERTICAL =/ MAXIMIZEGROWOPTS
+MAXIMIZESUFFIX = "p"
+MAXIMIZEFLAGS = "ewmhiwa"
+MAXIMIZEFLAGS =/ "growonwindowlayer"
+MAXIMIZEFLAGS =/ "growonlayers"
+MAXIMIZEFLAGS =/ ("screen" / XINERAMASCR)
 
-MENU = "Menu" TOKEN [POSITION] [COMMAND]
-POSITION = CONTEXT-RECTANGLE INT INT [OPTIONS]
-CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
-	"Interior" / "Tiitle" / ("Button" INT) "Icon" / "Item" / "Context" /
-	"This" / ("Rectangle" GEOMETRY)
-OPTIONS = "TearoffImmediately" / "SelectInPlace"
+MENU = "Menu" MENUNAME [MENUPOSITION] [MENUCOMMAND]
+MENUPOSITION = MENUCONTEXT_RECTANGLE INT INT [MENUOPTIONS]
+MENUCONTEXT_RECTANGLE = "Root" !!!
+MENUCONTEXT =/ "XineramaRoot"
+MENUCONTEXT =/ "Mouse"
+MENUCONTEXT =/ "Window" /
+	"Interior"
+	"Interior =/ "Title"
+	"Interior =/ ("Button" INT) "Icon"
+	"Interior =/ "Item"
+	"Interior =/ "Context"
+	"Interior =/ "This"
+	"Interior =/ ("Rectangle" MENUCONTEXTGEOMETRY)
+MENUOPTIONS = "TearoffImmediately"
+MENUOPTIONS =/ "SelectInPlace"
+MENUOPTIONS = !!!
+MENUCONTEXTGEOMETRY = !!!
 
-MENUSTYLE = "MenuStyle" MENUSTYLE [OPTIONS]
-OPTIONS = "Mvwm" / "Mwm" / "Win"/ "BorderWidth" / "Foreground" /
-	"Background" "Greyed" / "HilightBack" / "!HilightBack" /
-	"HilightTitleBack" / "ActiveFore" / "!ActiveFore" / "MenuColorset" /
-	"ActiveColorset" / "GreyedColorset" / "TitleColorset" /
-	"Hilight3DThick" / "Hilight3DThin" / "Hilight3DOff" /
-	"Hilight3DThickness" / "Animation" / "!Animation" / "Font" /
-	"TitleFont" / "MenuFace" / "PopupDelay" / "PopupOffset" /
-	"TitleWarp" / "!TitleWarp" / "TitleUnderlines0" /
-	"TitleUnderlines1" / "TitleUnderlines2" / "SeparatorsLong" /
-	"SeparatorsShort" / "TrianglesSolid" / "TrianglesRelief" /
-	"PopupImmediately" / "PopupDelayed" / "PopdownImmediately" /
-	"PopdownDelayed" / "PopupActiveArea" / "DoubleClickTime" /
-	"SidePic" / "SideColor" / "PopupAsRootMenu" / "PopupAsSubmenu" /
-	"PopupIgnore" / "PopupClose"/ "RemoveSubmenus" / "HoldSubmenus" /
-	"SubmenusRight" / "SubmenusLeft" / "SelectOnRelease" /
-	"ItemFormat" / "VerticalItemSpacing"/ "VerticalMargins" /
-	"VerticalTitleSpacing" / "AutomaticHotkeys" /
-	"!AutomaticHotkeys"/ "UniqueHotkeyActivatesImmediate" /
-	"!UniqueHotkeyActivatesImmediate" / "MouseWheel" / "ScrollOffPage" /
-	"!ScrollOffPage/" / "TrianglesUseFore" / "!TrianglesUseFore"
+MENUSTYLE = "MenuStyle" MENUSTYLENAME *(["!"] MENUSTYLEOPTIONS)
+MENUSTYLEOPTIONS = "Mvwm"
+MENUSTYLEOPTIONS =/ "Mwm"
+MENUSTYLEOPTIONS =/ "Win"
+MENUSTYLEOPTIONS =/ "BorderWidth"
+MENUSTYLEOPTIONS =/ "Foreground"
+MENUSTYLEOPTIONS =/ "Background"
+MENUSTYLEOPTIONS =/ "Greyed"
+MENUSTYLEOPTIONS =/ "HilightBack"
+MENUSTYLEOPTIONS =/ "HilightTitleBack"
+MENUSTYLEOPTIONS =/ "ActiveFore"
+MENUSTYLEOPTIONS =/ "MenuColorset"
+MENUSTYLEOPTIONS =/ "ActiveColorset"
+MENUSTYLEOPTIONS =/ "GreyedColorset"
+MENUSTYLEOPTIONS =/ "TitleColorset"
+MENUSTYLEOPTIONS =/ "Hilight3DThick"
+MENUSTYLEOPTIONS =/ "Hilight3DThin"
+MENUSTYLEOPTIONS =/ "Hilight3DOff"
+MENUSTYLEOPTIONS =/ "Hilight3DThickness"
+MENUSTYLEOPTIONS =/ "Animation"
+MENUSTYLEOPTIONS =/ "Font"
+MENUSTYLEOPTIONS =/ "TitleFont"
+MENUSTYLEOPTIONS =/ "MenuFace"
+MENUSTYLEOPTIONS =/ "PopupDelay"
+MENUSTYLEOPTIONS =/ "PopupOffset"
+MENUSTYLEOPTIONS =/ "TitleWarp"
+MENUSTYLEOPTIONS =/ "TitleUnderlines0"
+MENUSTYLEOPTIONS =/ "TitleUnderlines1"
+MENUSTYLEOPTIONS =/ "TitleUnderlines2"
+MENUSTYLEOPTIONS =/ "SeparatorsLong"
+MENUSTYLEOPTIONS =/ "SeparatorsShort"
+MENUSTYLEOPTIONS =/ "TrianglesSolid"
+MENUSTYLEOPTIONS =/ "TrianglesRelief"
+MENUSTYLEOPTIONS =/ "PopupImmediately"
+MENUSTYLEOPTIONS =/ "PopupDelayed"
+MENUSTYLEOPTIONS =/ "PopdownImmediately"
+MENUSTYLEOPTIONS =/ "PopdownDelayed"
+MENUSTYLEOPTIONS =/ "PopupActiveArea"
+MENUSTYLEOPTIONS =/ "DoubleClickTime"
+MENUSTYLEOPTIONS =/ "SidePic"
+MENUSTYLEOPTIONS =/ "SideColor"
+MENUSTYLEOPTIONS =/ "PopupAsRootMenu"
+MENUSTYLEOPTIONS =/ "PopupAsSubmenu"
+MENUSTYLEOPTIONS =/ "PopupIgnore"
+MENUSTYLEOPTIONS =/ "PopupClose"
+MENUSTYLEOPTIONS =/ "RemoveSubmenus"
+MENUSTYLEOPTIONS =/ "HoldSubmenus"
+MENUSTYLEOPTIONS =/ "SubmenusRight"
+MENUSTYLEOPTIONS =/ "SubmenusLeft"
+MENUSTYLEOPTIONS =/ "SelectOnRelease"
+MENUSTYLEOPTIONS =/ "ItemFormat"
+MENUSTYLEOPTIONS =/ "VerticalItemSpacing"
+MENUSTYLEOPTIONS =/ "VerticalMargins"
+MENUSTYLEOPTIONS =/ "VerticalTitleSpacing"
+MENUSTYLEOPTIONS =/ "AutomaticHotkeys"
+MENUSTYLEOPTIONS =/ "UniqueHotkeyActivatesImmediate"
+MENUSTYLEOPTIONS =/ "MouseWheel"
+MENUSTYLEOPTIONS =/ "ScrollOffPage"
+MENUSTYLEOPTIONS =/ "TrianglesUseFore"
+; add option syntax
 
-MODULE = "Module" [MODULENAME] [MODULEALIAS]
+MODULE = "Module" CMDMODULEARGS
+CMDMODULEARGS = MODULENAME [MODULEALIAS]
 
-MODULELISTENONLY = "ModuleListenOnly" MODULENAME [ARGS]
+MODULELISTENONLY = "ModuleListenOnly" CMDMODULEARGS
 
 MODULEPATH = "ModulePath" PATH
 
-MODULESYNCHRONOUS = "ModuleSynchronous" ["Expect" STRING] ["Timeout" INT] [MODULENAME]
+MODULESYNCHRONOUS = "ModuleSynchronous" ["Expect" STRING] ["Timeout" INT]
+	CMDMODULEARGS
 
 MODULETIMEOUT = "ModuleTimeout" INT
 
-MOUSE = "Mouse" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND
+MOUSE = "Mouse" ["(" WINDOWSELECTOR ")"] BUTTON
+	BINDINGCONTEXT BINDINGMODIFIERS COMMAND
 
 MOVE = "Move" [MOVEARGS]
+MOVEARGS = !!!
 
 MOVETHRESHOLD = "MoveThreshold" [INT]
 
 MOVETODESK = "MoveToDesk" DESKNUMBER
 
-MOVETOPAGE = "MoveToPage" PREV [OPTIONS] X[MOVETOPAGESUFFIX] Y[MOVETOPAGESUFFIX]
-PREV = "prev"
-OPTIONS = "wrapx" / "wrapy" / "nodesklimitx" / "nodesklimity"
-X = INT
-Y = INT
+MOVETOPAGE = "MoveToPage" ["prev"] [MOVETOPAGEOPTIONS]
+	MOVETOPAGEX[MOVETOPAGESUFFIX] MOVETOPAGEY[MOVETOPAGESUFFIX]
+MOVETOPAGEOPTIONS = "wrapx" / "wrapy" / "nodesklimitx" / "nodesklimity"
+MOVETOPAGEX = INT
+MOVETOPAGEY = INT
 MOVETOPAGESUFFIX = "p" / "w"
 
 MOVETOSCREEN = "MoveToScreen" [XRANDRMONITORNAME]
+XRANDRMONITORNAME = !!!
 
-NOWINDOW = "NoWindow"
+NOWINDOW = "NoWindow" RESTOFLINE_COMMAND
 
 NOP = "Nop"
 
 OPAQUEMOVESIZE = "OpaqueMoveSize" [INT]
 
-PICK = "Pick" ([CONDITIONS) COMMAND
+PICK = "Pick" ["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
 
 PIPEREAD = "PipeRead" COMMAND ["quiet"]
 
 PIXMAPPATH = "PixmapPath"
 ; OBSOLETE ignoring
 
-PLACEAGAIN = "PlaceAgain" ["Anim"] ["Icon"]
+PLACEAGAIN = "PlaceAgain" *("Anim" "Icon")
 
-PLUS = "Plus" [STRING]
+PLUS = "Plus" RESTOFLINE
 
-POINTERKEY = "PointerKey" ["(" WINDOWSELECTOR ")"] KEYNAME CONTEXT MODIFIER COMMAND
+POINTERKEY = "PointerKey" ["(" WINDOWSELECTOR ")"] KEYNAME
+	BINDINGCONTEXT BINDINGMODIFIER RESTOFLINE_COMMAND
 
-POPUP = "Popup" [STRING] [POSITION] [COMMAND]
-POSITION = CONTEXT-RECTANGLE INT INT [OPTIONS]
-CONTEXT-RECTANGLE = "Root" / "XineramaRoot" / "Mouse" / "Window" /
-	"Interior" / "Tiitle" / ("Button" INT) "Icon" / "Item" / "Context" /
-	"This" / ("Rectangle" GEOMETRY)
-OPTIONS = "TearoffImmediately" / "SelectInPlace"
+POINTERWINDOW = "PointerWindow" ["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
+
+POPUP = "Popup" MENUNAME [POPUPPOSITION] [POPUPCOMMAND]
+POPUPPOSITION = POPUPCONTEXT_RECTANGLE INT INT [POPUPOPTIONS]
+POPUPCONTEXT_RECTANGLE = "Root"
+POPUPCONTEXT_RECTANGLE =/ "XineramaRoot"
+POPUPCONTEXT_RECTANGLE =/ "Mouse"
+POPUPCONTEXT_RECTANGLE =/ "Window"
+POPUPCONTEXT_RECTANGLE =/ "Interior"
+POPUPCONTEXT_RECTANGLE =/ "Tiitle"
+POPUPCONTEXT_RECTANGLE =/ ("Button" INT) "Icon"
+POPUPCONTEXT_RECTANGLE =/ "Item"
+POPUPCONTEXT_RECTANGLE =/ "Context"
+POPUPCONTEXT_RECTANGLE =/ "This"
+POPUPCONTEXT_RECTANGLE =/ ("Rectangle" POPUPGEOMETRY)
+POPUPOPTIONS = "TearoffImmediately" / "SelectInPlace"
+POPUPCOMMAND = !!!
 
 PRINTINFO = "PrintInfo" PRINTINFOSUBJECT
 PRINTINFOSUBJECT = (PRINTINFOKEYWORD [PRINTINFOVAL])
@@ -1198,8 +1280,7 @@ SAVEQUITSESSION = "SaveQuitSession"
 SAVESESSION = "SaveSession"
 ; OBSOLETE ignoring
 
-SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIR DIR ["(" CONDITIONS ")"] COMMAND
-DIR = EDGEDIRECTION
+SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIRS_MAIN DIRS_MAIN ["(" CONDITIONS ")"] COMMAND
 
 SCHEDULE = "Schedule" ["periodic"] INT [INT] COMMAND
 
@@ -1258,7 +1339,7 @@ OPERATOR = ">=" / ">" / "<=" / "==" / "!="
 TESTRC = "TestRc" ["(" ["!"]RETCODE ")"] COMMAND
 RETCODE = "0" / "1" / "-1" / "-2" / "NoMatch" / "Match" / "Error" /
 	"Break"
-THISWINDOW = "ThisWindow" ["(" CONDITION ")"] COMMAND
+THISWINDOW = "ThisWindow" ["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
 CONDITION = *("CirculateHit" / "CirculateHitIcon" / "CirculateHitShaded")
 
 TITLE = "Title"
