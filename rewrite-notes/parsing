@@ -894,8 +894,7 @@ CMD_DESTROYMODULECONFIG = "DestroyModuleConfig" MODULECONFIG
 
 CMD_DESTROYSTYLE = "DestroyStyle" STYLENAME
 
-CMD_DESTROYWINDOWSTYLE = "DestroyWindowStyle"
-; operates on context window
+CMD_DESTROYWINDOWSTYLE = "DestroyWindowStyle" ; operates on context window
 
 CMD_DIRECTION = "Direction" [DIRECTIONFROMPOINTER] DIRS_CENTER
 	["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
@@ -935,7 +934,6 @@ CMD_EXEC = "Exec" RESTOFLINE_COMMAND
 
 CMD_EXECUSESHELL = "ExecUseShell" EXECUSESHELLSHELL
 ; Could technically be any external command; assume a value from /etc/shells
-; though.
 EXECUSESHELLSHELL = !!!
 
 CMD_FAKECLICK = "FakeClick" FAKECLICKACTION *("," FAKECLICKACTION)
@@ -1008,8 +1006,6 @@ HIDEGEOMETRYWINDOWCOMMAND = "Never"
 HIDEGEOMETRYWINDOWCOMMAND =/ "Move"
 HIDEGEOMETRYWINDOWCOMMAND =/ "Resize"
 
-; OBSOLETE ignoring
-
 CMD_HILIGHTCOLORSET = "HilightColorset" [COLORSET_NUM]
 
 CMD_ICONIFY = "Iconify" BOOL_OR_TOGGLE
@@ -1035,8 +1031,7 @@ CMD_LAYER = "Layer" [INT INT] / "default"
 
 CMD_LOCALEPATH = "LocalePath" [PATH]
 
-CMD_CLASS_RAISELOWER = ("Lower" / "Raise" / "RaiseLower")
-; operates on context window
+CMD_CLASS_RAISELOWER = ("Lower" / "Raise" / "RaiseLower") ; operates on context window
 
 CMD_MAXIMIZE = "Maximize" [MAXIMIZEFLAGS] [BOOL_OR_TOGGLE / "forget"]
 	[[MAXIMIZEDIM[MAXIMIZESUFFIX]] MAXIMIZEDIM[MAXIMIZESUFFIX]]
