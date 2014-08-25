@@ -1531,9 +1531,9 @@ PERCENT_ARG_SUFFIX = "p" / "P"
 PERCENT_ARG_PAIR = 2PERCENT_ARG / RECTANGLE_ARGS
 ; Parsed by GetRectangleArguments()
 RECTANGLE_ARGS = INT RECT_CHARACTER INT
-RECT_CHARACTER = %x01.09 / %x0b.4f / %x51.6f / %x71.ff
+RECT_CHARACTER = %x01-09 / %x0b-4f / %x51-6f / %x71-ff
 ; note: any character except p, P and \n.
-DQ_RECT_CHARACTER = %x01.09 / %x0b.4f / %x51.6f / %x71.ff
+DQ_RECT_CHARACTER = %x01-09 / %x0b-4f / %x51-6f / %x71-ff
 
 ;; string rules
 
@@ -1543,16 +1543,16 @@ BQUOTE = %x60 ; `
 CQUOTE = %x5c ; \
 
 ; any character except \, ", ', `, whitespace, newline
-SCHAR_UNQ = %x01.08
-SCHAR_UNQ =/ %x0b.1f
+SCHAR_UNQ = %x01-08
+SCHAR_UNQ =/ %x0b-1f
 SCHAR_UNQ =/ %x21
-SCHAR_UNQ =/ %x23.26
-SCHAR_UNQ =/ %x28.5b
-SCHAR_UNQ =/ %x5d.5f
-SCHAR_UNQ =/ %x61.ff
+SCHAR_UNQ =/ %x23-26
+SCHAR_UNQ =/ %x28-5b
+SCHAR_UNQ =/ %x5d-5f
+SCHAR_UNQ =/ %x61-ff
 
 ; \ followed by any character except newline
-SCHAR_CQ_CHAR = "\" (%x01.09 /%x0b.ff)
+SCHAR_CQ_CHAR = "\" (%x01-09 /%x0b-ff)
 
 ; any character except ", whitespace, newline (\ quotes resolved)
 SCHAR_DQ = SCHAR_UNQ
