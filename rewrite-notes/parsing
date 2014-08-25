@@ -1531,8 +1531,57 @@ PERCENT_ARG_SUFFIX = "p" / "P"
 PERCENT_ARG_PAIR = 2PERCENT_ARG / RECTANGLE_ARGS
 ; Parsed by GetRectangleArguments()
 RECTANGLE_ARGS = INT RECT_CHARACTER INT
-RECT_CHARACTER = %x01-4f / %x51-6f / %x71-ff
-; note: any character except p and P.
+RECT_CHARACTER = %x01.09 / %x0b.4f / %x51.6f / %x71.ff
+; note: any character except p, P and \n.
+DQ_RECT_CHARACTER = %x01.09 / %x0b.4f / %x51.6f / %x71.ff
+
+;; string rules
+
+DQUOTE = %x22 ; "
+SQUOTE = %x27 ; '
+BQUOTE = %x60 ; `
+CQUOTE = %x5c ; \
+
+; any character except \, ", ', `, whitespace, newline
+SCHAR_UNQ = %x01.08
+SCHAR_UNQ =/ %x0b.1f
+SCHAR_UNQ =/ %x21
+SCHAR_UNQ =/ %x23.26
+SCHAR_UNQ =/ %x28.5b
+SCHAR_UNQ =/ %x5d.5f
+SCHAR_UNQ =/ %x61.ff
+
+; \ followed by any character except newline
+SCHAR_CQ_CHAR = "\" (%x01.09 /%x0b.ff)
+
+; any character except ", whitespace, newline (\ quotes resolved)
+SCHAR_DQ = SCHAR_UNQ
+SCHAR_DQ =/ SQUOTE
+SCHAR_DQ =/ BQUOTE
+SCHAR_DQ =/ SCHAR_CQ_CHAR
+; any character except ', whitespace, newline (\ quotes resolved)
+SCHAR_SQ = SCHAR_UNQ
+SCHAR_SQ =/ DQUOTE
+SCHAR_SQ =/ BQUOTE
+SCHAR_SQ =/ SCHAR_CQ_CHAR
+; any character except `, whitespace, newline (\ quotes resolved)
+SCHAR_BQ = SCHAR_UNQ
+SCHAR_BQ =/ DQUOTE
+SCHAR_BQ =/ SQUOTE
+SCHAR_BQ =/ SCHAR_CQ_CHAR
+; any simple character or one quoted with \
+SCHAR_CQ = SCHAR_UNQ
+SCHAR_CQ =/ SCHAR_CQ_CHAR
+
+; unquoted string
+STRING_UNQ = 1*SCHAR_UNQ
+; strings quoted with ", ', `
+STRING_DQ = DQUOTE 1*SCHAR_DQ DQUOTE
+STRING_SQ = SQUOTE 1*SCHAR_SQ SQUOTE
+STRING_BQ = BQUOTE 1*SCHAR_BQ BQUOTE
+
+STRING = 1*(STRING_UNQ / STRING_DQ / STRING_SQ / STRING_BQ)
+TOKEN = STRING
 
 ; applies only to tokens that are quoted with double, single or back quotes
 
