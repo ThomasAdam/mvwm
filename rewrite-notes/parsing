@@ -527,6 +527,10 @@ Definitions that need defining for the below
     * SHELL = !!!;
     * KEYNAME = !!!;
     * STYLEOPTION = !!!; (massive list of style options!!!)
+    * TOKEN = !!! ; Same as string?
+    * STRING = !!! ; Sequence of characters?
+    * RESTOFLINE = !!! ; STRING?
+    * RESTOFLINE_COMMAND = !!! ; COMMAND
 
 Types
 ~~~~~
@@ -604,8 +608,8 @@ ADDBUTTONSTYLESTATE =/ "AllActiveDown"
 ADDBUTTONSTYLESTATE =/ "AllInactiveUp"
 ADDBUTTONSTYLESTATE =/ "AllInactiveDown"
 ADDBUTTONSTYLEACTIVE = "Active" - implies FOCUSED_WINDOW
-ADDBUTTONSTYLEFLAG = ["!"]ADDBUTTONSTYLEKEYWORD *(","  ["!"]ADDBUTTONSTYLEKEYWORD)
-; (XXX = ButtonStyle relationships here...)
+ADDBUTTONSTYLEFLAG = ["!"]ADDBUTTONSTYLEKEYWORD *("," ["!"]ADDBUTTONSTYLEKEYWORD)
+ADDBUTTONSTYLEKEYWORD = 1*("UseTitleStyle" / "UseBorderStyle") *("Raised" / "Sunk" / "Flat")
 
 CMD_ADDTITLESTYLE = "AddTitleStyle" [ADDTITLESTYLESTATE]
 	[ADDTITLESTYLESTYLE] [ADDTITLESTYLEFLAG]
@@ -624,7 +628,6 @@ ADDTITLESTYLEACTIVE = "Active" ; - implies FOCUSED_WINDOW
 
 CMD_ADDTODECOR = "AddToDecor" DECORNAME
 DECORNAME = TOKEN
-; (XXX = Other commands/styles affect this document below first!)
 
 CMD_ADDTOFUNC = "AddToFunc" FUNCNAME ADDTOFUNCFUNCDEFS RESTOFLINE_COMMAND
 ADDTOFUNCFUNCDEFS = "I"
@@ -865,7 +868,7 @@ CURSORSTYLEXOPTION =/ "bg"
 CMD_DEFAULTCOLORS = "DefaultColors" [COLOUR_FG] [COLOUR_BG]
 <These need defining!>
 
-CMD_DEFAULTCOLORSET = "DefaultColorset" (COLORSET_NUM/ "-1")
+CMD_DEFAULTCOLORSET = "DefaultColorset" (COLORSET_NUM / "-1")
 
 CMD_DEFAULTFONT = "DefaultFont" [FONTNAME]
 
@@ -940,6 +943,8 @@ CMD_EWMHNUMBEROFDESKTOPS = "EwmhNumberOfDesktops" INT INT
 CMD_EXEC = "Exec" RESTOFLINE_COMMAND
 
 CMD_EXECUSESHELL = "ExecUseShell" EXECUSESHELLSHELL
+; Could technically be any external command; assume a value from /etc/shells
+; though.
 EXECUSESHELLSHELL = !!!
 
 CMD_FAKECLICK = "FakeClick" FAKECLICKACTION *("," FAKECLICKACTION)
