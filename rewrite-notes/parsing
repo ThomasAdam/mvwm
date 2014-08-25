@@ -535,53 +535,53 @@ Definitions that need defining for the below
 Types
 ~~~~~
 
- WSC = %x20 / %x09
- WS = *WSC
- DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
- SIGNPOS = "+"
- SIGNNEG = "-"
- SIGN = SIGNPOS / SIGNNEG
- POSINT = [SIGNPOS] 1*DIGIT
- INT = [SIGN] 1*DIGIT
- INTPERCENTAGE = 1DIGIT | 2DIGIT | ("0" / "1") 2DIGIT
- TRUE = "yes" / "y" / "1" / "t" / "true"
- FALSE = "no" / "n" / "0" / "f" / "false"
- BOOL = TRUE / FALSE
- TOGGLE = "toggle"
- BOOL_OR_TOGGLE = BOOL / TOGGLE
- MODIFIERS = "s" / "c" / "l" / "m" / "1" / "2" / "3" / "4" / "5" / "a"
- BINDINGMODIFIERS = "n" / 1*MODIFIERS
- PATH = ["/"] *(STRING "/") [STRING]
- VISIBLE_NAME = !!!
- CLASS = !!!
- RESOURCE = !!!
- NAME = !!!
- WINDOW_ID = !!!
- WINDOWSELECTOR = VISIBLE_NAME / CLASS / RESOURCE / NAME / WINDOW_ID
- BINDINGCONTEXT = "R" / "W" / "D" / "T" / "F" / "A" / "S" / "M" / "I"
- BINDINGCONTEXT = "[" / "]" / "-" / "_"
- BINDINGCONTEXT = "<" / "^" / ">" / "v"
- BINDINGCONTEXT = DIGIT
- MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
- MODULALIAS = TOKEN
- DECORNAME = TOKEN
- FUNCNAME = TOKEN
- MENUNAME = TOKEN
- MENUSTYLENAME = TOKEN
- STYLENAME = TOKEN / "*"
- DIRS_MAIN = "North" / "N"
- DIRS_MAIN =/ "East" / "E"
- DIRS_MAIN =/ "South" / "S"
- DIRS_MAIN =/ "West" / "W"
- DIRS_DIAG = DIRS_MAIN
- DIRS_DIAG =/ "NorthEast" / "NW"
- DIRS_DIAG =/ "SouthEast" / "SE"
- DIRS_DIAG =/ "SouthWest" / "SW"
- DIRS_DIAG =/ "NorthWest" / "NW"
- DIRS_CENTER = DIRS_DIAG / "Center" / "C"
- COLORSET_NUM = POSINT
- BUTTON = 1*DIGIT
- SELECTCMDCONDITION =
+WSC = %x20 / %x09
+WS = *WSC
+DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+SIGNPOS = "+"
+SIGNNEG = "-"
+SIGN = SIGNPOS / SIGNNEG
+POSINT = [SIGNPOS] 1*DIGIT
+INT = [SIGN] 1*DIGIT
+INTPERCENTAGE = 1DIGIT | 2DIGIT | ("0" / "1") 2DIGIT
+TRUE = "yes" / "y" / "1" / "t" / "true"
+FALSE = "no" / "n" / "0" / "f" / "false"
+BOOL = TRUE / FALSE
+TOGGLE = "toggle"
+BOOL_OR_TOGGLE = BOOL / TOGGLE
+MODIFIERS = "s" / "c" / "l" / "m" / "1" / "2" / "3" / "4" / "5" / "a"
+BINDINGMODIFIERS = "n" / 1*MODIFIERS
+PATH = ["/"] *(STRING "/") [STRING]
+VISIBLE_NAME = !!!
+CLASS = !!!
+RESOURCE = !!!
+NAME = !!!
+WINDOW_ID = !!!
+WINDOWSELECTOR = VISIBLE_NAME / CLASS / RESOURCE / NAME / WINDOW_ID
+BINDINGCONTEXT = "R" / "W" / "D" / "T" / "F" / "A" / "S" / "M" / "I"
+BINDINGCONTEXT = "[" / "]" / "-" / "_"
+BINDINGCONTEXT = "<" / "^" / ">" / "v"
+BINDINGCONTEXT = DIGIT
+MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
+MODULALIAS = TOKEN
+DECORNAME = 1*(ALPHA DIGIT)
+FUNCNAME = TOKEN
+MENUNAME = TOKEN
+MENUSTYLENAME = TOKEN
+STYLENAME = TOKEN / "*"
+DIRS_MAIN = "North" / "N"
+DIRS_MAIN =/ "East" / "E"
+DIRS_MAIN =/ "South" / "S"
+DIRS_MAIN =/ "West" / "W"
+DIRS_DIAG = DIRS_MAIN
+DIRS_DIAG =/ "NorthEast" / "NW"
+DIRS_DIAG =/ "SouthEast" / "SE"
+DIRS_DIAG =/ "SouthWest" / "SW"
+DIRS_DIAG =/ "NorthWest" / "NW"
+DIRS_CENTER = DIRS_DIAG / "Center" / "C"
+COLORSET_NUM = POSINT
+BUTTON = 1*DIGIT
+SELECTCMDCONDITION =
 	 *("CirculateHit" / "CirculateHitIcon" / "CirculateHitShaded") !!!
 
 Commands
@@ -627,7 +627,6 @@ ADDTITLESTYLEACTIVE = "Active" ; - implies FOCUSED_WINDOW
 ; (XXX = TitleStyle/ButtonStyle relationships here...)
 
 CMD_ADDTODECOR = "AddToDecor" DECORNAME
-DECORNAME = TOKEN
 
 CMD_ADDTOFUNC = "AddToFunc" FUNCNAME ADDTOFUNCFUNCDEFS RESTOFLINE_COMMAND
 ADDTOFUNCFUNCDEFS = "I"
@@ -637,6 +636,7 @@ ADDTOFUNCFUNCDEFS =/ "H"
 ADDTOFUNCFUNCDEFS =/ "D"
 
 CMD_ADDTOMENU = "AddToMenu" MENUNAME [ADDTOMENULABEL RESTOFLINE_COMMAND]
+ADDTOMENULABEL = STRING
 
 CMD_ALL = "All" [ALLOPTIONS] ["(" ALLCONDITION ")"] RESTOFLINE_COMMAND
 ALLOPTIONS = "Reverse"
@@ -762,9 +762,6 @@ CMD_CLICKTIME = "ClickTime" POSINT
 CMD_CMD_CLASS_CLOSE = "Close" / "Delete" / "Destroy"
 ; work on context window
 
-CMD_COLORLIMIT = "ColorLimit"
-; obsolete, has been removed
-
 CMD_COLORMAPFOCUS = "ColormapFocus" ("FollowsMouse" / "FollowsFocus")
 
 CMD_COLORSET = "Colorset" COLORSET_NUM COLORSETOPTION *("," COLORSETOPTION)
@@ -815,8 +812,8 @@ CMD_CURSORMOVE = "CursorMove"
 CURSORMOVEDIM = INT
 CURSORMOVESUFFIX = "p"
 
-CMD_CURSORSTYLE = "CursorStyle" CURSORSTYLECONTEXT [CURSORSTYLEOPTION]
-CURSORSTYLECONTEXT = KEYWORD / X11NAME
+CMD_CURSORSTYLE = "CursorStyle" CURSORSTYLECONTEXT [CURSORSTYLEXOPTION]
+CURSORSTYLECONTEXT = CURSORSTYLEKEYWORD / CURSORSTYLEX11NAME
 CURSORSTYLEKEYWORD = "POSITION"
 CURSORSTYLEKEYWORD =/ "TITLE"
 CURSORSTYLEKEYWORD =/ "DEFAULT"
@@ -865,8 +862,8 @@ CURSORSTYLEXOPTION = IMAGEFILE [INT]
 CURSORSTYLEXOPTION =/ "fg"
 CURSORSTYLEXOPTION =/ "bg"
 
-CMD_DEFAULTCOLORS = "DefaultColors" [COLOUR_FG] [COLOUR_BG]
-<These need defining!>
+CMD_DEFAULTCOLORS = "DefaultColors" [(COLOUR_FG] / "-") [(COLOUR_BG - "/")]
+; XXX - We need to represent colour values here --- RGB.txt, etc.
 
 CMD_DEFAULTCOLORSET = "DefaultColorset" (COLORSET_NUM / "-1")
 
@@ -878,11 +875,8 @@ CMD_DEFAULTLAYERS = "DefaultLayers" INT INT INT
 
 CMD_DESCHEDULE = "Deschedule" [INT]
 
-CMD_DESK = "Desk" [!!!]
-; OBSOLETED BY GOTODESK
-
 CMD_DESKTOPNAME = "DesktopName" INT DESKTOPNAME
-DESKTOPNAME = TOKEN
+DESKTOPNAME = 1*(ALPHA DIGIT)
 
 CMD_DESKTOPSIZE = "DesktopSize" DESKTOPSIZDIM "x" DESKTOPSIZDIM
 DESKTOPSIZEDIM = INT
@@ -914,9 +908,6 @@ CMD_ECHOFUNCDEFINITION = "EchoFuncDefinition" FUNCNAME
 CMD_EDGECOMMAND = "EdgeCommand" [DIRS_MAIN [RESTOFLINE_COMMAND]]
 
 CMD_EDGELEAVECOMMAND = "EdgeLeaveCommand" [DIRS_MAIN [RESTOFLINE_COMMAND]]
-
-CMD_EDGERESISTANCE = "EdgeResistance"
-; OBSOLETED BY CORRESPONDING STYLE COMMAND
 
 CMD_EDGESCROLL = "EdgeScroll" EDGESCROLLDIM[EDGESCROLLSUFFIX]
 	EDGESCROLLDIM[EDGESCROLLSUFFIX] [EDGESCROLLOPTION]
@@ -1001,15 +992,6 @@ CMD_FOCUSSTYLE = "FocusStyle" STYLEOPTIONS
 
 CMD_FUNCTION = "Function" [FUNCNAME]
 
-CMD_GLOBALOPTS = "GlobalOpts"
-; OBSOLETE ignoring!
-
-CMD_GNOMEBUTTON = "GnomeButton"
-; REMOVED IN MVWM ALREADY ignoring!
-
-CMD_GNOMESHOWDESKS = "GnomeShowDesks"
-; REMOVED IN MVWM ALREADY ignoring!
-
 CMD_GOTODESK = "GotoDesk" DESKNUMBER
 DESKNUMBER = ["prev" / (INT [INT [INT [INT]]])]
 
@@ -1026,16 +1008,9 @@ HIDEGEOMETRYWINDOWCOMMAND = "Never"
 HIDEGEOMETRYWINDOWCOMMAND =/ "Move"
 HIDEGEOMETRYWINDOWCOMMAND =/ "Resize"
 
-CMD_HILIGHTCOLOR = "HilightColor"
 ; OBSOLETE ignoring
 
 CMD_HILIGHTCOLORSET = "HilightColorset" [COLORSET_NUM]
-
-CMD_ICONFONT = "IconFont" FONTNAME
-; OBSOLETE ignoring
-
-CMD_ICONPATH = "IconPath"
-; OBSOLETE ignoring
 
 CMD_ICONIFY = "Iconify" BOOL_OR_TOGGLE
 
@@ -1197,9 +1172,6 @@ CMD_CLASS_PICK = ("ThisWindow" / "Pick" / "PointerWIndow" )
 
 CMD_PIPEREAD = "PipeRead" TOKEN ["quiet"]
 
-CMD_PIXMAPPATH = "PixmapPath"
-; OBSOLETE ignoring
-
 CMD_PLACEAGAIN = "PlaceAgain" *("Anim" "Icon")
 
 CMD_PLUS = "Plus" RESTOFLINE
@@ -1220,9 +1192,6 @@ PRINTINFOKEYWORD =/ "Infostore"
 CMD_QUIT = "Quit"
 
 CMD_QUITSCREEN = "QuitScreen"
-
-CMD_QUITSESSION = "QuitSession"
-; OBSOLETE ignoring
 
 CMD_READ = "Read" FILENAME ["quiet"]
 
@@ -1251,12 +1220,6 @@ CMD_RESTACKTRANSIENTS = "RestackTransients"
 
 CMD_RESTART = "Restart" [STRING]
 
-CMD_SAVEQUITSESSION = "SaveQuitSession"
-; OBSOLETE ignoring
-
-CMD_SAVESESSION = "SaveSession"
-; OBSOLETE ignoring
-
 CMD_SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIRS_MAIN DIRS_MAIN
 	["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
 
@@ -1276,22 +1239,10 @@ CMD_SETENV = "SetEnv" [STRING] [STRING]
 
 CMD_SILENT = "Silent" RESTOFLINE_COMMAND
 
-CMD_SNAPATTRACTION = "SnapAttraction"
-; OBSOLETE style option ignoring
-
-CMD_SNAPGRID = "SnapGrid"
-; OBSOLETE style option ignoring
-
 CMD_STATE = "State" STATENUM [BOOL]
 
 CMD_CLASS_STICK = ("Stick" / "StickAcrossDesks" / "StickAcrossPages")
 	[BOOL_OR_TOGGLE]
-
-CMD_STROKE = "Stroke"
-; OBSOLETE removed in mvwm
-
-CMD_STROKEFUNC = "StrokeFunc"
-; OBSOLETE removed in mvwm
 
 CMD_CLASS_STYLE = ("Style" / "WindowStyle") [STYLENAME] [STYLEOPTIONS]
 ; note: WindowStyle operates on context window
@@ -1592,6 +1543,13 @@ TOKEN = STRING
 
 ;; !!! obsolete commands removed in mvwm
 
+CMD_GNOMEBUTTON = "GnomeButton"
+CMD_GNOMESHOWDESKS = "GnomeShowDesks"
+CMD_SAVESESSION = "SaveSession"
+CMD_SAVEQUITSESSION = "SaveQuitSession"
+CMD_STROKE = "Stroke"
+CMD_STROKEFUNC = "StrokeFunc"
+CMD_QUITSESSION = "QuitSession"
 CMD_XINERAMA = "Xinerama"
 CMD_XINERAMAPRIMARYSCREEN = "XineramaPrimaryScreen"
 CMD_XINERAMASLS = "XineramaSls"
@@ -1600,6 +1558,17 @@ CMD_XINERAMASLSSIZE = "XineramaSlsSize"
 
 ;; !!! obsolete commands in fvwm2
 
-CMD_WINDOWFONT = "WindowFont"
-CMD_WINDOWSHADEANIMATE = "WindowShadeAnimate"
-CMD_WINDOWSDESK = "WindowsDesk"
+CMD_COLORLIMIT = "ColorLimit"
+CMD_WINDOWFONT = "WindowFont" ; Style * Font ...
+CMD_WINDOWSHADEANIMATE = "WindowShadeAnimate" ; Style * WindowShadeSteps
+CMD_WINDOWSDESK = "WindowsDesk" ; See 'MoveToDesk'
+CMD_DESK = "Desk" ; See 'Gotodesk'
+CMD_EDGERESISTANCE = "EdgeResistance" ; Style * EdgeMoveDelay, EdgeMoveResistance
+CMD_GLOBALOPTS = "GlobalOpts" ; Various Style options
+CMD_HILIGHTCOLOR = "HilightColor" ; Style
+CMD_ICONFONT = "IconFont" FONTNAME ; Style
+CMD_ICONPATH = "IconPath" ; ImagePath
+CMD_PIXMAPPATH = "PixmapPath" ; ImagePath
+CMD_SNAPATTRACTION = "SnapAttraction" ; Style * SnapAttraction
+CMD_SNAPGRID = "SnapGrid" ; Style * SnapGrid
+
