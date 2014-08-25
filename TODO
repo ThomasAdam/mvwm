@@ -21,6 +21,9 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
       more being added in.
     - I'm not keen on commands.h:P() macro, or ewmh_intern.h:CMD_EWMH_ARGS
       macros; I'd rather have all prototypes unrolled and explicitly stated.
+    - Consider using doxygen for API-specific documentation?  This would
+      help justify/cleanup functions in the longer-term by identifying
+      similar functions, etc.
 
 * String handling!
     - libs/String.[ch] and friends have idioms like CatString3, and
