@@ -1278,7 +1278,6 @@ CMD_SNAPGRID = "SnapGrid"
 ; OBSOLETE style option ignoring
 
 CMD_STATE = "State" STATENUM [BOOL]
-STATENUM = DIGIT / ("1" DIGIT) / ("2" DIGIT) / "30" / "31"
 
 CMD_CLASS_STICK = ("Stick" / "StickAcrossDesks" / "StickAcrossPages")
 	[BOOL_OR_TOGGLE]
@@ -1289,7 +1288,8 @@ CMD_STROKE = "Stroke"
 CMD_STROKEFUNC = "StrokeFunc"
 ; OBSOLETE removed in mvwm
 
-CMD_STYLE = "Style" [STYLENAME] [STYLEOPTIONS]
+CMD_CLASS_STYLE = ("Style" / "WindowStyle") [STYLENAME] [STYLEOPTIONS]
+; note: WindowStyle operates on context window
 STYLEOPTIONS = STYLEOPTION ("," STYLEOPTION)
 STYLEOPTION = !!!
 
@@ -1323,17 +1323,20 @@ CMD_UPDATESTYLES = "UpdateStyles"
 
 CMD_WAIT = "Wait" [TOKEN]
 
-CMD_WARPTOWINDOW = "WarpToWindow" 2(WARPTOWINDOWDIM[WARPSUFFIX])
-WARPTOWINDOWDIM = INT
-WARPSUFFIX = "p"
-
-CMD_WINDOWFONT = "WindowFont"
-; OBSOLETE
+CMD_WARPTOWINDOW = "WarpToWindow" [PERCENT_ARG_PAIR]
+; note: arguments not used when used on an unmanaged window
+; note: arguments are ignored if not valid
+; note: ignores rest of line
+; note: syntax description complete
 
 CMD_WINDOWID = "WindowId"
-	[("root" [WINDOWIDSCREENNUM]) /
-	(WINDOWID [SELECTCMDCONDITIONS])]
-WINDOWIDSCREENNUM = INT
+	[("root" [WINDOWIDSCREENNUM]) / (WINDOWID [CONDITIONMASK])]
+; note: ignores rest of line
+; note: syntax description complete
+WINDOWIDSCREENNUM = POSINT
+; note: valid range is 0 to <number of screens - 1>
+WINDOWID = LONGINT
+; note: long value parsed by strtol without error checking
 
 CMD_WINDOWLIST = "WindowList" ["(" WINDOWLISTCONDITIONS ")"]
 	[WINDOWLISTPOSITION] [WINDOWLLISTOPTIONS] [COMMAND]
@@ -1402,37 +1405,147 @@ WINDOWLISTOPTIONS =/ "Alphabetic"
 WINDOWLISTOPTIONS =/ "NotAlphabetic"
 WINDOWLISTKEYWORD = !!!
 WINDOWLISTVALUE = !!!
+; note: !!! to do
 
-CMD_WINDOWSHADE = "WindowShade" [(BOOL_OR_TOGGLE / "ShadeAgain") [DIRECTION]]
-
-CMD_WINDOWSHADEANIMATE = "WindowShadeAnimate"
-; OBSOLETE ignoring
-
-CMD_WINDOWSTYLE = "WindowStyle" STYLEOPTIONS
-; operates on context window
-
-CMD_WINDOWSDESK = "WindowsDesk"
-; OBSOLETE ignoring
+CMD_WINDOWSHADE = "WindowShade" ["shadeagain"]
+	["last" / DIRS_MINOR] [WINDOWSHADEMODE]
+WINDOWSHADEMODE = WINDOWSHADETOGGLE / WINDOWSHADEON / WINDOWSHADEOFF
+WINDOWSHADETOGGLE = () / TOGGLE
+WINDOWSHADEON = TRUE
+WINDOWSHADEOFF = FALSE / "2"
+; note: defaults to toggle
+; note: if "last" or DIRS_MINOR is present and valid, ignore the
+;       WINDOWSHADEMODE argument if present
+; note: ignores rest of line
+; note: syntax description complete
 
 CMD_XSYNC = "XSync"
+; note: ignores all arguments
+; note: syntax description complete
 
-CMD_XSYNCHRONIZE = "XSynchronize" [BOOL]
-
-CMD_XINERAMA = "Xinerama"
-; OBSOLETE removed in mvwm
-
-CMD_XINERAMAPRIMARYSCREEN = "XineramaPrimaryScreen"
-; OBSOLETE removed in mvwm
-
-CMD_XINERAMASLS = "XineramaSls"
-; OBSOLETE removed in mvwm
-
-CMD_XINERAMASLSSCREENS = "XineramaSlsScreens"
-; OBSOLETE removed in mvwm
-
-CMD_XINERAMASLSSIZE = "XineramaSlsSize"
-; OBSOLETE removed in mvwm
+CMD_XSYNCHRONIZE = "XSynchronize" [BOOL_OR_TOGGLE_DEFAULT_TOGGLE]
+; note: argument defaults to toggle if missing or invalid
+; note: ignores rest of line
+; note: syntax description complete
 
 CMD_XORPIXMAP = "XorPixmap" [IMAGEFILE]
+; note: if argument is missing, maps to "XorValue 0"
+; note: ignores rest of line
+; note: syntax description complete
 
-CMD_XORVALUE = "XorValue" [INT]
+CMD_XORVALUE = "XorValue" [INTEGER_ARGUMENT]
+; note: argument defaults to 0 if missing or malformed
+; note: argument is converted to unsinged long before use
+; note: argument should be parsed as unsigned long to prevent misinterpretation
+; note: ignores rest of line
+; note: syntax description complete
+
+
+;; !!! more common rules
+
+; Integer arguments as parsed by GetIntegerArguments()
+INTEGER_ARGUMENT = INT
+
+; Loaded by PictureFindImageFile
+IMAGEFILE = TOKEN
+; note: if file not found, try again with IMAGEFILE ".gz"
+
+; parsed by parse_gravity_argument
+DIR_N = "-" / "N" / "North""Top" / "t" / "Up" / "u"
+DIR_E =/ "]" / "E" / "East" / "Right" / "r" / "Right" / "r"
+DIR_S =/ "_" / "S" / "South" / "Bottom" / "b" / "Down" / "d"
+DIR_W =/ "[" / "W" / "West" / "Left" / "l" / "Left" / "l"
+DIR_NE =/ "^" / "NE" / "NorthEast" / "TopRight" / "tr" / "UpRight" / "ur"
+DIR_SE =/ ">" / "SE" / "SouthEast" / "BottomRight" / "br" / "DownRight" / "dr"
+DIR_SW =/ "v" / "SW" / "SouthWest" / "BottomLeft" / "bl" / "DownLeft" / "dl"
+DIR_NE =/ "<" / "NW" / "NorthWest" / "TopLeft" / "tl" / "UpLeft" / "ul"
+DIR_C = "." / "C" / "Center" / "Centre"
+DIRS_MAJOR = DIR_N / DIR_E / DIR_S / DIR_W
+DIRS_MINOR = DIRS_MAIN / DIR_NE / DIR_SE / DIR_SW / DIR_NW
+DIRS_ALL = DIRS_MAIN / DIRS_DIAG / DIR_C
+
+; Parsed by ParseToggleArgument
+BOOL_OR_TOGGLE_DEFAULT_TOGGLE = BOOL / TOGGLE
+BOOL_OR_TOGGLE_DEFAULT_TRUE = BOOL / TOGGLE
+BOOL_OR_TOGGLE_DEFAULT_FALSE = BOOL / TOGGLE
+BOOL_DEFAULT_TRUE = BOOL
+BOOL_DEFAULT_FALSE = BOOL
+
+; parsed by strtol
+LONGINT = INT
+
+; parsed by CreateFlagString
+CONDITIONMASK = [CM_COND_NEG *("," CM_COND_NEG)]
+CM_COND_NEG = ["!"] CM_COND
+CM_COND = ("AcceptsFocus")
+CM_COND =/ ("Focused")
+CM_COND =/ ("HasPointer")
+CM_COND =/ ("Iconic")
+CM_COND =/ ("Visible")
+CM_COND =/ ("Overlapped")
+CM_COND =/ ("PlacedByButton" [BUTTON])
+CM_COND =/ ("PlacedByButton3")
+CM_COND =/ ("Raised")
+CM_COND =/ ("Sticky")
+CM_COND =/ ("StickyAcrossPages")
+CM_COND =/ ("StickyAcrossDesks")
+CM_COND =/ ("StickyIcon")
+CM_COND =/ ("StickyAcrossPagesIcon")
+CM_COND =/ ("StickyAcrossDesksIcon")
+CM_COND =/ ("Maximized")
+CM_COND =/ ("FixedSize")
+CM_COND =/ ("FixedPosition")
+CM_COND =/ ("HasHandles")
+CM_COND =/ ("Iconifiable")
+CM_COND =/ ("Maximizable")
+CM_COND =/ ("Closable")
+CM_COND =/ ("Shaded")
+CM_COND =/ ("Transient")
+CM_COND =/ ("PlacedByMvwm")
+CM_COND =/ ("CurrentDesk")
+CM_COND =/ ("CurrentPage")
+CM_COND =/ ("CurrentGlobalPage")
+CM_COND =/ ("CurrentPageAnyDesk")
+CM_COND =/ ("CurrentScreen")
+CM_COND =/ ("AnyScreen")
+CM_COND =/ ("CurrentGlobalPageAnyDesk")
+CM_COND =/ ("CirculateHit")
+CM_COND =/ ("CirculateHitIcon")
+CM_COND =/ ("CirculateHitShaded")
+CM_COND =/ ("State" STATENUM)
+CM_COND =/ ("Layer" [INT])
+; argument is the layer number; negative values are silently ignored
+CM_COND =/ NAMELIST
+CM_NAMELIST = NAME *["|" NAME]
+CM_NAME = STRING
+; up to and excluding next "|"
+
+QUOTED_TOKEN = TOKEN
+
+STATENUM = DIGIT / ("1" DIGIT) / ("2" DIGIT) / "30" / "31"
+
+; Parsed by GetOnePercentArgument()
+PERCENT_ARG = INT [PERCENT_ARG_SUFFIX]
+PERCENT_ARG_SUFFIX = "p" / "P"
+; Parsed by GetTwoPercentArguments()
+PERCENT_ARG_PAIR = 2PERCENT_ARG / RECTANGLE_ARGS
+; Parsed by GetRectangleArguments()
+RECTANGLE_ARGS = INT RECT_CHARACTER INT
+RECT_CHARACTER = %x01-4f / %x51-6f / %x71-ff
+; note: any character except p and P.
+
+; applies only to tokens that are quoted with double, single or back quotes
+
+;; !!! obsolete commands removed in mvwm
+
+CMD_XINERAMA = "Xinerama"
+CMD_XINERAMAPRIMARYSCREEN = "XineramaPrimaryScreen"
+CMD_XINERAMASLS = "XineramaSls"
+CMD_XINERAMASLSSCREENS = "XineramaSlsScreens"
+CMD_XINERAMASLSSIZE = "XineramaSlsSize"
+
+;; !!! obsolete commands in fvwm2
+
+CMD_WINDOWFONT = "WindowFont"
+CMD_WINDOWSHADEANIMATE = "WindowShadeAnimate"
+CMD_WINDOWSDESK = "WindowsDesk"
