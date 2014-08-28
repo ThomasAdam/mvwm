@@ -1731,47 +1731,6 @@ void HandleButtonPress(const evh_args_t *ea)
 	return;
 }
 
-#ifdef HAVE_STROKE
-void HandleButtonRelease(const evh_args_t *ea)
-{
-	char *action;
-	char *name;
-	int real_modifier;
-	const XEvent *te = ea->exc->x.etrigger;
-	XClassHint *class;
-
-	DBUG("HandleButtonRelease", "Routine Entered");
-	send_motion = False;
-	stroke_trans (sequence);
-	DBUG("HandleButtonRelease",sequence);
-	/*  Allows modifier to work (Only R context works here). */
-	real_modifier = te->xbutton.state - (1 << (7 + te->xbutton.button));
-	if (ea->exc->w.fw == NULL)
-	{
-		class = NULL;
-		name = NULL;
-	}
-	else
-	{
-		class = &ea->exc->w.fw->class;
-		name = ea->exc->w.fw->name.name;
-	}
-	/* need to search for an appropriate stroke binding */
-	action = CheckBinding(
-		Scr.AllBindings, sequence, te->xbutton.button, real_modifier,
-		GetUnusedModifiers(), ea->exc->w.wcontext, BIND_STROKE,
-		class, name);
-	/* got a match, now process it */
-	if (action != NULL && (action[0] != 0))
-	{
-		execute_function(NULL, ea->exc, action, 0);
-		WaitForButtonsUp(True);
-	}
-
-	return;
-}
-#endif /* HAVE_STROKE */
-
 void HandleClientMessage(const evh_args_t *ea)
 {
 	const XEvent *te = ea->exc->x.etrigger;
@@ -3193,22 +3152,6 @@ void HandleMapRequestKeepRaised(
 
 	return;
 }
-
-#ifdef HAVE_STROKE
-void HandleMotionNotify(const evh_args_t *ea)
-{
-	DBUG("HandleMotionNotify", "Routine Entered");
-
-	if (send_motion == True)
-	{
-		stroke_record(
-			ea->exc->x.etrigger->xmotion.x,
-			ea->exc->x.etrigger->xmotion.y);
-	}
-
-	return;
-}
-#endif /* HAVE_STROKE */
 
 void HandlePropertyNotify(const evh_args_t *ea)
 {

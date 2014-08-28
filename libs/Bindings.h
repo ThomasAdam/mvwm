@@ -30,7 +30,7 @@ typedef enum
 
 typedef struct Binding
 {
-	binding_t_t type;       /* Is it a mouse, key, or stroke binding */
+	binding_t_t type;       /* Is it a mouse, key binding */
 	int Button_Key;         /* Mouse Button number or Keycode */
 	char *key_name;         /* In case of keycode, give the key_name too */
 	int Context;            /* Mvwm context, ie titlebar, frame, etc */
