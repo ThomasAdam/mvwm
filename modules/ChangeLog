@@ -1,3 +1,79 @@
+2014-08-29  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* FvwmIconMan/globals.c:
+	add entry "iconandselect" and sort to match the "Contexts" enum
+
+2014-08-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* FvwmPager/FvwmPager.c (list_window_name, list_icon_name)
+	(list_mini_icon):
+	fix unnecessary redraws
+
+2014-08-12  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* FvwmConsole/FvwmConsole.c (main):
+	Use SetMessageMask to limit the messages fvwm sends to simple error
+	messages.
+	* FvwmConsole/FvwmConsole.c (server):
+	* FvwmConsole/FvwmConsole.h (M_PASS):
+	removed M_PASS in favour of M_ERROR
+
+2014-08-11  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* FvwmIconMan/xmanager.c (set_win_iconified):
+	(add_win_state)
+	(draw_button):
+	(delete_windows_button):
+	* FvwmIconMan/readconfig.c (read_in_resources)
+	* FvwmIconMan/fvwm.c (set_win_configuration):
+	* FvwmIconMan/FvwmIconMan.h:
+	* FvwmIconMan/FvwmIconMan.1.in:
+	introduce IconAndSelectButton and IconAndSelectColorset options in
+	FvwmIconMan
+
+2014-07-04  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* FvwmProxy/ConfigFvwmProxyDefaults:
+	Use "WarpToWindow !raise" in FvwmProxySelectFunc.
+
+2014-06-28  Thomas Adam <thomas@fvwm.org>
+	* modules/Makefile.am:
+	* modules/FvwmAnimate/Makefile.am:
+	* modules/FvwmAuto/Makefile.am:
+	* modules/FvwmBacker/Makefile.am:
+	* modules/FvwmBanner/Makefile.am:
+	* modules/FvwmButtons/Makefile.am:
+	* modules/FvwmCommand/Makefile.am:
+	* modules/FvwmCommand/scripts/Makefile.am:
+	* modules/FvwmConsole/Makefile.am:
+	* modules/FvwmCpp/Makefile.am:
+	* modules/FvwmDebug/Makefile.am:
+	* modules/FvwmDragWell/Makefile.am:
+	* modules/FvwmEvent/Makefile.am:
+	* modules/FvwmForm/Makefile.am:
+	* modules/FvwmGtk/Makefile.am:
+	* modules/FvwmIconBox/Makefile.am:
+	* modules/FvwmIconMan/Makefile.am:
+	* modules/FvwmIdent/Makefile.am:
+	* modules/FvwmM4/Makefile.am:
+	* modules/FvwmPager/Makefile.am:
+	* modules/FvwmPerl/Makefile.am:
+	* modules/FvwmProxy/Makefile.am:
+	* modules/FvwmRearrange/Makefile.am:
+	* modules/FvwmSave/Makefile.am:
+	* modules/FvwmSaveDesk/Makefile.am:
+	* modules/FvwmScript/Makefile.am:
+	* modules/FvwmScript/Scripts/Makefile.am:
+	* modules/FvwmScript/Widgets/Makefile.am:
+	* modules/FvwmScroll/Makefile.am:
+	* modules/FvwmTabs/Makefile.am:
+	* modules/FvwmTaskBar/Makefile.am:
+	* modules/FvwmTheme/Makefile.am:
+	* modules/FvwmWharf/Makefile.am:
+	* modules/FvwmWinList/Makefile.am:
+	* modules/FvwmWindowMenu/Makefile.am:
+	Autotools:  INCLUDES macro deprecated.  Renamed to AM_CPPFLAGS
+
 2014-03-01  Thomas Funk  <t.funk@web.de>
 
 	* MvwmForm/MvwmForm-MultiMenuHelp:

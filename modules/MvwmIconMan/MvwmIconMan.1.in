@@ -102,6 +102,8 @@ Font                                       8x13
 Foreground      default text color         white
 Format          describes button label     "%c: %i"
 IconName        manager icon name          MvwmIconMan
+IconAndSelectButton                        up black grey
+IconAndSelectColorset
 IconButton      style for icon buttons     up black grey
 IconColorset
 ManagerGeometry size of manager in buttons 0x1
@@ -236,6 +238,18 @@ windows are iconified.
 Works like iconbutton but uses colorsets instead.  The style setting can still
 only be applied with iconbutton.  See MvwmTheme.
 
+.IP "*MvwmIconMan: [id] IconAndSelectButton \fIstyle\fP [\fIforecolor\fP \fIbackcolor\fP]"
+Same as the plainbutton option, but specifies the look of buttons whose
+windows are iconified and the button is selected.
+
+.IP "*MvwmIconMan: [id] IconButton \fIstyle\fP [\fIforecolor\fP \fIbackcolor\fP]"
+Same as the plainbutton option, but specifies the look of buttons whose
+windows are iconified.
+
+.IP "*MvwmIconMan: [id] IconAndSelectColorset \fIcolorset\fP"
+Works like IconAndSelectButton but uses colorsets instead.  The style setting
+can still only be applied with iconbutton.  See FvwmTheme.
+
 .IP "*MvwmIconMan: [id] ManagerGeometry \fIgeometry\fP"
 Specifies the initial geometry of the manager, in units of buttons. If
 \fIheight\fP is 0, then the manager will use \fIwidth\fP columns, and will
@@ -287,10 +301,10 @@ still only be applied with plainbutton.  See MvwmTheme.
 \fInum\fP is an integer specifying the number of pixels thick
 that the relief at the edge of non-flat buttons should be.  Setting
 this to 0 will produce flat buttons, as if the values for
-\fIFocusAndSelectButton\fP, \fIFocusButton\fP, \fIIconButton\fP,
-\fIPlainButton\fP, \fISelectButton\fP, and \fITitleButton\fP were
-all set to \fIflat\fP.  If \fInum\fP is negative, the button
-will be inverted as if you had used \fIReverse\fP for all classes.
+\fIFocusAndSelectButton\fP, \fIFocusButton\fP, \fIIconAndSelectButton\fP,
+\fIIconButton\fP, \fIPlainButton\fP, \fISelectButton\fP, and \fITitleButton\fP
+were all set to \fIflat\fP.  If \fInum\fP is negative, the button will be
+inverted as if you had used \fIReverse\fP for all classes.
 
 .IP "*MvwmIconMan: [id] Resolution \fIresolution\fP"
 Specifies when the manager will display an entry for a certain

@@ -1,3 +1,41 @@
+2014-08-23  Thomas Adam <thomas@fvwm.org>
+	* commands/ButtonState.xml:
+	* commands/Maximize.xml:
+	Fix error in closing tag, and use correct tag for referring to other
+	commands.
+
+2014-08-17  Thomas Adam <thomas@fvwm.org>
+	* commands/ButtonState,xml:
+	Clarify that the "bool" option can be specified in more ways than just
+	using "True" and "False", as ParseToggleArgument() is called.
+
+2014-08-17  Thomas Adam <thomas@fvwm.org>
+	* commands/ButtonState.xml:
+	Fix rendering glitch due to typos in syntax.
+
+2014-08-13  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* commands/Resize.xml:
+	Document new resize suffixes 'wa' and 'da'.
+
+	* fvwm/expansion.xml:
+	document new variables $[wa.x/y/width/height] and
+	$[dwa.x/y/width/height]
+
+2014-07-10  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* commands/Style.xml:
+	Replace NoPPosition with !UsePPosition and NoUsPosition with
+	!UseUSPosition.
+
+2014-07-04  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/icccm.xml:
+	Use "WarpToWindow !raise" in WindowListFunc.
+
+	* commands/WarpToWindow.xml:
+	Document "!raise" and "raise" options to the WarpToWindow command.
+
 2013-04-13  Dan Espen  <despen@verizon.net>
 
 	* commands/Test.xml: Document that infostore works with EnvMatch.
