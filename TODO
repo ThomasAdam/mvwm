@@ -75,6 +75,10 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
         - Next/Prev/etc., are all very scripting-like.  Do we just want hook
           support?  Is it worth expanding FvwmEvent to do this?
 
+* Menus:
+	- Typeahead/autocomplete inside of menus.  See 'rofi' for example of
+	  functionality.
+
 * Modules:
     - The module interface (FVWM <-> Module) is a mess; consider DBUS?  Or
       imsg?
