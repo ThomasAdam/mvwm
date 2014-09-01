@@ -231,11 +231,7 @@ typedef struct mloop_static_info_t
 
 /* This global is saved and restored every time a function is called that
  * might modify them, so we can safely let it live outside a function. */
-static saved_pos_hints last_saved_pos_hints =
-{
-	{ False, False },
-	{ 0, 0, 0.0, 0.0, 0, 0, False, False, False, False }
-};
+static saved_pos_hints last_saved_pos_hints;
 
 /* structures for menus */
 static MenuInfo Menus;
@@ -7254,11 +7250,13 @@ char *get_menu_options(
 			y += sy;
 			if (flags & XNegative)
 			{
-				x = sx + sw - x - width;
+				/* x is negative */
+				x = sx + sw + x;
 			}
 			if (flags & YNegative)
 			{
-				y = sy + sh - y - height;
+				/* y is negative */
+				y = sy + sh + y;
 			}
 			pops->pos_hints.is_relative = False;
 			fRectangleContext = True;

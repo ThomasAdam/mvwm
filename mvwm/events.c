@@ -3418,13 +3418,13 @@ void HandlePropertyNotify(const evh_args_t *ea)
 		if ((fw->wmhints->flags & IconPixmapHint) ||
 		    (old_wmhints_flags & IconPixmapHint))
 		{
-ICON_DBG((stderr, "hpn: iph changed (%d) '%s'\n", !!(int)(fw->wmhints->flags & IconPixmapHint), fw->name));
+ICON_DBG((stderr, "hpn: iph changed (%d) '%s'\n", !!(int)(fw->wmhints->flags & IconPixmapHint), fw->name.name));
 			has_icon_pixmap_hint_changed = True;
 		}
 		if ((fw->wmhints->flags & IconWindowHint) ||
 		    (old_wmhints_flags & IconWindowHint))
 		{
-ICON_DBG((stderr, "hpn: iwh changed (%d) '%s'\n", !!(int)(fw->wmhints->flags & IconWindowHint), fw->name));
+ICON_DBG((stderr, "hpn: iwh changed (%d) '%s'\n", !!(int)(fw->wmhints->flags & IconWindowHint), fw->name.name));
 			has_icon_window_hint_changed = True;
 			SET_USE_EWMH_ICON(fw, False);
 		}
@@ -3434,7 +3434,7 @@ ICON_DBG((stderr, "hpn: iwh changed (%d) '%s'\n", !!(int)(fw->wmhints->flags & I
 		{
 			if (ICON_OVERRIDE_MODE(fw) == ICON_OVERRIDE)
 			{
-ICON_DBG((stderr, "hpn: icon override '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: icon override '%s'\n", fw->name.name));
 				has_icon_changed = False;
 			}
 			else if (ICON_OVERRIDE_MODE(fw) ==
@@ -3445,7 +3445,7 @@ ICON_DBG((stderr, "hpn: icon override '%s'\n", fw->name));
 					if (WAS_ICON_HINT_PROVIDED(fw) ==
 					    ICON_HINT_MULTIPLE)
 					{
-ICON_DBG((stderr, "hpn: using further iph '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: using further iph '%s'\n", fw->name.name));
 						has_icon_changed = True;
 					}
 					else  if (fw->icon_bitmap_file ==
@@ -3453,7 +3453,7 @@ ICON_DBG((stderr, "hpn: using further iph '%s'\n", fw->name));
 						  fw->icon_bitmap_file ==
 						  Scr.DefaultIcon)
 					{
-ICON_DBG((stderr, "hpn: using first iph '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: using first iph '%s'\n", fw->name.name));
 						has_icon_changed = True;
 					}
 					else
@@ -3462,24 +3462,24 @@ ICON_DBG((stderr, "hpn: using first iph '%s'\n", fw->name));
 						 * hint if the application did
 						 * not provide it from the
 						 * start */
-ICON_DBG((stderr, "hpn: first iph ignored '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: first iph ignored '%s'\n", fw->name.name));
 						has_icon_changed = False;
 					}
 				}
 				else if (has_icon_window_hint_changed)
 				{
-ICON_DBG((stderr, "hpn: using iwh '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: using iwh '%s'\n", fw->name.name));
 					has_icon_changed = True;
 				}
 				else
 				{
-ICON_DBG((stderr, "hpn: iwh not changed, hint ignored '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: iwh not changed, hint ignored '%s'\n", fw->name.name));
 					has_icon_changed = False;
 				}
 			}
 			else /* NO_ICON_OVERRIDE */
 			{
-ICON_DBG((stderr, "hpn: using hint '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: using hint '%s'\n", fw->name.name));
 				has_icon_changed = True;
 			}
 
@@ -3490,7 +3490,7 @@ ICON_DBG((stderr, "hpn: using hint '%s'\n", fw->name));
 
 			if (has_icon_changed)
 			{
-ICON_DBG((stderr, "hpn: icon changed '%s'\n", fw->name));
+ICON_DBG((stderr, "hpn: icon changed '%s'\n", fw->name.name));
 				/* Okay, the icon hint has changed and style
 				 * options tell us to honour this change.  Now
 				 * let's see if we have to use the application

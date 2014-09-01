@@ -1,3 +1,115 @@
+2014-08-28  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/menus.c (get_menu_options):
+	Fixed negative coordinate handling of the "rectangle" menu command
+	option.
+
+2014-08-24  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/move_resize.c (GetResizeArguments):
+	code cleanup
+
+	* fvwm/virtual.c (get_page_arguments): Fix nodesklimity option of
+	GotoPage.
+
+2014-08-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/menus.c (last_saved_pos_hints): Do not initialize structure at
+	all, the old initialization was buggy anyway and wrote only zeros.
+
+2014-08-16  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/functions.c (__execute_function):
+	Properly handle the has_ref_window_moved flag for ResizeMove and
+	ResizeMoveMaximize
+
+2014-08-13  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/move_resize.c (GetResizeArguments)
+	(ParseOneResizeArgument):
+	new suffixes 'wa' and 'da' for resize arguments to reference the width
+	or height of the ewmh working area or ewmh synamic working area.
+
+	* fvwm/expand.c (function_vars):
+	(extended_vars):
+	(expand_vars_extended):
+	New extended variables $[wa.x/y/width/height] and
+	$[dwa.x/y/width/height] that retrieve the geometry of the ewmh working
+	area or ewmh dynamic working area
+
+	* fvwm/frame.c (__frame_setup_window):
+	Only broadcast M_CONFIGURE_WINDOW when the window geometry changes.
+	* fvwm/move_resize.c (__resize_window):
+	Suppress duplicate M_CONFIGURE_WINDOW broadcasts when the window is
+	resized.
+
+2014-08-11  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* NEWS: Update for IconAndSelect... options in FvwmIconMan
+
+2014-08-10  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* INSTALL.fvwm:
+	updated install location of man pages
+
+2014-08-01  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/builtins.c (CMD_Beep):
+	removed debug code
+
+2014-07-31  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/icons.c (GetIconPicture):
+	(ChangeIconPixmap):
+	* fvwm/events.c (HandlePropertyNotify):
+	fixed compile errors in ICON_DBG macros
+
+2014-07-04  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/ConfigFvwmDefaults:
+	Use "WarpToWindow !raise" in WindowListFunc.
+
+	* fvwm/focus.c (warp_to_fvwm_window):
+	(CMD_WarpToWindow):
+	Implement options "!raise" and "raise" for WarpToWindow
+
+2014-06-28  Thomas Adam <thomas@fvwm.org>
+	* Makefile.am:
+	* bin/Makefile.am:
+	* debian/Makefile.am:
+	* doc/Makefile.am:
+	* doc/commands/Makefile.am:
+	* doc/docbook-xml/Makefile.am:
+	* doc/docbook-xml/ent/Makefile.am:
+	* doc/docbook-xsl/Makefile.am:
+	* doc/docbook-xsl/common/Makefile.am:
+	* doc/docbook-xsl/highlighting/Makefile.am:
+	* doc/docbook-xsl/html/Makefile.am:
+	* doc/docbook-xsl/lib/Makefile.am:
+	* doc/docbook-xsl/manpages/Makefile.am:
+	* doc/docbook-xsl/profiling/Makefile.am:
+	* doc/fvwm/Makefile.am:
+	* doc/images/Makefile.am:
+	* doc/images/svg_rendering/Makefile.am:
+	* doc/modules/Makefile.am:
+	* doc/modules/images/Makefile.am:
+	* doc/modules/images/FvwmTabs/Makefile.am:
+	* docs/Makefile.am:
+	* fvwm/Makefile.am:
+	* libs/Makefile.am:
+	* perllib/Makefile.am:
+	* perllib/FVWM/Makefile.am:
+	* perllib/FVWM/Module/Makefile.am:
+	* perllib/FVWM/Tracker/Makefile.am:
+	* perllib/General/Makefile.am:
+	* po/Makefile.am:
+	* rpm/Makefile.am:
+	* sample.fvwmrc/Makefile.am:
+	* tests/Makefile.am:
+	* tests/hints/Makefile.am:
+	* utils/Makefile.am:
+	Autotools:  INCLUDES macro deprecated.  Renamed to AM_CPPFLAGS
+
 2014-04-05 Stephen Dennison <stephenrd(at)gmail(dot)com>
 	* doc/fvwm/description.xml:
 	fixed minor grammatical errors

@@ -575,8 +575,8 @@ int GetMoveArguments(
 }
 
 static int ParseOneResizeArgument(
-	char *arg, int scr_size, int base_size, int size_inc, int add_size,
-	int *ret_size)
+	char *arg, int scr_size, int wa_size, int dwa_size, int base_size,
+	int size_inc, int add_size, int *ret_size)
 {
 	float factor;
 	int val;
@@ -593,7 +593,19 @@ static int ParseOneResizeArgument(
 		/* do not change size */
 		return 1;
 	}
-	if (arg[cch-1] == 'p')
+	if (cch > 1 && arg[cch-2] == 'w' && arg[cch-1] == 'a')
+	{
+		/* ewmh working area */
+		factor = (float)wa_size / 100.0;
+		arg[cch-1] = '\0';
+	}
+	else if (cch > 1 && arg[cch-2] == 'd' && arg[cch-1] == 'a')
+	{
+		/* ewmh dynamic working area */
+		factor = (float)dwa_size / 100.0;
+		arg[cch-1] = '\0';
+	}
+	else if (arg[cch-1] == 'p')
 	{
 		factor = 1;
 		arg[cch-1] = '\0';
@@ -727,11 +739,11 @@ static int GetResizeArguments(
 		}
 		else if (StrEquals(token, "direction"))
 		{
-			if (token == NULL)
+			tmp_token = PeekToken(naction, &naction);
+			if (tmp_token == NULL)
 			{
 				return 0;
 			}
-
 			*ret_dir = gravity_parse_dir_argument(
 					naction, &naction, DIR_NONE);
 			if (*ret_dir != DIR_NONE)
@@ -740,7 +752,6 @@ static int GetResizeArguments(
 			}
 			else if (*ret_dir == DIR_NONE)
 			{
-
 				tmp_token = PeekToken(naction, &naction);
 				if (tmp_token != NULL &&
 						StrEquals(tmp_token, "automatic"))
@@ -798,9 +809,15 @@ static int GetResizeArguments(
 
 	n = 0;
 	n += ParseOneResizeArgument(
-		s1, m->coord.w, w_base, w_inc, w_add, pFinalW);
+		s1, m->coord.w,
+		m->Desktops->ewmh_working_area.width,
+		m->Desktops->ewmh_dyn_working_area.width, w_base, w_inc,
+		w_add, pFinalW);
 	n += ParseOneResizeArgument(
-		s2, m->coord.h, h_base, h_inc, h_add, pFinalH);
+		s2, m->coord.h,
+		m->Desktops->ewmh_working_area.height,
+		m->Desktops->ewmh_dyn_working_area.height, h_base, h_inc,
+		h_add, pFinalH);
 	if (s1 != NULL)
 	{
 		free(s1);
@@ -4004,6 +4021,7 @@ static Bool __resize_window(F_CMD_ARGS)
 	while (!is_finished && bad_window != FW_W(fw))
 	{
 		int rc = 0;
+		int is_resized = False;
 
 		/* block until there is an interesting event */
 		while (rc != -1 &&
@@ -4154,6 +4172,7 @@ static Bool __resize_window(F_CMD_ARGS)
 					exc, x, y, &x_off, &y_off, drag, orig,
 					&xmotion, &ymotion, do_resize_opaque,
 					is_direction_fixed);
+				is_resized = True;
 				/* need to move the viewport */
 				HandlePaging(
 					&ev, dx, dy, &x, &y, &delta_x,
@@ -4172,6 +4191,7 @@ static Bool __resize_window(F_CMD_ARGS)
 					exc, x, y, &x_off, &y_off, drag, orig,
 					&xmotion, &ymotion, do_resize_opaque,
 					is_direction_fixed);
+				is_resized = True;
 			}
 			fForceRedraw = False;
 			is_done = True;
@@ -4215,7 +4235,15 @@ static Bool __resize_window(F_CMD_ARGS)
 			{
 				/* only do this with opaque resizes, (i.e. the
 				 * server is not grabbed) */
-				BroadcastConfig(M_CONFIGURE_WINDOW, fw);
+				if (is_resized == False)
+				{
+					BroadcastConfig(
+						M_CONFIGURE_WINDOW, fw);
+				}
+				else
+				{
+					/* event already broadcast */
+				}
 				FlushAllMessageQueues();
 			}
 		}

@@ -833,7 +833,15 @@ void set_win_iconified(WinData *win, int iconified)
 		win->button->drawn_state.dirty_flags |= ICON_STATE_CHANGED;
 	}
 	win->iconified = iconified;
-	if (!iconified)
+	if (iconified)
+	{
+		win->state = ICON_CONTEXT;
+		if (globals.select_win == win)
+		{
+			add_win_state(win, SELECT_CONTEXT);
+		}
+	}
+	else
 	{
 		win->state = PLAIN_CONTEXT;
 		if (globals.select_win == win)
@@ -878,6 +886,11 @@ void add_win_state(WinData *win, int flag)
 		{
 			win->state = FOCUS_SELECT_CONTEXT;
 		}
+		else if (win->state == ICON_CONTEXT ||
+			 win->state == ICON_SELECT_CONTEXT)
+		{
+			win->state = ICON_SELECT_CONTEXT;
+		}
 		else
 		{
 			win->state = SELECT_CONTEXT;
@@ -892,18 +905,23 @@ void add_win_state(WinData *win, int flag)
 	{
 		win->button->drawn_state.dirty_flags |= STATE_CHANGED;
 	}
-	ConsoleDebug(X11, "add_win_state: %s 0x%x\n", win->titlename, flag);
 }
 
 /* this is "broken" */
 void del_win_state(WinData *win, int flag)
 {
-
 	if (flag == FOCUS_CONTEXT)
 	{
 		if (win->state == FOCUS_SELECT_CONTEXT)
 		{
-			win->state = SELECT_CONTEXT;
+			if (win->iconified)
+			{
+				win->state = ICON_SELECT_CONTEXT;
+			}
+			else
+			{
+				win->state = SELECT_CONTEXT;
+			}
 		}
 		else if (win->state == FOCUS_CONTEXT)
 		{
@@ -927,16 +945,13 @@ void del_win_state(WinData *win, int flag)
 		{
 			win->state = FOCUS_CONTEXT;
 		}
+		else if (win->state == ICON_SELECT_CONTEXT)
+		{
+			win->state = ICON_CONTEXT;
+		}
 		else if (win->state == SELECT_CONTEXT)
 		{
-			if (win->iconified)
-			{
-				win->state = ICON_CONTEXT;
-			}
-			else
-			{
-				win->state = PLAIN_CONTEXT;
-			}
+			win->state = PLAIN_CONTEXT;
 		}
 		else
 		{
@@ -952,7 +967,6 @@ void del_win_state(WinData *win, int flag)
 	{
 		win->button->drawn_state.dirty_flags |= STATE_CHANGED;
 	}
-	ConsoleDebug(X11, "del_win_state: %s 0x%x\n", win->titlename, flag);
 }
 
 void set_win_displaystring(WinData *win)
@@ -1824,7 +1838,9 @@ static void draw_button(WinManager *man, int button, int force)
 					man, button_state, &g, context1,
 					context2);
 			}
-			else if (button_state & SELECT_CONTEXT)
+			else if (button_state == SELECT_CONTEXT ||
+				 button_state == FOCUS_SELECT_CONTEXT ||
+				 button_state == ICON_SELECT_CONTEXT)
 			{
 				XDrawRectangle(
 					theDisplay, man->theWindow,
@@ -2345,7 +2361,14 @@ void delete_windows_button(WinData *win)
 		  selected_index);
     move_highlight(man, man->buttons.buttons[selected_index]);
   }
-  win->state = PLAIN_CONTEXT;
+  if (win->iconified)
+  {
+    win->state = ICON_CONTEXT;
+  }
+  else
+  {
+    win->state = PLAIN_CONTEXT;
+  }
 }
 
 void resort_windows_button(WinData *win)
