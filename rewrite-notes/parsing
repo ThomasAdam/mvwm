@@ -564,7 +564,7 @@ BINDINGCONTEXT = "<" / "^" / ">" / "v"
 BINDINGCONTEXT = DIGIT
 MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
 MODULALIAS = TOKEN
-DECORNAME = 1*(ALPHA DIGIT)
+TOKEN_DECORNAME = TOKEN
 FUNCNAME = TOKEN
 MENUNAME = TOKEN
 MENUSTYLENAME = TOKEN
@@ -581,8 +581,7 @@ DIRS_DIAG =/ "NorthWest" / "NW"
 DIRS_CENTER = DIRS_DIAG / "Center" / "C"
 COLORSET_NUM = POSINT
 BUTTON = 1*DIGIT
-SELECTCMDCONDITION =
-	 *("CirculateHit" / "CirculateHitIcon" / "CirculateHitShaded") !!!
+VERSION = POSINT "." POSINT "." POSINT
 
 Commands
 ~~~~~~~~
@@ -626,8 +625,6 @@ ADDTITLESTYLEFLAG = ["!"] ADDTITLESTYLEFLAGKEYWORD *("," ["!"] ADDTITLESTYLEFLAG
 ADDTITLESTYLEACTIVE = "Active" ; - implies FOCUSED_WINDOW
 ; (XXX = TitleStyle/ButtonStyle relationships here...)
 
-CMD_ADDTODECOR = "AddToDecor" DECORNAME
-
 CMD_ADDTOFUNC = "AddToFunc" FUNCNAME ADDTOFUNCFUNCDEFS RESTOFLINE_COMMAND
 ADDTOFUNCFUNCDEFS = "I"
 ADDTOFUNCFUNCDEFS =/ "M"
@@ -637,17 +634,6 @@ ADDTOFUNCFUNCDEFS =/ "D"
 
 CMD_ADDTOMENU = "AddToMenu" MENUNAME [ADDTOMENULABEL RESTOFLINE_COMMAND]
 ADDTOMENULABEL = STRING
-
-CMD_ALL = "All" [ALLOPTIONS] ["(" ALLCONDITION ")"] RESTOFLINE_COMMAND
-ALLOPTIONS = "Reverse"
-ALLOPTIONS =/ "UseStack"
-
-CMD_CLASS_CIRCULATE = ("Any" / "Current" / "Next" / "None" / "Prev")
-	["(" CIRCULATECONDITION ")"] RESTOFLINE_COMMAND
-CIRCULATECONDITION = (WINDOWNAMEPATTERN / ["!"] CIRCULATEKEYWORD)
-	*("," ["!"] CIRCULATEKEYWORD)
-WINDOWNAMEPATTERN = TOKEN
-CIRCULATEKEYWORD = !!!
 
 CMD_ANIMATEDMOVE = "AnimatedMove" ANIMATEMOVEARGS ANIMATEMOVEARGS
 	[ANIMATEDMOVEKEYWORD]
@@ -669,9 +655,6 @@ BORDERSTYLEKEYWORD =/ "Raised"
 BORDERSTYLEKEYWORD =/ "Sunk"
 BORDERSTYLEKEYWORD =/ "Flat"
 BORDERSTYLEKEYWORD =/ "Simple"
-
-CMD_BREAK = "Break" [BREAKLEVELS]
-BREAKLEVELS = INT
 
 CMD_BUGOPTS = "BugOpts" BUGOPTSOPTION
 BUGOPTSOPTION = 1*(BUGOPTSKEYWORD [BOOL_OR_TOGGLE])
@@ -749,8 +732,6 @@ BUTTONSTYLESTYLEKEYWORD =/ "Flat"
 BUTTONSTYLESTYLEKEYWORD =/ "UseBorderStyle"
 BUTTONSTYLESTYLEKEYWORD =/ "UseTitleStyle"
 ; (XXX = "Raised, Sunk, and Flat" can only be used initially!!!")
-
-CMD_CHANGEDECOR = "ChangeDecor" [DECORNAME]
 
 CMD_CHANGEMENUSTYLE = "ChangeMenuStyle" MENUSTYLENAME MENUNAME
 
@@ -881,9 +862,6 @@ DESKTOPNAME = 1*(ALPHA DIGIT)
 CMD_DESKTOPSIZE = "DesktopSize" DESKTOPSIZDIM "x" DESKTOPSIZDIM
 DESKTOPSIZEDIM = INT
 
-CMD_DESTROYDECOR = "DestroyDecor" [DESTROYDECORRECREATE] DECORNAME
-DESTROYDECORRECREATE = "recreate"
-
 CMD_DESTROYFUNC = "DestroyFunc" [FUNCNAME]
 
 CMD_DESTROYMENU = "DestroyMenu" ["recreate"] MENUNAME
@@ -895,10 +873,6 @@ CMD_DESTROYMODULECONFIG = "DestroyModuleConfig" MODULECONFIG
 CMD_DESTROYSTYLE = "DestroyStyle" STYLENAME
 
 CMD_DESTROYWINDOWSTYLE = "DestroyWindowStyle" ; operates on context window
-
-CMD_DIRECTION = "Direction" [DIRECTIONFROMPOINTER] DIRS_CENTER
-	["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
-DIRECTIONFROMPOINTER = "FromPointer"
 
 CMD_ECHO = "Echo" RESTOFLINE
 
@@ -1156,14 +1130,9 @@ MOVETOPAGESUFFIX = "p" / "w"
 CMD_MOVETOSCREEN = "MoveToScreen" [XRANDRMONITORNAME]
 XRANDRMONITORNAME = !!!
 
-CMD_NOWINDOW = "NoWindow" RESTOFLINE_COMMAND
-
 CMD_NOP = "Nop"
 
 CMD_OPAQUEMOVESIZE = "OpaqueMoveSize" [INT]
-
-CMD_CLASS_PICK = ("ThisWindow" / "Pick" / "PointerWIndow" )
-	["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
 
 CMD_PIPEREAD = "PipeRead" TOKEN ["quiet"]
 
@@ -1215,9 +1184,6 @@ CMD_RESTACKTRANSIENTS = "RestackTransients"
 
 CMD_RESTART = "Restart" [STRING]
 
-CMD_SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIRS_MAIN DIRS_MAIN
-	["(" SELECTCMDCONDITION ")"] RESTOFLINE_COMMAND
-
 CMD_SCHEDULE = "Schedule" ["periodic"] INT [INT] RESTOFLINE_COMMAND
 
 CMD_SCROLL = "Scroll"
@@ -1229,8 +1195,6 @@ SCROLLSUFFIX = "p"
 CMD_SENDTOMODULE = "SendToModule" [MODULENAME] [STRING]
 
 CMD_SETANIMATION = "SetAnimation" INT [INT]
-
-CMD_SETENV = "SetEnv" [STRING] [STRING]
 
 CMD_SILENT = "Silent" RESTOFLINE_COMMAND
 
@@ -1245,34 +1209,41 @@ STYLEOPTIONS = STYLEOPTION ("," STYLEOPTION)
 STYLEOPTION = !!!
 
 CMD_TEARMENUOFF = "TearMenuOff"
-; Applies to menu context only
-
-CMD_TEST = "Test" ["(" ["!"] TESTCONDITION ")"] RESTOFLINE_COMMAND
-TESTCONDITION = (TESTKEYWORD [TESTVALUE])
-TESTKEYWORD = ("version" TESTOPERATOR DOTTEDNUM) / ("EnvIsSet" STRING) /
-	("EnvMatch" STRING) / ("EdgeHasPointer" DIRS_MAIN) /
-	("EdgeIsActive" DIRS_MAIN) / "Start" / "Init" / "Restart" / "Exit" /
-	"Quit" / "ToRestart" / "True" / "False" / "F" / "R" / "W" / "X" / "I"
-TESTOPERATOR = ">=" / ">" / "<=" / "==" / "!="
-TESTVALUE = !!!
-DOTTEDNUM = !!!
-
-CMD_TESTRC = "TestRc" ["(" ["!"]TESTRCRC ")"] RESTOFLINE_COMMAND
-TESTRCRC = "0" / "1" / "-1" / "-2" / "NoMatch" / "Match" / "Error" / "Break"
+; note: applies to menu context only
+; note: ignores all arguments
+; note: syntax description complete
 
 CMD_TITLE = "Title"
-; Applies to menu context only
+; note: applies to menu context only
+; note: ignores all arguments
+; note: syntax description complete
 
 CMD_TITLESTYLE = "TitleStyle"
 !!!
 
-CMD_UNSETENV = "UnsetEnv" [STRING]
+CMD_SETENV = "SetEnv" [TOKEN_ENVVAR [TOKEN_ENVVAL]]
+TOKEN_ENVVAR = TOKEN
+TOKEN_ENVVAL = TOKEN
+; note: does nothing if no arguments are given
+; note: uses an empty value string if the second argument is missing
+; note: ignores rest of line
+; note: syntax description complete
 
-CMD_UPDATEDECOR = "UpdateDecor" [DECORNAME]
+CMD_UNSETENV = "UnsetEnv" [TOKEN_ENVVAR]
+; note: does nothing if argument is missing
+; note: ignores rest of line
+; note: syntax description complete
 
 CMD_UPDATESTYLES = "UpdateStyles"
+; note: ignores rest of line
+; note: syntax description complete
 
-CMD_WAIT = "Wait" [TOKEN]
+CMD_WAIT = "Wait" [TOKEN_WAIT_PATTERN [STRIPPED_RESTOFLINE]]
+; Note: The first argument, or - if present - the rest of the line is used as
+; the pattern to wait for.
+; note: the syntax with more than one argument is not documented.  Comment in
+; the sources call it the "old syntax".
+; note: syntax description complete
 
 CMD_WARPTOWINDOW = "WarpToWindow" [PERCENT_ARG_PAIR]
 ; note: arguments not used when used on an unmanaged window
@@ -1280,15 +1251,7 @@ CMD_WARPTOWINDOW = "WarpToWindow" [PERCENT_ARG_PAIR]
 ; note: ignores rest of line
 ; note: syntax description complete
 
-CMD_WINDOWID = "WindowId"
-	[("root" [WINDOWIDSCREENNUM]) / (WINDOWID [CONDITIONMASK])]
-; note: ignores rest of line
-; note: syntax description complete
-WINDOWIDSCREENNUM = POSINT
-; note: valid range is 0 to <number of screens - 1>
-WINDOWID = LONGINT
-; note: long value parsed by strtol without error checking
-
+;!!!todo
 CMD_WINDOWLIST = "WindowList" ["(" WINDOWLISTCONDITIONS ")"]
 	[WINDOWLISTPOSITION] [WINDOWLLISTOPTIONS] [COMMAND]
 WINDOWLISTPOSITION = WINDOWLISTCONTEXT_RECTANGLE INT INT
@@ -1391,6 +1354,103 @@ CMD_XORVALUE = "XorValue" [INTEGER_ARGUMENT]
 ; note: ignores rest of line
 ; note: syntax description complete
 
+;; decor commands
+
+CMD_ADDTODECOR = "AddToDecor" [TOKEN_DECORNAME] RESTOFLINE_COMMAND
+; note: does nothing if the decor name is missing
+; note: if no decor with that name exists, creates a new one
+; note: adds the command to the decor
+; note: syntax description complete
+
+CMD_CHANGEDECOR = "ChangeDecor" [TOKEN_DECORNAME]
+; note: does nothing if no decor name is given
+; note: ignores rest of line
+; note: syntax description complete
+; note: operates on current window
+
+CMD_DESTROYDECOR = "DestroyDecor" ["recreate"] [TOKEN_DECORNAME]
+; note: does nothing if no decor name is given
+; note: ignores rest of line
+; note: syntax description complete
+
+CMD_UPDATEDECOR = "UpdateDecor" [TOKEN_DECORNAME]
+; note: updates all decors if decor name is missing
+; note: ignores rest of line
+; note: syntax description complete
+
+;; conditional commands
+
+CMD_BREAK = "Break" [BREAKLEVELS]
+BREAKLEVELS = INT
+; note: uses -1 if BREAKLEVELS is missing or invalid (<= 0)
+; note: syntax description complete
+
+CMD_CLASS_PICK = ("ThisWindow" / "Pick" / "PointerWIndow" )
+	[SELECTCMDCONDITION] RESTOFLINE_COMMAND
+; note: syntax description complete
+
+CMD_ALL = "All" [ALLOPTIONS] [SELECTCMDCONDITION] RESTOFLINE_COMMAND
+ALLOPTIONS = "Reverse"
+ALLOPTIONS =/ "UseStack"
+; note: syntax description complete
+
+CMD_NOWINDOW = "NoWindow" RESTOFLINE_COMMAND
+; note: executes the command without a window context
+; note: syntax description complete
+
+CMD_CLASS_CIRCULATE = ("Any" / "Current" / "Next" / "None" / "Prev")
+	[SELECTCMDCONDITION] RESTOFLINE_COMMAND
+; note: syntax description complete
+
+CMD_DIRECTION = "Direction" ["FromPointer"] DIRS_CENTER
+	[SELECTCMDCONDITION] RESTOFLINE_COMMAND
+; note: syntax description complete
+
+CMD_SCANFORWINDOW = "ScanForWindow" ["FromPointer"] DIRS_MAIN DIRS_MAIN
+	[SELECTCMDCONDITION] RESTOFLINE_COMMAND
+; note: syntax description complete
+
+CMD_WINDOWID = "WindowId"
+	[("root" [WINDOWIDSCREENNUM]) / (WINDOWID [SELECTCMDCONDITION])]
+	RESTOFLINE_COMMAND
+; does nothing if no argument is given of the window id is invalid
+; note: syntax description complete
+WINDOWIDSCREENNUM = POSINT
+; note: valid range is 0 to <number of screens - 1>
+WINDOWID = LONGINT
+; note: long value parsed by strtol without error checking
+
+CMD_TEST = "Test" TESTCMDCONDITION RESTOFLINE_COMMAND
+TESTCMDCONDITIONSTRING = [STRING_IN_BRACES / STRING_IN_PARENTHESES]
+; note: the STRING_IN_... is then parsed with the TESTCMDCONDITIONS rule
+TESTCMDCONDITIONS = STRING_COMMA_TERMINATED *["," STRING_COMMA_TERMINATED]
+; note: the ESTCMDCONDITIONS is then parsed with the TESTCMDCONDNEG rule
+TESTCMDCONDNEG = ["!"] TESTCMDCOND
+TESTCMDCOND = ("version" ((TOKEN_TESTCMDOPERATOR VERSION) / TOKEN_VERSIONPATTERN))
+TESTCMDCOND =/ ("EnvIsSet" TOKEN_ENVVAR)
+TESTCMDCOND =/ ("EnvMatch" ENVMATCHARG)
+TESTCMDCOND =/ (("EdgeHasPointer" / "EdgeIsActive") (DIRS_MAIN / "Any"))
+TESTCMDCOND =/ ("Start" / "Init" / "Restart" / "Exit" / "Quit" / "ToRestart")
+TESTCMDCOND =/ ("True" / "False")
+TESTCMDCOND =/ (("F" / "R" / "W" / "X" / "I") "," FILENAME)
+TOKEN_TESTCMDOPERATOR = ">=" / ">" / "<=" / "==" / "!="
+;!!! todo
+ENVMATCHARG = !!!
+TESTCMDVERSIONPATTERN = TOKEN
+; note: TESTCMDVERSIONPATTERN is compared to the version string (x.y.z) and may
+; contain wildcards.
+
+CMD_TESTRC = "TestRc" [STRING_IN_BRACES / STRING_IN_PARENTHESES]
+	RESTOFLINE_COMMAND
+TESRRCRCNEG = ["!"] TESTRCRC
+TESTRCRC =  "1" / "match"
+TESTRCRC =/ "0" / "nomatch"
+TESTRCRC =/ "-1" / "error"
+TESTRCRC =/ "-2" / "break"
+; note: the STRING_IN_... is then parsed with the TESTRCRC rule
+; note: does nothing if no command is given
+: note: the condition inside the braces or parentheses may contain quoted
+; note: syntax description complete
 
 ;; !!! more common rules
 
@@ -1424,6 +1484,10 @@ BOOL_DEFAULT_FALSE = BOOL
 
 ; parsed by strtol
 LONGINT = INT
+
+; parsed by select_cmd()
+SELECTCMDCONDITION = [STRING_IN_BRACES / STRING_IN_PARENTHESES]
+; note: the STRING_IN_... is then parsed with the CONDITIONMASK rule
 
 ; parsed by CreateFlagString
 CONDITIONMASK = [CM_COND_NEG *("," CM_COND_NEG)]
@@ -1502,6 +1566,35 @@ SCHAR_UNQ =/ %x28-5b
 SCHAR_UNQ =/ %x5d-5f
 SCHAR_UNQ =/ %x61-ff
 
+; any character except \, ", ', `, ), whitespace, newline
+SCHAR_UNQ_NO_CPAREN = %x01-08
+SCHAR_UNQ_NO_CPAREN =/ %x0b-1f
+SCHAR_UNQ_NO_CPAREN =/ %x21
+SCHAR_UNQ_NO_CPAREN =/ %x23-26
+SCHAR_UNQ_NO_CPAREN =/ %x28
+SCHAR_UNQ_NO_CPAREN =/ %x2a-5b
+SCHAR_UNQ_NO_CPAREN =/ %x5d-5f
+SCHAR_UNQ_NO_CPAREN =/ %x61-ff
+
+; any character except \, ", ', `, ], whitespace, newline
+SCHAR_UNQ_NO_CBRACE = %x01-08
+SCHAR_UNQ_NO_CBRACE =/ %x0b-1f
+SCHAR_UNQ_NO_CBRACE =/ %x21
+SCHAR_UNQ_NO_CBRACE =/ %x23-26
+SCHAR_UNQ_NO_CBRACE =/ %x28-5b
+SCHAR_UNQ_NO_CBRACE =/ %x5e-5f
+SCHAR_UNQ_NO_CBRACE =/ %x61-ff
+
+; any character except \, ", ', `, comma, whitespace, newline
+SCHAR_UNQ_NO_COMMA = %x01-08
+SCHAR_UNQ_NO_COMMA =/ %x0b-1f
+SCHAR_UNQ_NO_COMMA =/ %x21
+SCHAR_UNQ_NO_COMMA =/ %x23-26
+SCHAR_UNQ_NO_COMMA =/ %x28-2b
+SCHAR_UNQ_NO_COMMA =/ %x2d-5b
+SCHAR_UNQ_NO_COMMA =/ %x5d-5f
+SCHAR_UNQ_NO_COMMA =/ %x61-ff
+
 ; \ followed by any character except newline
 SCHAR_CQ_CHAR = "\" (%x01-09 /%x0b-ff)
 
@@ -1526,15 +1619,26 @@ SCHAR_CQ =/ SCHAR_CQ_CHAR
 
 ; unquoted string
 STRING_UNQ = 1*SCHAR_UNQ
+STRING_UNQ_NO_CPAREN = 1*SCHAR_UNQ_NO_CPAREN
+STRING_UNQ_NO_CBRACE = 1*SCHAR_UNQ_NO_CBRACE
+STRING_UNQ_NO_COMMASTRING_UNQ_NO_COMMA = 1*SCHAR_UNQ_NO_COMMA
 ; strings quoted with ", ', `
 STRING_DQ = DQUOTE 1*SCHAR_DQ DQUOTE
 STRING_SQ = SQUOTE 1*SCHAR_SQ SQUOTE
 STRING_BQ = BQUOTE 1*SCHAR_BQ BQUOTE
+STRING_Q_PAIR = STRING_DQ / STRING_SQ / STRING_BQ
 
 STRING = 1*(STRING_UNQ / STRING_DQ / STRING_SQ / STRING_BQ)
 TOKEN = STRING
 
-; applies only to tokens that are quoted with double, single or back quotes
+; a string with embedded whitespace enclosed in [] used in condigions
+STRING_IN_BRACES = *WS
+	"[" *(STRING_UNQ_NO_CBRACE / STRING_Q_PAIR / 1*WSC) "]"
+; a string with embedded whitespace enclosed in () used in conditions
+STRING_IN_PARENTHESES = *WS
+	"[" *(STRING_UNQ_NO_CPAREN / STRING_Q_PAIR / 1*WSC) "]"
+; a string with embedded whitespace terminated by an unquoted comma
+STRING_COMMA_TERMINATED = *(STRING_UNQ_NO_COMMA / STRING_Q_PAIR / 1*WSC)
 
 ;; !!! obsolete commands removed in mvwm
 
