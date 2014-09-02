@@ -1,5 +1,10 @@
 Here's a very brief list of things on my immediate radar. -- Thomas Adam
 
+* Parsing:
+    - Print where an error was found whilst reading the config file
+      (including line numbers).
+        - What would modules do here?  Think:  *FvwmModuleAlias: foo bar
+
 * Code auditing/security:
     - Remove SAFEFREE() macro;
     - Add xasprintf() to libs/safemalloc.[ch]
