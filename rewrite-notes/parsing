@@ -1219,7 +1219,7 @@ CMD_TITLE = "Title"
 ; note: syntax description complete
 
 CMD_TITLESTYLE = "TitleStyle"
-!!!
+;!!!
 
 CMD_SETENV = "SetEnv" [TOKEN_ENVVAR [TOKEN_ENVVAL]]
 TOKEN_ENVVAR = TOKEN
@@ -1417,6 +1417,8 @@ CMD_WINDOWID = "WindowId"
 ; note: syntax description complete
 WINDOWIDSCREENNUM = POSINT
 ; note: valid range is 0 to <number of screens - 1>
+; note: mvwm has replaced Xinerama with XRandr, therfore using integets to
+;       refer to monitors won't work.
 WINDOWID = LONGINT
 ; note: long value parsed by strtol without error checking
 
@@ -1461,14 +1463,14 @@ IMAGEFILE = TOKEN
 ; note: if file not found, try again with IMAGEFILE ".gz"
 
 ; parsed by parse_gravity_argument
-DIR_N = "-" / "N" / "North""Top" / "t" / "Up" / "u"
-DIR_E =/ "]" / "E" / "East" / "Right" / "r" / "Right" / "r"
-DIR_S =/ "_" / "S" / "South" / "Bottom" / "b" / "Down" / "d"
-DIR_W =/ "[" / "W" / "West" / "Left" / "l" / "Left" / "l"
-DIR_NE =/ "^" / "NE" / "NorthEast" / "TopRight" / "tr" / "UpRight" / "ur"
-DIR_SE =/ ">" / "SE" / "SouthEast" / "BottomRight" / "br" / "DownRight" / "dr"
-DIR_SW =/ "v" / "SW" / "SouthWest" / "BottomLeft" / "bl" / "DownLeft" / "dl"
-DIR_NE =/ "<" / "NW" / "NorthWest" / "TopLeft" / "tl" / "UpLeft" / "ul"
+DIR_N = "-" / "N" / "North" / "Top" / "t" / "Up" / "u"
+DIR_E = "]" / "E" / "East" / "Right" / "r" / "Right" / "r"
+DIR_S = "_" / "S" / "South" / "Bottom" / "b" / "Down" / "d"
+DIR_W = "[" / "W" / "West" / "Left" / "l" / "Left" / "l"
+DIR_NE = "^" / "NE" / "NorthEast" / "TopRight" / "tr" / "UpRight" / "ur"
+DIR_SE = ">" / "SE" / "SouthEast" / "BottomRight" / "br" / "DownRight" / "dr"
+DIR_SW = "v" / "SW" / "SouthWest" / "BottomLeft" / "bl" / "DownLeft" / "dl"
+DIR_NE = "<" / "NW" / "NorthWest" / "TopLeft" / "tl" / "UpLeft" / "ul"
 DIR_C = "." / "C" / "Center" / "Centre"
 DIRS_MAJOR = DIR_N / DIR_E / DIR_S / DIR_W
 DIRS_MINOR = DIRS_MAIN / DIR_NE / DIR_SE / DIR_SW / DIR_NW
