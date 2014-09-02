@@ -562,7 +562,7 @@ BINDINGCONTEXT = "R" / "W" / "D" / "T" / "F" / "A" / "S" / "M" / "I"
 BINDINGCONTEXT = "[" / "]" / "-" / "_"
 BINDINGCONTEXT = "<" / "^" / ">" / "v"
 BINDINGCONTEXT = DIGIT
-MODULENAME = "MvwmAnimate" / "MvwmButtons" / ...
+MODULENAME = "MvwmAnimate" / "MvwmButtons" / ; etc...
 MODULALIAS = TOKEN
 TOKEN_DECORNAME = TOKEN
 FUNCNAME = TOKEN
@@ -1424,7 +1424,7 @@ CMD_TEST = "Test" TESTCMDCONDITION RESTOFLINE_COMMAND
 TESTCMDCONDITIONSTRING = [STRING_IN_BRACES / STRING_IN_PARENTHESES]
 ; note: the STRING_IN_... is then parsed with the TESTCMDCONDITIONS rule
 TESTCMDCONDITIONS = STRING_COMMA_TERMINATED *["," STRING_COMMA_TERMINATED]
-; note: the ESTCMDCONDITIONS is then parsed with the TESTCMDCONDNEG rule
+; note: the TESTCMDCONDITIONS is then parsed with the TESTCMDCONDNEG rule
 TESTCMDCONDNEG = ["!"] TESTCMDCOND
 TESTCMDCOND = ("version" ((TOKEN_TESTCMDOPERATOR VERSION) / TOKEN_VERSIONPATTERN))
 TESTCMDCOND =/ ("EnvIsSet" TOKEN_ENVVAR)
@@ -1434,8 +1434,7 @@ TESTCMDCOND =/ ("Start" / "Init" / "Restart" / "Exit" / "Quit" / "ToRestart")
 TESTCMDCOND =/ ("True" / "False")
 TESTCMDCOND =/ (("F" / "R" / "W" / "X" / "I") "," FILENAME)
 TOKEN_TESTCMDOPERATOR = ">=" / ">" / "<=" / "==" / "!="
-;!!! todo
-ENVMATCHARG = !!!
+ENVMATCHARG = ("infostore."INFOSTOREKEY) / TOKEN_ENVVAR
 TESTCMDVERSIONPATTERN = TOKEN
 ; note: TESTCMDVERSIONPATTERN is compared to the version string (x.y.z) and may
 ; contain wildcards.
