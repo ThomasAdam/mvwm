@@ -83,10 +83,11 @@ Fvwm's central parsing function: execute_function()
 ---------------------------------------------------
 
  * All input to the parser is passed through
-   functions.c:__execute_function().  This function is slightly
-   mis-named.  A better name would be _execute_command_line().
+   functions.c:__execute_command_line().
 
- * __execute_function is called from two places:
+   NOTE:  This function is called __execute_function() in fvwm.
+
+ * __execute_command_line is called from two places:
 
    - execute_function() is just a wrapper exported rom
      functions.c.  There are two more wrappers,
@@ -95,17 +96,17 @@ Fvwm's central parsing function: execute_function()
      context of the command (see below) and then call
      execute_function().
 
-   - __run_complex_function_items() calls __execute_function() to
+   - __run_complex_function_items() calls __execute_command_line() to
      process the individual commands of a complex function.  In
      other words: The items of a complex function are passed twice
      through the parser.  First when the complex function is
      defined, and a second time when they are executed (they are
      treated differently in both passes, see further down).
 
- * The call to __execute_function() is passed various pieces of
+ * The call to __execute_command_line() is passed various pieces of
    information:
 
-      void __execute_function(
+      void __execute_command_line(
 	cond_rc_t *cond_rc,
         const exec_context_t *exc,
         char *action,
@@ -179,7 +180,7 @@ Command line parsing
 --------------------
 
 The command independent parsing of any command line is done by the
-__execute_function() call.  The parsing procedure is as follows.
+__execute_command_line() call.  The parsing procedure is as follows.
 Remember that "action" is the command line to be parsed.  The
 pointer and the memory it points to are updated during the parsing
 process.
@@ -460,7 +461,7 @@ Step 4 (Expand an extended variable)
 The second level of parsing
 ---------------------------
 
-When __execute_function has finished its work it either tries to
+When __execute_command_line has finished its work it either tries to
 execute a module, a builtin command or a complex function (or
 nothing at all and just returns).  Module execution is treated
 like a call of CMD_Module(), so there are two different ways how
@@ -498,7 +499,7 @@ Step 1
   (f) Call __run_complex_function_items().
 
 Step 2 (__run_complex_function_items())
-  (a) For each complec function iten, call __execute_function()
+  (a) For each complec function iten, call __execute_command_line()
       with the FUNC_DONT_DEFER flag and the list of positional
       arguments.  This causes the function item command text to be
       passed through the parser again.
