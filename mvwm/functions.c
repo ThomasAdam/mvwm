@@ -349,7 +349,7 @@ static const func_t *find_builtin_function(char *func)
 	return ret_func;
 }
 
-static void __execute_function(
+static void __execute_command_line(
 	cond_rc_t *cond_rc, const exec_context_t *exc, char *action,
 	FUNC_FLAGS_TYPE exec_flags, char *args[], Bool has_ref_window_moved)
 {
@@ -394,7 +394,7 @@ static void __execute_function(
 	if (func_depth > MAX_FUNCTION_DEPTH)
 	{
 		mvwm_msg(
-			ERR, "__execute_function",
+			ERR, "__execute_command_line",
 			"Function '%s' called with a depth of %i, "
 			"stopping function execution!",
 			action, func_depth);
@@ -545,7 +545,7 @@ static void __execute_function(
 	    (!bif || !(bif->flags & FUNC_DECOR)))
 	{
 		mvwm_msg(
-			ERR, "__execute_function",
+			ERR, "__execute_command_line",
 			"Command can not be added to a decor; executing"
 			" command now: '%s'", action);
 	}
@@ -583,7 +583,7 @@ static void __execute_function(
 		if (Scr.cur_decor && Scr.cur_decor != &Scr.DefaultDecor)
 		{
 			mvwm_msg(
-				WARN, "__execute_function",
+				WARN, "__execute_command_line",
 				"Command can not be added to a decor;"
 				" executing command now: '%s'", expaction);
 		}
@@ -671,7 +671,7 @@ static void __execute_function(
 				    *function != 0 && !set_silent)
 				{
 					mvwm_msg(
-						ERR, "__execute_function",
+						ERR, "__execute_command_line",
 						"No such command '%s'",
 						function);
 				}
@@ -840,7 +840,7 @@ static void __run_complex_function_items(
 		}
 		if (c == cond)
 		{
-			__execute_function(
+			__execute_command_line(
 				cond_rc, exc, fi->action, FUNC_DONT_DEFER,
 				args, has_ref_window_moved);
 			if (!has_ref_window_moved && PressedW &&
@@ -1278,7 +1278,7 @@ void execute_function(
 	cond_rc_t *cond_rc, const exec_context_t *exc, char *action,
 	FUNC_FLAGS_TYPE exec_flags)
 {
-	__execute_function(cond_rc, exc, action, exec_flags, NULL, False);
+	__execute_command_line(cond_rc, exc, action, exec_flags, NULL, False);
 
 	return;
 }
