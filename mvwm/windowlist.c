@@ -39,6 +39,7 @@
 #include "libs/Strings.h"
 #include "mvwm.h"
 #include "externs.h"
+#include "cmdparser.h"
 #include "functions.h"
 #include "misc.h"
 #include "screen.h"
@@ -1096,7 +1097,7 @@ void CMD_WindowList(F_CMD_ARGS)
 	if (mret.rc == MENU_DOUBLE_CLICKED &&
 	    default_action && *default_action)
 	{
-		execute_function(cond_rc, exc2, default_action, 0);
+		execute_function(cond_rc, exc2, default_action, pc, 0);
 	}
 	if (default_action != NULL)
 	{
