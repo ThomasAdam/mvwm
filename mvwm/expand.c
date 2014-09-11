@@ -120,8 +120,6 @@ static char *function_vars[] =
 	"w.iconname",
 	"w.iconfile",
 	"w.miniiconfile",
-	"w.iconfile.svgopts",
-	"w.miniiconfile.svgopts",
 	"w.id",
 	"w.name",
 	"w.resource",
