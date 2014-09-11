@@ -6,13 +6,13 @@ AUTOMAKE_OPTIONS = 1.4
 
 SUBDIRS = \
 	libs \
+	bin \
 	mvwm \
 	modules \
 	$(MVWM_PERLLIB) \
 	## TA:  Ignore things in bin/ for now.
-	#bin \
-	doc \
-	$(POSUB)
+	#doc \
+	#$(POSUB)
 
 ## ---------------------------------------------------------------------------
 ## Manage bzip2 archive together with gzip archive

@@ -1192,6 +1192,8 @@ AC_OUTPUT(
 	Makefile
 	libs/Makefile
 	mvwm/Makefile
+	bin/Makefile
+	bin/mvwm-root.1
 	modules/Makefile
 	modules/MvwmAuto/MvwmAuto.1
 	modules/MvwmBacker/MvwmBacker.1
