@@ -1691,8 +1691,7 @@ static int __place_window(
 			FScreenGetScrRect(&arg, FSCREEN_BY_NAME,
 				&screen_g.x, &screen_g.y,
 				&screen_g.width, &screen_g.height);
-			fprintf(stderr, "MONITOR:  I SHOULD HAVE PLACED ON: '%s'\n",
-				arg.name);
+			reason->screen.screen = (char *)arg.name;
 		}
 		else
 		{
@@ -1709,7 +1708,7 @@ static int __place_window(
 		FScreenGetScrRect(NULL, FSCREEN_CURRENT,
 			&screen_g.x, &screen_g.y,
 			&screen_g.width, &screen_g.height);
-		reason->screen.screen = "current";
+		reason->screen.screen = fw->m->name;
 	}
 
 	if (SPLACEMENT_MODE(&pstyle->flags) != PLACE_MINOVERLAPPERCENT &&
@@ -1996,7 +1995,6 @@ static void __explain_placement(MvwmWindow *fw, pl_reason_t *reason)
 	char explanation[2048];
 	char *r;
 	char *s;
-	char t[32];
 	int do_show_page;
 	int is_placed_by_algo;
 
@@ -2122,11 +2120,11 @@ static void __explain_placement(MvwmWindow *fw, pl_reason_t *reason)
 			r = "bug";
 			break;
 		}
-		//FScreenSpecToString(t, 32, reason->screen.screen);
 		sprintf(
 			s, "  screen: %s: %d %d %dx%d (%s)\n",
-			t, reason->screen.g.x, reason->screen.g.y,
-			reason->screen.g.width, reason->screen.g.height, r);
+			reason->screen.screen, reason->screen.g.x,
+			reason->screen.g.y, reason->screen.g.width,
+			reason->screen.g.height, r);
 		s += strlen(s);
 		if (reason->screen.was_modified_by_ewmh_workingarea == 1)
 		{
@@ -2255,7 +2253,6 @@ static void __explain_placement(MvwmWindow *fw, pl_reason_t *reason)
 		sprintf(s, "    (adjusted to force window on page)\n");
 		s += strlen(s);
 	}
-	sprintf(s, "MONITOR: %s\n", fw->m ? fw->m->name : "(UNKNOWN)");
 	mvwm_msg(
 		INFO, "__explain_placement", explanation, (int)FW_W(fw),
 		fw->name.name);
