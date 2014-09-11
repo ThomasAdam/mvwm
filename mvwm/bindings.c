@@ -628,13 +628,6 @@ unsigned int GetUnusedModifiers(void)
 	return mods_unused;
 }
 
-/* Returns active modifiers. */
-unsigned int active_modifiers(void)
-{
-	return (~GetUnusedModifiers() & ALL_MODIFIERS);
-}
-
-
 /* ---------------------------- builtin commands --------------------------- */
 
 void CMD_Key(F_CMD_ARGS)

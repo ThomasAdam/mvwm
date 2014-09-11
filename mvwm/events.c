@@ -67,7 +67,6 @@
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
 #include "mvwm.h"
-#include "libs/modifiers.h"
 #include "externs.h"
 #include "cursor.h"
 #include "functions.h"
@@ -155,7 +154,6 @@ typedef struct event_group
 static int Button = 0;
 static const MvwmWindow *xcrossing_last_grab_window = NULL;
 static event_group_t *base_event_group = NULL;
-static unsigned int event_modifiers = 0;
 
 /* ---------------------------- exported variables (globals) --------------- */
 
@@ -1683,18 +1681,7 @@ static void __handle_bpress_on_managed(const exec_context_t *exc)
 	/* clean up */
 	if (!f.do_swallow_click)
 	{
-		event_modifiers = (e->xbutton.state & active_modifiers());
-
 		/* pass the click to the application */
-
-		/* TA:  Ungrab the button based on the modifiers in use, so
-		 * that legitimate button presses aren't ignored.  GTK 3.x is
-		 * using passive grabs for some of its link widgets for
-		 * example.
-		 */
-		XUngrabButton(dpy, e->xbutton.button, event_modifiers,
-			FW_W_PARENT(fw));
-
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		XFlush(dpy);
 	}
@@ -1734,22 +1721,6 @@ void HandleButtonPress(const evh_args_t *ea)
 	else if (ea->exc->w.fw != NULL)
 	{
 		__handle_bpress_on_managed(ea->exc);
-
-		if (event_modifiers > 0)
-		{
-			/* TA:  The passive grab was unbound because we sent
-			 * the click to the application.  We must restore it
-			 * *AFTER* handling the click from
-			 * __handle_bpress_on_managed()
-			 */
-			MvwmWindow* const fw = ea->exc->w.fw;
-			XEvent *e = ea->exc->x.etrigger;
-
-			XGrabButton(dpy, e->xbutton.button, event_modifiers,
-				FW_W_PARENT(fw),
-				False, ButtonPressMask, GrabModeSync,
-				GrabModeAsync, None, None);
-		}
 	}
 	else
 	{

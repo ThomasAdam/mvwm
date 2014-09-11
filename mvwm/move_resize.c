@@ -739,11 +739,6 @@ static int GetResizeArguments(
 		}
 		else if (StrEquals(token, "direction"))
 		{
-			tmp_token = PeekToken(naction, &naction);
-			if (tmp_token == NULL)
-			{
-				return 0;
-			}
 			*ret_dir = gravity_parse_dir_argument(
 					naction, &naction, DIR_NONE);
 			if (*ret_dir != DIR_NONE)
@@ -799,10 +794,7 @@ static int GetResizeArguments(
 	naction = GetNextToken(naction, &s2);
 	if (!s2)
 	{
-		if (s1 != NULL)
-		{
-			free(s1);
-		}
+		free(s1);
 		return 0;
 	}
 	*paction = naction;
@@ -818,14 +810,10 @@ static int GetResizeArguments(
 		m->Desktops->ewmh_working_area.height,
 		m->Desktops->ewmh_dyn_working_area.height, h_base, h_inc,
 		h_add, pFinalH);
-	if (s1 != NULL)
-	{
-		free(s1);
-	}
-	if (s2 != NULL)
-	{
-		free(s2);
-	}
+
+	free(s1);
+	free(s2);
+
 	if (n < 2)
 	{
 		n = 0;
