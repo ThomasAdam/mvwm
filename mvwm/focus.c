@@ -1212,22 +1212,11 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 {
 	int val1_unit, val2_unit, n;
 	int val1, val2;
-	MvwmWindow * const fw = exc->w.fw;
 	struct monitor *m;
 	int do_raise;
 	char *next;
 	char *token;
 
-	if (fw != NULL)
-	{
-		m = fw->m;
-	}
-	else
-	{
-		/*!!!used on an unmanaged window, we need to determine that
-		 * window's monitor here instead of using the default */
-		m = monitor_get_current();
-	}
 	next = GetNextToken(action, &token);
 	if (StrEquals(token, "!raise"))
 	{
@@ -1277,6 +1266,16 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 			{
 				return;
 			}
+
+			/* TA:  2014-09-11:  This window is unmanaged.  Since
+			 * mvwm won't have created a window for this, fw will be
+			 * NULL and hence no monitor information will be
+			 * present.  Since we already know the coordinates of
+			 * the unmanaged window, use those in determining the
+			 * monitor to use.
+			 */
+			m = monitor_by_xy(wx, wy);
+
 			if (val1_unit != m->coord.w)
 			{
 				x = val1;
