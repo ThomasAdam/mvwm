@@ -610,8 +610,10 @@ static int __pl_minoverlap_get_next_x(const pl_arg_t *arg)
 
 	x = arg->place_g.x;
 	y = arg->place_g.y;
+	m = monitor_by_xy(x, y);
 
-	m = monitor_by_xy(x, y); 
+	if (m == NULL)
+		m = monitor_get_current();
 
 	if (arg->flags.use_percent == 1)
 	{
@@ -753,6 +755,9 @@ static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 	x = arg->place_g.x;
 	y = arg->place_g.y;
 	m = monitor_by_xy(x, y); 
+
+	if (m == NULL)
+		m = monitor_get_current();
 
 	if (arg->flags.use_percent == 1)
 	{
