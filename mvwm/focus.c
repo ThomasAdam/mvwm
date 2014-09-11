@@ -1213,11 +1213,21 @@ void CMD_WarpToWindow(F_CMD_ARGS)
 	int val1_unit, val2_unit, n;
 	int val1, val2;
 	MvwmWindow * const fw = exc->w.fw;
-	struct monitor	*m = fw->m;
+	struct monitor *m;
 	int do_raise;
 	char *next;
 	char *token;
 
+	if (fw != NULL)
+	{
+		m = fw->m;
+	}
+	else
+	{
+		/*!!!used on an unmanaged window, we need to determine that
+		 * window's monitor here instead of using the default */
+		m = monitor_get_current();
+	}
 	next = GetNextToken(action, &token);
 	if (StrEquals(token, "!raise"))
 	{
