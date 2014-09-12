@@ -299,29 +299,6 @@ typedef struct MvwmDecor
 	} flags;
 } MvwmDecor;
 
-typedef struct DesktopsInfo
-{
-	int desk;
-	char *name;
-
-	struct
-	{
-		int x;
-		int y;
-		int width;
-		int height;
-	} ewmh_working_area;
-	struct
-	{
-		int x;
-		int y;
-		int width;
-		int height;
-	} ewmh_dyn_working_area;
-
-	struct DesktopsInfo *next;
-} DesktopsInfo;
-
 struct bug_opts
 {
 	unsigned do_debug_cr_motion_method : 1;

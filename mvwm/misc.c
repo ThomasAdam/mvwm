@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <X11/Xatom.h>
+#include <X11/Xutil.h>
 
 #include "libs/ftime.h"
 #ifdef MVWM_DEBUG_TIME
@@ -36,6 +37,7 @@
 #endif
 #include "libs/Parse.h"
 #include "libs/Target.h"
+#include "libs/mvwmrect.h"
 #include "libs/FScreen.h"
 #include "mvwm.h"
 #include "externs.h"
