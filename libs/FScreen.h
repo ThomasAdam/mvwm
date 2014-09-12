@@ -1,11 +1,57 @@
 /* -*-c-*- */
+/* This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #ifndef MVWMLIB_FSCRREN_H
 #define MVWMLIB_FSCRREN_H
 
-#include "mvwm/mvwm.h"
-#include "mvwm/execcontext.h"
-#include "mvwm/misc.h"
-#include "mvwm/screen.h"
+/* ---------------------------- included header files ---------------------- */
+
+/* Do not #include any files - the file including this file has to take care of
+ * it.  Make sure all necessary headers are listed in the Synopsis section. */
+
+/* ---------------------------- global definitions ------------------------- */
+
+#define FSCREEN_MANGLE_USPOS_HINTS_MAGIC ((short)-32109)
+
+/* ---------------------------- global macros ------------------------------ */
+
+/* ---------------------------- type definitions --------------------------- */
+
+typedef struct DesktopsInfo
+{
+	int desk;
+	char *name;
+
+	struct
+	{
+		int x;
+		int y;
+		int width;
+		int height;
+	} ewmh_working_area;
+	struct
+	{
+		int x;
+		int y;
+		int width;
+		int height;
+	} ewmh_dyn_working_area;
+
+	struct DesktopsInfo *next;
+} DesktopsInfo;
 
 typedef union
 {
@@ -80,16 +126,17 @@ struct monitor {
 };
 TAILQ_HEAD(monitors, monitor);
 
-struct monitors	monitor_q;
+/* ---------------------------- exported variables (globals) --------------- */
+
+struct monitors monitor_q;
 struct monitor *global_monitor;
 
-struct monitor	*monitor_get_current(void);
-struct monitor	*monitor_by_name(const char *);
-struct monitor	*monitor_by_xy(int, int);
-struct monitor  *monitor_by_number(int);
+/* ---------------------------- interface functions ------------------------ */
 
-#define FSCREEN_MANGLE_USPOS_HINTS_MAGIC ((short)-32109)
-
+struct monitor *monitor_get_current(void);
+struct monitor *monitor_by_name(const char *);
+struct monitor *monitor_by_xy(int, int);
+struct monitor *monitor_by_number(int);
 
 /* Control */
 Bool FScreenIsEnabled(void);
