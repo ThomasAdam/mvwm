@@ -75,7 +75,7 @@ typedef struct FunctionItem
 					  * left*/
 	char *action;                    /* action to be performed */
 	short type;                      /* type of built in function */
-	FUNC_FLAGS_TYPE flags;
+	func_flags_t flags;
 } FunctionItem;
 
 typedef struct MvwmFunction
@@ -359,7 +359,7 @@ static const func_t *find_builtin_function(const char *func)
 static void __execute_command_line(
 	cond_rc_t *cond_rc, const exec_context_t *exc, char *xaction,
 	cmdparser_context_t *caller_pc,
-	FUNC_FLAGS_TYPE exec_flags, char *args[], Bool has_ref_window_moved)
+	func_flags_t exec_flags, char *args[], Bool has_ref_window_moved)
 {
 	cmdparser_context_t pc;
 	cond_rc_t *func_rc = NULL;
@@ -597,13 +597,7 @@ fprintf(stderr, "!!!skip no-defer\n");
 			{
 				exc2 = exc_clone_context(exc, &ecc, mask);
 				if (has_ref_window_moved &&
-				    /*!!!move that logic to a func flag*/
-				    (bif->func_t == F_ANIMATED_MOVE ||
-				     bif->func_t == F_MOVE ||
-				     bif->func_t == F_RESIZE ||
-				     bif->func_t == F_RESIZEMOVE ||
-				     bif->func_t == F_RESIZE_MAXIMIZE ||
-				     bif->func_t == F_RESIZEMOVE_MAXIMIZE))
+				    (bif->flags & FUNC_IS_MOVE_TYPE))
 				{
 #if 1 /*!!!*/
 fprintf(stderr, "!!!erase PressedW and execute '%s'\n", bif->keyword);
@@ -1254,7 +1248,7 @@ Bool functions_is_complex_function(const char *function_name)
 	return False;
 }
 
-void execute_function(F_CMD_ARGS, FUNC_FLAGS_TYPE exec_flags)
+void execute_function(F_CMD_ARGS, func_flags_t exec_flags)
 {
 	__execute_command_line(F_PASS_ARGS, exec_flags, NULL, False);
 
@@ -1262,7 +1256,7 @@ void execute_function(F_CMD_ARGS, FUNC_FLAGS_TYPE exec_flags)
 }
 
 void execute_function_override_wcontext(
-	F_CMD_ARGS, FUNC_FLAGS_TYPE exec_flags, int wcontext)
+	F_CMD_ARGS, func_flags_t exec_flags, int wcontext)
 {
 	const exec_context_t *exc2;
 	exec_context_changes_t ecc;
@@ -1276,7 +1270,7 @@ void execute_function_override_wcontext(
 }
 
 void execute_function_override_window(
-	F_CMD_ARGS, FUNC_FLAGS_TYPE exec_flags, MvwmWindow *fw)
+	F_CMD_ARGS, func_flags_t exec_flags, MvwmWindow *fw)
 {
 	const exec_context_t *exc2;
 	exec_context_changes_t ecc;
@@ -1310,7 +1304,7 @@ void execute_function_override_window(
 	return;
 }
 
-void find_func_t(char *action, short *func_t, unsigned char *flags)
+void find_func_t(char *action, short *func_t, func_flags_t *flags)
 {
 	int j, len = 0;
 	char *endtok = action;
