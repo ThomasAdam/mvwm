@@ -7232,7 +7232,6 @@ char *get_menu_options(
 				return action;
 			}
 			pops->pos_hints.has_screen_origin = 1;
-			arg.mouse_ev = NULL;
 			arg.name = screen;
 			FScreenGetScrRect(&arg, FSCREEN_BY_NAME,&sx, &sy, &sw,
 					  &sh);

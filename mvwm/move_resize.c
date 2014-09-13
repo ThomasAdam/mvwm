@@ -471,12 +471,10 @@ int GetMoveArguments(
 	if (s1 && StrEquals(s1, "screen"))
 	{
 		fscreen_scr_arg parg;
-		parg.mouse_ev = NULL;
 
 		free(s1);
 		token = PeekToken(action, &action);
 		parg.name = token;
-
 		FScreenGetScrRect(&parg, FSCREEN_BY_NAME, &scr_x, &scr_y,
 				  &scr_w, &scr_h);
 		action = GetNextToken(action, &s1);
@@ -4784,12 +4782,10 @@ void CMD_Maximize(F_CMD_ARGS)
 			if (StrEquals(token, "screen"))
 			{
 				fscreen_scr_arg arg;
-				arg.mouse_ev = NULL;
+
 				is_screen_given = True;
 				token = PeekToken(taction, &action);
-
 				arg.name = token;
-
 				FScreenGetScrRect(&arg, FSCREEN_BY_NAME,
 					&scr_x, &scr_y, &scr_w, &scr_h);
 			}

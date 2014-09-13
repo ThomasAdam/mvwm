@@ -754,7 +754,7 @@ static int __pl_minoverlap_get_next_y(const pl_arg_t *arg)
 
 	x = arg->place_g.x;
 	y = arg->place_g.y;
-	m = monitor_by_xy(x, y); 
+	m = monitor_by_xy(x, y);
 
 	if (m == NULL)
 		m = monitor_get_current();
@@ -1474,8 +1474,8 @@ static int __place_get_nowm_pos(
 			 * screen.  Let's assume the application specified
 			 * global coordinates and translate them to the screen.
 			 */
-			fscreen_scr_arg	 arg;
-			arg.mouse_ev = NULL;
+			fscreen_scr_arg arg;
+
 			arg.name = start_style.screen;
 			FScreenTranslateCoordinates(
 				&arg, FSCREEN_BY_NAME, NULL, FSCREEN_GLOBAL,
@@ -1684,10 +1684,9 @@ static int __place_window(
 	{
 		if (flags.do_honor_starts_on_screen)
 		{
-			fscreen_scr_arg	 arg;
-			arg.mouse_ev = NULL;
-			arg.name = SGET_START_SCREEN(*pstyle);
+			fscreen_scr_arg arg;
 
+			arg.name = SGET_START_SCREEN(*pstyle);
 			FScreenGetScrRect(&arg, FSCREEN_BY_NAME,
 				&screen_g.x, &screen_g.y,
 				&screen_g.width, &screen_g.height);
@@ -1850,7 +1849,7 @@ static int __place_window(
 			px = start_style.page_x - 1;
 			py = start_style.page_y - 1;
 			reason->page.reason = PR_PAGE_STYLE;
-			px *= mon->coord.w; 
+			px *= mon->coord.w;
 			py *= mon->coord.h;
 			if (!win_opts->flags.do_override_ppos &&
 			    !DO_NOT_SHOW_ON_MAP(fw))

@@ -734,14 +734,11 @@ void X_init_manager (int man_id)
   if (man->geometry_str) {
     char *scr;
     fscreen_scr_arg arg;
-    arg.mouse_ev = NULL;
 
     geometry_mask = FScreenParseGeometryWithScreen(
       man->geometry_str, &man->geometry.x, &man->geometry.y,
       &man->geometry.cols, &man->geometry.rows, &scr);
-
     arg.name = scr;
-
     FScreenGetScrRect(
       &arg, FSCREEN_BY_NAME, &man->managed_g.x, &man->managed_g.y,
       &man->managed_g.width, &man->managed_g.height);

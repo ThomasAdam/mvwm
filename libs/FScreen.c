@@ -692,10 +692,9 @@ int FScreenGetGeometry(
 	ret = FScreenParseGeometryWithScreen(parsestring, &x, &y, &w, &h, &scr);
 	saved = ret & (XNegative | YNegative);
 	ret  &= flags;
-
-	arg.mouse_ev = NULL;
 	arg.name = scr;
-	FScreenGetScrRect(&arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w, &scr_h);
+	FScreenGetScrRect(
+		&arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w, &scr_h);
 
 	/* II. Interpret and fill in the values */
 
