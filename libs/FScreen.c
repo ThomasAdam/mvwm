@@ -565,24 +565,27 @@ int FScreenParseGeometryWithScreen(
 
 	/* Safety net */
 	if (parsestring == NULL || *parsestring == '\0')
+	{
 		return 0;
+	}
 
 	/* If the geometry specification contains an '@' symbol, assume the
 	 * screen is specified.  This must be the name of the monitor in
 	 * question!
 	 */
-	if (strchr(parsestring, '@') == NULL) {
-		copy = mvwm_strdup(parsestring);
-		goto parse_geometry;
+	copy = mvwm_strdup(parsestring);
+	if (strchr(parsestring, '@') == NULL)
+	{
+		*screen_return = NULL;
+	}
+	else
+	{
+		copy = strsep(&parsestring, "@");
+		*screen_return = parsestring;
+		geom_str = strsep(&copy, "@");
+		copy = geom_str;
 	}
 
-	copy = mvwm_strdup(parsestring);
-	copy = strsep(&parsestring, "@");
-	*screen_return = parsestring;
-	geom_str = strsep(&copy, "@");
-	copy = geom_str;
-
-parse_geometry:
 	/* Do the parsing */
 	ret = XParseGeometry(
 		copy, x_return, y_return, width_return, height_return);
