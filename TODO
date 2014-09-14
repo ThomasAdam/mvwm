@@ -49,9 +49,13 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
     - http://liblcfg.carnivore.it/
 	- Likely too inflexible; build own parser from YACC?
 
-* Separate desktops per monitor:
-	- PanWindows per-monitor inhibit moving windows across screen
-	  boundaries.  Have a key-binding to stop panning?
+* XRandR:
+    - Configuration:
+        - Enumerate outputs without requiring config file changes.  See:
+            http://www.mail-archive.com/fvwm-workers@fvwm.org/msg03649.html
+    - Separate desktops per monitor:
+	    - PanWindows per-monitor inhibit moving windows across screen
+	      boundaries.  Have a key-binding to stop panning?
 
 * Clients:
     - Have an "undo" list of geometries which can be reverted to.
