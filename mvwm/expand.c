@@ -68,6 +68,7 @@ static char *partial_function_vars[] =
 	"hilight.cs",
 	"infostore.",
 	"shadow.cs",
+	"screennum.",
 	NULL
 };
 
@@ -151,7 +152,8 @@ enum
 	VAR_GT_,
 	VAR_HILIGHT_CS,
 	VAR_INFOSTORE_,
-	VAR_SHADOW_CS
+	VAR_SHADOW_CS,
+	VAR_SCREEN_NUM_NAME
 } partial_extended_vars;
 
 enum
@@ -445,6 +447,19 @@ static signed int expand_vars_extended(
 			sprintf(allocated_string, "%s %i", ddn, cs);
 			string = allocated_string;
 		}
+		goto GOT_STRING;
+	case VAR_SCREEN_NUM_NAME:
+		is_numeric = True;
+
+		if (rest == NULL)
+			return -1;
+
+		/* Can't fail; always returns an int. */
+		val = monitor_number_by_name(rest);
+
+		if (val == -1)
+			return -1;
+
 		goto GOT_STRING;
 	default:
 		break;

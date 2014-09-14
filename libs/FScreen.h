@@ -29,6 +29,7 @@ typedef enum
 
 struct monitor {
 	char	*name;
+	int	 number;
 	struct {
 		int x;
 		int y;
@@ -68,6 +69,7 @@ struct monitors		monitor_q;
 struct monitor	*monitor_get_current(void);
 struct monitor	*monitor_by_name(const char *);
 struct monitor	*monitor_by_xy(int, int);
+int		 monitor_number_by_name(const char *);
 int		 monitor_should_ignore_global(struct monitor *);
 
 #define FSCREEN_MANGLE_USPOS_HINTS_MAGIC ((short)-32109)

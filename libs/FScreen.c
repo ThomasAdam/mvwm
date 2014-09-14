@@ -50,6 +50,24 @@ static int no_of_screens;
 static struct monitor	*FindScreenOfXY(int x, int y);
 static struct monitor	*monitor_new(void);
 static void		 init_monitor_contents(void);
+static void		 monitor_print_debug(struct monitor *);
+
+static void monitor_print_debug(struct monitor *m)
+{
+	if (m == NULL)
+		return;
+
+	fprintf(stderr, "XRandR:  Added monitor:\n"
+		"  name: %s\n"
+		"  num:  %d\n"
+		"  x:    %d\n"
+		"  y:    %d\n"
+		"  w:    %d\n"
+		"  h:    %d\n\n",
+		m->name, m->number,
+		m->coord.x, m->coord.y,
+		m->coord.w, m->coord.h);
+}
 
 static void GetMouseXY(XEvent *eventp, int *x, int *y)
 {
@@ -131,6 +149,7 @@ void FScreenInit(Display *dpy)
 	int			 i;
 	int			 err_base = 0, event = 0;
 	int			 is_randr_present = 0;
+	int			 monitor_number = 0;
 
 	disp = dpy;
 
@@ -150,6 +169,7 @@ void FScreenInit(Display *dpy)
 	TAILQ_INIT(&monitor_q);
 
 	m = monitor_new();
+	m->number = monitor_number;
 	m->coord.x = 0;
 	m->coord.y = 0;
 	m->coord.w = DisplayWidth(disp, DefaultScreen(disp));
@@ -157,15 +177,42 @@ void FScreenInit(Display *dpy)
 	m->name = mvwm_strdup("global");
 	TAILQ_INSERT_HEAD(&monitor_q, m, entry);
 
+	monitor_print_debug(m);
+
 	if (!is_randr_present)
 		goto done;
 
 	/* XRandR is present, so query the screens we have. */
+	/* TA:  2014-09-13:  FIXME FIXME FIXME:
+	 *
+	 * How do we handle this crude ordering with monitors being
+	 * added/removed?
+	 */
 	res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	if (res != NULL) {
 		crtc = NULL;
 		no_of_screens = res->noutput;
-		for (i = 0; i < res->noutput; i++) {
+		/* TA:  2014-09-13:  XXX: The XRandR API is completely geared
+		 * towards using outputs referred to by string (names) as
+		 * found in either one's xorg.conf or via EDID.
+		 *
+		 * Unfortunately, Xinerama didn't have this, and hence
+		 * maintained a screen ordering instead; outputs were numbered,
+		 * in fvwm's case: 1 -> n, where "0" was reserved for the
+		 * "global" screen (entire root window combined across all
+		 * outputs).
+		 *
+		 * XRandR doesn't seem to offer any means of querying outputs
+		 * based on logical ordering (such as whether they're
+		 * left/right/up/down of one another respectively), despite
+		 * being allowed to configure display outputs to have position
+		 * information.
+		 *
+		 * So for now, rather crudely, iterate over the output display
+		 * in reverse.  This seems to work OK in simple layout cases,
+		 * and will allow screens to be referred to by number:  1 -> n)
+		 */
+		for (i = res->noutput - 1; i > -1; i--) {
 			oinfo = XRRGetOutputInfo(dpy, res, res->outputs[i]);
 
 			if (oinfo->crtc == None) {
@@ -177,6 +224,7 @@ void FScreenInit(Display *dpy)
 				continue;
 
 			m = monitor_new();
+			m->number = ++monitor_number;
 			m->coord.x = crtc->x;
 			m->coord.y = crtc->y;
 			m->coord.w = crtc->width;
@@ -184,6 +232,8 @@ void FScreenInit(Display *dpy)
 			m->name = mvwm_strdup(oinfo->name);
 
 			TAILQ_INSERT_TAIL(&monitor_q, m, entry);
+
+			monitor_print_debug(m);
 
 			XRRFreeCrtcInfo(crtc);
 		}
@@ -234,6 +284,24 @@ init_monitor_contents(void)
 		m->virtual_scr.EdgeScrollY =
 			DEFAULT_EDGE_SCROLL * m->coord.h / 100;
 	}
+}
+
+int
+monitor_number_by_name(const char *name)
+{
+	struct monitor *m;
+
+	m = monitor_by_name(name);
+
+	/* XXX: What if 'm' is NULL?  Return first screen?  That's what the old
+	 * Xinerama code would have done.
+	 *
+	 * We'll return -1 to indicate failure.
+	 */
+	if (m == NULL)
+		return (-1);
+
+	return (m->number);
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
