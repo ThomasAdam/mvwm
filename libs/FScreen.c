@@ -609,27 +609,30 @@ int FScreenParseGeometry(
 	else
 		m = monitor_get_current();
 
-	global_m = monitor_by_name("global");
+	if (rc & (XValue | YValue))
+	{
+		global_m = monitor_by_name("global");
+		/* adapt geometry to selected screen */
+		if (rc & XValue)
+		{
+			if (rc & XNegative)
+				*x_return -= (global_m->coord.w -
+					      m->coord.w -
+					      m->coord.x);
+			else
+				*x_return += m->coord.x;
+		}
+		if (rc & YValue)
+		{
+			if (rc & YNegative)
+				*y_return -= (global_m->coord.h -
+					      m->coord.h -
+					      m->coord.y);
+			else
+				*y_return += m->coord.y;
+		}
+	}
 
-	/* adapt geometry to selected screen */
-	if (rc & XValue)
-	{
-		if (rc & XNegative)
-			*x_return -= (global_m->coord.w -
-				      m->coord.w -
-				      m->coord.x);
-		else
-			*x_return += m->coord.x;
-	}
-	if (rc & YValue)
-	{
-		if (rc & YNegative)
-			*y_return -= (global_m->coord.h -
-				      m->coord.h -
-				      m->coord.y);
-		else
-			*y_return += m->coord.y;
-	}
 	return rc;
 }
 
