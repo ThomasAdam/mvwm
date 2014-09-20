@@ -388,6 +388,9 @@ static int MappedNotOverride(
 static void do_recapture(F_CMD_ARGS, Bool fSingle)
 {
 	MvwmWindow *fw = exc->w.fw;
+	int event_types[5] = {
+		ButtonPress, ButtonRelease, MotionNotify, KeyPress, KeyRelease
+	};
 
 	MyXGrabServer(dpy);
 	if (fSingle)
@@ -404,9 +407,7 @@ static void do_recapture(F_CMD_ARGS, Bool fSingle)
 	 * same moment and the click goes through to the root window. Not good
 	 */
 	XAllowEvents(dpy, AsyncPointer, CurrentTime);
-	discard_events(
-		ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|	\
-		PointerMotionMask|KeyPressMask|KeyReleaseMask);
+	discard_typed_events(5, event_types);
 #ifdef DEBUG_STACK_RING
 	verify_stack_ring_consistency();
 #endif
@@ -2833,9 +2834,7 @@ void GetWindowSizeHintsWithCheck(
 	Status rc;
 
 	new_hints = fw->hints;
-	orig_hints.width_inc = 1;
-	orig_hints.height_inc = 1;
-	rc = XGetWMNormalHints(dpy, FW_W(fw), &orig_hints, &supplied);
+	rc = FGetWMNormalHints(dpy, FW_W(fw), &orig_hints, &supplied);
 	if (rc == 0)
 	{
 		new_hints.flags = 0;
@@ -3155,13 +3154,15 @@ void GetWindowSizeHintsWithCheck(
 				" invalid.  The new hints will become active"
 				" when the window generates the next"
 				" ConfigureRequest.\n", is_invalid);
-			return;
 		}
+		broken_cause = "";
 	}
-	fw->hints = new_hints;
-	fw->orig_hints.width_inc = orig_hints.width_inc;
-	fw->orig_hints.height_inc = orig_hints.height_inc;
-
+	else
+	{
+		fw->hints = new_hints;
+		fw->orig_hints.width_inc = orig_hints.width_inc;
+		fw->orig_hints.height_inc = orig_hints.height_inc;
+	}
 	if (*broken_cause != 0)
 	{
 		mvwm_msg(
@@ -3187,6 +3188,15 @@ void GetWindowSizeHintsWithCheck(
 			orig_hints.base_width, orig_hints.base_height,
 			orig_hints.win_gravity);
 		mvwm_msg_report_app();
+	}
+	/* final safety net */
+	if (fw->orig_hints.width_inc <= 0)
+	{
+		fw->orig_hints.width_inc = 1;
+	}
+	if (fw->orig_hints.height_inc <= 0)
+	{
+		fw->orig_hints.height_inc = 1;
 	}
 
 	return;
