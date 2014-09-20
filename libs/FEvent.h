@@ -7,9 +7,6 @@
 
 /* ---------------------------- global definitions ------------------------- */
 
-/* A value guaranteed to be neither True nor False. */
-#define FEV_INVALID_BOOL (True + True - False)
-
 #define FEV_IS_EVENT_INVALID(e) \
 	(fev_is_invalid_event_type_set && (e).type == fev_invalid_event_type)
 
@@ -75,6 +72,12 @@ void fev_make_null_event(XEvent *ev, Display *dpy);
 /* return a copy of the last XEVent in *ev */
 void fev_get_last_event(XEvent *ev);
 
+/* Make sure the values in the event are in the defined range (e.g. x is and
+ * int, but the protocol uses only a 16 bit signed integer. */
+void fev_sanitise_configure_request(XConfigureRequestEvent *cr);
+void fev_sanitise_configure_notify(XConfigureEvent *cn);
+void fev_sanitize_size_hints(XSizeHints *sh);
+
 /* ---------------------------- Functions not present in Xlib -------------- */
 
 /* Iterates over all events currentliy in the input queue and calls the
@@ -115,9 +118,10 @@ int FWeedIfWindowEvents(
 	XPointer arg);
 
 /* Same as FWeedIfEvents but weeds only events of the given type for the given
-   window. */
-int FWeedTypedWindowEvents(
-	Display *display, Window window, int event_type, XPointer arg);
+ * window.  If last_event is not NULL, a copy of the last weeded event is
+ * returned through *last_event (valid if a value > 0 is treturned). */
+int FCheckWeedTypedWindowEvents(
+	Display *display, Window window, int event_type, XEvent *last_event);
 
 /* Like FCheckIfEvent but does not remove the event from the queue. */
 int FCheckPeekIfEvent(
@@ -185,6 +189,9 @@ int FWarpPointerUpdateEvpos(
 	int dest_x, int dest_y);
 int FWindowEvent(
 	Display *display, Window w, long event_mask, XEvent *event_return);
+Status FGetWMNormalHints(
+	Display *display, Window w, XSizeHints *hints_return,
+	long *supplied_return);
 
 /* ---------------------------- disable X symbols -------------------------- */
 
@@ -209,6 +216,9 @@ int FWindowEvent(
 #define XSendEvent(a, b, c, d, e) use_FSendEvent
 #define XWarpPointer(a, b, c, d, e, f, g, h, i) use_FWarpPointer
 #define XWindowEvent(a, b, c, d) use_FWindowEvent
+#define XGetSizeHints(a, b, c) use_FGetWMNormalHints
+#define XGetNormalHints(a, b, c) use_FGetWMNormalHints
+#define XGetWMNormalHints(a, b, c, d) use_FGetWMNormalHints
 #endif
 
 #endif /* FEVENT_H */

@@ -551,7 +551,7 @@ void ProcessMessage(unsigned long type,unsigned long *body)
 	  win_y += screen_g.y;
 	}
 
-	XGetWMNormalHints(dpy,win,&hints,&dumy);
+	FGetWMNormalHints(dpy,win,&hints,&dumy);
 	hints.min_width   = win_width;
 	hints.base_width  = win_width;
 	hints.max_width   = win_width;
@@ -1733,6 +1733,7 @@ void HandleEvents(
 		Bool moved = False;
 		int cx = win_x, cy = win_y;
 
+		fev_sanitise_configure_notify(&evp->xconfigure);
 		/* eat up excess ConfigureNotify events. */
 		if (evp->xconfigure.send_event)
 		{
@@ -1743,6 +1744,7 @@ void HandleEvents(
 		evp_save = evp;
 		while (FCheckTypedWindowEvent(dpy, win, ConfigureNotify, evp))
 		{
+			fev_sanitise_configure_notify(&evp->xconfigure);
 			evp_save = evp;
 			if (evp->xconfigure.send_event)
 			{

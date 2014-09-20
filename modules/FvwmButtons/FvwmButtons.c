@@ -1167,11 +1167,13 @@ void Loop(void)
 	unsigned int depth, tw, th, border_width;
 	Window root;
 
+	fev_sanitise_configure_notify(&Event.xconfigure);
 	while (FCheckTypedWindowEvent(Dpy, MyWindow, ConfigureNotify, &event))
 	{
 	  if (!event.xconfigure.send_event &&
 	      Event.xconfigure.window != MyWindow)
 	    continue;
+	  fev_sanitise_configure_notify(&event.xconfigure);
 	  Event.xconfigure.x = event.xconfigure.x;
 	  Event.xconfigure.y = event.xconfigure.y;
 	  Event.xconfigure.send_event = True;
@@ -1419,7 +1421,7 @@ void Loop(void)
 		    (!(buttonSwallow(b)&b_NoHints)))
 	    {
 	      long supp;
-	      if (!XGetWMNormalHints(Dpy, swin, b->hints, &supp))
+	      if (!FGetWMNormalHints(Dpy, swin, b->hints, &supp))
 		b->hints->flags = 0;
 	      MakeButton(b);
 	      if (FShapesSupported)
@@ -1959,7 +1961,7 @@ static void HandlePanelPress(button_info *b)
 
   /* force StaticGravity on window */
   mysizehints.flags = 0;
-  XGetWMNormalHints(Dpy, b->PanelWin, &mysizehints, &supplied);
+  FGetWMNormalHints(Dpy, b->PanelWin, &mysizehints, &supplied);
   mysizehints.flags |= PWinGravity;
   mysizehints.win_gravity = StaticGravity;
   XSetWMNormalHints(Dpy, b->PanelWin, &mysizehints);
@@ -1981,7 +1983,7 @@ static void HandlePanelPress(button_info *b)
 
     /* now request mapping in the void and wait until it gets mapped */
     mysizehints.flags = 0;
-    XGetWMNormalHints(Dpy, b->PanelWin, &mysizehints, &supplied);
+    FGetWMNormalHints(Dpy, b->PanelWin, &mysizehints, &supplied);
     mysizehints.flags |= USPosition;
     /* hack to prevent mapping panels on wrong screen with StartsOnScreen */
     FScreenMangleScreenIntoUSPosHints(FSCREEN_XYPOS, &mysizehints);
