@@ -1960,7 +1960,14 @@ static void DoSnapAttract(
 	rectangle self;
 	int score_x;
 	int score_y;
-	struct monitor	*m = fw->m;
+
+	/* TA:  2014-09-21:  Use the 'global' monitor when performing snap
+	 * attraction, and do not rely on the indivudual status of separate
+	 * monitors with respect to where the windows are; dragging windows
+	 * between monitors is allowed, and without using the global screen,
+	 * those windows would be excluded from snapping.
+	 */
+	struct monitor *m = monitor_by_name("global");
 
 	nxl = -99999;
 	nyt = -99999;
@@ -2051,7 +2058,7 @@ static void DoSnapAttract(
 			get_visible_window_or_icon_geometry(tmp, &other);
 			if (other.x >= m->coord.w ||
 			    other.x + other.width <= 0 ||
-			    other.y >= m->coord.y ||
+			    other.y >= m->coord.h ||
 			    other.y + other.height <= 0)
 			{
 				/* do not snap to windows that are not currently
@@ -2186,7 +2193,7 @@ static void DoSnapAttract(
 		if (!(m->coord.h < (*py) ||
 		      (*py + self.height) < 0))
 		{
-			if (*px + self.width >= m->coord.h &&
+			if (*px + self.width >= m->coord.w &&
 			    *px + self.width <
 			    m->coord.w + fw->snap_attraction.proximity)
 			{
