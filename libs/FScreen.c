@@ -399,8 +399,6 @@ Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
 			int *x, int *y, int *w, int *h)
 {
 	struct monitor	*m = FindScreen(arg, screen);
-	if (m == NULL)
-		return (True);
 
 	if (x)
 		*x = m->coord.x;
