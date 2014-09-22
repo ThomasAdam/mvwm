@@ -7,7 +7,7 @@
 
 /* ---------------------------- global definitions ------------------------- */
 
-#define CMDPARSER_NUM_POS_ARGS 10
+#define CMDPARSER_NUM_POS_ARGS 11
 
 /* ---------------------------- global macros ------------------------------ */
 
