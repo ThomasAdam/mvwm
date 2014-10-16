@@ -99,7 +99,7 @@ monitor_should_ignore_global(struct monitor *m)
 	 * on the global screen, as that's separate to XY positioning
 	 * which is only concerned with the *specific* screen.
 	 */
-	if (no_of_screens > 0 && strcmp(m->name, "global") == 0)
+	if (no_of_screens > 1 && strcmp(m->name, "global") == 0)
 		return 1;
 	return 0;
 }
@@ -409,7 +409,7 @@ Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
 	if (h)
 		*h = m->coord.h;
 
-	return !((no_of_screens > 1) && (strcmp(m->name, "global") == 0));
+	return !monitor_should_ignore_global(m);
 }
 
 /* Translates the coodinates *x *y from the screen specified by arg_src and
