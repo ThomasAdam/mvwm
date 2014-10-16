@@ -4198,6 +4198,12 @@ void dispatch_event(XEvent *e)
 	{
 		fw = NULL;
 	}
+	if (
+		fw != NULL && IS_SCHEDULED_FOR_DESTROY(fw) &&
+		e->type != DestroyNotify)
+	{
+		return;
+	}
 	last_event_type = e->type;
 	event_group = base_event_group;
 	while (
