@@ -49,7 +49,7 @@ static int no_of_screens;
 
 static struct monitor	*FindScreenOfXY(int x, int y);
 static struct monitor	*monitor_new(void);
-static void		 init_monitor_contents(void);
+static void		 init_monitor_contents(struct monitor *);
 
 static void GetMouseXY(XEvent *eventp, int *x, int *y)
 {
@@ -149,16 +149,22 @@ void FScreenInit(Display *dpy)
 
 	TAILQ_INIT(&monitor_q);
 
-	m = monitor_new();
-	m->coord.x = 0;
-	m->coord.y = 0;
-	m->coord.w = DisplayWidth(disp, DefaultScreen(disp));
-	m->coord.h = DisplayHeight(disp, DefaultScreen(disp));
-	m->name = mvwm_strdup("global");
-	TAILQ_INSERT_HEAD(&monitor_q, m, entry);
+	global_monitor = monitor_new();
+	global_monitor->coord.x = 0;
+	global_monitor->coord.y = 0;
+	global_monitor->coord.w = DisplayWidth(disp, DefaultScreen(disp));
+	global_monitor->coord.h = DisplayHeight(disp, DefaultScreen(disp));
+	global_monitor->name = mvwm_strdup("global");
 
-	if (!is_randr_present)
+	if (!is_randr_present) {
+		/* TA:  2014-09-16:  We maintain a list of all monitors.  If
+		 * XRandR isn't present, then we put the global monitor in the
+		 * list since it's the only screen available.
+		 */
+		init_monitor_contents(global_monitor);
+		TAILQ_INSERT_HEAD(&monitor_q, global_monitor, entry);
 		goto done;
+	}
 
 	/* XRandR is present, so query the screens we have. */
 	res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
@@ -183,6 +189,8 @@ void FScreenInit(Display *dpy)
 			m->coord.h = crtc->height;
 			m->name = mvwm_strdup(oinfo->name);
 
+			init_monitor_contents(m);
+
 			TAILQ_INSERT_TAIL(&monitor_q, m, entry);
 
 			XRRFreeCrtcInfo(crtc);
@@ -191,49 +199,41 @@ void FScreenInit(Display *dpy)
 	}
 done:
 	already_initialised = 1;
-	init_monitor_contents();
 }
 
 static void
-init_monitor_contents(void)
+init_monitor_contents(struct monitor *m)
 {
-	struct monitor	*m = NULL;
+	m->Desktops = mvwm_calloc(1, sizeof(DesktopsInfo));
+	m->Desktops->name = NULL;
+	m->Desktops->desk = 0; /* not desk 0 */
+	m->Desktops->ewmh_dyn_working_area.x =
+	    m->Desktops->ewmh_working_area.x = 0;
+	m->Desktops->ewmh_dyn_working_area.y =
+	    m->Desktops->ewmh_working_area.y = 0;
+	m->Desktops->ewmh_dyn_working_area.width =
+	    m->Desktops->ewmh_working_area.width = m->coord.w;
+	m->Desktops->ewmh_dyn_working_area.height =
+	    m->Desktops->ewmh_working_area.height = m->coord.h;
+	m->Desktops->next = NULL;
 
-	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
+	m->virtual_scr.CurrentDesk = 0;
+	m->virtual_scr.Vx = 0;
+	m->virtual_scr.Vy = 0;
+	m->virtual_scr.VxMax = 2 * m->coord.w;
+	m->virtual_scr.VyMax = 2 * m->coord.h;
 
-		m->Desktops = mvwm_calloc(1, sizeof(DesktopsInfo));
-		m->Desktops->name = NULL;
-		m->Desktops->desk = 0; /* not desk 0 */
-		m->Desktops->ewmh_dyn_working_area.x =
-		    m->Desktops->ewmh_working_area.x = 0;
-		m->Desktops->ewmh_dyn_working_area.y =
-		    m->Desktops->ewmh_working_area.y = 0;
-		m->Desktops->ewmh_dyn_working_area.width =
-		    m->Desktops->ewmh_working_area.width = m->coord.w;
-		m->Desktops->ewmh_dyn_working_area.height =
-		    m->Desktops->ewmh_working_area.height = m->coord.h;
-		m->Desktops->next = NULL;
+	m->virtual_scr.prev_page_x = 0;
+	m->virtual_scr.prev_page_y = 0;
+	m->virtual_scr.prev_desk = 0;
+	m->virtual_scr.prev_desk_and_page_desk = 0;
+	m->virtual_scr.prev_desk_and_page_page_x = 0;
+	m->virtual_scr.prev_desk_and_page_page_y = 0;
 
-		m->virtual_scr.CurrentDesk = 0;
-		m->virtual_scr.Vx = 0;
-		m->virtual_scr.Vy = 0;
-		m->virtual_scr.VxMax = 2 * m->coord.w;
-		m->virtual_scr.VyMax = 2 * m->coord.h;
-
-		m->virtual_scr.prev_page_x = 0;
-		m->virtual_scr.prev_page_y = 0;
-		m->virtual_scr.prev_desk = 0;
-		m->virtual_scr.prev_desk_and_page_desk = 0;
-		m->virtual_scr.prev_desk_and_page_page_x = 0;
-		m->virtual_scr.prev_desk_and_page_page_y = 0;
-
-		m->virtual_scr.EdgeScrollX =
-			DEFAULT_EDGE_SCROLL * m->coord.w / 100;
-		m->virtual_scr.EdgeScrollY =
-			DEFAULT_EDGE_SCROLL * m->coord.h / 100;
-	}
+	m->virtual_scr.EdgeScrollX =
+		DEFAULT_EDGE_SCROLL * m->coord.w / 100;
+	m->virtual_scr.EdgeScrollY =
+		DEFAULT_EDGE_SCROLL * m->coord.h / 100;
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the

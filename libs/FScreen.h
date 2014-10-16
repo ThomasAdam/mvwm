@@ -70,7 +70,8 @@ struct monitor {
 };
 TAILQ_HEAD(monitors, monitor);
 
-struct monitors		monitor_q;
+struct monitors	monitor_q;
+struct monitor *global_monitor;
 
 struct monitor	*monitor_get_current(void);
 struct monitor	*monitor_by_name(const char *);
