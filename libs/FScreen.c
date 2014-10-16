@@ -50,6 +50,7 @@ static int no_of_screens;
 static struct monitor	*FindScreenOfXY(int x, int y);
 static struct monitor	*monitor_new(void);
 static void		 init_monitor_contents(struct monitor *);
+static int monitor_should_ignore_global(struct monitor *);
 
 static void GetMouseXY(XEvent *eventp, int *x, int *y)
 {

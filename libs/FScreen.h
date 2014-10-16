@@ -76,7 +76,6 @@ struct monitor *global_monitor;
 struct monitor	*monitor_get_current(void);
 struct monitor	*monitor_by_name(const char *);
 struct monitor	*monitor_by_xy(int, int);
-int		 monitor_should_ignore_global(struct monitor *);
 
 #define FSCREEN_MANGLE_USPOS_HINTS_MAGIC ((short)-32109)
 
