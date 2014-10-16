@@ -1134,6 +1134,7 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 
 #ifndef FEVENT_C
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "libs/FEvent.h"
 #endif
 

@@ -7,6 +7,20 @@
 
 /* ---------------------------- global definitions ------------------------- */
 
+#define FEV_IS_EVENT_INVALID(e) \
+	(fev_is_invalid_event_type_set && (e).type == fev_invalid_event_type)
+
+#define FEV_HAS_EVENT_WINDOW(type) \
+	(( \
+		 (type) != GraphicsExpose && \
+		 (type) != NoExpose && \
+		 (type) != SelectionNotify && \
+		 (type) != SelectionRequest) ? 1 : 0)
+
+/* invalidate event by setting a bogus event type */
+#define FEV_INVALIDATE_EVENT(e) \
+	do { (e)->type = fev_invalid_event_type; } while (0)
+
 /* ---------------------------- global macros ------------------------------ */
 
 /* ---------------------------- type definitions --------------------------- */
@@ -15,7 +29,12 @@
 
 /* ---------------------------- exported variables (globals) --------------- */
 
-/* ---------------------------- interface functions (privileged access) ----- */
+/* Exported to be used in FEV_IS_EVENT_INVALID().  Do not use. */
+extern char fev_is_invalid_event_type_set;
+/* Exported to be used in FEV_IS_EVENT_INVALID().  Do not use. */
+extern int fev_invalid_event_type;
+
+/* ---------------------------- interface functions (privileged access) ---- */
 
 #ifdef FEVENT_PRIVILEGED_ACCESS
 void fev_copy_last_event(XEvent *dest);
@@ -23,6 +42,10 @@ XEvent *fev_get_last_event_address(void);
 #endif
 
 /* ---------------------------- interface functions (normal_access) -------- */
+
+/* Sets the event type that is used by FWeedIfEvents() to mark an event as
+ * invalid.  Needs to be called before FWeedIfEvents() can be used. */
+void fev_init_invalid_event_type(int invalid_event_type);
 
 /* get the latest event time */
 Time fev_get_evtime(void);
@@ -53,6 +76,63 @@ void fev_make_null_event(XEvent *ev, Display *dpy);
 /* return a copy of the last XEVent in *ev */
 void fev_get_last_event(XEvent *ev);
 
+/* Make sure the values in the event are in the defined range (e.g. x is and
+ * int, but the protocol uses only a 16 bit signed integer. */
+void fev_sanitise_configure_request(XConfigureRequestEvent *cr);
+void fev_sanitise_configure_notify(XConfigureEvent *cn);
+void fev_sanitize_size_hints(XSizeHints *sh);
+
+/* ---------------------------- Functions not present in Xlib -------------- */
+
+/* Iterates over all events currentliy in the input queue and calls the
+ * weed_predicate procedure for them.  The predicate may return
+ *  0 = keep event and continue weeding
+ *  1 = invalidate event and continue weeding
+ *  2 = keep event and stop weeding
+ *  3 = invalidate event and stop weeding
+ * Events are marked as invalid by overwriting the event type with the invalid
+ * event type configured with fev_init_invalid_event_type().  Returns the
+ * number of invalidated events.
+ *
+ * The return codes 2 and 3 of the weed_predicate procedure can be used to
+ * stop weeding if another event gets "in the way".  For example, when merging
+ * Expose events, one might want to stop merging when a ConfigureRequest event
+ * is encountered in the queue as that event may change the visible are of the
+ * window.
+ *
+ * Weeded events can still be returned by functions that do not check the event
+ * type, e.g. FNextEvent(), FWindowEvent(), FMaskEvent(), FPeekEvent etc.  It
+ * is the responsibility of the caller to discard these events.
+ *
+ * If the weed_predicate is a NULL pointer, no call is made and the result for
+ * all events is assumed to be 1.
+ */
+int FWeedIfEvents(
+	Display *display,
+	int (*weed_predicate) (
+		Display *display, XEvent *current_event, XPointer arg),
+	XPointer arg);
+
+/* Same as FWeedIfEvents but weeds only events for the given window.  The
+ * weed_predicate is only called for events with a matching window.  */
+int FWeedIfWindowEvents(
+	Display *display, Window window,
+	int (*weed_predicate) (
+		Display *display, XEvent *current_event, XPointer arg),
+	XPointer arg);
+
+/* Same as FWeedIfEvents but weeds only events of the given type for the given
+ * window.  If last_event is not NULL, a copy of the last weeded event is
+ * returned through *last_event (valid if a value > 0 is treturned). */
+int FCheckWeedTypedWindowEvents(
+	Display *display, Window window, int event_type, XEvent *last_event);
+
+/* Like FCheckIfEvent but does not remove the event from the queue. */
+int FCheckPeekIfEvent(
+        Display *display, XEvent *event_return,
+        Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+        XPointer arg);
+
 /* ---------------------------- X event replacements ----------------------- */
 
 /* Replacements for X functions */
@@ -66,18 +146,6 @@ Bool FCheckIfEvent(
 	XPointer arg);
 Bool FCheckMaskEvent(
 	Display *display, long event_mask, XEvent *event_return);
-/* Works like FCheckPeekIfEvent(), but only searches through the first
- * max_num_events_to_check events that are already on the queue (0 = no limit).
- * Returns the position of the event in the queue (1 = first event) or 0 if
- * none is found.  If no event is found, the contents of *event are invalid. */
-int FCheckPeekIfEventWithLimit(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg, int max_num_events_to_check);
-Bool FCheckPeekIfEvent(
-        Display *display, XEvent *event_return,
-        Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-        XPointer arg);
 Bool FCheckTypedEvent(
 	Display *display, int event_type, XEvent *event_return);
 Bool FCheckTypedWindowEvent(
@@ -125,6 +193,9 @@ int FWarpPointerUpdateEvpos(
 	int dest_x, int dest_y);
 int FWindowEvent(
 	Display *display, Window w, long event_mask, XEvent *event_return);
+Status FGetWMNormalHints(
+	Display *display, Window w, XSizeHints *hints_return,
+	long *supplied_return);
 
 /* ---------------------------- disable X symbols -------------------------- */
 
@@ -149,6 +220,9 @@ int FWindowEvent(
 #define XSendEvent(a, b, c, d, e) use_FSendEvent
 #define XWarpPointer(a, b, c, d, e, f, g, h, i) use_FWarpPointer
 #define XWindowEvent(a, b, c, d) use_FWindowEvent
+#define XGetSizeHints(a, b, c, d) use_FGetWMNormalHints
+#define XGetNormalHints(a, b, c) use_FGetWMNormalHints
+#define XGetWMNormalHints(a, b, c, d) use_FGetWMNormalHints
 #endif
 
 #endif /* FEVENT_H */

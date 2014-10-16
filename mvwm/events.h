@@ -14,9 +14,11 @@
 typedef struct
 {
 	Window w;
-	int event_type;
 	Atom atom;
-} test_typed_window_event_args;
+	int event_type;
+	int stop_at_event_type;
+	char do_stop_at_event_type;
+} flush_property_notify_args;
 
 /* ---------------------------- forward declarations ----------------------- */
 
@@ -27,8 +29,7 @@ typedef struct
 void dispatch_event(XEvent *e);
 int GetContext(MvwmWindow **ret_fw, MvwmWindow *t, const XEvent *e, Window *w);
 int My_XNextEvent(Display *dpy, XEvent *event);
-int flush_expose(Window w);
-int flush_accumulate_expose(Window w, XEvent *e);
+void flush_accumulate_expose(Window w, XEvent *e);
 void handle_all_expose(void);
 Bool StashEventTime(const XEvent *ev);
 void CoerceEnterNotifyOnCurrentWindow(void);
@@ -37,16 +38,14 @@ void SendConfigureNotify(
 	MvwmWindow *fw, int x, int y, int w, int h, int bw,
 	Bool send_for_frame_too);
 void WaitForButtonsUp(Bool do_handle_expose);
-int discard_events(long event_mask);
-int discard_window_events(Window w, long event_mask);
-int check_for_another_property_notify(
-	Atom atom, Window w, int *num_events_removed);
+int discard_typed_events(int num_event_types, int *event_types);
+int flush_property_notify_stop_at_event_type(
+	Atom atom, Window w, char do_stop_at_event_type,
+	int stop_at_event_type);
 void sync_server(int toggle);
 Bool is_resizing_event_pending(MvwmWindow *fw);
 void events_handle_configure_request(
-	XConfigureRequestEvent cre, MvwmWindow *fw, Bool force_use_grav,
-	int force_gravity);
-Bool test_button_event(Display *display, XEvent *event, char *arg);
+	XEvent *e, MvwmWindow *fw, Bool force_use_grav, int force_gravity);
 Bool test_typed_window_event(Display *display, XEvent *event, char *arg);
 
 #endif /* EVENTS_H */

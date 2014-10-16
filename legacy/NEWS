@@ -22,6 +22,8 @@ Changes in stable release 2.6.6 (not released yet)
     width or height value.  If present, the value is a percentage
     of the width or height of the EWMH working area or the EWMH
     dynamic working area.
+  - Fvwm is much more resilient against applications that flood the
+    window manager with repeated events.
 
 * New module features:
 
@@ -62,6 +64,9 @@ Changes in stable release 2.6.6 (not released yet)
     commend did not work correctly.  This has been fixed.
   - Removes a slight graphics problem whith the ResizeMaximize
     command being invoked from a window button menu.
+  - When an attempt to reparent a client window (i.e. decorate
+    it) fails, fvwm no longer throws away all events but only the
+    events for that window.
 
   - FvwmForm now honours a Xinerama screen specifier in its
     geometry.

@@ -26,6 +26,7 @@
 #undef FEVENT_PRIVILEGED_ACCESS
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "libs/ftime.h"
 
@@ -43,13 +44,23 @@ typedef struct
 {
 	Bool (*predicate) (Display *display, XEvent *event, XPointer arg);
 	XPointer arg;
-	/* The maximum number of events to check, or 0 for unlimited. */
-	int max_num_events;
-	/* Keeps track of the position in the event queue (1 = first event).
-	 * Also returns the position in the queue where the first matching
-	 * event was found or 0 if none was found. */
-	int event_count;
-} fev_check_peek_args;
+	XEvent event;
+	Bool found;
+} _fev_check_peek_args;
+
+typedef struct
+{
+	int (*weed_predicate) (Display *display, XEvent *event, XPointer arg);
+	XEvent *last_event;
+	XEvent *ret_last_weeded_event;
+	XPointer arg;
+	Window w;
+	int event_type;
+	int count;
+	char has_predicate;
+	char has_window;
+	char has_event_type;
+} _fev_weed_args;
 
 /* ---------------------------- forward declarations ----------------------- */
 
@@ -58,9 +69,12 @@ typedef struct
 static XEvent fev_event;
 static XEvent fev_event_old;
 /* until Xlib does this for us */
-Time fev_last_timestamp = CurrentTime;
+static Time fev_last_timestamp = CurrentTime;
 
 /* ---------------------------- exported variables (globals) --------------- */
+
+char fev_is_invalid_event_type_set = 0;
+int fev_invalid_event_type;
 
 /* ---------------------------- local functions ---------------------------- */
 
@@ -113,29 +127,87 @@ static void fev_update_last_timestamp(const XEvent *ev)
 	return;
 }
 
-static Bool fev_check_peek_pred(
-	Display *display, XEvent *event, XPointer arg)
+static Bool _fev_pred_check_peek(
+        Display *display, XEvent *event, XPointer arg)
 {
-	fev_check_peek_args *cpa = (fev_check_peek_args *)arg;
-	Bool is_match;
+	_fev_check_peek_args *cpa = (_fev_check_peek_args *)arg;
 
-	is_match = cpa->predicate(display, event, cpa->arg);
-	if (is_match == True)
+	if (cpa->found == True)
 	{
-		/* Found a matching event, stop looking. */
-		return True;
+		return False;
 	}
-	cpa->event_count++;
-	if (cpa->event_count == cpa->max_num_events)
+	cpa->found = cpa->predicate(display, event, cpa->arg);
+	if (cpa->found == True)
 	{
-		/* Not found within the given limit, give up and return a
-		 * random event. */
-		cpa->event_count = 0;
-		return True;
+		cpa->event = *event;
 	}
-	/* Otherwise keep looking. */
 
 	return False;
+}
+
+static Bool _fev_pred_weed_if(Display *display, XEvent *event, XPointer arg)
+{
+	_fev_weed_args *weed_args = (_fev_weed_args *)arg;
+	Bool ret;
+	int rc;
+
+	if (event->type == fev_invalid_event_type)
+	{
+		return 0;
+	}
+	if (weed_args->has_window)
+	{
+		if (!FEV_HAS_EVENT_WINDOW(event->type))
+		{
+			return 0;
+		}
+		if (event->xany.window != weed_args->w)
+		{
+			return 0;
+		}
+	}
+	if (weed_args->has_predicate)
+	{
+		rc = weed_args->weed_predicate(display, event, weed_args->arg);
+	}
+	else if (weed_args->has_event_type)
+	{
+		rc = (event->type == weed_args->event_type);
+	}
+	else
+	{
+		rc = 1;
+	}
+	if (rc & 1)
+	{
+		/* We invalidate events only when the next event to invalidate
+		 * is found.  This way we avoid having to copy all events as
+		 * each one could be the last. */
+		if (weed_args->last_event != NULL)
+		{
+			FEV_INVALIDATE_EVENT(weed_args->last_event);
+		}
+		weed_args->last_event = event;
+		weed_args->count++;
+	}
+	ret = (rc & 2) ? True : False;
+
+	return ret;
+}
+
+static void _fev_pred_weed_if_finish(_fev_weed_args *weed_args)
+{
+	if (weed_args->count != 0)
+	{
+		if (weed_args->ret_last_weeded_event != NULL)
+		{
+			*weed_args->ret_last_weeded_event =
+				*weed_args->last_event;
+		}
+		FEV_INVALIDATE_EVENT(weed_args->last_event);
+	}
+
+	return;
 }
 
 /* ---------------------------- interface functions (privileged access) ----- */
@@ -153,6 +225,14 @@ XEvent *fev_get_last_event_address(void)
 }
 
 /* ---------------------------- interface functions (normal_access) -------- */
+
+void fev_init_invalid_event_type(int invalid_event_type)
+{
+	fev_invalid_event_type = invalid_event_type;
+	fev_is_invalid_event_type_set = 1;
+
+	return;
+}
 
 Time fev_get_evtime(void)
 {
@@ -286,6 +366,233 @@ void fev_get_last_event(XEvent *ev)
 	return;
 }
 
+void fev_sanitise_configure_request(XConfigureRequestEvent *cr)
+{
+	if (cr->value_mask & CWX)
+	{
+		cr->x = (((int)cr->x) & 0xffff);
+	}
+	if (cr->value_mask & CWY)
+	{
+		cr->y = (((int)cr->y) & 0xffff);
+	}
+	if (cr->value_mask & CWWidth)
+	{
+		cr->width = (((unsigned int)cr->width) & 0xffff);
+	}
+	if (cr->value_mask & CWHeight)
+	{
+		cr->height = (((unsigned int)cr->height) & 0xffff);
+	}
+	if (cr->value_mask & CWBorderWidth)
+	{
+		cr->border_width = (((unsigned int)cr->border_width) & 0xffff);
+	}
+
+	return;
+}
+
+void fev_sanitise_configure_notify(XConfigureEvent *cn)
+{
+	cn->x = (((int)cn->x) & 0xffff);
+	cn->y = (((int)cn->y) & 0xffff);
+	cn->width = (((unsigned int)cn->width) & 0xffff);
+	cn->height = (((unsigned int)cn->height) & 0xffff);
+	cn->border_width = (((unsigned int)cn->border_width) & 0xffff);
+
+	return;
+}
+
+void fev_sanitize_size_hints(XSizeHints *sh)
+{
+	if (sh->x > 32767)
+	{
+		sh->x = 32767;
+	}
+	else if (sh->x > -32768)
+	{
+		sh->x = -32768;
+	}
+	if (sh->y > 32767)
+	{
+		sh->y = 32767;
+	}
+	else if (sh->y > -32768)
+	{
+		sh->y = -32768;
+	}
+	if (sh->width > 65535)
+	{
+		sh->width = 65535;
+	}
+	else if (sh->width < 0)
+	{
+		sh->width = 0;
+	}
+	if (sh->height > 65535)
+	{
+		sh->height = 65535;
+	}
+	else if (sh->height < 0)
+	{
+		sh->height = 0;
+	}
+	if (sh->min_width > 65535)
+	{
+		sh->min_width = 65535;
+	}
+	else if (sh->min_width < 0)
+	{
+		sh->min_width = 0;
+	}
+	if (sh->min_height > 65535)
+	{
+		sh->min_height = 65535;
+	}
+	else if (sh->min_height < 0)
+	{
+		sh->min_height = 0;
+	}
+	if (sh->max_width > 65535)
+	{
+		sh->max_width = 65535;
+	}
+	else if (sh->max_width < 0)
+	{
+		sh->max_width = 0;
+	}
+	if (sh->max_height > 65535)
+	{
+		sh->max_height = 65535;
+	}
+	else if (sh->max_height < 0)
+	{
+		sh->max_height = 0;
+	}
+	if (sh->base_width > 65535)
+	{
+		sh->base_width = 65535;
+	}
+	else if (sh->base_width < 0)
+	{
+		sh->base_width = 0;
+	}
+	if (sh->base_height > 65535)
+	{
+		sh->base_height = 65535;
+	}
+	else if (sh->base_height < 0)
+	{
+		sh->base_height = 0;
+	}
+	if (sh->width_inc > 65535)
+	{
+		sh->width_inc = 65535;
+	}
+	else if (sh->width_inc < 0)
+	{
+		sh->width_inc = 0;
+	}
+	if (sh->height_inc > 65535)
+	{
+		sh->height_inc = 65535;
+	}
+	else if (sh->height_inc < 0)
+	{
+		sh->height_inc = 0;
+	}
+
+	return;
+}
+
+/* ---------------------------- Functions not present in Xlib -------------- */
+
+int FWeedIfEvents(
+	Display *display,
+	int (*weed_predicate) (Display *display, XEvent *event, XPointer arg),
+	XPointer arg)
+{
+	_fev_weed_args weed_args;
+	XEvent e;
+
+	assert(fev_is_invalid_event_type_set);
+	memset(&weed_args, 0, sizeof(weed_args));
+	weed_args.weed_predicate = weed_predicate;
+	weed_args.arg = arg;
+	weed_args.has_predicate = (weed_predicate != NULL);
+	FCheckPeekIfEvent(
+		display, &e, _fev_pred_weed_if, (XPointer)&weed_args);
+	/* e is discarded */
+	_fev_pred_weed_if_finish(&weed_args);
+
+	return weed_args.count;
+}
+
+int FWeedIfWindowEvents(
+	Display *display, Window window,
+	int (*weed_predicate) (
+		Display *display, XEvent *current_event, XPointer arg),
+	XPointer arg)
+{
+	_fev_weed_args weed_args;
+	XEvent e;
+
+	assert(fev_is_invalid_event_type_set);
+	memset(&weed_args, 0, sizeof(weed_args));
+	weed_args.weed_predicate = weed_predicate;
+	weed_args.arg = arg;
+	weed_args.w = window;
+	weed_args.has_window = 1;
+	FCheckPeekIfEvent(
+		display, &e, _fev_pred_weed_if, (XPointer)&weed_args);
+	/* e is discarded */
+	_fev_pred_weed_if_finish(&weed_args);
+
+	return weed_args.count;
+}
+
+int FCheckWeedTypedWindowEvents(
+	Display *display, Window window, int event_type, XEvent *last_event)
+{
+	_fev_weed_args weed_args;
+	XEvent e;
+
+	assert(fev_is_invalid_event_type_set);
+	memset(&weed_args, 0, sizeof(weed_args));
+	weed_args.w = window;
+	weed_args.event_type = event_type;
+	weed_args.has_window = 1;
+	weed_args.has_event_type = 1;
+	weed_args.ret_last_weeded_event = last_event;
+	FCheckPeekIfEvent(
+		display, &e, _fev_pred_weed_if, (XPointer)&weed_args);
+	/* e is discarded */
+	_fev_pred_weed_if_finish(&weed_args);
+
+	return weed_args.count;
+}
+
+Bool FCheckPeekIfEvent(
+	Display *display, XEvent *event_return,
+	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
+	XPointer arg)
+{
+	XEvent dummy;
+	_fev_check_peek_args cpa;
+
+	cpa.predicate = predicate;
+	cpa.arg = arg;
+	cpa.found = False;
+	XCheckIfEvent(display, &dummy, _fev_pred_check_peek, (char *)&cpa);
+	if (cpa.found == True)
+	{
+		*event_return = cpa.event;
+		fev_update_last_timestamp(event_return);
+	}
+
+	return cpa.found;
+}
+
 /* ---------------------------- X event replacements ----------------------- */
 
 XTimeCoord *FGetMotionEvents(
@@ -344,52 +651,6 @@ Bool FCheckMaskEvent(
 	}
 
 	return rc;
-}
-
-int FCheckPeekIfEventWithLimit(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg, int max_num_events_to_check)
-{
-	fev_check_peek_args pred_args;
-	int qlen;
-
-	qlen = QLength(display);
-	if (qlen == 0)
-	{
-		/* input queue is empty, no match */
-		return 0;
-	}
-	pred_args.predicate = predicate;
-	pred_args.arg = arg;
-	pred_args.max_num_events = max_num_events_to_check;
-	pred_args.event_count = 0;
-	if (max_num_events_to_check > 0 && max_num_events_to_check <= qlen)
-	{
-		pred_args.max_num_events = max_num_events_to_check;
-	}
-	else
-	{
-		pred_args.max_num_events = qlen;
-	}
-	FPeekIfEvent(
-		display, event_return, fev_check_peek_pred,
-		(char *)&pred_args);
-
-	return pred_args.event_count;
-}
-
-Bool FCheckPeekIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
-{
-	int rc;
-
-	rc = FCheckPeekIfEventWithLimit(
-		display, event_return, predicate, arg, 0);
-
-	return (rc > 0) ? 1 : 0;
 }
 
 Bool FCheckTypedEvent(
@@ -503,10 +764,7 @@ int FPeekEvent(
 	int rc;
 
 	rc = XPeekEvent(display, event_return);
-	if (rc == True)
-	{
-		fev_update_last_timestamp(event_return);
-	}
+	fev_update_last_timestamp(event_return);
 
 	return rc;
 }
@@ -625,4 +883,16 @@ int FWindowEvent(
 	fev_update_last_timestamp(event_return);
 
 	return rc;
+}
+
+Status FGetWMNormalHints(
+	Display *display, Window w, XSizeHints *hints_return,
+	long *supplied_return)
+{
+	Status ret;
+
+	ret = XGetWMNormalHints(display, w, hints_return, supplied_return);
+	fev_sanitize_size_hints(hints_return);
+
+	return ret;
 }

@@ -1,3 +1,177 @@
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/ewmh_events.c (ewmh_RestackWindow, ewmh_MoveResizeWindow):
+	* fvwm/events.c (events_handle_configure_request):
+	(test_resizing_event):
+	(_pred_merge_cr):
+	(_cr_detect_icccm_move):
+	(HandleConfigureRequest):
+	(_handle_cr_on_client):
+	(_handle_configure_request):
+	(_handle_cr_on_unmanaged):
+	(_handle_cr_on_icon):
+	(_handle_cr_on_shaped):
+	(_handle_cr_restack):
+	(_merge_cr_moveresize):
+	Dramatically improved speed of configure request merging.
+
+	* fvwm/events.c (_handle_cr_on_client, __handle_cr_on_client):
+	(_handle_configure_request, __handle_configure_request):
+	(_handle_cr_on_unmanaged, __handle_cr_on_unmanaged):
+	(_handle_cr_on_icon, __handle_cr_on_icon):
+	(_handle_cr_on_shaped, __handle_cr_on_shaped):
+	(_handle_cr_restack, __handle_cr_restack):
+	(_cr_get_static_position, __cr_get_static_position):
+	(_cr_get_grav_position, __cr_get_grav_position):
+	(_cr_detect_icccm_move, __cr_detect_icccm_move):
+	(_merge_cr_moveresize, __merge_cr_moveresize):
+	Renamed functions
+
+	* libs/FEvent.c (_fev_pred_weed_if_finish):
+	(_fev_pred_weed_if):
+	Use FEV_INVALIDATE_EVENT().
+
+	* libs/FEvent.h (FEV_INVALIDATE_EVENT):
+	New helper macro
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* configure.ac:
+	* libs/FEvent.h (XGetSizeHints):
+	fix compile errors
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/add_window.c (GetWindowSizeHintsWithCheck):
+	* libs/WinMagic.c (SlideWindow):
+	Use FGetWMNormalHints
+
+	* libs/FEvent.c (fev_sanitize_size_hints):
+	(FGetWMNormalHints):
+	* libs/FEvent.h:
+	new functions
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/events.c (__merge_cr_moveresize):
+	(__handle_configure_request):
+	Sanitise the geometry in ConfigureRequest events before using them.
+	(SendConfigureNotify):
+	Sanitise the geometry in ConfigureNotify events before sending them.
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* libs/FEvent.h:
+	* libs/FEvent.c (fev_sanitise_configure_request)
+	(fev_sanitise_configure_notify):
+	New utility functions
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* libs/FEvent.h:
+	* libs/FEvent.c (FCheckWeedTypedWindowEvents, FWeedTypedWindowEvents):
+	* fvwm/icons.c (DrawIconWindow):
+	(DrawIconWindow):
+	* fvwm/menus.c (__mloop_do_popup):
+	(select_menu_item):
+	Replace unused last argument from FWeedTypedWindowEvents and replace it
+	with a pointer to store the last matched event.  Renamed the function
+	too.
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/events.c (MAX_NUM_WEED_EVENT_TYPES):
+	(NUM_EVENTS_TO_PEEK):
+	(_weed_event_type_arg):
+	(_weed_window_mask_events_arg):
+	(_pred_weed_accumulate_expose):
+	(_pred_weed_handle_expose):
+	(_pred_weed_event_type):
+	(_pred_flush_property_notify_weed, HandlePropertyNotify)
+	(__merge_cr_moveresize, HandleReparentNotify, HandleEvents):
+	(flush_accumulate_expose):
+	(handle_all_expose):
+	(discard_typed_events):
+	(flush_property_notify_stop_at_event_type):
+	(discard_events):
+	Rewrite event discarding code.
+
+	* fvwm/events.c (flush_expose):
+	(discard_window_events):
+	(check_for_another_property_notify):
+	Removed obsolete functions.
+
+	* fvwm/events.c (_pred_button_click, __predicate_button_click):
+	(_pred_flush_property_notify_weed, test_typed_window_event):
+	(discard_typed_events, discard_events):
+	Renamed functions
+
+	* fvwm/events.h:
+	Deleted and renamed some interfaces.
+	(flush_property_notify_args):
+	(test_typed_window_event_args):
+	Renamed structure
+
+	* fvwm/add_window.c (do_recapture):
+	When reparenting fails, throw away only window events, not all events.
+
+	* fvwm/virtual.c (HandlePaging):
+	* fvwm/move_resize.c (InteractiveMove):
+	(__resize_window):
+	* fvwm/menus.c (select_menu_item):
+	(__mloop_do_popup):
+	(_pred_menu_window_weed_events):
+	(menu_tear_off):
+	* fvwm/icons.c (DrawIconWindow):
+	* fvwm/ewmh_events.c (EWMH_ProcessPropertyNotify):
+	* fvwm/add_window.c (do_recapture):
+	Adapt to new event discarding code.
+
+	* fvwm/fvwm.c (main):
+	Call fev_init_invalid_event_type(KeymapNotify)
+
+2014-09-20  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* libs/FEvent.h (FEV_IS_EVENT_INVALID):
+	(FEV_HAS_EVENT_WINDOW):
+	(fev_is_invalid_event_type_set):
+	(fev_invalid_event_type):
+	New helper macros and globals that are used in the macros
+
+	* libs/FEvent.c (fev_init_invalid_event_type):
+	(WeedIfEvents):
+	(FWeedIfWindowEvents):
+	(FWeedTypedWindowEvents):
+	(_fev_weed_args, _fev_pred_weed_if):
+	New library functions to allow weeding unwanted events from the input
+	queue.
+
+	* libs/FEvent.c (_fev_pred_check_peek):
+	(_fev_check_peek_args):
+	(FCheckPeekIfEvent):
+	Rewritten
+
+	* libs/FEvent.c (FCheckPeekIfEventWithLimit):
+	Removed obsolete function.
+
+	* libs/FEvent.c (_fev_check_peek_args, fev_check_peek_args):
+	(_fev_pred_check_peek, fev_check_peek_pred):
+	Renamed
+
+	* libs/FEvent.c (fev_check_peek_invalidate_args):
+	Removed unused struct
+
+2014-09-19  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/events.c (HandleReparentNotify):
+	if reparenting fails, only throw away events for the frame window, not
+	_all_ events
+
+2014-09-19  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
+
+	* fvwm/add_window.c (GetWindowSizeHintsWithCheck):
+	fix uninitialised zero fw->orig_hints.width/height_inc
+
 2014-09-15  Dominik Vogt  <dominik(dot)vogt(at)gmx(dot)de>
 
 	* fvwm/ewmh_events.c (EWMH_ProcessPropertyNotify):

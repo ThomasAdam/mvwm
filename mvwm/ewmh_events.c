@@ -197,7 +197,6 @@ int ewmh_CloseWindow(EWMH_CMD_ARGS)
 
 int ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 {
-	XConfigureRequestEvent cre;
 	int do_reconfigure;
 	int win_gravity;
 	int value_mask;
@@ -237,13 +236,16 @@ int ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 	}
 	if (do_reconfigure == 1)
 	{
-		cre.value_mask = value_mask;
-		cre.x = ev->xclient.data.l[1];
-		cre.y = ev->xclient.data.l[2];
-		cre.width = ev->xclient.data.l[3];
-		cre.height = ev->xclient.data.l[4];
-		cre.window = ev->xclient.window;
-		events_handle_configure_request(cre, fw, True, win_gravity);
+		XEvent e;
+		XConfigureRequestEvent *cre = &e.xconfigurerequest;
+
+		cre->value_mask = value_mask;
+		cre->x = ev->xclient.data.l[1];
+		cre->y = ev->xclient.data.l[2];
+		cre->width = ev->xclient.data.l[3];
+		cre->height = ev->xclient.data.l[4];
+		cre->window = ev->xclient.window;
+		events_handle_configure_request(&e, fw, True, win_gravity);
 	}
 
 	return 0;
@@ -251,7 +253,6 @@ int ewmh_MoveResizeWindow(EWMH_CMD_ARGS)
 
 int ewmh_RestackWindow(EWMH_CMD_ARGS)
 {
-	XConfigureRequestEvent cre;
 	int do_restack;
 
 	if (ev == NULL)
@@ -269,11 +270,14 @@ int ewmh_RestackWindow(EWMH_CMD_ARGS)
 	}
 	if (do_restack == 1)
 	{
-		cre.value_mask = CWSibling | CWStackMode;
-		cre.above = ev->xclient.data.l[1];
-		cre.detail = ev->xclient.data.l[2];
-		cre.window = ev->xclient.window;
-		events_handle_configure_request(cre, fw, True, ForgetGravity);
+		XEvent e;
+		XConfigureRequestEvent *cre = &e.xconfigurerequest;
+
+		cre->value_mask = CWSibling | CWStackMode;
+		cre->above = ev->xclient.data.l[1];
+		cre->detail = ev->xclient.data.l[2];
+		cre->window = ev->xclient.window;
+		events_handle_configure_request(&e, fw, True, ForgetGravity);
 	}
 
 	return 0;
@@ -1633,17 +1637,8 @@ void EWMH_ProcessPropertyNotify(const exec_context_t *exc)
 	{
 		if (ewmh_a->action != None)
 		{
-			int n;
-			int pos;
-
-			pos = check_for_another_property_notify(
-				ev->xproperty.atom, FW_W(fw), &n);
-			if (pos > 0)
-			{
-				/* Another PropertyNotify for this atom is
-				 * pending, skip the current one. */
-				return;
-			}
+			flush_property_notify_stop_at_event_type(
+				ev->xproperty.atom, FW_W(fw), 0, 0);
 			if (XGetGeometry(
 				    dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
 				    (unsigned int*)&JunkWidth,
