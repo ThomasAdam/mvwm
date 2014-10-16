@@ -107,12 +107,21 @@ monitor_should_ignore_global(struct monitor *m)
 struct monitor *
 monitor_by_name(const char *name)
 {
-	struct monitor	*m;
+	struct monitor	*m = NULL;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (strcmp(m->name, name) == 0)
 			return (m);
 	}
+
+	/* If 'm' is still NULL here, and the monitor name is "global", return
+	 * that monitor instead.  This check can only succeed if we've requested
+	 * the global screen whilst XRandR is in use, since the global monitor
+	 * isn't stored in the monitor list directly.
+	 */
+	if (m == NULL && strcmp(name, "global") == 0)
+		return (global_monitor);
+
 	return (NULL);
 }
 
