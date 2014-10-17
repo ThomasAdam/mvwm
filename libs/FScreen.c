@@ -47,7 +47,6 @@ static Bool already_initialised;
 static Display *disp;
 static int no_of_screens;
 
-static struct monitor	*FindScreenOfXY(int x, int y);
 static struct monitor	*monitor_new(void);
 static void		 init_monitor_contents(struct monitor *);
 static int monitor_should_ignore_global(struct monitor *);
@@ -90,7 +89,7 @@ monitor_get_current(void)
 	FQueryPointer(disp, DefaultRootWindow(disp), &JunkRoot, &JunkChild,
 			&JunkX, &JunkY, &x, &y, &JunkMask);
 
-	return (FindScreenOfXY(x, y));
+	return (monitor_by_xy(x, y));
 }
 
 int
@@ -129,7 +128,14 @@ monitor_by_name(const char *name)
 struct monitor *
 monitor_by_xy(int x, int y)
 {
-	return (FindScreenOfXY(x, y));
+	struct monitor	*m;
+
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (x >= m->coord.x && x < m->coord.x + m->coord.w &&
+		    y >= m->coord.y && y < m->coord.y + m->coord.h)
+			break;
+	}
+	return (m);
 }
 
 void FScreenInit(Display *dpy)
@@ -302,23 +308,6 @@ void FScreenSetDefaultModuleScreen(char *scr_spec)
 	return;
 }
 
-
-static struct monitor *
-FindScreenOfXY(int x, int y)
-{
-	struct monitor	*m;
-
-	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-		if (x >= m->coord.x && x < m->coord.x + m->coord.w &&
-		    y >= m->coord.y && y < m->coord.y + m->coord.h)
-			return (m);
-	}
-
-	return (NULL);
-}
-
 static struct monitor *
 FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 {
@@ -351,7 +340,7 @@ FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 			tmp.xypos.y = 0;
 			arg = &tmp;
 		}
-		m = FindScreenOfXY(arg->xypos.x, arg->xypos.y);
+		m = monitor_by_xy(arg->xypos.x, arg->xypos.y);
 		break;
 	case FSCREEN_BY_NAME:
 		if (arg == NULL || arg->name == NULL) {
@@ -380,7 +369,7 @@ FScreenOfPointerXY(int x, int y)
 {
 	struct monitor	*m;
 
-	m = FindScreenOfXY(x, y);
+	m = monitor_by_xy(x, y);
 
 	return (m != NULL) ? m->name : "unknown";
 }
