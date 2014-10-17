@@ -74,7 +74,7 @@ monitor_new(void)
 {
 	struct monitor	*m;
 
-	m = calloc(1, sizeof *m);
+	m = mvwm_calloc(1, sizeof *m);
 
 	return (m);
 }
@@ -162,7 +162,6 @@ void FScreenInit(Display *dpy)
 		fprintf(stderr, "Falling back to single screen...\n");
 	}
 
-
 	TAILQ_INIT(&monitor_q);
 
 	global_monitor = monitor_new();
@@ -246,10 +245,8 @@ init_monitor_contents(struct monitor *m)
 	m->virtual_scr.prev_desk_and_page_page_x = 0;
 	m->virtual_scr.prev_desk_and_page_page_y = 0;
 
-	m->virtual_scr.EdgeScrollX =
-		DEFAULT_EDGE_SCROLL * m->coord.w / 100;
-	m->virtual_scr.EdgeScrollY =
-		DEFAULT_EDGE_SCROLL * m->coord.h / 100;
+	m->virtual_scr.EdgeScrollX = DEFAULT_EDGE_SCROLL * m->coord.w / 100;
+	m->virtual_scr.EdgeScrollY = DEFAULT_EDGE_SCROLL * m->coord.h / 100;
 }
 
 /* Intended to be called by modules.  Simply pass in the parameter from the
@@ -789,12 +786,12 @@ int FScreenGetGeometry(
 	}
 	if (1 /*flags & GravityValue*/  &&  grav != DEFAULT_GRAVITY)
 	{
-		if (hints != NULL  &&  hints->flags & PWinGravity)
+		if (hints != NULL && hints->flags & PWinGravity)
 		{
 			hints->win_gravity = grav;
 		}
 	}
-	if (hints != NULL  &&  ret & XValue  &&  ret & YValue)
+	if (hints != NULL && ret & XValue && ret & YValue)
 		hints->flags |= USPosition;
 
 	return ret;
@@ -812,15 +809,13 @@ int FScreenGetGeometry(
  */
 void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
 {
+	hints->x = 0;
+	hints->y = 0;
+
 	if (hints->flags & USPosition)
 	{
 		hints->x = FSCREEN_MANGLE_USPOS_HINTS_MAGIC;
 		hints->y = (short)screen;
-	}
-	else
-	{
-		hints->x = 0;
-		hints->y = 0;
 	}
 
 	return;
@@ -838,14 +833,13 @@ void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
  */
 int FScreenFetchMangledScreenFromUSPosHints(XSizeHints *hints)
 {
-	int screen;
+	int screen = 0;
 
 	if ((hints->flags & USPosition) &&
 	    hints->x == FSCREEN_MANGLE_USPOS_HINTS_MAGIC)
 	{
 		screen = hints->y;
-	} else
-		screen = 0;
+	}
 
 	return screen;
 }
