@@ -241,13 +241,6 @@ void CMD_DestroyModuleConfig(F_CMD_ARGS)
 	return;
 }
 
-static void send_xinerama_state(fmodule *module)
-{
-	SendName(module, M_CONFIG_INFO, 0, 0, 0, FScreenGetConfiguration());
-
-	return;
-}
-
 static void send_desktop_names(fmodule *module)
 {
 	struct monitor	*m = monitor_get_current();
@@ -374,7 +367,6 @@ void CMD_Send_ConfigInfo(F_CMD_ARGS)
 	/* send ImagePath and ColorLimit first */
 	send_image_path(mod);
 	send_color_limit(mod);
-	send_xinerama_state(mod);
 	send_colorsets(mod);
 	send_click_time(mod);
 	send_move_threshold(mod);

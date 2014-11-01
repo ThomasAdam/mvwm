@@ -83,10 +83,6 @@ struct monitor	*monitor_by_xy(int, int);
 /* Control */
 Bool FScreenIsEnabled(void);
 void FScreenInit(Display *dpy);
-/* Intended to be called by modules.  Simply pass in the parameter from the
- * config string sent by mvwm. */
-void FScreenConfigureModule(char *args);
-const char* FScreenGetConfiguration(void); /* For use by mvwm */
 void FScreenSetDefaultModuleScreen(char *scr_spec);
 
 void FScreenSetPrimaryScreen(int scr);
