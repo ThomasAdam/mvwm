@@ -89,6 +89,8 @@ Here's a very brief list of things on my immediate radar. -- Thomas Adam
 	  functionality.
 
 * Modules:
+    - monitor API in libs/FScreen.c to be flattened to use an enum to look for
+      monitor-specific information instead, rather than lots of small functions?
     - The module interface (FVWM <-> Module) is a mess; consider DBUS?  Or
       imsg?
     - Use libevent to replace the hand-rolled (and often broken) select/poll
