@@ -126,6 +126,27 @@ monitor_by_name(const char *name)
 }
 
 struct monitor *
+monitor_by_number(int number)
+{
+	struct monitor	*m = NULL;
+
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (m->number == number)
+		       return (m);
+	}
+
+	/* If 'm' is still NULL here, and the monitor number is -1, return
+	 * the global  monitor instead.  This check can only succeed if we've
+	 * requested the global screen whilst XRandR is in use, since the global
+	 * monitor isn't stored in the monitor list directly.
+	 */
+	if (m == NULL && number == -1)
+		return (global_monitor);
+
+	return (NULL);
+}
+
+struct monitor *
 monitor_by_xy(int x, int y)
 {
 	struct monitor	*m;
@@ -170,6 +191,7 @@ void FScreenInit(Display *dpy)
 	global_monitor->coord.w = DisplayWidth(disp, DefaultScreen(disp));
 	global_monitor->coord.h = DisplayHeight(disp, DefaultScreen(disp));
 	global_monitor->name = mvwm_strdup("global");
+	global_monitor->number = -1;
 
 	if (!is_randr_present) {
 		/* TA:  2014-09-16:  We maintain a list of all monitors.  If
@@ -203,6 +225,7 @@ void FScreenInit(Display *dpy)
 			m->coord.w = crtc->width;
 			m->coord.h = crtc->height;
 			m->name = mvwm_strdup(oinfo->name);
+			m->number = i;
 
 			init_monitor_contents(m);
 
