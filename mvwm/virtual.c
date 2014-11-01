@@ -2061,34 +2061,25 @@ void CMD_EdgeResistance(F_CMD_ARGS)
 	return;
 }
 
+/* TA:  Removed; left as stubs so as not to need to worry about config file
+ * migtation just yet.
+ */
 void CMD_Xinerama(F_CMD_ARGS)
 {
-	int toggle;
-
-	toggle = ParseToggleArgument(action, NULL, -1, 0);
-	if (toggle == -1)
-	{
-		toggle = !FScreenIsEnabled();
-	}
-	if (!toggle != !FScreenIsEnabled())
-	{
-		scr_flags.do_need_window_update = True;
-		scr_flags.has_xinerama_state_changed = True;
-		broadcast_xinerama_state();
-	}
-
+	mvwm_msg(OLD, "CMD_Xinerama",
+		 "The Xinerama  command is obsolete and no longer "
+		 "does anything.");
 	return;
 }
 
+/* TA:  Removed; left as stubs so as not to need to worry about config file
+ * migtation just yet.
+ */
 void CMD_XineramaPrimaryScreen(F_CMD_ARGS)
 {
-	if (FScreenIsEnabled())
-	{
-		scr_flags.do_need_window_update = True;
-		scr_flags.has_xinerama_state_changed = True;
-	}
-	broadcast_xinerama_state();
-
+	mvwm_msg(OLD, "CMD_XineramaPrimaryScreen",
+		 "The XineramaPrimaryScreen command is obsolete and no longer "
+		 "does anything.");
 	return;
 }
 
