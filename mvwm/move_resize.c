@@ -5103,7 +5103,8 @@ int stick_across_pages(F_CMD_ARGS, int toggle)
 	}
 	else
 	{
-		if (!IsRectangleOnThisPage(fw->m, &fw->g.frame, fw->m->virtual_scr.CurrentDesk))
+		if (!IsRectangleOnThisPage(monitor_by_name("global"),
+			&fw->g.frame, fw->m->virtual_scr.CurrentDesk))
 		{
 			action = "";
 			__move_window(F_PASS_ARGS, False, MOVE_PAGE);
