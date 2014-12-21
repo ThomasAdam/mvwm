@@ -135,27 +135,30 @@ int ewmh_NumberOfDesktops(EWMH_CMD_ARGS)
 	struct monitor	*m;
 
 	/* not a lot of sinification for mvwm */
-	if (d > 0 && (d <= ewmhc.MaxDesktops || ewmhc.MaxDesktops == 0))
-	{
-		ewmhc.NumberOfDesktops = d;
-		TAILQ_FOREACH(m, &monitor_q, entry) {
-			if (monitor_should_ignore_global(m))
-				continue;
-			EWMH_SetNumberOfDesktops(m);
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
+			continue;
+
+		EWMH_SetNumberOfDesktops(m);
+
+		if (d > 0 &&
+		    (d <= m->ewmhc.MaxDesktops || m->ewmhc.MaxDesktops == 0))
+		{
+			m->ewmhc.NumberOfDesktops = d;
 		}
-	}
-	else
-	{
-		mvwm_msg(
-			WARN, "ewmh_NumberOfDesktops",
-			"The application window (id %#lx)\n"
-			"  \"%s\" tried to set an invalid number of desktops"
-			" (%ld)\n"
-			"  using an EWMH client message.\n"
-			"    mvwm is ignoring this request.\n",
-			fw ? FW_W(fw) : 0, fw ? fw->name.name : "(none)",
-			ev->xclient.data.l[0]);
-		mvwm_msg_report_app_and_workers();
+		else
+		{
+			mvwm_msg(
+				WARN, "ewmh_NumberOfDesktops",
+				"The application window (id %#lx)\n"
+				"  \"%s\" tried to set an invalid number of desktops"
+				" (%ld)\n"
+				"  using an EWMH client message.\n"
+				"    mvwm is ignoring this request.\n",
+				fw ? FW_W(fw) : 0, fw ? fw->name.name : "(none)",
+				ev->xclient.data.l[0]);
+			mvwm_msg_report_app_and_workers();
+		}
 	}
 
 	return -1;

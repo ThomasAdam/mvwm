@@ -83,7 +83,6 @@ typedef struct ewmh_info
 	ewmh_strut BaseStrut;
 } ewmhInfo;
 
-extern ewmhInfo ewmhc;
 
 
 ewmh_atom *ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name);
@@ -105,7 +104,7 @@ int ewmh_HandleToolBar(EWMH_CMD_ARGS);
 int ewmh_HandleNotification(EWMH_CMD_ARGS);
 
 void ewmh_AddToKdeSysTray(MvwmWindow *fw);
-void ewmh_SetWorkArea(void);
+void ewmh_SetWorkArea(struct monitor *);
 void ewmh_ComputeAndSetWorkArea(struct monitor *);
 void ewmh_HandleDynamicWorkArea(struct monitor *);
 void ewmh_HandleWindowType(MvwmWindow *fw, window_style *style);

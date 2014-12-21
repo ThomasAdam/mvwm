@@ -519,7 +519,7 @@ static void apply_window_updates(
 	}
 	if (flags->do_update_working_area)
 	{
-		EWMH_UpdateWorkArea();
+		EWMH_UpdateWorkArea(t->m ? t->m : monitor_get_current());
 	}
 	if (flags->do_update_ewmh_stacking_hints)
 	{

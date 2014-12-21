@@ -519,34 +519,35 @@ void EWMH_SetNumberOfDesktops(struct monitor *m)
 {
 	long val;
 
-	if (ewmhc.CurrentNumberOfDesktops < ewmhc.NumberOfDesktops)
+	if (m->ewmhc.CurrentNumberOfDesktops < m->ewmhc.NumberOfDesktops)
 	{
-		ewmhc.CurrentNumberOfDesktops = ewmhc.NumberOfDesktops;
+		m->ewmhc.CurrentNumberOfDesktops = m->ewmhc.NumberOfDesktops;
 	}
 
-	if (ewmhc.CurrentNumberOfDesktops > ewmhc.NumberOfDesktops ||
-	    ewmhc.NeedsToCheckDesk)
+	if (m->ewmhc.CurrentNumberOfDesktops > m->ewmhc.NumberOfDesktops ||
+	    m->ewmhc.NeedsToCheckDesk)
 	{
 		int d = check_desk();
 
-		ewmhc.NeedsToCheckDesk = False;
-		if (d >= ewmhc.MaxDesktops && ewmhc.MaxDesktops != 0)
+		m->ewmhc.NeedsToCheckDesk = False;
+		if (d >= m->ewmhc.MaxDesktops && m->ewmhc.MaxDesktops != 0)
 			d = 0;
-		ewmhc.CurrentNumberOfDesktops =
-			max(ewmhc.NumberOfDesktops, d+1);
+		m->ewmhc.CurrentNumberOfDesktops =
+			max(m->ewmhc.NumberOfDesktops, d+1);
 	}
 
-	if (m->virtual_scr.CurrentDesk >= ewmhc.CurrentNumberOfDesktops &&
-	    (m->virtual_scr.CurrentDesk < ewmhc.MaxDesktops || ewmhc.MaxDesktops == 0))
+	if (m->virtual_scr.CurrentDesk >= m->ewmhc.CurrentNumberOfDesktops &&
+	    (m->virtual_scr.CurrentDesk < m->ewmhc.MaxDesktops ||
+	    ewmhc.MaxDesktops == 0))
 	{
 		ewmhc.CurrentNumberOfDesktops = m->virtual_scr.CurrentDesk + 1;
 	}
 
-	val = (long)ewmhc.CurrentNumberOfDesktops;
+	val = (long)m->ewmhc.CurrentNumberOfDesktops;
 	ewmh_ChangeProperty(Scr.Root, "_NET_NUMBER_OF_DESKTOPS",
 			    EWMH_ATOM_LIST_CLIENT_ROOT,
 			    (unsigned char *)&val, 1);
-	ewmh_SetWorkArea();
+	ewmh_SetWorkArea(m);
 
 	return;
 }
@@ -931,41 +932,35 @@ void EWMH_SetClientListStacking(struct monitor *m)
 /**** Working Area stuff ****/
 /**** At present time we support only sticky windows with strut ****/
 
-void ewmh_SetWorkArea(void)
+void ewmh_SetWorkArea(struct monitor *m)
 {
-	struct monitor	*m;
 	long val[256][4]; /* no more than 256 desktops */
 	int i = 0;
 
-	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
+	if (m->Desktops == NULL)
+		return;
 
-		if (m->Desktops == NULL)
-			continue;
-
-		while(i < ewmhc.NumberOfDesktops && i < 256)
-		{
-			val[i][0] = m->Desktops->ewmh_working_area.x;
-			val[i][1] = m->Desktops->ewmh_working_area.y;
-			val[i][2] = m->Desktops->ewmh_working_area.width;
-			val[i][3] = m->Desktops->ewmh_working_area.height;
-			i++;
-		}
-		ewmh_ChangeProperty(
-			Scr.Root, "_NET_WORKAREA", EWMH_ATOM_LIST_MVWM_ROOT,
-			(unsigned char *)&val, i*4);
+	while(i < ewmhc.NumberOfDesktops && i < 256)
+	{
+		val[i][0] = m->Desktops->ewmh_working_area.x;
+		val[i][1] = m->Desktops->ewmh_working_area.y;
+		val[i][2] = m->Desktops->ewmh_working_area.width;
+		val[i][3] = m->Desktops->ewmh_working_area.height;
+		i++;
 	}
+	ewmh_ChangeProperty(
+		Scr.Root, "_NET_WORKAREA", EWMH_ATOM_LIST_MVWM_ROOT,
+		(unsigned char *)&val, i*4);
 
 	return;
 }
 
 void ewmh_ComputeAndSetWorkArea(struct monitor *m)
 {
-	int left = ewmhc.BaseStrut.left;
-	int right = ewmhc.BaseStrut.right;
-	int top = ewmhc.BaseStrut.top;
-	int bottom = ewmhc.BaseStrut.bottom;
+	int left = m->ewmhc.BaseStrut.left;
+	int right = m->ewmhc.BaseStrut.right;
+	int top = m->ewmhc.BaseStrut.top;
+	int bottom = m->ewmhc.BaseStrut.bottom;
 	int x,y,width,height;
 	MvwmWindow *fw;
 
@@ -1001,16 +996,16 @@ void ewmh_ComputeAndSetWorkArea(struct monitor *m)
 		m->Desktops->ewmh_working_area.y = y;
 		m->Desktops->ewmh_working_area.width = width;
 		m->Desktops->ewmh_working_area.height = height;
-		ewmh_SetWorkArea();
+		ewmh_SetWorkArea(m);
 	}
 }
 
 void ewmh_HandleDynamicWorkArea(struct monitor *m)
 {
-	int dyn_left = ewmhc.BaseStrut.left;
-	int dyn_right = ewmhc.BaseStrut.right;
-	int dyn_top = ewmhc.BaseStrut.top;
-	int dyn_bottom = ewmhc.BaseStrut.bottom;
+	int dyn_left = m->ewmhc.BaseStrut.left;
+	int dyn_right = m->ewmhc.BaseStrut.right;
+	int dyn_top = m->ewmhc.BaseStrut.top;
+	int dyn_bottom = m->ewmhc.BaseStrut.bottom;
 	int x,y,width,height;
 	MvwmWindow *fw;
 
@@ -1049,17 +1044,10 @@ void ewmh_HandleDynamicWorkArea(struct monitor *m)
 	}
 }
 
-void EWMH_UpdateWorkArea(void)
+void EWMH_UpdateWorkArea(struct monitor *m)
 {
-	struct monitor	*m;
-
-	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
-		ewmh_ComputeAndSetWorkArea(m);
-		ewmh_HandleDynamicWorkArea(m);
-	}
+	ewmh_ComputeAndSetWorkArea(m);
+	ewmh_HandleDynamicWorkArea(m);
 }
 
 void EWMH_GetWorkAreaIntersection(

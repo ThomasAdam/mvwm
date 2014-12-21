@@ -36,7 +36,7 @@ int EWMH_IsKdeSysTrayWindow(Window w);
 void EWMH_ManageKdeSysTray(Window w, int type);
 void EWMH_SetClientList(struct monitor *);
 void EWMH_SetClientListStacking(struct monitor *);
-void EWMH_UpdateWorkArea(void);
+void EWMH_UpdateWorkArea(struct monitor *);
 void EWMH_GetWorkAreaIntersection(
 	MvwmWindow *fw, int *x, int *y, int *w, int *h, int type);
 float EWMH_GetBaseStrutIntersection(struct monitor *,
