@@ -39,6 +39,10 @@
 #include "ewmh_intern.h"
 #include "move_resize.h"
 
+/* Forward declarations */
+static void set_ewmhc_strut_values(struct monitor *, int *);
+static void set_ewmhc_desktop_values(struct monitor *, int, int *);
+
 /*
  * CMDS
  */
@@ -97,9 +101,23 @@ Bool EWMH_BugOpts(char *opt, Bool toggle)
 
 void CMD_EwmhNumberOfDesktops(F_CMD_ARGS)
 {
-	struct monitor	*m;
+	struct monitor	*m = NULL;
+	char *option;
 	int val[2];
 	int num;
+
+	option = PeekToken(action, NULL);
+	if (StrEquals(option, "screen")) {
+		/* Skip literal 'screen' */
+		option = PeekToken(action, &action);
+		/* Actually get the screen value. */
+		option = PeekToken(action, &action);
+
+		if ((m = monitor_by_name(option)) == NULL) {
+			mvwm_msg(ERR, "CMD_EwmhNumberOfDesktops",
+				"Invalid screen: %s", option);
+		}
+	}
 
 	num = GetIntegerArguments(action, NULL, val, 2);
 	if ((num != 1 && num != 2) || val[0] < 1 ||
@@ -110,37 +128,41 @@ void CMD_EwmhNumberOfDesktops(F_CMD_ARGS)
 		return;
 	}
 
+	/* If m is still NULL, then no monitor was specified, therefore assume
+	 * all monitors will be used.
+	 */
+	if (m != NULL) {
+		set_ewmhc_desktop_values(m, num, val);
+		return;
+	}
+
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (monitor_should_ignore_global(m))
 			continue;
-		if (num == 2 && m->ewmhc.MaxDesktops != val[1])
-		{
-			m->ewmhc.MaxDesktops = val[1];
-			num = 3;
-		}
-		else if (num == 1 && m->ewmhc.MaxDesktops != 0)
-		{
-			m->ewmhc.MaxDesktops = 0;
-			num = 3;
-		}
 
-		if (m->ewmhc.NumberOfDesktops != val[0])
-		{
-			m->ewmhc.NumberOfDesktops = val[0];
-			num = 3;
-		}
-
-		if (num == 3)
-		{
-			m->ewmhc.NeedsToCheckDesk = True;
-			EWMH_SetNumberOfDesktops(m);
-		}
+		set_ewmhc_desktop_values(m, num, val);
 	}
+
 }
 
 void CMD_EwmhBaseStruts(F_CMD_ARGS)
 {
+	struct monitor *m = NULL;
+	char *option;
 	int val[4];
+
+	option = PeekToken(action, NULL);
+	if (StrEquals(option, "screen")) {
+		/* Skip literal 'screen' */
+		option = PeekToken(action, &action);
+		/* Actually get the screen value. */
+		option = PeekToken(action, &action);
+
+		if ((m = monitor_by_name(option)) == NULL) {
+			mvwm_msg(ERR, "CMD_EwmhBaseStruts",
+				"Invalid screen: %s", option);
+		}
+	}
 
 	if (GetIntegerArguments(action, NULL, val, 4) != 4 ||
 	    val[0] < 0 || val[1] < 0 || val[2] < 0 || val[3] < 0)
@@ -150,19 +172,66 @@ void CMD_EwmhBaseStruts(F_CMD_ARGS)
 		return;
 	}
 
-	if (ewmhc.BaseStrut.left != val[0] ||
-	    ewmhc.BaseStrut.right != val[1] ||
-	    ewmhc.BaseStrut.top != val[2] ||
-	    ewmhc.BaseStrut.bottom != val[3])
-	{
-		ewmhc.BaseStrut.left   = val[0];
-		ewmhc.BaseStrut.right  = val[1];
-		ewmhc.BaseStrut.top    = val[2];
-		ewmhc.BaseStrut.bottom = val[3];
+	/* If m is still NULL, then no monitor was specified, therefore assume
+	 * all monitors will be used.
+	 */
+	if (m != NULL) {
+		set_ewmhc_strut_values(m, val);
+		return;
+	}
 
-		EWMH_UpdateWorkArea();
+	TAILQ_FOREACH(m, &monitor_q, entry) {
+		if (monitor_should_ignore_global(m))
+			continue;
+
+		set_ewmhc_strut_values(m, val);
 	}
 }
+
+static void
+set_ewmhc_desktop_values(struct monitor *m, int num, int *val)
+{
+	if (num == 2 && m->ewmhc.MaxDesktops != val[1])
+	{
+		m->ewmhc.MaxDesktops = val[1];
+		num = 3;
+	}
+	else if (num == 1 && m->ewmhc.MaxDesktops != 0)
+	{
+		m->ewmhc.MaxDesktops = 0;
+		num = 3;
+	}
+
+	if (m->ewmhc.NumberOfDesktops != val[0])
+	{
+		m->ewmhc.NumberOfDesktops = val[0];
+		num = 3;
+	}
+
+	if (num == 3)
+	{
+		m->ewmhc.NeedsToCheckDesk = True;
+		EWMH_SetNumberOfDesktops(m);
+	}
+}
+
+static void
+set_ewmhc_strut_values(struct monitor *m, int *val)
+{
+	if (m->ewmhc.BaseStrut.left != val[0] ||
+	    m->ewmhc.BaseStrut.right != val[1] ||
+	    m->ewmhc.BaseStrut.top != val[2] ||
+	    m->ewmhc.BaseStrut.bottom != val[3])
+	{
+		m->ewmhc.BaseStrut.left   = val[0];
+		m->ewmhc.BaseStrut.right  = val[1];
+		m->ewmhc.BaseStrut.top    = val[2];
+		m->ewmhc.BaseStrut.bottom = val[3];
+
+		EWMH_UpdateWorkArea(m);
+	}
+}
+
 /*
  * Styles
  */
