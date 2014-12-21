@@ -1236,6 +1236,10 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	int PageBottom, PageRight;
 	int txl, txr, tyt, tyb;
 
+	fprintf(stderr, "MV: Monitor: <%s>\n", m->name);
+	fprintf(stderr, "MV: v_s.VxMax: %d\nMV: v_s.VyMax: %d\n",
+		m->virtual_scr.VxMax, m->virtual_scr.VyMax);
+
 	if (grab)
 	{
 		MyXGrabServer(dpy);
@@ -1259,6 +1263,9 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	deltay = m->virtual_scr.Vy - newy;
 	deltax = m->virtual_scr.Vx - newx;
 
+	fprintf(stderr, "MV: newx: %d\nMV: newy: %d\nMV: deltay: %d\nMV: deltax: %d\n",
+		newx, newy, deltax, deltay);
+
 	/*
 	  Identify the bounding rectangle that will be moved into
 	  the viewport.
@@ -1267,6 +1274,10 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	PageRight     =  m->coord.w  - deltax - 1;
 	PageTop       =  0 - deltay;
 	PageLeft      =  0 - deltax;
+
+	fprintf(stderr, "MV PageBottom: %d\nMV: PageTop: %d\nMV: PageLeft: %d\n"
+			"MV: PageRight: %d\n", PageBottom, PageTop, PageLeft,
+			PageRight);
 
 	if (deltax || deltay)
 	{
@@ -1279,14 +1290,26 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 	m->virtual_scr.Vx = newx;
 	m->virtual_scr.Vy = newy;
 
+	fprintf(stderr, "MV: v_s.prev_page_x: %d\n", m->virtual_scr.prev_page_x);
+	fprintf(stderr, "MV: v_s.prev_page_y: %d\n", m->virtual_scr.prev_page_y);
+	fprintf(stderr, "MV: v_s.prev_desk_and_page_page_x: %d\n",
+		m->virtual_scr.prev_desk_and_page_page_y);
+	fprintf(stderr, "MV: v_s.prev_desk_and_page_page_x: %d\n",
+		m->virtual_scr.prev_desk_and_page_page_y);
+	fprintf(stderr, "MV: v_s.prev_desk_and_page_desk: %d\n",
+		m->virtual_scr.prev_desk_and_page_desk);
+	fprintf(stderr, "MV: v_s.Vx: %d\n", m->virtual_scr.Vx);
+	fprintf(stderr, "MV: v_s.Vy: %d\n", m->virtual_scr.Vy);
+
 	if (deltax || deltay)
 	{
 		BroadcastPacket(
-			M_NEW_PAGE, 7, (long)m->virtual_scr.Vx, (long)m->virtual_scr.Vy,
+			M_NEW_PAGE, 8, (long)m->virtual_scr.Vx, (long)m->virtual_scr.Vy,
 			(long)m->virtual_scr.CurrentDesk, (long)m->coord.w,
 			(long)m->coord.h,
 			(long)((m->virtual_scr.VxMax / m->coord.w) + 1),
-			(long)((m->virtual_scr.VyMax / m->coord.h) + 1));
+			(long)((m->virtual_scr.VyMax / m->coord.h) + 1),
+			(long)m->number);
 
 		/*
 		 * RBW - 11/13/1998      - new:  chase the chain
@@ -1458,7 +1481,9 @@ void goto_desk(int desk, struct monitor *m)
 		m->virtual_scr.CurrentDesk = desk;
 		MapDesk(m, desk, True);
 		focus_grab_buttons_all();
-		BroadcastPacket(M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
+		BroadcastPacket(M_NEW_DESK, 2,
+			(long)m->virtual_scr.CurrentDesk,
+			(long)m->number);
 		/* FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
 		 * window upon desk change.  This is a workaround for a
 		 * problem in MvwmPager: The pager has a separate 'root'
@@ -2102,13 +2127,14 @@ void CMD_DesktopSize(F_CMD_ARGS)
 		m->virtual_scr.VyMax = (val[1] <= 0) ?
 			0: val[1] * m->coord.h - m->coord.h;
 		BroadcastPacket(
-			M_NEW_PAGE, 7, (long)m->virtual_scr.Vx,
+			M_NEW_PAGE, 8, (long)m->virtual_scr.Vx,
 			(long)m->virtual_scr.Vy,
 			(long)m->virtual_scr.CurrentDesk,
 			(long)m->coord.w,
 			(long)m->coord.h,
 			(long)((m->virtual_scr.VxMax / m->coord.w) + 1),
-			(long)((m->virtual_scr.VyMax / m->coord.h) + 1));
+			(long)((m->virtual_scr.VyMax / m->coord.h) + 1),
+			(long)m->number);
 
 		checkPanFrames();
 		EWMH_SetDesktopGeometry(m);
@@ -2185,7 +2211,9 @@ void CMD_GotoDeskAndPage(F_CMD_ARGS)
 		m->virtual_scr.CurrentDesk = val[0];
 		MapDesk(m, val[0], True);
 		focus_grab_buttons_all();
-		BroadcastPacket(M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
+		BroadcastPacket(M_NEW_DESK, 2,
+			(long)m->virtual_scr.CurrentDesk,
+			(long)m->number);
 		/* FIXME: domivogt (22-Apr-2000): Fake a 'restack' for sticky
 		 * window upon desk change.  This is a workaround for a
 		 * problem in MvwmPager: The pager has a separate 'root'
@@ -2199,7 +2227,9 @@ void CMD_GotoDeskAndPage(F_CMD_ARGS)
 	}
 	else
 	{
-		BroadcastPacket(M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
+		BroadcastPacket(M_NEW_DESK, 2,
+			(long)m->virtual_scr.CurrentDesk,
+			(long)m->number);
 	}
 	EWMH_SetCurrentDesktop(m);
 

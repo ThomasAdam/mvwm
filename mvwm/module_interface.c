@@ -857,15 +857,18 @@ void CMD_Send_WindowList(F_CMD_ARGS)
 	{
 		return;
 	}
-	SendPacket(mod, M_NEW_DESK, 1, (long)m->virtual_scr.CurrentDesk);
+	SendPacket(mod, M_NEW_DESK, 2,
+		(long)m->virtual_scr.CurrentDesk,
+		(long)m->number);
 	SendPacket(
-		mod, M_NEW_PAGE, 7, (long)m->virtual_scr.Vx,
+		mod, M_NEW_PAGE, 8, (long)m->virtual_scr.Vx,
 		(long)m->virtual_scr.Vy,
 		(long)m->virtual_scr.CurrentDesk,
 		(long)m->coord.w,
 		(long)m->coord.h,
 		(long)((m->virtual_scr.VxMax / m->coord.w) + 1),
-		(long)((m->virtual_scr.VyMax / m->coord.h) + 1));
+		(long)((m->virtual_scr.VyMax / m->coord.h) + 1),
+		(long)m->number);
 
 	if (Scr.Hilite != NULL)
 	{

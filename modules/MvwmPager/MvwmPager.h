@@ -39,6 +39,8 @@ typedef struct MvwmPagerScreenInfo
   int Vx;                /* Current loc for top left of virt desk */
   int Vy;
   int CurrentDesk;
+  char *monitor_name;
+  struct monitor *monitor;
   Pixmap sticky_gray_pixmap;
   Pixmap light_gray_pixmap;
   Pixmap gray_pixmap;

@@ -853,6 +853,7 @@ void list_new_desk(unsigned long *body)
 
   oldDesk = FPScr.CurrentDesk;
   FPScr.CurrentDesk = (long)body[0];
+  FPScr.monitor_name = mvwm_strdup(monitor_by_number(body[1])->name);
   if (fAlwaysCurrentDesk && oldDesk != FPScr.CurrentDesk)
   {
     PagerWindow *t;
@@ -1590,10 +1591,12 @@ void ParseOptions(void)
   FPScr.Hilite = NULL;
   FPScr.VScale = 32;
 
+  fpa.mask = 0;
+
   FPScr.MyDisplayWidth = DisplayWidth(dpy, FPScr.screen);
   FPScr.MyDisplayHeight = DisplayHeight(dpy, FPScr.screen);
+  FPScr.monitor = monitor_get_current();
 
-  fpa.mask = 0;
   if (Pdepth <= 8)
   {
 	  fpa.mask |= FPAM_DITHER;
@@ -2170,6 +2173,21 @@ void ParseOptions(void)
 	free(BalloonFormatString);
       CopyString(&BalloonFormatString,arg1);
     }
+    else if (StrEquals(resource, "Monitor"))
+    {
+	char *mon_name;
+	struct monitor *mon = NULL;
+
+	mon_name = mvwm_strdup(arg1);
+	mon = monitor_by_name(mon_name);
+	FPScr.monitor = mon;
+
+	/* XXX FIXME:  Need to account for coord.x/coord.y!!! */
+	FPScr.MyDisplayWidth = mon->coord.w;
+	FPScr.MyDisplayHeight = mon->coord.h;
+
+	free(mon_name);
+    }
 
     free(resource);
     free(arg1);
@@ -2186,8 +2204,8 @@ void ParseOptions(void)
   FPScr.VHeight = FPScr.VyMax + FPScr.MyDisplayHeight;
   FPScr.VxPages = FPScr.VWidth / FPScr.MyDisplayWidth;
   FPScr.VyPages = FPScr.VHeight / FPScr.MyDisplayHeight;
-  FPScr.Vx = 0;
-  FPScr.Vy = 0;
+  FPScr.Vx = FPScr.monitor->coord.x;
+  FPScr.Vy = FPScr.monitor->coord.y;
 
   return;
 }
