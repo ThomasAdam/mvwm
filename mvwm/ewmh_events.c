@@ -136,9 +136,6 @@ int ewmh_NumberOfDesktops(EWMH_CMD_ARGS)
 
 	/* not a lot of sinification for mvwm */
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
 		EWMH_SetNumberOfDesktops(m);
 
 		if (d > 0 &&

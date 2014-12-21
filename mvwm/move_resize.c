@@ -4496,8 +4496,6 @@ static void MaximizeHeight(
 	new_y2 = bottom_border;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
 		for (cwin = Scr.MvwmRoot.next; cwin; cwin = cwin->next)
 		{
 			if (win->m != m)
@@ -4577,9 +4575,6 @@ static void MaximizeWidth(
 	new_x2 = right_border;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
 		for (cwin = Scr.MvwmRoot.next; cwin; cwin = cwin->next)
 		{
 			if (m != cwin->m)

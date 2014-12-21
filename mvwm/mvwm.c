@@ -2447,8 +2447,6 @@ int main(int argc, char **argv)
 
 	struct monitor	*mon;
 	TAILQ_FOREACH(mon, &monitor_q, entry) {
-		if (monitor_should_ignore_global(mon))
-			continue;
 		EWMH_Init(mon);
 	}
 	DBUG("main", "Setting up rc file defaults...");

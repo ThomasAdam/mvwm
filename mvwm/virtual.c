@@ -2106,8 +2106,6 @@ void CMD_DesktopSize(F_CMD_ARGS)
 	}
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
 		m->virtual_scr.VxMax = (val[0] <= 0) ?
 			0: val[0]*m->coord.w - m->coord.w;
 		m->virtual_scr.VyMax = (val[1] <= 0) ?
@@ -2381,9 +2379,6 @@ void CMD_DesktopName(F_CMD_ARGS)
 
 	/* The same name on all monitors... */
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
 		d = m->Desktops->next;
 		while (d != NULL && d->desk != desk)
 		{
@@ -2463,11 +2458,8 @@ void CMD_DesktopName(F_CMD_ARGS)
 		}
 		BroadcastConfigInfoString(msg);
 		free(msg);
-		TAILQ_FOREACH(m, &monitor_q, entry) {
-			if (monitor_should_ignore_global(m))
-				continue;
+		TAILQ_FOREACH(m, &monitor_q, entry)
 			EWMH_SetDesktopNames(m);
-		}
 	}
 
 	return;

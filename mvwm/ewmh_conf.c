@@ -137,9 +137,6 @@ void CMD_EwmhNumberOfDesktops(F_CMD_ARGS)
 	}
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
 		set_ewmhc_desktop_values(m, num, val);
 	}
 
@@ -181,9 +178,6 @@ void CMD_EwmhBaseStruts(F_CMD_ARGS)
 	}
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
-		if (monitor_should_ignore_global(m))
-			continue;
-
 		set_ewmhc_strut_values(m, val);
 	}
 }
