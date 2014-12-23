@@ -1162,6 +1162,10 @@ AH_VERBATIM([_ZEND_EXPLICIT_DEFINITIONS],
 #   include "libs/strlcpy.h"
 #endif
 
+#ifndef HAVE_STRTONUM
+#	include "libs/strtonum.h"
+#endif
+
 ])
 
 # mainly for mvwm-config

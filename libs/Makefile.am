@@ -15,7 +15,8 @@ libmvwm_a_SOURCES = \
 	XError.h XResource.h charmap.h defaults.h envvar.h fio.h flist.h \
 	ftime.h mvwm_sys_stat.h mvwmlib.h mvwmrect.h mvwmsignal.h \
 	gravity.c gravity.h lang-strings.h modifiers.h fqueue.h safemalloc.h \
-	setpgrp.h strlcpy.h timeout.h vpacket.h wcontext.h wild.h queue.h\
+	setpgrp.h strlcpy.h strtonum.h timeout.h vpacket.h wcontext.h wild.h \
+	queue.h\
 	\
 	BidiJoin.c Flocale.c PictureUtils.c FScreen.c Graphics.c \
 	PictureGraphics.c Bindings.c FlocaleCharset.c Parse.c \
@@ -26,7 +27,7 @@ libmvwm_a_SOURCES = \
 	mvwmrect.c FRenderInit.c safemalloc.c  FBidi.c \
 	wild.c Grab.c Event.c ClientMsg.c setpgrp.c FShape.c \
 	FGettext.c Rectangles.c timeout.c flist.c charmap.c wcontext.c \
-	modifiers.c FTips.c fio.c mvwmlib.c strlcpy.c
+	modifiers.c FTips.c fio.c mvwmlib.c strlcpy.c strtonum.c
 
 libmvwm_a_LIBADD = @LIBOBJS@ @ALLOCA@
 
