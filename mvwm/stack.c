@@ -2138,7 +2138,7 @@ void CMD_DefaultLayers(F_CMD_ARGS)
 	bot = PeekToken(action, &action);
 	if (bot)
 	{
-		i = atoi (bot);
+		i = strtonum(bot, 0, INT_MAX, NULL);
 		if (i < 0)
 		{
 			mvwm_msg(
@@ -2153,7 +2153,7 @@ void CMD_DefaultLayers(F_CMD_ARGS)
 	def = PeekToken(action, &action);
 	if (def)
 	{
-		i = atoi (def);
+		i = strtonum(def, 0, INT_MAX, NULL);
 		if (i < 0)
 		{
 			mvwm_msg(
@@ -2168,7 +2168,7 @@ void CMD_DefaultLayers(F_CMD_ARGS)
 	top = PeekToken(action, &action);
 	if (top)
 	{
-		i = atoi (top);
+		i = strtonum(top, 0, INT_MAX, NULL);
 		if (i < 0)
 		{
 			mvwm_msg(

@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <errno.h>
+#include <limits.h>
 #include <sys/stat.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -2010,7 +2011,8 @@ int main(int argc, char **argv)
 				usage(0);
 				exit(1);
 			}
-			colorLimitop.color_limit = atoi(argv[i]);
+			colorLimitop.color_limit = strtonum(argv[i], 0, INT_MAX,
+					NULL);
 		}
 		else if (strcmp(argv[i], "-L") == 0 ||
 			 strcmp(argv[i], "-strict-color-limit") == 0 ||

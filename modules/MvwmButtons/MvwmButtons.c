@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <sys/wait.h>
 #include "libs/ftime.h"
 #include <sys/stat.h>
@@ -680,8 +681,8 @@ int main(int argc, char **argv)
 		}
 	}
 
-	fd[0] = atoi(argv[1]);
-	fd[1] = atoi(argv[2]);
+	fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+	fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 	if (!(Dpy = XOpenDisplay(NULL)))
 	{
 		fprintf(stderr,

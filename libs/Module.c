@@ -20,6 +20,7 @@
 #include "config.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <limits.h>
 #include "libs/defaults.h"
 #include "Module.h"
 #include "Parse.h"
@@ -345,8 +346,8 @@ ModuleArgs *ParseModuleArgs(int argc, char *argv[], int use_arg6_as_alias)
 	}
 
 	/* File descriptors for the pipes */
-	ma.to_mvwm = atoi(argv[1]);
-	ma.from_mvwm = atoi(argv[2]);
+	ma.to_mvwm = strtonum(argv[1], 0, INT_MAX, NULL);
+	ma.from_mvwm = strtonum(argv[2], 0, INT_MAX, NULL);
 
 	/* Ignore argv[3] */
 

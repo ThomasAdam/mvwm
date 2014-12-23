@@ -39,6 +39,7 @@
 #include <sys/bsdtypes.h> /* Saul */
 #endif
 
+#include <limits.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -108,6 +109,7 @@ main(int argc, char **argv)
 {
 	/* The struct holding the module info */
 	static ModuleArgs* module;
+	const char *errstr;
 	char *enter_fn="Silent Raise";        /* default */
 	char *leave_fn=NULL;
 	char *buf;
@@ -202,7 +204,13 @@ main(int argc, char **argv)
 	fd[0] = module->to_mvwm;
 	fd[1] = module->from_mvwm;
 
-	if ((timeout = atoi(module->user_argv[0]) ))
+	timeout = strtonum(module->user_argv[0], 0, INT_MAX, &errstr);
+	if (errstr != NULL) {
+		fprintf(stderr, "timeout: %s\n", errstr);
+		exit(1);
+	}
+
+	if (timeout > 0)
 	{
 		sec = timeout / 1000;
 		usec = (timeout % 1000) * 1000;

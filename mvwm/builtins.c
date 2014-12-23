@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <limits.h>
 #include <X11/keysym.h>
 
 #include "libs/mvwmlib.h"
@@ -887,7 +888,7 @@ static void do_button_style(F_CMD_ARGS, Bool do_add)
 	parm = PeekToken(action, &text);
 	if (parm && isdigit(*parm))
 	{
-		button = atoi(parm);
+		button = strtonum(parm, 0, INT_MAX, NULL);
 		button = BUTTON_INDEX(button);
 	}
 

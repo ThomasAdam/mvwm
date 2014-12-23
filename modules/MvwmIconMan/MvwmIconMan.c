@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <limits.h>
 #include "MvwmIconMan.h"
 #include "readconfig.h"
 #include "x.h"
@@ -250,8 +251,8 @@ main(int argc, char **argv)
 			MyName, VERSION);
 		ShutMeDown(1);
 	}
-	mvwm_fd[0] = atoi(argv[1]);
-	mvwm_fd[1] = atoi(argv[2]);
+	mvwm_fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+	mvwm_fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 	init_display();
 
 #ifdef HAVE_SIGACTION

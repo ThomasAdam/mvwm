@@ -19,6 +19,7 @@
 #include "config.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <limits.h>
 
 /* the following 5 are just to satisfy X11/extensions/shape.h on some systems */
 #include <X11/Xlib.h>
@@ -149,7 +150,7 @@ static button_info *parse_button_id(char **line)
 	}
 	else if (isdigit(*s))
 	{
-		x = atoi(s);
+		x = strtonum(s, 0, INT_MAX, NULL);
 		i = count = -1;
 		/* find the button */
 		while (NextButton(&ub, &b, &i, 0))
@@ -391,7 +392,7 @@ void parse_message_line(char *line)
 		rest = GetQuotedString(rest, &buttonn, "", NULL, NULL, NULL);
 		if (buttonn)
 		{
-			mousebutton = atoi(buttonn);
+			mousebutton = strtonum(buttonn, 0, INT_MAX, NULL);
 			free(buttonn);
 			if (
 				mousebutton <= 0 ||

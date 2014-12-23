@@ -124,8 +124,8 @@ int main(int argc, char **argv)
   /* We should exit if our mvwm pipes die */
   signal (SIGPIPE, DeadPipe);
 
-  fd[0] = atoi(argv[1]);
-  fd[1] = atoi(argv[2]);
+  fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+  fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 
   for(i=6;i<argc;i++)
     {

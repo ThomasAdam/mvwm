@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <limits.h>
 
 #include "libs/mvwmlib.h"
 #include "libs/Parse.h"
@@ -1854,19 +1855,19 @@ static int ver (char *str)
 	{
 		return -1.0;
 	}
-	v = atoi(n) * 1000000;
+	v = strtonum(n, 0, INT_MAX, NULL) * 1000000;
 	str = DoPeekToken(str, &n, NULL, ".", NULL);
 	if (!n)
 	{
 		return -1.0;
 	}
-	v += atoi(n) * 1000;
+	v += strtonum(n, 0, INT_MAX, NULL) * 1000;
 	str = DoPeekToken(str, &n, NULL, ".", NULL);
 	if (!n)
 	{
 		return -1.0;
 	}
-	v += atoi(n);
+	v += strtonum(n, 0, INT_MAX, NULL);
 
 	return v;
 }

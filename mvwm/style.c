@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include <stdio.h>
+#include <limits.h>
 
 #include "libs/mvwmlib.h"
 #include "libs/FScreen.h"
@@ -1441,7 +1442,7 @@ static Bool style_parse_focus_policy_style(
 
 			s[0] = *token;
 			s[1] = 0;
-			button = atoi(s);
+			button = strtonum(s, 0, INT_MAX, NULL);
 			if (button == 0)
 			{
 				val = ~0;

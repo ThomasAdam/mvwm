@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <ctype.h>
 #include <math.h>
+#include <limits.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -1267,6 +1268,7 @@ int PictureAllocColorTable(
 	PictureColorLimitOption *opt, int call_type, Bool use_my_color_limit)
 {
 	char *envp;
+	const char *errstr;
 	int free_colors, nbr_of_color, limit, cc_nbr, i, size;
 	int use_named_table = 0;
 	int do_allocate = 0;
@@ -1367,7 +1369,13 @@ int PictureAllocColorTable(
 	     (envp = getenv("MVWM_COLORTABLE_TYPE")) != NULL)
 	{
 		int nr = 0, ng = 0, nb = 0, grey_bits = 0, ngrey = 0;
-		int ctt = atoi(envp);
+		int ctt = strtonum(envp, 0, INT_MAX, &errstr);
+
+		if (errstr != NULL) {
+			fprintf(stderr,
+				"[mvwm] ERR: Bad value envp: %s\n", errstr);
+			exit(2);
+		}
 
 		if (ctt >= PICTURE_PAllocTable)
 		{
@@ -1428,7 +1436,14 @@ int PictureAllocColorTable(
 		char *rest, *l;
 
 		rest = GetQuotedString(envp, &l, ":", NULL, NULL, NULL);
-		if (l && *l != '\0' && (color_limit = atoi(l)) >= 0)
+		color_limit = strtonum(l, 0, INT_MAX, &errstr);
+		if (errstr != NULL) {
+			fprintf(stderr,
+				"[mvwm] ERR: color_limit: %s\n", errstr);
+			exit(2);
+		}
+
+		if (l && *l != '\0' && color_limit >= 0)
 		{
 			use_default = 0;
 		}

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <limits.h>
+
 #include "MvwmCommand.h"
 #include "libs/mvwmsignal.h"
 #include "libs/mvwmlib.h"
@@ -173,21 +175,21 @@ int main ( int argc, char *argv[])
       f_stem = optarg;
       break;
     case 'F':
-      Opt_flags = atoi (optarg);
+      Opt_flags = strtonum(optarg, 0, INT_MAX, NULL);
       break;
     case 'S':
       sf_stem = optarg;
       Opt_Serv = 1;
       break;
     case 'i':
-      Opt_info = atoi( optarg );
+      Opt_info = strtonum(optarg, 0, INT_MAX, NULL);
       break;
     case 'v':
       printf("%s %s\n", MYNAME, VERSION );
       exit(0);
     case 'w':
-      Tv.tv_usec = atoi( optarg ) % 1000000;
-      Tv.tv_sec = atoi( optarg ) / 1000000;
+      Tv.tv_usec = strtonum(optarg, 0, INT_MAX, NULL) % 1000000;
+      Tv.tv_sec = strtonum(optarg, 0, INT_MAX, NULL) / 1000000;
       break;
     case 'm':
       Opt_monitor = 1;

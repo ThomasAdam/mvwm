@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <sys/wait.h>
 #include "libs/ftime.h"
 #include <ctype.h>
@@ -235,8 +236,8 @@ int main(int argc, char **argv)
 #endif
 #endif
 
-  fd[0] = atoi(argv[1]);
-  fd[1] = atoi(argv[2]);
+  fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+  fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 
   fd_width = GetFdWidth();
 
@@ -283,11 +284,11 @@ int main(int argc, char **argv)
     }
   else
     {
-      desk1 = atoi(argv[opt_num]);
+      desk1 = strtonum(argv[opt_num], 0, INT_MAX, NULL);
       if (argc == opt_num+1)
 	desk2 = desk1;
       else
-	desk2 = atoi(argv[opt_num+1]);
+	desk2 = strtonum(argv[opt_num+1], 0, INT_MAX, NULL);
       if(desk2 < desk1)
 	{
 	  itemp = desk1;

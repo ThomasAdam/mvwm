@@ -16,6 +16,8 @@
 
 #include "config.h"
 #include <ctype.h>
+#include <limits.h>
+
 #include "MvwmIconMan.h"
 #include "readconfig.h"
 #include "xmanager.h"
@@ -303,7 +305,7 @@ static int extract_int(char *p, int *n)
 		}
 	}
 
-	*n = atoi(p) * sign;
+	*n = strtonum(p, 0, INT_MAX, NULL) * sign;
 
 	return 1;
 }

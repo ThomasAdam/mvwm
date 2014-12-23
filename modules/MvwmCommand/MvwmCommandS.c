@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <limits.h>
+
 #include "MvwmCommand.h"
 #include "libs/mvwmlib.h"
 #include "libs/mvwmsignal.h"
@@ -129,8 +131,8 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-  Fd[0] = atoi(argv[1]);
-  Fd[1] = atoi(argv[2]);
+  Fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+  Fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 
   server(fifoname);
   close_pipes();

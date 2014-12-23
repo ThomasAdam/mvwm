@@ -308,7 +308,7 @@ void CMD_WindowList(F_CMD_ARGS)
 				opts = GetNextSimpleOption(opts, &tok);
 				if (tok)
 				{
-					desk = atoi(tok);
+					desk = strtonum(tok, 0, INT_MAX, NULL);
 					flags &= ~SHOW_ALLDESKS;
 				}
 			}
@@ -531,12 +531,14 @@ void CMD_WindowList(F_CMD_ARGS)
 				opts = GetNextSimpleOption(opts, &tok);
 				if (tok)
 				{
-					low_layer = high_layer = atoi(tok);
+					low_layer = high_layer = strtonum(tok,
+							0, INT_MAX, NULL);
 					free(tok);
 					opts = GetNextSimpleOption(opts, &tok);
 					if (tok)
 					{
-						high_layer = atoi(tok);
+						high_layer = strtonum(tok,
+							0, INT_MAX, NULL);
 					}
 				}
 			}
@@ -556,7 +558,8 @@ void CMD_WindowList(F_CMD_ARGS)
 				opts = GetNextSimpleOption(opts, &wid);
 				if (wid)
 				{
-					max_label_width = atoi(wid);
+					max_label_width = strtonum(wid, 0,
+							INT_MAX, NULL);
 					if (max_label_width < 1)
 					{
 						max_label_width = 1;

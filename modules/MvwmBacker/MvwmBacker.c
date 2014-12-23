@@ -43,6 +43,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
@@ -150,6 +151,7 @@ ErrorHandler(Display *d, XErrorEvent *event)
 
 int main(int argc, char **argv)
 {
+	const char *errstr;
 	char *temp, *s;
 
 	commands = mvwm_malloc(sizeof(CommandChain));
@@ -174,8 +176,14 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	mvwm_fd[0] = atoi(argv[1]);
-	mvwm_fd[1] = atoi(argv[2]);
+	mvwm_fd[0] = strtonum(argv[1], 0, INT_MAX, &errstr);
+	if (errstr != NULL) {
+		mvwm_msg(ERR, "argv[1]: %s", errstr);
+	}
+	mvwm_fd[1] = strtonum(argv[2], 0, INT_MAX, &errstr);
+	if (errstr != NULL) {
+		mvwm_msg(ERR, "argv[2]: %s", errstr);
+	}
 
 	/* Grab the X display information now. */
 
@@ -614,7 +622,7 @@ Bool ParseNewCommand(
 			if (!StrEquals(value, "*"))
 			{
 				this->flags.do_match_any_desk = 0;
-				this->desk = atoi(value);
+				this->desk = strtonum(value, 0, INT_MAX, NULL);
 			}
 			*do_ignore_desk = False;
 			free(value);
@@ -630,7 +638,7 @@ Bool ParseNewCommand(
 				return 1;
 			}
 			if (!StrEquals(value, "*"))
-				this->x = atoi(value);
+				this->x = strtonum(value, 0, INT_MAX, NULL);
 			free(value);
 			if (GetNextToken(option_val, &value) == NULL)
 			{
@@ -640,7 +648,7 @@ Bool ParseNewCommand(
 				return 1;
 			}
 			if (!StrEquals(value, "*"))
-				this->y = atoi(value);
+				this->y = strtonum(value, 0, INT_MAX, NULL);
 			*do_ignore_page = False;
 			free(value);
 		}
@@ -680,7 +688,7 @@ void AddCommand(char *line)
 		if (strcasecmp(token, "*") != 0)
 		{
 			this->flags.do_match_any_desk = 0;
-			this->desk = atoi(token);
+			this->desk = strtonum(token, 0, INT_MAX, NULL);
 		}
 		do_ignore_desk = False;
 		free(token);

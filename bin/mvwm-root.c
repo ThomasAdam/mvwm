@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <limits.h>
 #include <X11/Xos.h>
 #include <X11/Xatom.h>
 #include "libs/mvwmlib.h"
@@ -215,7 +216,8 @@ int main(int argc, char **argv)
 			if (i+1 < argc)
 			{
 				i++;
-				opt_color_limit = atoi(argv[i]);
+				opt_color_limit =
+					strtonum(argv[i], 0, INT_MAX, NULL);
 			}
 		}
 		else if (

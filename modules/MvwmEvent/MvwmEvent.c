@@ -40,6 +40,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <limits.h>
 
 #include "libs/Module.h"
 #include "libs/mvwmlib.h"
@@ -263,8 +264,8 @@ int main(int argc, char **argv)
 	signal(SIGTERM, TerminateHandler);
 #endif
 
-	fd[0] = atoi(argv[1]);
-	fd[1] = atoi(argv[2]);
+	fd[0] = strtonum(argv[1], 0, INT_MAX, NULL);
+	fd[1] = strtonum(argv[2], 0, INT_MAX, NULL);
 
 	/* configure events */
 	config();
@@ -484,7 +485,7 @@ void handle_config_line(char *buf, char **phost)
 			/* Delay */
 			if (token)
 			{
-				audio_delay = atoi(token);
+				audio_delay = strtonum(token, 0, INT_MAX, NULL);
 			}
 			break;
 

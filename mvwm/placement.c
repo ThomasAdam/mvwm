@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <limits.h>
 
 #include "libs/mvwmlib.h"
 #include "libs/FScreen.h"
@@ -1930,7 +1931,8 @@ static void __place_handle_x_resources(
 	if (GetResourceString(db, "desk", client_argv[0], &rm_value) &&
 	    rm_value.size != 0)
 	{
-		SGET_START_DESK(*pstyle) = atoi(rm_value.addr);
+		SGET_START_DESK(*pstyle) = strtonum(rm_value.addr, 0, INT_MAX,
+				NULL);
 		/*  RBW - 11/20/1998  */
 		if (SGET_START_DESK(*pstyle) > -1)
 		{
