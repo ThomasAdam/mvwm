@@ -348,7 +348,7 @@ AH_TEMPLATE([HAVE_XRANDR],[Define if XRandR library is used.])
 if test ! x"$with_xrandr" = xno; then
   $UNSET ac_cv_lib_XRandR_XRRQueryExtension
   AC_CHECK_LIB(Xrandr, XRRQueryExtension, [
-    AC_DEFINE(HAVE_XRANDR),
+    AC_DEFINE(HAVE_XRANDR)
     with_xrandr=yes
     XRandR_LIBS=-lXrandr
     ],[
