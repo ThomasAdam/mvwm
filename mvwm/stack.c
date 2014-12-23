@@ -1457,8 +1457,11 @@ static Bool is_above_unmanaged(MvwmWindow *fw, Window *umtop)
 	unsigned int num;
 	Window OR_Above = None;
 	XWindowAttributes wa;
+	struct monitor *mon;
 
-	if (fw->Desk != fw->m->virtual_scr.CurrentDesk)
+	mon = fw->m ? fw->m : monitor_get_current();
+
+	if (fw->Desk != mon->virtual_scr.CurrentDesk)
 	{
 		return True;
 	}

@@ -444,7 +444,7 @@ static void warp_to_mvwm_window(
 	int cx,cy;
 	int x,y;
 	MvwmWindow *t = exc->w.fw;
-	struct monitor	*m = t->m;
+	struct monitor	*m = t->m ? t->m : monitor_get_current();
 
 	if (t == (MvwmWindow *)0 ||
 	    (IS_ICONIFIED(t) && FW_W_ICON_TITLE(t) == None))
@@ -643,7 +643,7 @@ static void __activate_window_by_command(
 	Bool do_not_warp;
 	sftfwin_args_t sf_args;
 	MvwmWindow * const fw = exc->w.fw;
-	struct monitor	*m = fw->m;
+	struct monitor	*m = fw->m ? fw->m : monitor_get_current();
 
 	memset(&sf_args, 0, sizeof(sf_args));
 	sf_args.do_allow_force_broadcast = 1;

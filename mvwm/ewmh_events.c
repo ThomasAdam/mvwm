@@ -178,7 +178,9 @@ int ewmh_ActiveWindow(EWMH_CMD_ARGS)
 		NULL, NULL, "EWMHActivateWindowFunc", 0, fw);
 
 	/* TA:  20140630: Force goto_desk on specific monitor. */
-	goto_desk(fw->Desk, fw->m);
+	if (fw->m == NULL)
+		fw->m = monitor_get_current();
+	goto_desk(fw->Desk, fw->m ? fw->m : monitor_get_current());
 
 	return 0;
 }
