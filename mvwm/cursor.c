@@ -252,7 +252,7 @@ void CMD_CursorStyle(F_CMD_ARGS)
 
 	if (my_nc == -1)
 	{
-		nc = strtol(newcursor, &errpos, 10);
+		nc = newcursor ? strtol(newcursor, &errpos, 10) : 0;
 		if (errpos && *errpos == '\0')
 		{
 			my_nc = 0;

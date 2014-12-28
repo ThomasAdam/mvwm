@@ -108,7 +108,7 @@ static char *my_get_font(char **s)
 		}
 	}
 
-	len = strlen(option) -1;
+	len = option ? strlen(option) - 1 : 0;
 	if (option[len] == ')' )
 	{
 		option[len] = 0;
