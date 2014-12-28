@@ -1617,11 +1617,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			break;
 		} /* switch */
 
-		if (option)
-		{
-			free(option);
-			option = NULL;
-		}
+		option = NULL;
 		free(optstring);
 		optstring = NULL;
 		if (arg1)
