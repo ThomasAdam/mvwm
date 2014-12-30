@@ -2,14 +2,10 @@
 #ifndef MVWMLIB_FSCRREN_H
 #define MVWMLIB_FSCRREN_H
 
-/* For CARD32 */
-#include <X11/Xproto.h>
-
 #include "mvwm/mvwm.h"
 #include "mvwm/execcontext.h"
 #include "mvwm/misc.h"
 #include "mvwm/screen.h"
-#include "mvwm/ewmh_intern.h"
 
 typedef union
 {
@@ -46,8 +42,21 @@ struct monitor {
 	 */
 	DesktopsInfo	*Desktops;
 
-	/* Information about EWMH */
-	ewmhInfo ewmhc;
+	/* Information about EWMH. */
+	struct {
+		unsigned NumberOfDesktops;
+		unsigned MaxDesktops;
+		unsigned CurrentNumberOfDesktops;
+		Bool NeedsToCheckDesk;
+
+		struct {
+			int left;
+			int right;
+			int top;
+			int bottom;
+		} BaseStrut;
+
+	} ewmhc;
 
 	struct {
 		int VxMax;
