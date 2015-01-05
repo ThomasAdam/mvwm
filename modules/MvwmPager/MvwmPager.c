@@ -1329,7 +1329,10 @@ void list_restack(unsigned long *body, unsigned long length)
  */
 void list_end(void)
 {
-  unsigned int nchildren,i;
+  unsigned int width, height, bw, depth, found;
+  unsigned int nchildren, i;
+  int x, y;
+  struct monitor *m = NULL;
   Window root, parent, *children;
   PagerWindow *ptr;
 
@@ -1339,6 +1342,16 @@ void list_end(void)
 
   for(i=0; i<nchildren;i++)
     {
+	if (XGetGeometry(dpy, children[i], &root, &x, &y, &width,
+		      &height, &bw, &depth) != 0)
+		continue;
+
+	if ((m = monitor_by_xy(x, y)) == NULL) {
+		fprintf(stderr, "MvwmPager: MONITOR IS NULL\n");
+		continue;
+	}
+	if (strcmp(m->name, FPScr.monitor_name) > 0)
+		continue;
       ptr = Start;
       while(ptr != NULL)
 	{
