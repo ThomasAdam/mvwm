@@ -1227,6 +1227,7 @@ AC_OUTPUT(
 	modules/MvwmPager/Makefile
 	modules/MvwmPerl/Makefile
 	modules/MvwmPerl/MvwmPerl
+	modules/MvwmProxy/Makefile
 )
 
 # ---------------------------------------------------------------------------
