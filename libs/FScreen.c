@@ -149,7 +149,7 @@ monitor_by_number(int number)
 struct monitor *
 monitor_by_xy(int x, int y)
 {
-	struct monitor	*m, *m2;
+	struct monitor	*m, *m2 = NULL;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (x >= m->coord.x && x < m->coord.x + m->coord.w &&
