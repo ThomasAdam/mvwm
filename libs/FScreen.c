@@ -149,14 +149,16 @@ monitor_by_number(int number)
 struct monitor *
 monitor_by_xy(int x, int y)
 {
-	struct monitor	*m;
+	struct monitor	*m, *m2;
 
 	TAILQ_FOREACH(m, &monitor_q, entry) {
 		if (x >= m->coord.x && x < m->coord.x + m->coord.w &&
-		    y >= m->coord.y && y < m->coord.y + m->coord.h)
+		    y >= m->coord.y && y < m->coord.y + m->coord.h) {
+			m2 = m;
 			break;
+		}
 	}
-	return (m);
+	return (m2);
 }
 
 void FScreenInit(Display *dpy)
