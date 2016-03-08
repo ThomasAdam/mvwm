@@ -2449,9 +2449,10 @@ void CMD_DesktopName(F_CMD_ARGS)
 		}
 		BroadcastConfigInfoString(msg);
 		free(msg);
-		TAILQ_FOREACH(m, &monitor_q, entry)
-			EWMH_SetDesktopNames(m);
 	}
+
+	TAILQ_FOREACH(m, &monitor_q, entry)
+		EWMH_SetDesktopNames(m);
 
 	return;
 }
