@@ -5010,8 +5010,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 	{
 		if (StrEquals(parm, "active") || StrEquals(parm, "inactive"))
 		{
-			int len;
-			char *end, *tmp;
+			char *tmp;
 			DecorFace tmpdf, *df;
 
 			memset(&tmpdf.style, 0, sizeof(tmpdf.style));
@@ -5055,8 +5054,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 				}
 				break;
 			}
-			end = strchr(++action, ')');
-			if (!end)
+			if (strchr(++action, ')') == NULL)
 			{
 				mvwm_msg(
 					ERR, "SetBorderStyle",
@@ -5064,14 +5062,9 @@ void CMD_BorderStyle(F_CMD_ARGS)
 					parm);
 				return;
 			}
-			len = end - action + 1;
-			/* TA:  FIXME xasprintf */
-			tmp = mvwm_malloc(len);
-			strncpy(tmp, action, len - 1);
-			tmp[len - 1] = 0;
+			xasprintf(&tmp, "%s", action);
 			ReadDecorFace(tmp, df,-1,True);
 			free(tmp);
-			action = end + 1;
 		}
 		else if (strcmp(parm,"--")==0)
 		{
