@@ -428,13 +428,13 @@ static void setup_window_structure(
 	*/
 	if (ReuseWin == NULL)
 	{
-		*pfw = mvwm_malloc(sizeof(MvwmWindow));
+		*pfw = mvwm_malloc(sizeof **pfw);
 	}
 	else
 	{
 		*pfw = ReuseWin;
 		savewin = &save_state;
-		memcpy(savewin, ReuseWin, sizeof(MvwmWindow));
+		memcpy(savewin, ReuseWin, sizeof *savewin);
 	}
 
 	/*
