@@ -23,7 +23,11 @@
 #include <err.h>
 #include <sys/param.h>
 #include <stdint.h>
+#include <stdarg.h>
+#include <errno.h>
 #include "safemalloc.h"
+
+static int xvasprintf(char **, const char *, va_list);
 
 void *
 mvwm_malloc(size_t length)
@@ -84,4 +88,30 @@ mvwm_strdup(const char *s)
 	strlcpy(ptr, s, len);
 
 	return (ptr);
+}
+
+int
+xasprintf(char **ret, const char *fmt, ...)
+{
+	va_list ap;
+	int i;
+
+	va_start(ap, fmt);
+	i = xvasprintf(ret, fmt, ap);
+	va_end(ap);
+
+	return i;
+}
+
+int
+xvasprintf(char **ret, const char *fmt, va_list ap)
+{
+	int i;
+
+	i = vasprintf(ret, fmt, ap);
+
+	if (i < 0 || *ret == NULL)
+		err(1, "xasprintf: %s", strerror(errno));
+
+	return i;
 }
