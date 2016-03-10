@@ -245,7 +245,7 @@ static void add_to_junk(Pixmap pixmap)
 {
 	struct junklist *oldjunk = junk;
 
-	junk = mvwm_malloc(sizeof(struct junklist));
+	junk = mvwm_malloc(sizeof *oldjunk);
 	junk->prev = oldjunk;
 	junk->pixmap = pixmap;
 	if (!cleanup_scheduled)
