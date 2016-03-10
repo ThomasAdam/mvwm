@@ -318,9 +318,7 @@ char *CreateFlagString(char *string, char **restptr)
 {
 	char *retval;
 	char *c;
-	char *start;
 	char closeopt;
-	int length;
 
 	c = string;
 	while (isspace((unsigned char)*c) && (*c != 0))
@@ -343,8 +341,6 @@ char *CreateFlagString(char *string, char **restptr)
 			closeopt = ')';
 		}
 		c++;
-		start = c;
-		length = 0;
 		while (*c != closeopt)
 		{
 			if (*c == 0)
@@ -357,17 +353,12 @@ char *CreateFlagString(char *string, char **restptr)
 			}
 
 			/* skip quoted string */
-			d = SkipQuote(c, NULL, NULL, NULL);
-			length += d - c;
-			c = d;
+			c = d = SkipQuote(c, NULL, NULL, NULL);
 		}
 
 		/* We must allocate a new string because we null terminate the
 		 * string between the [ ] or ( ) characters. */
-		/* TA:  FIXME!  xasprintf() */
-		retval = mvwm_malloc(length + 1);
-		strncpy(retval, start, length);
-		retval[length] = 0;
+		xasprintf(&retval, "%s", c);
 
 		*restptr = c + 1;
 	}
